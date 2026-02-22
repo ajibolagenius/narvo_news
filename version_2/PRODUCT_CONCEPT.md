@@ -15,10 +15,11 @@ Version 2 shifts from static news reading to a dynamic "Broadcast" experience. T
 
 ## 3. User Experience Flows
 - **Morning Briefing**: A curated audio reel of the top 5 stories delivered at a scheduled time.
-- **Live Feed**: A continuous "Broadcast" mode that updates as new stories are processed.
+- **The Broadcast Loop**: A continuous, radio-like stream that cycles top stories with high-priority "Breaking News" interruptions, ideal for background listening.
+- **Multi-tier Localization**: A "Regional Zoom" feature allowing users to toggle between **City** (Hyper-local), **National**, and **Continental** news levels.
 - **On-Demand Reading**: Compact text cards for quick scanning when audio isn't feasible.
 
 ## 4. Concept Goals
 - **Minimize Clutter**: Access news in 2 taps or less.
+- **Paraphrase Transparency**: Users can view a "Truth Tag" detailing how the AI synthesized the story, building trust through editorial openness.
 - **Hands-Free Focus**: Fully navigable via voice or simple gesture controls for commuting or multitasking.
-- **Reliable Authority**: Content is strictly curated to ensure accuracy and professionalism.

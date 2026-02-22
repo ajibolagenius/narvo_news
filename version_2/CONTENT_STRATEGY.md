@@ -19,10 +19,11 @@ Version 2 leverages a sophisticated multi-source ingestion pipeline to feed the 
 5. **Synthesize**: Generate high-fidelity audio (ElevenLabs/MiniMax).
 
 ## 3. Quality Assurance (The Truth Layer)
-- **Fact-Check Integration**: Automated cross-referencing against verified sources.
+- **Automated Fact-Checking**: Direct API integration with regional verification services (e.g., Dubawa) to auto-flag and contextualize suspicious claims in real-time.
 - **Source Attribution**: Every story includes a clear "Read Full Article" link to the original source.
 - **Relevance Scoring**: AI ranking based on user interests and global significance.
 
-## 4. Localization (Cultural Resonance)
+## 4. Localization & Feedback
 - **Local Dialects**: Continued support for Pidgin, Yoruba, Hausa, and Igbo audio outputs.
+- **Dialect Feedback Loops**: In-app "Report Pronunciation" tools allow users to help the AI fine-tune regional accents and slang performance.
 - **Contextual Adaptation**: Paraphrasing ensures that global news is explained within a local context where relevant.

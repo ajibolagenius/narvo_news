@@ -30,12 +30,15 @@ A combination of precision-engineered sans-serifs and monospaced types.
 
 ## 3. The Swiss Grid & Structure
 - **The Visible Grid:** Every element sits within a visible 1px `#628141` border.
+- **Grid Breathing**: During audio playback, active grid lines subtly pulse in opacity to provide subtle, premium visual confirmation of the broadcast state.
 - **Rigid Alignment:** Content is mapped to a strict structural grid.
 - **No Shadows:** A flat, 2D aesthetic. Depth is achieved via layout and alternating surface colors, never elevation.
 - **Square Corners:** 0px border-radius everywhere. Maximum precision and technical feel.
 
 ## 4. Interaction & Micro-animations
 - **State Changes:** Smooth hover effects and subtle transitions for interactive elements.
+- **Haptic Precision**: Defined vibration patterns (e.g., sharp double-beat for Breaking News) to augment the minimal visual UI.
+- **Voice-Gestural UI**: Custom gestures (e.g., double-tap grid cells) trigger voice commands, optimized for high-sunlight environments where touch-accuracy is preferred over sight.
 - **Audio Feedback:** Pulsing indicators for active audio playback, integrated into the grid lines.
 - **Premium Feel:** Every interaction feels deliberate. No unnecessary clutter.
 
