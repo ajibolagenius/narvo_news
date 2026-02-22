@@ -17,81 +17,68 @@ Narvo is a mobile-first, voice-first platform that delivers AI-summarised news i
 - Offline Support: MP3/audio downloads and cached content
 - Bento Grid Feed: Organised layout grouped by interest categories
 - Smart Notifications: Daily digests and breaking news alerts
-- Language Controls: Voice and interface language switching
-- Content Management: Bookmarking and saved digest library
+Narvo is an audio-first news broadcast platform. Its technical identity is defined by a **Monorepo** architecture and a "Technical Instrument" design language (Swiss Grid).
 
-### Advanced Features
-- Voice Preference Memory: Personalised TTS settings
-- Automated Scheduling: Daily digest generation and delivery
-- Multi-channel Distribution: WhatsApp/email/push notifications
-- AI Prioritisation: Intelligent story ranking and suggestion
-- Export Options: Save as audio, text, or shareable cards
-- Accessibility Mode: Voice navigation and screen reader support
-- Source Attribution: Citation links and "read full article" options
+**Key Innovation**: Contextual RAG Synthesis and Broadcast Paraphrasing.
 
 ---
 
 ## 🛠️ Technical Architecture
 
-### Frontend Stack
-| **Technology** | **Purpose** | **Rationale** |
-|----------------|-------------|---------------|
-| **Next.js (PWA)** | Core framework | Fast, SEO-friendly, offline-capable |
-| **Tailwind CSS** | Styling | Rapid, responsive design system |
-| **shadcn/ui** | Component library | Accessible, customisable components |
-| **Service Workers** | Offline functionality | Content caching and background sync |
-| **IndexedDB** | Local storage | Large offline data storage |
+### Infrastructure Strategy: The Monorepo
+We utilize a single repository for both Mobile (React Native) and Web (Next.js), sharing a unified AI/Logic layer and a singular design system (Swiss Grid).
 
-### Backend Infrastructure
-| **Technology** | **Purpose** | **Rationale** |
-|----------------|-------------|---------------|
-| **Supabase** | Primary backend | Auth, database, real-time, storage |
-| **Node.js API** | Custom services | Scraping, AI integration, TTS processing |
-| **PostgreSQL** | Database | Robust relational data management |
-| **Vercel** | Deployment | Seamless Next.js hosting and scaling |
-
-### AI & Voice Services
-| **Service** | **Purpose** | **Integration** |
-|-------------|-------------|-----------------|
-| **GPT-4/Cohere** | Content summarisation | API-based content processing |
-| **ElevenLabs** | Premium voice synthesis | Custom voice cloning and natural TTS |
-| **Google TTS** | Fallback voice service | Reliable, multi-language support |
-| **Coqui TTS** | Local language voices | Open-source Nigerian dialect models |
-| **Whisper** | Audio transcription | Radio/YouTube content processing |
-
-### Content Processing Pipeline
-| **Tool** | **Purpose** | **Implementation** |
-|----------|-------------|-------------------|
-| **RSS-parser** | Feed aggregation | Lightweight XML parsing |
-| **Playwright** | Web scraping | JavaScript-enabled content extraction |
-| **newspaper3k** | Article extraction | Structured content parsing |
-| **yt-dlp** | YouTube processing | Video/audio download and extraction |
-| **ffmpeg** | Audio processing | Stream recording and format conversion |
+### Core Stack
+| Layer | Technology | Rationale |
+|-------|------------|-----------|
+| **Core** | React Native + Next.js | Unified Monorepo. Consistency. |
+| **Backend** | Supabase (PostgreSQL + Auth) | Robust relational base. |
+| **AI Layer** | Google Gemini + Contextual RAG | Advanced narrative synthesis. |
+| **Vector DB** | pgvector / Pinecone | Long-term context for news history. |
+| **Audio** | ElevenLabs / MiniMax | High-fidelity broadcast voice synthesis. |
+| **STT** | Whisper | Professional transcription for live assets. |
 
 ---
 
-## Voice Localisation Strategy
+## Content Ingestion & Paraphrasing
 
-### Supported Languages & Dialects
-- Nigerian Pidgin English: Primary local communication
-- Yoruba: Southwestern Nigeria
-- Hausa: Northern Nigeria
-- Igbo: Southeastern Nigeria
-- English: International standard
+### 1. Multi-Stream Ingestion
+- **RSS & Web**: Automated scraping via Playwright.
+- **Broadcast Audio**: Live stream capture to STT (Whisper).
+- **Video Feed**: YouTube API to Audio-to-Summary pipeline.
 
-### Voice Technology Implementation
-| Provider | Use Case | Advantages |
-|----------|----------|------------|
-| ElevenLabs | Premium voices, voice cloning | Highly natural, custom voice creation |
-| Coqui TTS | Open-source local models | Free, customisable, privacy-focused |
-| Azure Neural Voices | Enterprise reliability | Stable, scalable, multi-region |
-| Google TTS | Fallback service | Broad language support, reliable |
+### 2. Contextual RAG Pipeline
+1. **Extraction**: Pulling raw data.
+2. **Retrieval**: AI fetches historical news from Vector DB.
+3. **Synthesis**: Gemini recasts into a narrative "Broadcast Story."
+4. **Attribution**: Transparent linking to original sources (Dubawa Fact-check).
 
-### Cultural Adaptation Features
-- Accent Recognition: Regional Nigerian pronunciation patterns
-- Contextual Delivery: Culturally appropriate tone and pacing
-- Voice Personality: Multiple voice options per language
-- Speed Control: Adjustable playback for comprehension preferences
+---
+
+## Design System: Swiss Grid Implementation
+
+### Visual Rules
+- **The 1px Rule**: All elements sit within visible 1px borders (`#628141`).
+- **10% Color Rule**: Primary Sand (`#EBD5AB`) restricted to active states and signal CTAs.
+- **Anti-light Base**: Dark matte background (`#1B211A`).
+- **Typography**: Space Grotesk (Headers) + Inter (Body).
+
+### Interaction Spec
+- **Grid Breathing**: Visible opacity pulsing for active audio playback.
+- **Haptic Precision**: Custom vibration patterns for breaking news.
+- **High-Sunlight Mode**: Optimized contrast and voice-gestural UI.
+
+---
+
+## Performance & Optimization
+
+### Predictive Pre-caching
+AI predicts user routine and pre-generates full audio broadcasts at 5:00 AM, ensuring instantaneous, offline-ready news for morning commutes.
+
+### Monorepo Benchmarks
+- **LCP**: <1.5s on edge (Vercel).
+- **Audio Latency**: Near-zero via edge-cached buffers.
+- **Shared Logic**: 70%+ code reuse between mobile and web.
 
 ---
 

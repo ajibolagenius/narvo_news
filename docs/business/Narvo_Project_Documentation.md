@@ -1,34 +1,31 @@
-# Narvo Project Documentation
+# Narvo Project Documentation: Version 2
 
 ## Overview
 
-Narvo is a smart news and information summarisation platform that delivers trusted, audio-enhanced summaries tailored for multilingual and multicultural audiences. This document covers business strategy, market analysis, and funding approach.
+Narvo is a precision-engineered news broadcast platform that transforms fragmented information into high-fidelity, audio-enhanced narrative stories. Built for global audiences with a primary focus on African markets, it leverages advanced AI to deliver trustworthy broadcasts in authentic local voices.
 
-For technical details, see [Technical Documentation](Narvo_Technical_Documentation.md).
+For technical details, see [Technical Documentation](../technical/Narvo_Technical_Documentation.md).
 
 ---
-| **User Challenge**                    | **Narvo’s Solution**                                                                 |
-|--------------------------------------|--------------------------------------------------------------------------------------|
-| **Information Overload**             | Delivers AI-powered summaries categorised by user-selected interests.               |
-| **Literacy & Language Barriers**     | Provides natural voice playback in local dialects: Pidgin, Yoruba, Hausa, Igbo.     |
-| **Reading Fatigue & Time Constraints** | Offers hands-free audio playback for easy multitasking during busy routines.         |
-| **Limited Internet Access**          | Supports offline downloads of news summaries in text and audio format.              |
-| **Fragmented Local News Sources**    | Aggregates from websites, RSS feeds, YouTube news, and community radio stations.    |
-| **Visual Stress & Accessibility**    | Enables a screen-free, voice-first experience that’s inclusive for all users.       |
-| **Cultural Disconnect in News Delivery** | Features localised voices, topics, and formats that reflect African realities.       |
+| **User challenge** | **Narvo V2 Solution (The Broadcast Paradigm)** |
+|--------------------|-----------------------------------------------|
+| **Information Distrust** | Paraphrased narrative stories with transparent attribution and fact-checking. |
+| **Visual Fatigue** | **Swiss Grid** design with "Anti-light" backgrounds and eyes-busy audio-fixed delivery. |
+| **Cultural Disconnect** | High-fidelity local accents (Pidgin, Yoruba, Hausa, Igbo) via ElevenLabs/MiniMax. |
+| **Technical Bloat** | Strict minimalism (10% color rule) and optimized Monorepo architecture. |
 
 ---
 
 ## Brand Voice & Messaging
 
 ### Main Brand Line
-**Narvo: News that Speaks to You**
+**Narvo: The News, Refined.**
 
 ### Taglines
-- "Understand more, in less time – in your own voice." (Hero/subheading)
-- "Listen to What Matters" (CTA / section header)
-- "From Headlines to Heartbeat" (Emotional brand copy)
-- "Your News. Out Loud!" (Button / app prompt)
+- "Precision-engineered insight."
+- "The broadcast that speaks your language."
+- "From headlines to narrative."
+- "News worth listening to."
 
 ### Elevator Pitches
 1. "Narvo is your personal news companion, delivering AI-powered summaries in authentic, local voices. Stay informed, hands-free, wherever you are."
@@ -39,10 +36,14 @@ For technical details, see [Technical Documentation](Narvo_Technical_Documentati
 
 ## User Experience & Design
 
-### Design Language
-Clean UI with light/dark mode, bento-style feed layout
+### Design Language: Swiss Grid
+Clean, professional, and structural interface following Swiss Design principles. Using 1px borders and tabular numerals to establish a "Technical Instrument" feel.
 
 ### Component System
+- **The 10% Rule**: Primary color (`#EBD5AB`) reserved for action and status only.
+- **The Visible Grid**: Every component is segmented by 1px Forest Green (`#628141`) borders.
+- **Typography**: Space Grotesk (Headers/Numbers) and Inter (UI Body).
+- **Haptic Alerts**: Discrete vibration patterns for broadcast events.
 - Logo: Wordmark and abstract logo variations
 - Buttons: Pill-style with icon + label combinations
 - Cards: Audio-enabled summary preview cards with voice toggle and save/bookmark functionality
@@ -51,22 +52,18 @@ Clean UI with light/dark mode, bento-style feed layout
 
 ---
 
-## Content Strategy
+## Content Strategy: Transformation
 
-### Source Types
-- Traditional Media: Newspapers, magazines
-- Broadcast: TV & Radio stations
-- Digital Platforms: Online news sites, blogs
-- Audio Content: Podcasts, radio shows
-- APIs: Global and local news APIs
-- Social Media: YouTube channels, verified accounts
+### The Pipeline
+1. **Ingest**: High-accuracy extraction from RSS, Radio streams, and YouTube.
+2. **Translate & Paraphrase**: GPT-4/Gemini recasting summaries into broadcast narratives.
+3. **Contextualize**: Vector DB integration to add historical depth (Contextual RAG).
+4. **Broadcast**: Generating audio via premium synthesis engines.
 
-### Curation Criteria
-- Credibility & Accuracy: Verified sources only
-- Regional Representation: Local and hyperlocal content
-- Language Diversity: Multi-language support
-- Relevance & Timeliness: Real-time updates
-- Cultural Sensitivity: Appropriate local context
+### Source Curation
+- **Traditional & Independent**: Vanguard, Guardian, Techpoint, etc.
+- **Transcription**: Real-time STT for broadcast TV and Radio stations.
+- **Fact-Check Integration**: Real-time cross-referencing with Dubawa/verified sources.
 
 ### Quality Assurance
 - Trust Score: Verification badges for sources
@@ -95,6 +92,9 @@ Clean UI with light/dark mode, bento-style feed layout
 - **Ambassador Network:** Community leaders, local influencers
 
 ### Technology & Scale
+- **Contextual RAG**: Leveraging Vector DBs to provide deep narrative context.
+- **Monorepo Strategy**: Unified codebase for web/native to ensure speed-to-market.
+- **Predictive Caching**: Pre-generating broadcasts for offline commute reliability.
 - **AI Improvement:** User feedback loops, federated learning for privacy
 - **Platform Expansion:** Smart speakers, feature phones (USSD/SMS), WhatsApp bots
 - **Multi-Country Scaling:** Adaptation for other African markets
@@ -108,10 +108,12 @@ Clean UI with light/dark mode, bento-style feed layout
 
 ---
 
-## Business Model & Market
+## Business Model
 
 ### Revenue Streams
-- **Freemium Model:** Basic access with premium voice packs and advanced features
+- **Freemium**: Free broadcasts with premium personalization/voice packs.
+- **Institutional API**: News-as-a-Service for educational and civic platforms.
+- **Broadcast Sponsorship**: Integrated branded story segments.
 - **Sponsored Content:** Branded audio content and story placements
 - **Institutional Licensing:** Schools, media outlets, government agencies
 - **API Services:** White-label summarisation and TTS services

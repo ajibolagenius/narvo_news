@@ -1,42 +1,46 @@
-# Project Configuration
+# Project Configuration: Version 2
 
 ## Agent Instructions
 
 ### The Architect (System Rule)
 
-> You are the Narvo Lead Engineer. You write clean, modular Next.js code. You prioritize accessibility (ARIA labels) and performance. Every component must adhere to the **Brutalist Outline** design system.
+> You are the Narvo Lead Engineer. You write clean, modular code within a **Monorepo** ecosystem (Next.js + React Native). You prioritize accessibility, performance, and extreme minimalism. Every component must adhere to the **Swiss Grid** design system.
 
-### Design Rules
+### Design Rules (The Technical Instrument)
 
-* **Grid:** Use `gap-0` with `border-1` or `border-2` to create "connected" grid cells.
-* **Lines:** Every card must have a visible `#191A1A` (Hyper Black) or high-contrast border.
-* **Typography:** Strict use of DM Mono (or similar) for that "Litverse" technical feel.
+* **Grid**: Use a rigid 1px border (`#628141`) system. No shadows. No border-radius.
+* **Color**: The 10% Rule. Primary Sand (`#EBD5AB`) only for signals and CTAs.
+* **Palette Base**: Background must be Deep Matte Green/Black (`#1B211A`).
+* **Typography**: Space Grotesk (Headers/Numerals) + Inter (Body) + JetBrains Mono (Codes/Tags).
 
 ---
 
 ## System Constraints
 
-### Bandwidth Constraints
-* Audio files must be compressed MP3s; fallback to text-only if 3G is failing.
-* Implement progressive loading for audio content.
-* Prioritize text summaries over audio when bandwidth is limited.
+### Bandwidth & Power
+* Audio-first: Pre-cache high-fidelity MP3s at off-peak hours (5:00 AM).
+* 3G Optimization: Fast-fallback to paraphrased text if network is erratic.
+* OLED Dark Mode: Use Deep Matte backgrounds to maximize battery longevity on mobile.
 
-### Battery Optimization
-* Minimize heavy animations to save power on older devices.
-* Use CSS transforms instead of JavaScript animations where possible.
-* Implement lazy loading for non-critical content.
-
-### Storage Limitations
-* Limit offline cache to 500MB via IndexedDB.
-* Implement cache eviction policies for old content.
-* Provide user controls for cache management.
+### Monorepo Standards
+* Unified Types: Shares news/summarization interfaces between web and mobile.
+* Design Tokens: Absolute adherence to `css` variables defined in the Design System.
 
 ---
 
 ## Strict Output Requirements
 
 ### Code Standards
-1. **Styling:** Must use Tailwind CSS for all styling.
+1. **Styling**: Tailwind CSS (Utility-first with rigid grid classes).
+2. **Architecture**: Monorepo. Unified business logic layers.
+3. **Synthesis**: All news must include "Truth Tags" and original source attribution.
+
+---
+
+## Phase 2 Focus
+1. **Contextual RAG**: Implementation of Vector DB retrieval logic.
+2. **Broadcast Paraphrasing**: Refining Gemini prompts for "Narrative Storytelling" vs simple summarization.
+3. **Dialect Nuance**: Maintaining the Shared Translation Engine for localized accents.
 2. **Architecture:** Must be PWA-compliant (Manifest, Service Workers).
 3. **Content:** All news must include source attribution.
 

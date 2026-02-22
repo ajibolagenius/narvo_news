@@ -1,157 +1,95 @@
-# Narvo Pitch Deck
+# Narvo Pitch Deck: Version 2
 
 ## Slide 1: Title Slide
 
-**Narvo – Smart News Summaries, Powered by Voice**  
-*Tagline: "Understand more, in less time – in your own voice."*
+**Narvo – The News Broadcast, Reimagined**  
+*Tagline: "Precision-engineered news. Audio-first, broadcast-style, and culturally resonant."*
 
 ---
 
 ## Slide 2: Problem
 
-**Key Challenges:**
-- Information overload and distrust in news sources
-- Low literacy or digital fatigue in emerging markets
-- Under-representation of local voices in global news feeds
+**The Information Noise:**
+- Distrust in fragmented news sources and "clickbait" summaries.
+- Digital and visual fatigue in eyes-busy, sunlight-heavy environments.
+- Lack of authoritative, high-fidelity news in local African dialects.
 
 ---
 
-## Slide 3: Solution
+## Slide 3: Solution (The Broadcast Paradigm)
 
-Narvo delivers trustworthy, voice-enabled, and multi-language news summaries – short, relevant, and mobile-first.
+Narvo transforms fragmented data into a cohesive, professional **Broadcast**. We paraphrased complex news into narrative stories, delivered via state-of-the-art AI audio.
 
 ---
 
 ## Slide 4: Product Demo Highlights
 
-**Key Features:**
-- Summarised news feeds
-- Pill-style interest picker
-- Voice language selection
-- Save & listen offline
-- Bento grid UI
+**The Technical Instrument:**
+- **The Swiss Grid**: Precision layout with 1px borders and 10% primary color rule.
+- **Paraphrased Stories**: Narrative-driven news arcs (Headline → Story → Signalling).
+- **The Broadcast Loop**: Continuous, radio-style audio stream.
+- **Voice Preference**: Localized accents (Pidgin, Yoruba, Hausa, Igbo).
 
 ---
 
 ## Slide 5: Market Opportunity
 
-**Market Potential:**
-- 500M+ potential users in Africa alone
-- Rising demand for short-form, localised, audio content
-- Large unserved population in low-bandwidth and multilingual regions
+**The Audio Boom:**
+- 500M+ potential users in Africa transitioning to audio-first consumption.
+- Rising demand for "Hands-Free" news during commutes and multitasking.
+- High-fidelity TTS tech (ElevenLabs/MiniMax) is now commercially viable.
 
 ---
 
 ## Slide 6: Business Model
 
-**Revenue Streams:**
-- Freemium model: Free summaries, premium voice packs or pro features
-- Sponsored content slots
-- Institutional licensing (schools, media outlets)
+**Revenue & Reach:**
+- **Freemium**: Basic broadcast access with premium voice personalization.
+- **Institutional API**: Licensed news synthesis for schools and government.
+- **Sponsored Bulletins**: Branded segments integrated into the broadcast loop.
 
 ---
 
 ## Slide 7: Traction & Roadmap
 
-**Current Progress:**
-- MVP in final build
-- 1000+ interest sign-ups pre-launch
-- Alpha launch: Q3 2025
-- Community ambassadors & voice testers engaged
+**Current State:**
+- Refined Pivot (V2) complete; Design System finalized.
+- Monorepo architecture established for unified Mobile/Web delivery.
+- Integration started with Google Gemini & ElevenLabs.
 
 ---
 
 ## Slide 8: Competitive Edge
 
-| Feature | Narvo | Traditional News | TTS Apps |
-|---------|-------|-----------------|----------|
-| Voice + Summaries | ✅ | ❌ | ✅ |
-| Multilingual UI | ✅ | ❌ | ❌ |
-| Trusted Sources Only | ✅ | ❌ | ✅ |
-| Designed for Africa | ✅ | ❌ | ❌ |
-
----
-
-## Slide 9: Team
-
-**Our People:**
-- Ajibola Akelebe, Founder – Design & Engineering
-- Advisors: Media professionals, audio engineers, and community leaders
-- Contributors: Voice talent, local curators, developers
+| Feature | Narvo V2 | Generic Aggregators | Radio / TV |
+|---------|----------|---------------------|------------|
+| **AI Paraphrasing** | ✅ Narrative | ❌ Static Summary | ❌ Manual |
+| **Swiss Grid UI** | ✅ Precision | ❌ Cluttered | ❌ N/A |
+| **Local Dialect TTS** | ✅ Natural | ❌ Robotic / None | ✅ Limited |
+| **Contextual RAG** | ✅ Deep History | ❌ None | ❌ N/A |
 
 ---
 
 ## Slide 10: Ask
 
-**Investment Requirements:**
-- £80,000 pre-seed to support MVP scaling, team expansion, and launch
-- Strategic media partners
-- Mentorship in multilingual content distribution
+**The Next Tier:**
+- £80,000 for final production, content partnerships, and regional voice training.
+- Strategic partners in Pan-African media and telecom distribution.
 
 ---
 
 ## Investor One-Pager
 
 ### Elevator Pitch
-Narvo is a smart news platform that delivers summarised, trustworthy content enhanced by multilingual voice playback. Designed for underserved users in Africa and beyond, it blends AI summaries with human-centred voice delivery in a lightweight, mobile-first experience.
+Narvo is a precision-engineered news platform that transforms fragmented info into high-fidelity AI broadcasts. Using a strict Swiss Grid design and advanced paraphrasing, we deliver trustworthy "Stories" in authentic local voices—designed for the modern, multitasking African audience.
 
-### Problem
-Millions of people face:
-- Information fatigue
-- Low trust in news
-- Poor access to native-language content
-- Limited reading time or literacy levels
+### The Pivot
+We've evolved from a standard summarizer to a **Broadcast Entity**. Our AI (Gemini/RAG) doesn't just shorten text; it recasts news into authoritative narrative bulletins.
 
-### Solution
-Narvo simplifies how people stay informed:
-- Audio-first summaries in native/local voices
-- Interest-based content curation
-- Voice selection and playback
-- Offline support and multilingual UX
-
-### Target Market
-- Primary: Young mobile users in Africa (Nigeria, Kenya, Ghana, etc.)
-- Secondary: Global users with preference for audio + summaries
-- Market Size: 500M+ potential users in emerging markets
-
-### Business Model
-- Freemium: Basic access with optional pro features
-- Ads: Sponsored audio content or branded stories
-- Licensing: Media houses, schools, civic orgs
-
-### Why Now
-- AI voice + summarisation is now accessible
-- Audio content is growing faster than text in mobile markets
-- Africa's digital users demand local-first platforms
-
-### Traction
-- MVP complete (UI + backend)
-- 1000+ pre-launch sign-ups
-- Voice tests conducted in 3 local languages
-- Partnerships in progress with local media and radio
+### Why Version 2?
+- **Extreme Minimalism**: Low bandwidth, low cognitive load, premium feel.
+- **Audio-First**: Accessible news for users on the move.
+- **Monorepo Strategy**: Lower dev costs, unified experience across devices.
 
 ### Funding Ask
-- Seeking: £80,000 pre-seed
-- Use: Final build, voice licensing, content partnerships, scale tech, build team
-
----
-
-## 60-Second Pitch Script
-
-> Hi, I'm Ajibola Akelebe, and I'm the founder of Narvo.
->
-> Let me ask you this—what if staying informed didn't mean scrolling endlessly, reading walls of text, or dealing with content that doesn't speak your language?
->
-> Narvo is a smart, audio-first news platform that delivers trustworthy, summarised content in the voices and languages that matter to you.
->
-> It's designed for real people in real places—especially across Africa—where mobile data is precious, reading time is limited, and native-language content is scarce.
->
-> With Narvo, users get short, curated summaries, can pick their topics, hear updates in multiple voices, and even listen offline.
->
-> We're combining trusted news curation with local voices, inclusive design, and a lightweight experience.
->
-> We've built our MVP, we're testing in Nigeria, and we're gearing up for launch.
->
-> We're now raising £80,000 to scale our voice tech, grow our team, and launch with strategic partners.
->
-> If you believe the future of news is short, trusted, and voice-first—Narvo is where it starts.
+- Seeking: £80,000 to launch the V2 production build and secure regional media feeds.
