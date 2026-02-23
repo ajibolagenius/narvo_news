@@ -15,7 +15,6 @@ from pydantic import BaseModel, Field
 from supabase import create_client, Client
 import feedparser
 import httpx
-from elevenlabs import ElevenLabs, VoiceSettings
 
 # Initialize FastAPI
 app = FastAPI(title="Narvo API", version="2.0")
@@ -34,8 +33,6 @@ supabase: Client = create_client(
     os.environ.get("SUPABASE_URL"),
     os.environ.get("SUPABASE_ANON_KEY")
 )
-
-eleven_client = ElevenLabs(api_key=os.environ.get("ELEVENLABS_API_KEY"))
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
