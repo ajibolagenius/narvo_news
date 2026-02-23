@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, User, Menu } from 'lucide-react';
+import { Search, User, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const DashboardHeader = ({ onToggleSidebar }) => {
+const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,17 +15,22 @@ const DashboardHeader = ({ onToggleSidebar }) => {
 
   return (
     <header className="h-14 md:h-16 flex items-center justify-between px-4 md:px-6 narvo-border-b bg-background-dark z-20 shrink-0" data-testid="dashboard-header">
-      <div className="flex items-center gap-4 md:gap-12 flex-1 min-w-0">
-        {/* Sidebar toggle - visible on desktop, hamburger on mobile */}
-        <button onClick={onToggleSidebar} className="hidden md:flex text-forest hover:text-primary transition-colors shrink-0" data-testid="sidebar-toggle-btn">
-          <Menu className="w-5 h-5" />
+      <div className="flex items-center gap-3 md:gap-6 flex-1 min-w-0">
+        {/* Sidebar toggle - visible on desktop */}
+        <button 
+          onClick={onToggleSidebar} 
+          className="hidden md:flex text-forest hover:text-primary transition-colors shrink-0 p-1.5 hover:bg-surface/30 narvo-border" 
+          data-testid="sidebar-toggle-btn"
+          title={sidebarOpen ? 'Collapse Sidebar' : 'Expand Sidebar'}
+        >
+          {sidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
         </button>
 
-        <div className="flex items-center gap-3 shrink-0 cursor-pointer" onClick={() => navigate('/dashboard')}>
-          <svg className="w-6 h-6 text-primary" viewBox="0 0 256 256" fill="currentColor">
+        <div className="flex items-center gap-2 md:gap-3 shrink-0 cursor-pointer" onClick={() => navigate('/dashboard')}>
+          <svg className="w-5 h-5 md:w-6 md:h-6 text-primary" viewBox="0 0 256 256" fill="currentColor">
             <path d="M128,16a112,112,0,1,0,112,112A112.13,112.13,0,0,0,128,16Zm0,208a96,96,0,1,1,96-96A96.11,96.11,0,0,1,128,224ZM168,128a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V88a8,8,0,0,1,16,0v32h24A8,8,0,0,1,168,128Z"/>
           </svg>
-          <h1 className="font-display text-lg md:text-xl tracking-tight font-bold text-white uppercase">
+          <h1 className="font-display text-base md:text-xl tracking-tight font-bold text-white uppercase">
             NARVO <span className="text-forest font-light mx-1 md:mx-2 hidden sm:inline">{'//'}</span> <span className="hidden sm:inline">DASHBOARD</span>
           </h1>
         </div>
