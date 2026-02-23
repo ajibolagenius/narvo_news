@@ -72,6 +72,23 @@ class NewsItem(BaseModel):
     listen_count: int = 0
     tags: List[str] = []
 
+class BriefingStory(BaseModel):
+    id: str
+    title: str
+    summary: str
+    source: str
+    category: str
+
+class MorningBriefing(BaseModel):
+    id: str
+    title: str
+    generated_at: str
+    duration_estimate: str
+    stories: List[BriefingStory]
+    script: str
+    audio_url: Optional[str] = None
+    voice_id: str = "nova"
+
 class TTSRequest(BaseModel):
     text: str
     voice_id: str = "nova"
