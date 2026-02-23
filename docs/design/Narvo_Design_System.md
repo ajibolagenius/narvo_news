@@ -23,7 +23,21 @@ To maintain extreme minimalism, colors are used sparingly as technical indicator
 - **Text Primary:** `#F2F2F2` (90% White) - High-fidelity content, headers, and primary values.
 - **Text Secondarys/Labels:** `#8BAE66` (Sage Green) or `#808080` (50% Grey) - Metadata, units, timestamps, and utility labels.
 
-## 4. Design Tokens (CSS Variables)
+## 4. Design Tokens (The Unified Grid)
+Uniformity across Web and Mobile is maintained via these strict spacing and shape tokens.
+
+### Spacing & Layout
+Narvo follows an **8pt Step Grid** for all internal spacing.
+- **Unit Scale:** 4px, 8px, 16px, 24px, 32px, 48px, 64px.
+- **Grid Gutters:** 1px (Signal Green `#628141`).
+- **Container Padding:** 16px (Mobile), 32px (Desktop).
+
+### Shapes & Radii
+Precision is reinforced through **Absolute Sharpness**.
+- **Standard Radius:** `0px` (Strict Swiss Grid).
+- **Interactive Radius:** `0px` (Consistent sharpness for all buttons, inputs, and toggles).
+- **Borders:** `1px` Hairline (Sharp, technical definition).
+
 ```css
 :root {
   --color-primary: #EBD5AB;
@@ -36,7 +50,17 @@ To maintain extreme minimalism, colors are used sparingly as technical indicator
   
   --border-width: 1px;
   --grid-gap: 16px;
-  --radius-none: 0px; /* Rigid squared corners */
+  --radius-none: 0px; /* Absolute sharp corners */
+  --radius-interactive: 0px; /* No exceptions for interactive components */
+  --spacing-unit-1: 4px;
+  --spacing-unit-2: 8px;
+  --spacing-unit-3: 16px;
+  --spacing-unit-4: 24px;
+  --spacing-unit-5: 32px;
+  --spacing-unit-6: 48px;
+  --spacing-unit-7: 64px;
+  --container-padding-mobile: 16px;
+  --container-padding-desktop: 32px;
   
   --font-header: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -49,19 +73,38 @@ To maintain extreme minimalism, colors are used sparingly as technical indicator
 - **UI Body Content:** *Inter* - Optimized for readability in news summaries and article body text.
 - **System Identifiers:** *JetBrains Mono* - Used for labels, timestamps, bracketed commands `[LIKE THIS]`, and technical metadata.
 
-## 6. Components
+## 6. Iconography (Phosphoricons)
+All functional icons must be sourced from **[Phosphoricons](https://phosphoricons.com/)**.
+- **Style:** `Regular` (1.5px stroke) for consistency with hairline borders.
+- **Weight:** Use `Fill` weight ONLY for active/toggle states in the primary color `#EBD5AB`.
+- **Sizing:** Fixed at 20px or 24px within technical cells.
+
+## 7. Motion & Interaction (Broadcast Fidelity)
+Motion in Narvo is not decorative; it is a **Signal of Process**.
+
+### Tools
+- **[Motion (framer-motion)](https://motion.dev/)**: For lightweight, reactive layout transitions and gestural animations.
+- **[GSAP](https://gsap.com/)**: For frame-accurate, high-performance technical animations (e.g., waveform scrubbing, dashboard data tickers).
+- **[Lenis](https://lenis.darkroom.engineering/)**: For smooth, momentum-based scrolling that mimics the fluidity of a high-end broadcast reel.
+
+### Principles
+- **Mechanical Precision**: No "bouncy" springs. Use linear or sharp exponential easing.
+- **Momentum**: Scrolling should feel like a physical dial being turned (Lenis Integration).
+- **State Feedback**: Transitions must reinforce the "Instrument" feel—cells should pulse or "lock-in" when interacted with.
+
+## 8. Components
 - **The Broadcast Loop:** A real-time, radio-like stream interface with pulsing audio indicators.
 - **Technical Cards:** Grid-mapped containers with 1px borders, no shadows, and strict internal alignment.
 - **[Command] Buttons:** Action buttons formatted in brackets to look like terminal or console commands.
 - **The Signal Meter:** Visualizers for audio levels and data synchronization status.
 - **Regional Zoom Toggle:** A technical switch for toggling between City, National, and Continental news feeds.
 
-## 7. Visual Style: The Swiss Grid
+## 9. Visual Style: The Swiss Grid
 - **Visible Architecture:** Every layout element sits within a visible `1px` border using `--color-border`.
 - **Flat Aesthetic:** No shadows, no gradients, no rounded corners. The design is purely 2D, relying on typography and spatial hierarchy for depth.
 - **Haptic Precision:** UI interactions are paired with subtle, sharp haptic taps to reinforce the "instrument" feel.
 - **Dynamic Grid Breathing:** Grid lines subtly pulse in opacity during audio playback to confirm the system is "live."
 
-## 8. Brand Philosophy & Narrative
+## 10. Brand Philosophy & Narrative
 **"The Local Pulse, Refined."**
 Narvo is the bridge between the raw energy of African news and the precision of global engineering. We modernize the narrative by providing a tool that treats local stories with the technical respect they deserve. We don't just "show" news; we **broadcast** it with authority, clarity, and structural beauty.
