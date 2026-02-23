@@ -397,31 +397,28 @@ async def generate_briefing_script(stories: List[dict]) -> str:
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
+        # Limit story summaries to reduce processing load
         stories_text = "\n\n".join([
-            f"**{s['title']}** ({s['source']})\n{s['summary']}"
+            f"**{s['title'][:100]}** ({s['source']})\n{s['summary'][:200]}"
             for s in stories[:5]
         ])
         
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
             session_id=f"briefing-{datetime.now().timestamp()}",
-            system_message="""You are a professional broadcast journalist for Narvo, creating a morning news briefing.
+            system_message="""You are a professional broadcast journalist for Narvo. Create a concise 3-minute radio-style briefing script.
 
-Create a cohesive 5-minute radio-style morning briefing script that:
-1. Opens with a warm greeting and the date
-2. Smoothly transitions between stories
-3. Provides context and significance for each story
-4. Uses professional broadcast language
-5. Ends with a sign-off
-
-The script should sound natural when read aloud, approximately 700-900 words for a 5-minute briefing.
-Do NOT use markdown formatting - write in plain text suitable for TTS.
-Include transition phrases like "Moving on to...", "In other news...", "Meanwhile..."
-"""
+Requirements:
+- Open with a brief greeting
+- Cover each story in 2-3 sentences
+- Use smooth transitions
+- End with a short sign-off
+- Keep it under 500 words
+- Plain text only, no markdown"""
         ).with_model("gemini", "gemini-2.0-flash")
         
         user_message = UserMessage(
-            text=f"Create a morning briefing script from these top stories:\n\n{stories_text}"
+            text=f"Create a brief morning news script:\n\n{stories_text}"
         )
         response = await chat.send_message(user_message)
         return response.strip()
@@ -430,7 +427,7 @@ Include transition phrases like "Moving on to...", "In other news...", "Meanwhil
         # Fallback to simple concatenation
         script = f"Good morning, this is your Narvo Morning Briefing for {datetime.now().strftime('%A, %B %d, %Y')}.\n\n"
         for i, story in enumerate(stories[:5], 1):
-            script += f"Story {i}: {story['title']}. {story['summary']}\n\n"
+            script += f"Story {i}: {story['title'][:100]}. {story['summary'][:150]}.\n\n"
         script += "That's all for this morning's briefing. Stay informed with Narvo."
         return script
 
