@@ -50,9 +50,10 @@ This document serves as the central repository for all user-facing text for the 
 | **Key** | **Copy** | **Notes** |
 |---------|----------|-----------|
 | `voice_studio_title` | [Regional Voice Studio] | Selection screen header. |
-| `voice_label_pidgin` | [Pidgin: Sabi-Work] | Natural Pidgin voice. |
-| `voice_label_dialect` | [{dialect}: High-Fidelity] | Local language voices. |
-| `voice_preview_btn` | [Listen to Sample] | Voice preview button. |
+| `voice_label_pidgin` | [Pidgin: Sabi-Work] | Vibrant, natural Pidgin voice. |
+| `voice_label_dialect` | [{dialect}: High-Fidelity] | Authentic, rhythmic local voices. |
+| `voice_preview_btn` | [Listen to Sample] | Hear the vibe and rhythm. |
+
 
 ---
 
