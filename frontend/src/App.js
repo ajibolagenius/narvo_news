@@ -1493,6 +1493,7 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/briefing" element={<MorningBriefingPage />} />
             <Route path="/news/:id" element={<NewsDetailPage />} />
             <Route path="/voices" element={<VoiceStudioPage />} />
             <Route path="/search" element={<SearchPage />} />
