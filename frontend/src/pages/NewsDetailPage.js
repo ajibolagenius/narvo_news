@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, Pause, Bookmark, BookmarkCheck, Languages, ExternalLink, ArrowLeft, Lightbulb, Quote } from 'lucide-react';
+import { Play, Pause, Bookmark, BookmarkCheck, Languages, ExternalLink, ArrowLeft, Lightbulb } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 

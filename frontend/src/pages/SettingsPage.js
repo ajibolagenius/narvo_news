@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, User, Shield, Monitor } from 'lucide-react';
+import { LogOut, Shield, Monitor } from 'lucide-react';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
