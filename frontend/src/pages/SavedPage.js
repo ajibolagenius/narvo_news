@@ -1,0 +1,195 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CheckSquare, Archive, Trash2, ArrowUpRight, Bookmark } from 'lucide-react';
+import { useBookmarks } from '../hooks/useBookmarks';
+import Skeleton from '../components/Skeleton';
+
+const SavedPage = () => {
+  const navigate = useNavigate();
+  const { bookmarks, loading, removeBookmark } = useBookmarks();
+  const [selectedIds, setSelectedIds] = useState([]);
+
+  const toggleSelect = (id, e) => {
+    e.stopPropagation();
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const selectAll = () => {
+    if (selectedIds.length === bookmarks.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(bookmarks.map(b => b.story_id));
+    }
+  };
+
+  const deleteSelected = () => {
+    selectedIds.forEach(id => removeBookmark(id));
+    setSelectedIds([]);
+  };
+
+  const getCategoryColor = (category) => {
+    const colors = {
+      finance: 'bg-primary',
+      tech: 'bg-red-400',
+      politics: 'bg-primary',
+      culture: 'bg-forest',
+      design: 'bg-forest',
+    };
+    return colors[category?.toLowerCase()] || 'bg-forest';
+  };
+
+  const formatTimeAgo = (date) => {
+    if (!date) return 'SAVED_RECENTLY';
+    const now = new Date();
+    const saved = new Date(date);
+    const diffHours = Math.floor((now - saved) / (1000 * 60 * 60));
+    
+    if (diffHours < 1) return 'SAVED_NOW';
+    if (diffHours < 24) return `SAVED_${diffHours}H_AGO`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}_DAYS_AGO`;
+  };
+
+  return (
+    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 max-w-7xl mx-auto w-full pb-20 md:pb-10" data-testid="saved-page">
+      {/* Dashboard Header */}
+      <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-6 mb-8 md:mb-12 border-b border-forest/30 pb-6 md:pb-10">
+        <div className="space-y-2 md:space-y-4">
+          <h2 className="font-display text-4xl md:text-6xl font-bold uppercase tracking-tighter text-white leading-none">
+            Saved <span className="text-primary">Stories.</span>
+          </h2>
+          <p className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-[0.3em]">
+            LIBRARY_ROOT // ARCHIVE_SEGMENT // SYNCED_NODES
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 md:gap-4">
+          <button 
+            onClick={selectAll}
+            className="flex items-center gap-2 md:gap-3 bg-primary text-background-dark px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-colors"
+            data-testid="select-all-btn"
+          >
+            <CheckSquare className="w-4 h-4" />
+            <span>SELECT_ALL</span>
+          </button>
+          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold text-white hover:bg-forest transition-colors">
+            <Archive className="w-4 h-4" />
+            <span>ARCHIVE_X</span>
+          </button>
+          <button 
+            onClick={deleteSelected}
+            disabled={selectedIds.length === 0}
+            className={`flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold transition-colors ${
+              selectedIds.length > 0 
+                ? 'text-red-400 hover:bg-red-400 hover:text-white' 
+                : 'text-forest/50 cursor-not-allowed'
+            }`}
+            data-testid="delete-selected-btn"
+          >
+            <Trash2 className="w-4 h-4" />
+            <span>DELETE_SIG</span>
+          </button>
+        </div>
+      </section>
+
+      {/* Grid Matrix */}
+      {loading ? (
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="bg-surface/5 narvo-border p-6 md:p-8 h-full flex flex-col gap-4 md:gap-6">
+              <Skeleton variant="text" className="w-32 h-4" />
+              <Skeleton variant="text" className="w-full h-8" />
+              <Skeleton variant="text" className="w-3/4 h-8" />
+              <div className="mt-auto pt-4 md:pt-6">
+                <Skeleton variant="text" className="w-24 h-3" />
+              </div>
+            </div>
+          ))}
+        </section>
+      ) : bookmarks.length === 0 ? (
+        <section className="narvo-border bg-surface/5 flex flex-col items-center justify-center p-12 md:p-16">
+          <Bookmark className="w-12 h-12 md:w-16 md:h-16 text-forest mb-4" />
+          <h3 className="font-display text-xl md:text-2xl text-white mb-2 uppercase">No Saved Stories</h3>
+          <p className="mono-ui text-[10px] md:text-xs text-forest mb-6 text-center">
+            BOOKMARK_STORIES_FROM_FEED_TO_ACCESS_OFFLINE
+          </p>
+          <button 
+            onClick={() => navigate('/dashboard')}
+            className="bg-primary text-background-dark font-display font-bold px-6 md:px-8 py-3 md:py-4 text-sm md:text-base hover:bg-white transition-all"
+            data-testid="go-to-feed-btn"
+          >
+            [ GO_TO_FEED ]
+          </button>
+        </section>
+      ) : (
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" data-testid="saved-stories-grid">
+          {bookmarks.map((item, index) => (
+            <article 
+              key={item.story_id}
+              onClick={() => navigate(`/news/${item.story_id}`)}
+              className="bg-surface/5 narvo-border p-6 md:p-8 h-full flex flex-col justify-between group hover:bg-surface/20 transition-all cursor-pointer relative"
+              data-testid={`saved-card-${item.story_id}`}
+            >
+              {/* Checkbox on hover */}
+              <div 
+                className={`absolute top-4 md:top-6 right-4 md:right-6 transition-opacity ${
+                  selectedIds.includes(item.story_id) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}
+              >
+                <input 
+                  type="checkbox" 
+                  checked={selectedIds.includes(item.story_id)}
+                  onChange={(e) => toggleSelect(item.story_id, e)}
+                  className="w-5 h-5 md:w-6 md:h-6 bg-transparent narvo-border border-forest/50 text-primary focus:ring-0 cursor-pointer"
+                  data-testid={`checkbox-${item.story_id}`}
+                />
+              </div>
+              
+              <div className="space-y-4 md:space-y-6">
+                <div className="flex items-center gap-2 md:gap-3">
+                  <span className={`w-2 h-2 ${getCategoryColor(item.category)}`} />
+                  <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-widest uppercase">
+                    {item.source || item.category || 'NEWS_DESK'}
+                  </span>
+                </div>
+                <h3 className="font-display text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors uppercase line-clamp-3">
+                  {item.title}
+                </h3>
+              </div>
+              
+              <div className="mt-6 md:mt-8 pt-4 md:pt-6 narvo-border-t flex items-end justify-between">
+                <div className="flex flex-col gap-1">
+                  <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">
+                    {formatTimeAgo(item.saved_at)}
+                  </span>
+                  <span className="mono-ui text-[9px] md:text-[10px] text-forest font-bold opacity-70">
+                    {item.tags?.slice(0, 2).map(t => `#${t.toUpperCase()}`).join(' ') || `#${item.category?.toUpperCase() || 'NEWS'}`}
+                  </span>
+                </div>
+                <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6 text-forest group-hover:text-primary transition-colors" />
+              </div>
+            </article>
+          ))}
+          
+          {/* Empty Shell for Add */}
+          <div className="narvo-border bg-surface/5 flex flex-col items-center justify-center p-6 md:p-8 grayscale opacity-20 border-dashed min-h-[200px]">
+            <Bookmark className="w-12 h-12 md:w-16 md:h-16 mb-3 md:mb-4" />
+            <span className="mono-ui text-[9px] md:text-[10px] font-bold tracking-widest text-center">ADD_NEW_STREAM_DOCK</span>
+          </div>
+        </section>
+      )}
+
+      {/* Load More */}
+      {bookmarks.length > 6 && (
+        <div className="mt-12 md:mt-16 flex justify-center">
+          <button className="mono-ui text-[10px] md:text-[11px] font-bold text-forest hover:text-white transition-all border-b border-dashed border-forest/40 hover:border-white pb-2 tracking-[0.3em]">
+            FETCH_ADDITIONAL_TRANSMISSIONS
+          </button>
+        </div>
+      )}
+    </main>
+  );
+};
+
+export default SavedPage;
