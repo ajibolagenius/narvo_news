@@ -26,9 +26,10 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 │   └── useBookmarks.js             # Bookmark hook (localStorage + MongoDB)
 ├── components/
 │   ├── DashboardLayout.js          # Shared wrapper (header + sidebar + player)
-│   ├── DashboardHeader.js          # Top nav with search, stats, user avatar
-│   ├── DashboardSidebar.js         # Icon sidebar (6 nav items)
+│   ├── DashboardHeader.js          # Top nav with search, stats, user avatar + sidebar toggle
+│   ├── DashboardSidebar.js         # Collapsible sidebar (6 nav items) + mobile bottom nav
 │   ├── AudioPlayerBar.js           # News ticker + playback controls
+│   ├── Skeleton.js                 # Loading skeleton components
 │   ├── LoadingScreen.js, Clock.js, ProtectedRoute.js
 └── pages/
     ├── LandingPage.js              # Public landing with hero + news scroller
@@ -53,9 +54,16 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 7. **Voice Studio, Morning Briefing, Search, Settings**
 
 ### Shared Components (DashboardLayout)
-- **DashboardHeader**: NARVO // DASHBOARD, search bar (CMD+K), signal stats, user avatar
-- **DashboardSidebar**: Icon navigation (Primary Stream, Briefing, Bookmarks, Voice, Search, Settings)
+- **DashboardHeader**: NARVO // DASHBOARD, search bar (CMD+K), signal stats, user avatar, **sidebar toggle button**
+- **DashboardSidebar**: **Collapsible** icon navigation (Primary Stream, Briefing, Bookmarks, Voice, Search, Settings) + **mobile bottom nav**
 - **AudioPlayerBar**: News ticker marquee, play/pause/skip, progress bar, volume
+
+### UI/UX Enhancements (Completed Feb 23, 2026)
+- **Loading Skeletons**: FeaturedSkeleton, StreamCardSkeleton, ArticleSkeleton, ListSkeleton for API-loading states
+- **Responsive Design**: Mobile-first layouts at 375px with proper font scaling (text-[10px] to text-xs)
+- **Collapsible Sidebar**: Toggle between 208px (expanded with labels) and 64px (collapsed icons only), state persisted in localStorage
+- **Mobile Bottom Navigation**: 6-item bottom nav bar (Feed, Briefing, Saved, Voices, Search, More)
+- **Desktop Elements Hidden on Mobile**: Dashboard sidebar, telemetry sidebar, and detail sidebar properly hidden
 
 ### Backend APIs (18+ endpoints)
 - Core: `/api/health`, `/api/news`, `/api/news/{id}`, `/api/voices`, `/api/metrics`
@@ -67,13 +75,13 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 
 ## Testing
 - Backend: 100% (18/18) — iteration_8.json
-- Frontend: 100% (all flows verified)
+- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX enhancements)
 
 ## Prioritized Backlog
 
 ### P1 (High Priority)
 - [ ] Category-specific images (vary by news category instead of single stock photo)
-- [ ] Loading skeletons for API-dependent components
+- [x] Loading skeletons for API-dependent components ✅ (Feb 23, 2026)
 - [ ] Push notifications for breaking news
 - [ ] Playlist/queue functionality
 
@@ -81,7 +89,8 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - [ ] Dubawa fact-checking / Truth Tags
 - [ ] Share stories feature
 - [ ] Multi-language UI support
-- [ ] Mobile responsive refinements
+- [x] Mobile responsive refinements ✅ (Feb 23, 2026)
+- [x] Collapsible sidebar ✅ (Feb 23, 2026)
 
 ### P3 (Future)
 - [ ] React Native mobile app
