@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Clock from '../components/Clock';
 
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
 const AuthPage = () => {
   const navigate = useNavigate();
   const { signIn, signUp } = useAuth();
