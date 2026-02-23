@@ -236,61 +236,126 @@ const DiscoverPage = () => {
 
           {/* Radio Garden Panel */}
           <div className="lg:col-span-1 flex flex-col h-full bg-surface/5">
+            {/* Hidden audio element for radio playback */}
+            <audio ref={audioRef} className="hidden" />
+            
             <div className="p-4 md:p-8 narvo-border-b bg-background-dark sticky top-0 z-10">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-white tracking-tight">Radio Garden</h3>
                 <div className="flex items-center gap-1.5 text-[8px] md:text-[9px] mono-ui text-primary font-bold bg-primary/10 px-1.5 md:px-2 py-0.5 narvo-border">
-                  <span className="w-1.5 h-1.5 bg-primary animate-pulse" />
-                  GLOBAL_LIVE
+                  <span className={`w-1.5 h-1.5 ${isRadioPlaying ? 'bg-primary animate-pulse' : 'bg-forest'}`} />
+                  {isRadioPlaying ? 'LIVE' : 'STANDBY'}
                 </div>
               </div>
-              <p className="mono-ui text-[9px] md:text-[10px] text-forest">BROADCAST_RELAY_v2.1</p>
+              <p className="mono-ui text-[9px] md:text-[10px] text-forest">AFRICAN_BROADCAST_RELAY_v2.1</p>
             </div>
 
-            <div className="flex-1 relative overflow-hidden group min-h-[300px] md:min-h-[400px]">
-              <div 
-                className="absolute inset-0 bg-cover bg-center grayscale contrast-150 opacity-15"
-                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800')" }}
-              />
-              <div 
-                className="absolute inset-0 opacity-10" 
-                style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '30px 30px' }}
-              />
+            {/* Country Selector */}
+            <div className="p-4 narvo-border-b flex flex-wrap gap-2">
+              {countries.slice(0, 6).map(c => (
+                <button
+                  key={c.code}
+                  onClick={() => setSelectedCountry(c.code)}
+                  className={`px-2 py-1 mono-ui text-[8px] md:text-[9px] font-bold transition-all ${
+                    selectedCountry === c.code 
+                      ? 'bg-primary text-background-dark' 
+                      : 'narvo-border text-forest hover:text-white hover:border-white'
+                  }`}
+                  data-testid={`radio-country-${c.code}`}
+                >
+                  {c.flag} {c.code}
+                </button>
+              ))}
+            </div>
 
-              {/* Interactive Map Points */}
-              <div className="absolute top-1/3 left-1/4 group/point cursor-pointer z-10">
-                <div className="w-3 h-3 bg-primary narvo-border shadow-[0_0_10px_rgba(235,213,171,0.5)]" />
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 bg-background-dark narvo-border p-3 md:p-4 opacity-0 group-hover/point:opacity-100 transition-opacity whitespace-nowrap z-20">
-                  <span className="font-display text-white text-xs md:text-sm block font-bold mb-1 uppercase">Lagos, NGA</span>
-                  <span className="mono-ui text-primary text-[9px] md:text-[10px] block">COOL_FM 96.9</span>
-                </div>
-              </div>
-
-              <div className="absolute bottom-1/2 right-1/3 group/point cursor-pointer z-10">
-                <div className="w-3 h-3 bg-white narvo-border border-forest shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
-                <div className="absolute left-6 top-1/2 -translate-y-1/2 bg-background-dark narvo-border p-3 md:p-4 opacity-0 group-hover/point:opacity-100 transition-opacity whitespace-nowrap z-20">
-                  <span className="font-display text-white text-xs md:text-sm block font-bold mb-1 uppercase">Berlin, DE</span>
-                  <span className="mono-ui text-primary text-[9px] md:text-[10px] block">METROPOL FM</span>
-                </div>
-              </div>
-
-              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-background-dark/90 backdrop-blur-md narvo-border-t z-30">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">CURRENT_FREQUENCY</span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-display text-2xl md:text-4xl font-bold text-white leading-none">98.4</span>
-                      <span className="mono-ui text-primary text-[10px] md:text-xs font-bold">MHZ</span>
+            {/* Station List */}
+            <div className="flex-1 overflow-y-auto custom-scroll">
+              {radioLoading ? (
+                <div className="p-4 space-y-3">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="p-3 narvo-border bg-surface/10">
+                      <Skeleton variant="text" className="w-32 h-4 mb-2" />
+                      <Skeleton variant="text" className="w-24 h-3" />
                     </div>
-                    <p className="mono-ui text-[9px] md:text-[10px] text-white/50 pt-1 md:pt-2 font-bold uppercase">Zurich Alternative Radio</p>
-                  </div>
-                  <button 
-                    className="w-12 h-12 md:w-16 md:h-16 narvo-border bg-primary text-background-dark flex items-center justify-center hover:bg-white transition-colors group"
-                    data-testid="radio-play-btn"
-                  >
-                    <Play className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 transition-transform" fill="currentColor" />
-                  </button>
+                  ))}
                 </div>
+              ) : (
+                <div className="p-4 space-y-2">
+                  {radioStations.map(station => (
+                    <button
+                      key={station.id}
+                      onClick={() => playRadio(station)}
+                      className={`w-full p-3 narvo-border text-left transition-all group ${
+                        currentStation?.id === station.id && isRadioPlaying
+                          ? 'bg-primary/10 border-primary'
+                          : 'bg-surface/10 hover:bg-surface/30 hover:border-forest'
+                      }`}
+                      data-testid={`radio-station-${station.id}`}
+                    >
+                      <div className="flex items-center justify-between mb-1">
+                        <span className={`font-display text-xs md:text-sm font-bold uppercase truncate ${
+                          currentStation?.id === station.id && isRadioPlaying ? 'text-primary' : 'text-white'
+                        }`}>
+                          {station.name}
+                        </span>
+                        {currentStation?.id === station.id && isRadioPlaying && (
+                          <Radio className="w-3 h-3 text-primary animate-pulse" />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 mono-ui text-[8px] text-forest">
+                        <span>{station.country}</span>
+                        {station.bitrate > 0 && <span>• {station.bitrate}kbps</span>}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Current Playing Station */}
+            <div className="p-4 md:p-6 bg-background-dark/90 backdrop-blur-md narvo-border-t">
+              <div className="flex items-center justify-between mb-3">
+                <div className="space-y-1 min-w-0 flex-1">
+                  <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold block">NOW_PLAYING</span>
+                  <p className="mono-ui text-[10px] md:text-xs text-white font-bold uppercase truncate">
+                    {currentStation?.name || 'SELECT_STATION'}
+                  </p>
+                  <p className="mono-ui text-[8px] text-forest">
+                    {currentStation?.country || '--'} {currentStation?.bitrate ? `// ${currentStation.bitrate}kbps` : ''}
+                  </p>
+                </div>
+                <button 
+                  onClick={toggleRadio}
+                  disabled={!currentStation}
+                  className={`w-12 h-12 md:w-14 md:h-14 narvo-border flex items-center justify-center transition-colors ${
+                    currentStation 
+                      ? 'bg-primary text-background-dark hover:bg-white' 
+                      : 'bg-surface/20 text-forest cursor-not-allowed'
+                  }`}
+                  data-testid="radio-play-btn"
+                >
+                  {isRadioPlaying ? (
+                    <Pause className="w-5 h-5 md:w-6 md:h-6" />
+                  ) : (
+                    <Play className="w-5 h-5 md:w-6 md:h-6" fill="currentColor" />
+                  )}
+                </button>
+              </div>
+              
+              {/* Volume Control */}
+              <div className="flex items-center gap-3">
+                <VolumeX className="w-4 h-4 text-forest" />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={radioVolume}
+                  onChange={handleVolumeChange}
+                  className="flex-1 h-1 bg-forest/30 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-primary"
+                  data-testid="radio-volume"
+                />
+                <Volume2 className="w-4 h-4 text-primary" />
               </div>
             </div>
           </div>
