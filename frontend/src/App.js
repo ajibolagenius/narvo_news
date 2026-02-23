@@ -74,7 +74,7 @@ const AudioProvider = ({ children }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text: track.narrative || track.summary || track.title,
-            voice_id: track.voice_id || '21m00Tcm4TlvDq8ikWAM'
+            voice_id: track.voice_id || 'nova'
           })
         });
         
