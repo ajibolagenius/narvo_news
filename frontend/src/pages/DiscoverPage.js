@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Play, PlayCircle, Pause } from 'lucide-react';
+import { Play, PlayCircle, Pause, Radio, Globe, Volume2, VolumeX } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import Skeleton from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
-
-// Radio stations data
-const RADIO_STATIONS = [
-  { id: 'lagos', name: 'Lagos, NGA', station: 'COOL_FM 96.9', freq: '96.9', top: '33%', left: '25%' },
-  { id: 'berlin', name: 'Berlin, DE', station: 'METROPOL FM', freq: '98.4', top: '45%', right: '33%' },
-  { id: 'zurich', name: 'Zurich, CH', station: 'Alternative Radio', freq: '98.4', active: true },
-];
 
 // Podcast episodes - would come from API in production
 const PODCAST_EPISODES = [
@@ -28,6 +21,16 @@ const DiscoverPage = () => {
   const [podcastSort, setPodcastSort] = useState('latest');
   const [email, setEmail] = useState('');
   const { playTrack, currentTrack, isPlaying } = useAudio();
+  
+  // Radio state
+  const [radioStations, setRadioStations] = useState([]);
+  const [radioLoading, setRadioLoading] = useState(true);
+  const [selectedCountry, setSelectedCountry] = useState('NG');
+  const [countries, setCountries] = useState([]);
+  const [currentStation, setCurrentStation] = useState(null);
+  const [isRadioPlaying, setIsRadioPlaying] = useState(false);
+  const [radioVolume, setRadioVolume] = useState(0.7);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     fetch(`${API_URL}/api/news?limit=1`)
@@ -37,7 +40,80 @@ const DiscoverPage = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+      
+    // Fetch radio countries
+    fetch(`${API_URL}/api/radio/countries`)
+      .then(res => res.json())
+      .then(setCountries)
+      .catch(console.error);
   }, []);
+  
+  // Fetch radio stations when country changes
+  useEffect(() => {
+    setRadioLoading(true);
+    fetch(`${API_URL}/api/radio/stations?country=${selectedCountry}&limit=10`)
+      .then(res => res.json())
+      .then(data => {
+        setRadioStations(data);
+        if (data.length > 0 && !currentStation) {
+          setCurrentStation(data[0]);
+        }
+        setRadioLoading(false);
+      })
+      .catch(() => setRadioLoading(false));
+  }, [selectedCountry, currentStation]);
+
+  const handlePlayFeatured = () => {
+    if (featuredNews) {
+      playTrack(featuredNews);
+    }
+  };
+
+  const handlePlayPodcast = (podcast) => {
+    playTrack({ id: podcast.id, title: podcast.title, summary: podcast.description });
+  };
+  
+  const playRadio = (station) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    setCurrentStation(station);
+    setIsRadioPlaying(true);
+    
+    if (audioRef.current) {
+      audioRef.current.src = station.url_resolved || station.url;
+      audioRef.current.volume = radioVolume;
+      audioRef.current.play().catch(e => {
+        console.error('Radio play error:', e);
+        setIsRadioPlaying(false);
+      });
+    }
+  };
+  
+  const toggleRadio = () => {
+    if (!audioRef.current || !currentStation) return;
+    
+    if (isRadioPlaying) {
+      audioRef.current.pause();
+      setIsRadioPlaying(false);
+    } else {
+      audioRef.current.src = currentStation.url_resolved || currentStation.url;
+      audioRef.current.volume = radioVolume;
+      audioRef.current.play().catch(e => {
+        console.error('Radio play error:', e);
+        setIsRadioPlaying(false);
+      });
+      setIsRadioPlaying(true);
+    }
+  };
+  
+  const handleVolumeChange = (e) => {
+    const vol = parseFloat(e.target.value);
+    setRadioVolume(vol);
+    if (audioRef.current) {
+      audioRef.current.volume = vol;
+    }
+  };
 
   const handlePlayFeatured = () => {
     if (featuredNews) {
