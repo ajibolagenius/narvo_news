@@ -15,18 +15,18 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 ## Architecture
 ```
 /app/frontend/src/
-├── App.js                          # Clean routing (~47 lines)
+├── App.js                          # Clean routing with 10+ routes
 ├── lib/
 │   ├── supabase.js                 # Supabase client
 │   └── audioCache.js               # IndexedDB audio caching
 ├── contexts/
-│   ├── AuthContext.js               # Supabase auth provider
-│   └── AudioContext.js              # Audio playback + auto-cache
+│   ├── AuthContext.js              # Supabase auth provider
+│   └── AudioContext.js             # Audio playback + auto-cache
 ├── hooks/
 │   └── useBookmarks.js             # Bookmark hook (localStorage + MongoDB)
 ├── components/
 │   ├── DashboardLayout.js          # Shared wrapper (header + sidebar + player)
-│   ├── DashboardHeader.js          # Top nav with search, stats, user avatar + sidebar toggle
+│   ├── DashboardHeader.js          # Top nav with search, sidebar toggle
 │   ├── DashboardSidebar.js         # Collapsible sidebar (6 nav items) + mobile bottom nav
 │   ├── AudioPlayerBar.js           # News ticker + playback controls
 │   ├── Skeleton.js                 # Loading skeleton components
@@ -37,9 +37,11 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
     ├── OnboardingPage.js           # 3-panel setup (region, voice, interests)
     ├── DashboardPage.js            # Featured card + streams + telemetry sidebar
     ├── NewsDetailPage.js           # Deep dive article with metadata sidebar
-    ├── BookmarksPage.js            # Saved stories with offline cache status
-    ├── VoiceStudioPage.js, MorningBriefingPage.js
-    ├── SearchPage.js, SettingsPage.js
+    ├── SearchPage.js               # Global Archive Search with semantic labels ✅ NEW
+    ├── DiscoverPage.js             # Podcasts + Radio Garden ✅ NEW
+    ├── OfflinePage.js              # Cached files management ✅ NEW
+    ├── SavedPage.js                # Saved stories archive ✅ NEW
+    ├── VoiceStudioPage.js, MorningBriefingPage.js, SettingsPage.js
 ```
 
 ## Completed Features (All Tested — Feb 23, 2026)
@@ -50,13 +52,48 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 3. **Onboarding** — 3-panel: Region, Voice, Interests (syncs to MongoDB)
 4. **Dashboard Console** — Featured transmission card, synthesized news streams, telemetry sidebar
 5. **News Deep Dive** — Category pills, headline, lead, hero image, key takeaways, AI narrative, metadata sidebar, related stories
-6. **Bookmarks** — Offline cache status, play offline, remove
-7. **Voice Studio, Morning Briefing, Search, Settings**
+6. **Voice Studio, Morning Briefing, Settings**
+
+### Library & Navigation Pages (✅ NEW — Feb 23, 2026)
+7. **Search Page** — Global Archive Search with:
+   - Hero search section (CMD+K hint, voice input protocol)
+   - Popular tags (#CURRENCY_SHIFT, #LAGOS_TRANSIT, #RENEWABLE_GRID)
+   - Results grid with Semantic Label Palette (12 category colors)
+   - Sort by LATEST/RELEVANCE toggle
+   - Bookmark functionality on results
+
+8. **Discover Page** — Featured content hub with:
+   - Hero section (LIVE_BROADCAST badge, featured news)
+   - Deep Dive Podcasts grid (4 episodes with play buttons)
+   - LATEST/POPULAR toggle
+   - Radio Garden panel (global map, frequency display, live stations)
+   - Newsletter subscription input
+   - Signal analysis & system log footer
+
+9. **Offline Page** — Cached files management with:
+   - Storage capacity bar (X KB / 50.0 GB)
+   - Usage percentage display
+   - Filter toolbar (ALL, AUDIO, TEXT)
+   - File table (SIG, FILE_IDENTIFIER, DURATION, SIZE, ACTION)
+   - Play/Delete actions on cached items
+   - Pagination controls
+
+10. **Saved Page** — Story archive with:
+    - SELECT_ALL, ARCHIVE_X, DELETE_SIG bulk actions
+    - Story cards with hover checkboxes
+    - Time-ago labels (SAVED_2H_AGO, etc.)
+    - Empty state with GO_TO_FEED button
 
 ### Shared Components (DashboardLayout)
 - **DashboardHeader**: NARVO // DASHBOARD, search bar (CMD+K), signal stats, user avatar, **sidebar toggle button**
-- **DashboardSidebar**: **Collapsible** icon navigation (Primary Stream, Briefing, Bookmarks, Voice, Search, Settings) + **mobile bottom nav**
+- **DashboardSidebar**: **Collapsible** 6-item navigation (Feed, Briefing, Saved, Search, Discover, Offline) + **mobile bottom nav**
 - **AudioPlayerBar**: News ticker marquee, play/pause/skip, progress bar, volume
+
+### Design System
+- **Semantic Label Palette** (12 category colors for metadata tags):
+  - Finance (#EBD5AB), Environ (#93C5FD), Tech (#D8B4FE), Urgent (#FCA5A5)
+  - Politics (#FDBA74), Science (#5EEAD4), Culture (#F472B6), Sports (#FB923C)
+  - Health (#4ADE80), Security (#94A3B8), Opinion (#A8A29E), Legal (#818CF8)
 
 ### UI/UX Enhancements (Completed Feb 23, 2026)
 - **Loading Skeletons**: FeaturedSkeleton, StreamCardSkeleton, ArticleSkeleton, ListSkeleton for API-loading states
