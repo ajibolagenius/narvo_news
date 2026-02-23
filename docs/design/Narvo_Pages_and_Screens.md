@@ -31,12 +31,13 @@ Following the Swiss Grid principle, every page is treated as a high-fidelity **n
         - Left Sidebar (Navigation)
         - Center Panel (Primary Stream)
         - Right Sidebar (Contextual Metadata)
-    - **The Broadcast Loop**: Persistent mini-player with waveform visualization
+    - **The Broadcast Loop**: Persistent mini-player with tabular waveform visualization and grid-synced pulsing.
+    - **Technical Console Cells**: Rigid 1px grid layout for all navigation and content containers.
 - **News Detail (The Deep Dive)**
-    - **Metadata Bar**: Category, Source, and Paraphrase Transparency Tag
-    - **Story Body**: Paraphrased narrative with "Key Takeaways" summary
-    - **Playback Console**: Tabular numerals, speed control, and regional voice toggle
-    - **Contextual RAG Zone**: Related historical stories or "Deep Context" explainers
+    - **Technical Header**: Category, Source, and [TRUTH TAG] transparency metrics.
+    - **Broadcast Narrative**: The synthesized story body with monospaced "Key Takeaways."
+    - **Playback Console**: Tabular numerals, amplitude controls, and [REGIONAL VOICE] selector.
+    - **Contextual RAG Zone**: Semantic grid cells showing related historical narratives and verified facts.
 
 ---
 

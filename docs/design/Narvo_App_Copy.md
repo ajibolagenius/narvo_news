@@ -8,8 +8,11 @@ This document serves as the central repository for all user-facing text for the 
 | **Key** | **Text** | **Context** |
 |---------|----------|-------------|
 | `brand_tagline` | Narvo: The Local Pulse, Refined. | Global header / Splash. |
-| `cta_join` | [Join the Broadcast] | Main action button. |
+| `cta_broadcast` | [Start Broadcast] | Main action button (V2). |
 | `cta_play` | [Oya, Play] | Play action with local flavor. |
+| `status_processing` | [PROCESSING SIGNAL...] | Technical instrument loading state. |
+| `status_syncing` | [SYNCING TO STATION...] | Pre-caching/Update state. |
+| `truth_tag_label` | [TRUTH TAG: {score}%] | Transparency/Verification label. |
 
 ---
 
@@ -84,6 +87,8 @@ This document serves as the central repository for all user-facing text for the 
 | `admin_curate_review`| [Review AI Paraphrase] | Content review action. |
 | `admin_health_label` | [System Vitality: 100%] | Health status. |
 | `admin_fact_check` | [Dubawa API: Standby] | Fact-check status. |
+| `admin_broadcast_vol`| [Output Amplitude: {val}dB] | Broadcast volume metric. |
+| `admin_rag_depth` | [RAG Context Depth: {n}]| Technical retrieval stat. |
 
 ---
 
