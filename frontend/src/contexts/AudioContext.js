@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { cacheAudio, getCachedAudio } from '../lib/audioCache';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -30,10 +31,22 @@ export const AudioProvider = ({ children }) => {
     if (!audioElement) return;
     setIsLoading(true);
     setCurrentTrack(track);
+
+    // Check cached audio first
+    const cachedUrl = await getCachedAudio(track.id);
+    if (cachedUrl) {
+      audioElement.src = cachedUrl;
+      await audioElement.play();
+      setIsPlaying(true);
+      return;
+    }
+
     if (track.audio_url) {
       audioElement.src = track.audio_url;
       await audioElement.play();
       setIsPlaying(true);
+      // Cache for offline
+      cacheAudio(track.id, track.audio_url);
     } else {
       try {
         const response = await fetch(`${API_URL}/api/tts/generate`, {
@@ -47,6 +60,8 @@ export const AudioProvider = ({ children }) => {
           await audioElement.play();
           setIsPlaying(true);
           track.audio_url = data.audio_url;
+          // Cache for offline
+          cacheAudio(track.id, data.audio_url);
         }
       } catch (error) { console.error('TTS error:', error); setIsLoading(false); }
     }
