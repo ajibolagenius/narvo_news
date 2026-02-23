@@ -37,9 +37,18 @@ const OnboardingPage = () => {
     setSelectedInterests(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     const preferences = { region: selectedRegion, voice: selectedVoice, interests: selectedInterests };
     localStorage.setItem('narvo_preferences', JSON.stringify(preferences));
+    if (user) {
+      try {
+        await fetch(`${API_URL}/api/preferences`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: user.id, ...preferences }),
+        });
+      } catch (e) { console.error('Failed to sync preferences:', e); }
+    }
     navigate('/dashboard');
   };
 
