@@ -4,9 +4,10 @@ import { useAuth } from '../contexts/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
+  const isGuest = localStorage.getItem('narvo_guest') === 'true';
 
   if (loading) return null;
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user && !isGuest) return <Navigate to="/auth" replace />;
   return children;
 };
 
