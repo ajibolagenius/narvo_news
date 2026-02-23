@@ -572,6 +572,43 @@ async def generate_briefing_audio(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
+# ===========================================
+# BOOKMARK ENDPOINTS
+# ===========================================
+@app.post("/api/bookmarks")
+async def add_bookmark(request: BookmarkRequest):
+    """Add a bookmark for a user"""
+    user_id = request.user_id
+    if user_id not in _bookmarks_store:
+        _bookmarks_store[user_id] = []
+    
+    # Remove existing bookmark with same story_id
+    _bookmarks_store[user_id] = [b for b in _bookmarks_store[user_id] if b["story_id"] != request.story_id]
+    
+    bookmark = {
+        "story_id": request.story_id,
+        "title": request.title,
+        "summary": request.summary,
+        "source": request.source,
+        "category": request.category,
+        "source_url": request.source_url,
+        "saved_at": request.saved_at or datetime.now(timezone.utc).isoformat(),
+    }
+    _bookmarks_store[user_id].append(bookmark)
+    return {"status": "ok", "bookmark": bookmark}
+
+@app.get("/api/bookmarks")
+async def get_bookmarks(user_id: str = Query(..., description="User ID")):
+    """Get all bookmarks for a user"""
+    return _bookmarks_store.get(user_id, [])
+
+@app.delete("/api/bookmarks/{story_id}")
+async def remove_bookmark(story_id: str, user_id: str = Query(..., description="User ID")):
+    """Remove a bookmark"""
+    if user_id in _bookmarks_store:
+        _bookmarks_store[user_id] = [b for b in _bookmarks_store[user_id] if b["story_id"] != story_id]
+    return {"status": "ok"}
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
