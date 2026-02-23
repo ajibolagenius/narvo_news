@@ -7,16 +7,20 @@ import AudioPlayerBar from './AudioPlayerBar';
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const saved = localStorage.getItem('narvo_sidebar');
-    return saved !== null ? saved === 'true' : true;
+    // Default to collapsed (false) on smaller screens, expanded on large screens
+    if (saved !== null) return saved === 'true';
+    return window.innerWidth >= 1280; // xl breakpoint
   });
 
   useEffect(() => {
     localStorage.setItem('narvo_sidebar', String(sidebarOpen));
   }, [sidebarOpen]);
 
+  const toggleSidebar = () => setSidebarOpen(p => !p);
+
   return (
     <div className="h-screen overflow-hidden flex flex-col bg-background-dark" data-testid="dashboard-layout">
-      <DashboardHeader onToggleSidebar={() => setSidebarOpen(p => !p)} />
+      <DashboardHeader onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
       <div className="flex-1 flex overflow-hidden relative">
         <DashboardSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <Outlet />
