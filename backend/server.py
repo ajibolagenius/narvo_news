@@ -47,13 +47,13 @@ RSS_FEEDS = [
     {"name": "Al Jazeera Africa", "url": "https://www.aljazeera.com/xml/rss/all.xml", "region": "Continental"},
 ]
 
-# Voice configurations for regional accents
+# Voice configurations for regional accents (mapped to OpenAI voices)
 VOICE_PROFILES = [
-    {"id": "21m00Tcm4TlvDq8ikWAM", "name": "Rachel", "accent": "Standard", "description": "Clear, professional broadcast voice"},
-    {"id": "AZnzlk1XvdvUeBnXmlld", "name": "Domi", "accent": "Pidgin", "description": "Vibrant, natural Pidgin voice"},
-    {"id": "EXAVITQu4vr4xnSDxMaL", "name": "Bella", "accent": "Yoruba", "description": "Authentic Yoruba-accented English"},
-    {"id": "ErXwobaYiN019PkySvjV", "name": "Antoni", "accent": "Hausa", "description": "Rich Hausa-accented delivery"},
-    {"id": "MF3mGyEYCl7XYWbV9V6O", "name": "Elli", "accent": "Igbo", "description": "Melodic Igbo-accented voice"},
+    {"id": "nova", "name": "Nova", "accent": "Standard", "description": "Energetic, upbeat broadcast voice"},
+    {"id": "onyx", "name": "Onyx", "accent": "Pidgin", "description": "Deep, authoritative Pidgin-style voice"},
+    {"id": "echo", "name": "Echo", "accent": "Yoruba", "description": "Smooth, calm Yoruba-style delivery"},
+    {"id": "alloy", "name": "Alloy", "accent": "Hausa", "description": "Neutral, balanced Hausa-style voice"},
+    {"id": "shimmer", "name": "Shimmer", "accent": "Igbo", "description": "Bright, cheerful Igbo-style voice"},
 ]
 
 # Pydantic Models
