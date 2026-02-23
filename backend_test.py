@@ -379,6 +379,12 @@ class NarvoAPITester:
         self.test_tts_endpoint()
         self.test_paraphrase_endpoint()
         
+        # Morning Briefing tests (NEW)
+        print("\n🌅 Testing Morning Briefing Feature...")
+        self.test_briefing_generate_endpoint()
+        self.test_briefing_latest_endpoint()
+        self.test_briefing_audio_endpoint()
+        
         # Supporting endpoints
         self.test_supporting_endpoints()
         
