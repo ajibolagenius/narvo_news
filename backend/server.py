@@ -449,65 +449,67 @@ async def generate_morning_briefing(
     if cache_valid and not force_regenerate:
         return _briefing_cache["briefing"]
     
-    # Fetch top stories
-    all_news = []
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-    results = await asyncio.gather(*tasks)
-    
-    for items in results:
-        all_news.extend(items)
-    
-    # Sort by recency and get top 5
-    all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
-    top_stories = all_news[:5]
-    
-    if not top_stories:
-        raise HTTPException(status_code=404, detail="No stories available for briefing")
-    
-    # Generate briefing script
-    script = await generate_briefing_script(top_stories)
-    
-    # Generate TTS audio
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
+        # Fetch top stories with timeout
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]  # Limit feeds for faster response
+        results = await asyncio.gather(*tasks, return_exceptions=True)
         
-        # Truncate if too long (OpenAI limit is 4096 chars)
-        tts_text = script[:4000] if len(script) > 4000 else script
+        for items in results:
+            if isinstance(items, list):
+                all_news.extend(items)
         
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        audio_bytes = await tts.generate_speech(
-            text=tts_text,
-            model="tts-1",
-            voice=voice_id,
-            response_format="mp3",
-            speed=1.0
-        )
-        audio_b64 = base64.b64encode(audio_bytes).decode()
-        audio_url = f"data:audio/mpeg;base64,{audio_b64}"
-    except Exception as e:
-        print(f"TTS Error for briefing: {e}")
+        # Sort by recency and get top 5
+        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+        top_stories = all_news[:5]
+        
+        if not top_stories:
+            raise HTTPException(status_code=404, detail="No stories available for briefing")
+        
+        # Generate briefing script
+        script = await generate_briefing_script(top_stories)
+        
+        # Generate TTS audio with shorter text
         audio_url = None
-    
-    # Build briefing response
-    briefing = MorningBriefing(
-        id=f"briefing-{now.strftime('%Y%m%d-%H%M')}",
-        title=f"Morning Briefing - {now.strftime('%B %d, %Y')}",
-        generated_at=now.isoformat(),
-        duration_estimate="~5 minutes",
-        stories=[
-            BriefingStory(
-                id=s["id"],
-                title=s["title"],
-                summary=s["summary"][:200] + "..." if len(s.get("summary", "")) > 200 else s.get("summary", ""),
-                source=s["source"],
-                category=s.get("category", "General")
+        try:
+            from emergentintegrations.llm.openai import OpenAITextToSpeech
+            
+            # Truncate to reduce processing time
+            tts_text = script[:2500] if len(script) > 2500 else script
+            
+            tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
+            audio_bytes = await tts.generate_speech(
+                text=tts_text,
+                model="tts-1",
+                voice=voice_id,
+                response_format="mp3",
+                speed=1.0
             )
-            for s in top_stories
-        ],
-        script=script,
-        audio_url=audio_url,
-        voice_id=voice_id
-    )
+            audio_b64 = base64.b64encode(audio_bytes).decode()
+            audio_url = f"data:audio/mpeg;base64,{audio_b64}"
+        except Exception as e:
+            print(f"TTS Error for briefing: {e}")
+        
+        # Build briefing response
+        briefing = MorningBriefing(
+            id=f"briefing-{now.strftime('%Y%m%d-%H%M')}",
+            title=f"Morning Briefing - {now.strftime('%B %d, %Y')}",
+            generated_at=now.isoformat(),
+            duration_estimate="~3 minutes",
+            stories=[
+                BriefingStory(
+                    id=s["id"],
+                    title=s["title"][:100],
+                    summary=s["summary"][:150] + "..." if len(s.get("summary", "")) > 150 else s.get("summary", ""),
+                    source=s["source"],
+                    category=s.get("category", "General")
+                )
+                for s in top_stories
+            ],
+            script=script,
+            audio_url=audio_url,
+            voice_id=voice_id
+        )
     
     # Cache the briefing
     _briefing_cache = {
