@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import { AudioProvider } from './contexts/AudioContext';
 import LoadingScreen from './components/LoadingScreen';
-import AudioPlayer from './components/AudioPlayer';
 import ProtectedRoute from './components/ProtectedRoute';
+import DashboardLayout from './components/DashboardLayout';
 import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import OnboardingPage from './pages/OnboardingPage';
@@ -28,22 +28,22 @@ function App() {
     <AuthProvider>
       <AudioProvider>
         <Router>
-          <div className="pb-20">
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/auth" element={<AuthPage />} />
-              <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
-              <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-              <Route path="/briefing" element={<ProtectedRoute><MorningBriefingPage /></ProtectedRoute>} />
-              <Route path="/news/:id" element={<ProtectedRoute><NewsDetailPage /></ProtectedRoute>} />
-              <Route path="/voices" element={<ProtectedRoute><VoiceStudioPage /></ProtectedRoute>} />
-              <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
-              <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
-              <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-            <AudioPlayer />
-          </div>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
+            {/* Dashboard routes with shared layout (header + sidebar + player) */}
+            <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/news/:id" element={<NewsDetailPage />} />
+              <Route path="/bookmarks" element={<BookmarksPage />} />
+              <Route path="/voices" element={<VoiceStudioPage />} />
+              <Route path="/briefing" element={<MorningBriefingPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </Router>
       </AudioProvider>
     </AuthProvider>
