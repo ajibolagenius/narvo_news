@@ -281,7 +281,7 @@ const OfflinePage = () => {
       {/* Pagination */}
       {!loading && filteredItems.length > 0 && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 mono-ui text-[9px] md:text-[10px] text-forest font-bold">
-          <span>SHOWING: {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, filteredItems.length)} // TOTAL: {filteredItems.length}_ITEMS</span>
+          <span>SHOWING: {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, filteredItems.length)} {'// '}TOTAL: {filteredItems.length}_ITEMS</span>
           <div className="flex items-center gap-4 md:gap-6">
             <button 
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
