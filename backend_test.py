@@ -193,11 +193,11 @@ class NarvoAPITester:
             return False
 
     def test_tts_endpoint(self) -> bool:
-        """Test /api/tts/generate endpoint"""
+        """Test /api/tts/generate endpoint with OpenAI TTS"""
         try:
             test_payload = {
-                "text": "Welcome to Narvo. This is a test broadcast.",
-                "voice_id": "21m00Tcm4TlvDq8ikWAM",
+                "text": "Welcome to Narvo. This is a test broadcast from Nigeria.",
+                "voice_id": "nova",
                 "stability": 0.5,
                 "similarity_boost": 0.75
             }
