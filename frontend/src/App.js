@@ -18,6 +18,9 @@ import SettingsPage from './pages/SettingsPage';
 import DiscoverPage from './pages/DiscoverPage';
 import OfflinePage from './pages/OfflinePage';
 import SavedPage from './pages/SavedPage';
+import AccountPage from './pages/AccountPage';
+import SystemSettingsPage from './pages/SystemSettingsPage';
+import AccessibilityPage from './pages/AccessibilityPage';
 import './App.css';
 
 function App() {
@@ -47,6 +50,9 @@ function App() {
               <Route path="/discover" element={<DiscoverPage />} />
               <Route path="/offline" element={<OfflinePage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/account" element={<AccountPage />} />
+              <Route path="/system" element={<SystemSettingsPage />} />
+              <Route path="/accessibility" element={<AccessibilityPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
