@@ -510,14 +510,19 @@ async def generate_morning_briefing(
             audio_url=audio_url,
             voice_id=voice_id
         )
-    
-    # Cache the briefing
-    _briefing_cache = {
-        "briefing": briefing,
-        "generated_at": now
-    }
-    
-    return briefing
+        
+        # Cache the briefing
+        _briefing_cache = {
+            "briefing": briefing,
+            "generated_at": now
+        }
+        
+        return briefing
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Briefing generation error: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate briefing: {str(e)}")
 
 @app.get("/api/briefing/latest")
 async def get_latest_briefing():
