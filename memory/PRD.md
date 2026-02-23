@@ -12,7 +12,7 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - Truth Tags for source verification
 - Morning Briefing feature with auto-generated 5-minute audio digest
 
-## Design System (Updated Feb 23, 2026)
+## Design System
 ### Colors - The 10% Rule
 - **Primary (Signal):** `#EBD5AB` - Sand/Beige, 10% max
 - **Background:** `#1B211A` - Deep Matte Charcoal
@@ -32,20 +32,6 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - Broadcast-grade technical aesthetic
 - Audio-first UI feedback
 
-## User Personas
-1. **African Professional** - Needs quick, reliable news updates during commute
-2. **Diaspora Audience** - Wants to stay connected with home news in familiar accents
-3. **News Consumer** - Values verified, trustworthy news with transparent sourcing
-
-## Core Requirements (Static)
-- Dark theme with Swiss Grid layout (1px borders, no shadows)
-- Audio-first broadcast experience
-- AI narrative paraphrasing
-- Regional voice selection (Pidgin, Yoruba, Hausa, Igbo, Standard)
-- Truth Tags with source attribution
-- Live news from RSS feeds
-- Morning Briefing auto-generation
-
 ## Technical Stack
 - **Frontend**: React 18, TailwindCSS, React Router
 - **Backend**: FastAPI (Python)
@@ -54,41 +40,33 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - **TTS**: OpenAI TTS (via Emergent LLM Key)
 - **News Sources**: RSS feeds from 7 African sources
 
-## What's Been Implemented (Feb 23, 2026)
+## What's Been Implemented
 
-### MVP Complete ✅
-1. **Landing Page** - Swiss Grid hero with metrics, features, CTAs
-2. **Authentication** - Login/signup flow with localStorage
-3. **Dashboard** - Live news feed with filtering, category tags
-4. **News Detail** - AI-generated narratives, key takeaways, TTS playback
-5. **Voice Studio** - 5 regional voice profiles with preview
-6. **Search Center** - Full-text search with category filtering
-7. **Settings** - User preferences, display toggles
-8. **Audio Player** - Persistent player with controls, waveform visualization
-9. **Morning Briefing** - Auto-generated audio digest with AI script ✅ NEW
+### MVP Features - All Complete
+1. **Loading Screen** - Animated boot sequence with status messages
+2. **Landing Page** - Swiss Grid hero, news marquee scroller, incoming transmissions panel, core pillars, technical modules, CTA section, footer
+3. **Authentication** - Login form with localStorage-based session
+4. **Onboarding** - 3-panel setup: Regional Node, Vocal Matrix, Interest Matrix
+5. **Dashboard** - Live news feed with sidebar navigation
+6. **News Detail** - AI-generated narratives, TTS playback
+7. **Voice Studio** - 5 regional voice profiles
+8. **Search Center** - Text search placeholder
+9. **Settings** - Display toggles, logout
+10. **Audio Player** - Persistent player with controls
+11. **Morning Briefing** - Auto-generated audio digest with AI script
 
-### Morning Briefing Feature (NEW)
-- `/briefing` page with personalized greeting
-- Voice selection for briefing narration
-- AI-generated broadcast script (Gemini 2.0 Flash)
-- TTS audio generation (OpenAI)
-- List of 5 top stories included
-- Full script view
-- Generate New / Play Briefing controls
-- 1-hour caching for performance
-
-### Backend APIs
+### Backend APIs - All Working
 - `/api/health` - System status
 - `/api/news` - RSS aggregation from 7 sources
 - `/api/news/{id}` - News detail with AI narrative
-- `/api/paraphrase` - AI narrative generation
+- `/api/paraphrase` - AI narrative generation (Gemini)
 - `/api/tts/generate` - OpenAI TTS audio generation
 - `/api/voices` - Voice profile list
 - `/api/metrics` - Platform statistics
 - `/api/regions`, `/api/categories`, `/api/trending` - Supporting data
-- `/api/briefing/generate` - Generate morning briefing with audio ✅ NEW
-- `/api/briefing/latest` - Get cached briefing ✅ NEW
-- `/api/briefing/audio` - Generate audio for custom script ✅ NEW
+- `/api/briefing/generate` - Generate morning briefing with audio
+- `/api/briefing/latest` - Get cached briefing
+- `/api/briefing/audio` - Generate audio for custom script
 
 ### News Sources
 1. Vanguard Nigeria
@@ -99,50 +77,43 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 6. BBC Africa
 7. Al Jazeera
 
+## Testing Status (Feb 23, 2026)
+- Backend: 100% (12/12 endpoints working)
+- Frontend: 100% (all pages + flows working)
+- Test report: `/app/test_reports/iteration_5.json`
+
 ## Prioritized Backlog
 
-### P0 (Critical) - COMPLETE
+### P0 (Critical) - ALL COMPLETE
+- [x] Landing Page with Swiss Grid design
+- [x] Auth Page
+- [x] Onboarding Page (3-panel)
+- [x] Dashboard with live news feed
 - [x] TTS audio generation
 - [x] AI narrative synthesis
-- [x] News feed display
-- [x] Basic authentication
 - [x] Morning Briefing feature
 
-### P1 (High Priority)
+### P1 (High Priority) - NEXT
+- [ ] Refactor monolithic App.js into component files
+- [ ] Set up react-router-dom properly with lazy loading
 - [ ] User account persistence with Supabase Auth
 - [ ] Save/bookmark stories
 - [ ] Offline audio caching
-- [ ] Push notifications for breaking news
-- [ ] Scheduled 5 AM briefing generation
 
 ### P2 (Medium Priority)
-- [ ] Dubawa fact-checking integration
+- [ ] Dubawa fact-checking / Truth Tags integration
 - [ ] User preference sync
 - [ ] Playlist/queue functionality
 - [ ] Share stories feature
+- [ ] Push notifications for breaking news
 
 ### P3 (Future)
 - [ ] React Native mobile app
 - [ ] Admin dashboard for content curation
 - [ ] Voice cloning for regional accents
 - [ ] WebSocket real-time updates
+- [ ] Scheduled 5 AM briefing generation
+- [ ] Historical Morning Briefings browser
 
-## Next Tasks
-1. Implement scheduled briefing generation at 5 AM local time
-2. Add Supabase Auth for persistent user accounts
-3. Implement story bookmarking functionality
-4. Build offline storage for audio
-5. Add social sharing features
-
-## Testing Status
-- Backend: 100% (15/15 endpoints working)
-- Frontend: 100% (all UI functional including Morning Briefing)
-- TTS: Working with OpenAI via Emergent LLM Key
-
-## Design System
-- Primary: #EBD5AB (Sand)
-- Background: #1B211A (Deep Matte)
-- Surface: #242B23 (Muted Green)
-- Border: #628141 (Forest Green)
-- Text: #F2F2F2 (90% White)
-- Fonts: Space Grotesk (headers), Inter (body), JetBrains Mono (code)
+## Architecture Note
+Currently all frontend code lives in a single `/app/frontend/src/App.js` file (1250+ lines). This is the highest priority refactoring task - needs to be split into separate component files with proper routing.
