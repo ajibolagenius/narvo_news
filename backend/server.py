@@ -74,7 +74,7 @@ class NewsItem(BaseModel):
 
 class TTSRequest(BaseModel):
     text: str
-    voice_id: str = "21m00Tcm4TlvDq8ikWAM"
+    voice_id: str = "nova"
     stability: float = 0.5
     similarity_boost: float = 0.75
 
