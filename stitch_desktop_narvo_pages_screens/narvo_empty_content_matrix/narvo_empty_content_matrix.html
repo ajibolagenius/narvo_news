@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo Empty Content Matrix</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#8bae65", // Sage Green
+              "secondary": "#628141", // Forest Green
+              "background-light": "#f7f7f6",
+              "background-dark": "#1B211A", // Deep Matte Charcoal override
+              "surface": "#232922", 
+            },
+            fontFamily: {
+              "display": ["Work Sans", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"],
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display overflow-hidden selection:bg-primary selection:text-background-dark">
+<!-- Top Navigation Bar -->
+<header class="w-full border-b border-[#31332e] bg-background-dark z-50">
+<div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+<!-- Left: Logo & Time -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 text-white">
+<div class="size-5 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold tracking-tight uppercase">Narvo</h2>
+</div>
+<div class="hidden md:flex h-4 w-px bg-[#31332e]"></div>
+<div class="hidden md:block font-mono text-xs text-gray-500 tracking-wider">
+                    SYS.TIME <span class="text-primary">14:02:59 UTC</span>
+</div>
+</div>
+<!-- Right: Status Indicators -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 rounded border border-[#31332e] bg-[#232922]">
+<div class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+<span class="font-mono text-xs font-medium text-gray-400 tracking-widest">OFFLINE</span>
+</div>
+<button class="material-symbols-outlined text-gray-400 hover:text-white transition-colors">settings</button>
+<div class="size-8 rounded-full bg-[#31332e] flex items-center justify-center text-xs font-bold text-primary border border-secondary/30">
+                    JD
+                </div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto p-6 flex flex-col relative">
+<!-- Broadcast Header -->
+<div class="flex justify-between items-end mb-6 border-b border-[#31332e] pb-4">
+<div>
+<h1 class="text-2xl md:text-3xl font-bold tracking-tighter text-white mb-1">GLOBAL FEED MATRIX</h1>
+<p class="font-mono text-xs text-gray-500 uppercase tracking-widest">Sector 7 // No Transmission</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-[#232922] hover:bg-[#2c332b] border border-[#31332e] text-xs font-bold text-gray-300 rounded transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+                    FILTER
+                </button>
+<button class="px-4 py-2 bg-primary hover:bg-[#9cb87a] text-background-dark text-xs font-bold rounded transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+                    RECONNECT
+                </button>
+</div>
+</div>
+<!-- Empty State Grid Matrix -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 flex-1 h-full min-h-[600px] relative">
+<!-- Grid Item 1 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-60 hover:opacity-100 transition-opacity duration-300">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_01</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- Grid Item 2 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-40 hover:opacity-80 transition-opacity duration-300">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_02</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- Grid Item 3 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-50 hover:opacity-90 transition-opacity duration-300">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_03</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- Grid Item 4 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-30 hover:opacity-70 transition-opacity duration-300 hidden xl:flex">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_04</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- Grid Item 5 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-40 hover:opacity-80 transition-opacity duration-300 hidden lg:flex">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_05</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- Grid Item 6 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-50 hover:opacity-90 transition-opacity duration-300 hidden md:flex">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_06</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- Grid Item 7 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-30 hover:opacity-70 transition-opacity duration-300 hidden lg:flex">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_07</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- Grid Item 8 (Placeholder) -->
+<div class="group border border-dashed border-secondary/40 rounded bg-[#1B211A] flex flex-col justify-between p-4 min-h-[240px] opacity-40 hover:opacity-80 transition-opacity duration-300 hidden xl:flex">
+<div class="flex justify-between items-start">
+<span class="font-mono text-[10px] text-secondary tracking-widest uppercase">SLOT_08</span>
+<span class="material-symbols-outlined text-secondary/50 text-[18px]">signal_disconnected</span>
+</div>
+<div class="flex flex-col gap-2 items-center justify-center flex-1">
+<span class="font-mono text-xs text-secondary/60">NO CONTENT DETECTED</span>
+</div>
+</div>
+<!-- CENTRAL HERO OVERLAY -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="bg-background-dark/95 border border-[#31332e] p-10 rounded-lg max-w-lg w-full text-center shadow-2xl backdrop-blur-sm pointer-events-auto">
+<div class="mb-6 flex justify-center">
+<div class="size-24 rounded-full bg-[#232922] border border-dashed border-secondary flex items-center justify-center relative">
+<!-- Animated Pulse Ring -->
+<div class="absolute inset-0 rounded-full border border-primary/20 animate-ping opacity-20"></div>
+<span class="material-symbols-outlined text-primary text-5xl">satellite_alt</span>
+</div>
+</div>
+<h2 class="text-2xl font-bold text-white mb-3 tracking-tight">TRANSMISSION HALTED</h2>
+<p class="text-gray-400 mb-8 font-light leading-relaxed">
+                        The news feed matrix is currently empty. We are unable to establish a secure connection to the broadcast server.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-3 justify-center">
+<button class="h-12 px-6 rounded bg-primary hover:bg-[#9cb87a] text-background-dark text-sm font-bold tracking-wide transition-all uppercase flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                            Initiate Refresh
+                        </button>
+<button class="h-12 px-6 rounded bg-transparent border border-[#31332e] hover:border-gray-500 text-white text-sm font-bold tracking-wide transition-all uppercase">
+                            System Diagnostics
+                        </button>
+</div>
+<div class="mt-8 pt-6 border-t border-[#31332e] flex justify-between items-center text-[10px] font-mono text-gray-600 uppercase">
+<span>Error Code: 0x4F_NULL</span>
+<span>Narvo Sys v2.4</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Status Bar -->
+<footer class="w-full border-t border-[#31332e] bg-[#141613] py-2 px-6">
+<div class="flex justify-between items-center max-w-[1440px] mx-auto text-[10px] font-mono uppercase tracking-widest text-gray-500">
+<div class="flex gap-6">
+<span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-secondary rounded-full"></div> Node_US_East</span>
+<span class="hidden sm:inline">Latency: -- ms</span>
+<span class="hidden sm:inline">Packets: 0/0</span>
+</div>
+<div>
+                 Status: <span class="text-white">Idle</span>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Refined Narvo Voice Studio</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EBD5AB","primary-dim": "rgba(235, 213, 171, 0.05)",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#1B211A","surface-dark": "#1B211A","border-forest": "#628141","border-dark": "#628141",},
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Space Grotesk", "sans-serif"],"mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0px", "sm": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},},
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1B211A; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #628141; 
+            border-radius: 0px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7a9c52; 
+        }.swiss-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1px;
+            background-color: #628141;border: 1px solid #628141;
+        }
+        .swiss-cell {
+            background-color: #1B211A;
+        }@keyframes pulse-height {
+            0%, 100% { height: 20%; }
+            50% { height: 80%; }
+        }
+        .audio-bar {
+            animation: pulse-height 1s ease-in-out infinite;
+        }
+        .audio-bar:nth-child(odd) { animation-duration: 0.8s; }
+        .audio-bar:nth-child(2n) { animation-duration: 1.1s; }
+        .audio-bar:nth-child(3n) { animation-duration: 1.3s; }
+        .audio-bar:nth-child(4n) { animation-duration: 0.9s; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display overflow-hidden flex flex-col h-screen selection:bg-primary selection:text-background-dark">
+<header class="flex-none flex items-center justify-between border-b border-border-dark bg-background-dark px-6 py-4 z-20">
+<div class="flex items-center gap-4 text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-[24px]">graphic_eq</span>
+</div>
+<h2 class="text-white text-xl font-bold tracking-tight uppercase">Narvo <span class="text-gray-500 font-normal ml-2 text-sm normal-case font-mono">Studio 2.0</span></h2>
+</div>
+<div class="flex items-center gap-12">
+<nav class="flex items-center gap-8 hidden md:flex font-mono">
+<a class="text-primary hover:text-primary transition-colors text-sm font-medium uppercase tracking-wider border-b border-primary pb-0.5" href="#">Studio</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium uppercase tracking-wider" href="#">Library</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium uppercase tracking-wider" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-surface-dark border border-border-dark">
+<span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+<span class="text-xs font-mono text-gray-400">API CONNECTED</span>
+</div>
+<div class="h-8 w-8 bg-center bg-no-repeat bg-cover border border-border-dark" data-alt="User profile picture" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCrN15SInjg1n3rbPkH6Ijw6DLvWEzSwuTH4bHdXulLGVMOevLXANFbwEbOufKEUVZ20yShtSdxTPqt5nBMOW372SMQHZiqmISRDzqTyr9oiylp18yuLEvzzI9eepbKt0mL5-xwsv9VVXQn7Uglt24A5NlKkrBlAPl3yl1u932_63kOXEnp9s7dHivZe7ojCWF5snfUqoORveVfRd668vzqovdvffvtDQdnNQthWnigudR53j8aceg3Sx0mvysbWIlwXXImXLdcQ80');"></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<main class="flex-1 flex flex-col relative overflow-hidden bg-background-dark">
+<div class="flex-none border-b border-border-dark bg-background-dark p-6 flex flex-col gap-4">
+<div class="flex justify-between items-end mb-2">
+<div>
+<h1 class="text-3xl font-bold text-white tracking-tight uppercase">Broadcast Preview</h1>
+<p class="text-gray-400 text-sm font-mono mt-1">SESSION ID: NRV-8821-X • 48kHz / 24bit</p>
+</div>
+<div class="flex gap-4">
+<button class="w-12 h-12 flex items-center justify-center border border-border-dark hover:bg-primary hover:text-background-dark text-white transition-colors rounded-none">
+<span class="material-symbols-outlined">skip_previous</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center bg-primary text-background-dark hover:bg-white transition-colors rounded-none">
+<span class="material-symbols-outlined fill-current">play_arrow</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center border border-border-dark hover:bg-primary hover:text-background-dark text-white transition-colors rounded-none">
+<span class="material-symbols-outlined">skip_next</span>
+</button>
+</div>
+</div>
+<div class="h-16 flex items-center gap-1 w-full bg-background-dark border border-border-dark px-4 relative overflow-hidden">
+<div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px); background-size: 20px 20px;"></div>
+<div class="w-1 bg-primary/30 audio-bar h-1/3"></div>
+<div class="w-1 bg-primary/40 audio-bar h-1/2"></div>
+<div class="w-1 bg-primary/60 audio-bar h-2/3"></div>
+<div class="w-1 bg-primary audio-bar h-3/4"></div>
+<div class="w-1 bg-primary audio-bar h-full"></div>
+<div class="w-1 bg-primary audio-bar h-2/3"></div>
+<div class="w-1 bg-primary/60 audio-bar h-1/2"></div>
+<div class="w-1 bg-primary/40 audio-bar h-1/3"></div>
+<div class="w-1 bg-primary/20 audio-bar h-1/4"></div>
+<div class="w-1 bg-primary/30 audio-bar h-1/3"></div>
+<div class="w-1 bg-primary/50 audio-bar h-1/2"></div>
+<div class="w-1 bg-primary audio-bar h-3/4"></div>
+<div class="w-1 bg-primary audio-bar h-full"></div>
+<div class="w-1 bg-primary audio-bar h-2/3"></div>
+<div class="w-1 bg-primary/60 audio-bar h-1/2"></div>
+<div class="w-1 bg-primary/30 audio-bar h-1/3"></div>
+<div class="w-1 bg-primary/20 audio-bar h-1/4"></div>
+<div class="flex-1 flex justify-between items-center opacity-20 ml-2">
+<div class="h-px w-full bg-primary"></div>
+</div>
+<span class="text-xs font-mono text-primary absolute right-4 top-2">00:12 / 01:45</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 bg-background-dark">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-white text-lg font-medium tracking-wide uppercase">Voice Matrix <span class="text-gray-500 ml-2 text-sm normal-case font-mono">Select a dialect model</span></h3>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-xs font-mono uppercase border border-border-dark text-gray-400 hover:text-white hover:border-primary transition-colors">Filter: All</button>
+<button class="px-3 py-1.5 text-xs font-mono uppercase border border-border-dark text-gray-400 hover:text-white hover:border-primary transition-colors">Region: Africa</button>
+</div>
+</div>
+<div class="swiss-grid w-full">
+<div class="swiss-cell group relative aspect-[4/3] p-6 flex flex-col justify-between border border-primary bg-primary-dim cursor-pointer transition-all">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-primary font-mono text-xs mb-1 tracking-wider bg-primary/10 px-1 inline-block w-fit">SIGNAL ON</span>
+<h4 class="text-2xl font-bold text-white mt-1 uppercase">Pidgin</h4>
+</div>
+<span class="material-symbols-outlined text-primary">wifi_tethering</span>
+</div>
+<div class="space-y-4">
+<div class="h-24 w-full bg-cover bg-center opacity-100 mix-blend-normal border border-primary/30" data-alt="Abstract sound wave pattern in beige" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAbLBJprbkGqV1IWDfE6sJVhb4vjJBqvi3nmlHcgBf_8BDrn5G1fmjDF_mEGKJ8OnAPKgVGgYp8BQ7vKvRY9FO11Y02zM6etmNxhd0zww2nWypENpqLfiPtpZlUmvw5foM57jjkeaRSU0JIEsoj5kRBH-jqjm4Q7pfDTS5TUJcOid151EQ-wb5Riv5IXpyRXnevlgsYX0o6uoV4SwFi9VfvChevptdvyhgkMP44q8sWMyCK9xQSwlHsc3YkP3cKbjZzo_5Cqn73EDU'); filter: grayscale(100%) sepia(100%) hue-rotate(350deg) saturate(300%) contrast(0.8) brightness(1.2);"></div>
+<div class="flex justify-between items-end border-t border-primary/20 pt-3">
+<span class="text-gray-300 text-sm font-mono">Variant: Sabi</span>
+<span class="text-primary font-mono text-xs">ACTV</span>
+</div>
+</div>
+</div>
+<div class="swiss-cell group relative aspect-[4/3] p-6 flex flex-col justify-between hover:bg-white/5 cursor-pointer transition-colors border border-transparent hover:border-border-dark">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-gray-600 group-hover:text-gray-400 font-mono text-xs mb-1 tracking-wider">STANDBY</span>
+<h4 class="text-2xl font-bold text-gray-300 group-hover:text-white mt-1 uppercase">Yoruba</h4>
+</div>
+<span class="material-symbols-outlined text-gray-700 group-hover:text-gray-500">wifi_off</span>
+</div>
+<div class="space-y-4">
+<div class="h-24 w-full bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all border border-border-dark" data-alt="Abstract geometric dark pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC-1vJwjLBYm25ec5utAm61Lp1KXUsSLWWvB9pyIcyjKl5SLTIE5_k4PqXenlYJ_SAvP2IEmAIx07ovkpS5WhUm4wizUmhZ4s5uqbSzqzurUUGAYG2U00qkAdAusQlwAn1sW1EDipZ5YJeg6d8-9oa4WQjVvkECdhyEvsisBJ4gIdcC_TH-oLAylUVJ9E7hGyI8eGrJxTUHjru6JpfHo9VNth-Ci0YnILrKx_uf11rnIBilop3F0iUeca8GnvtEWnCfl_ab6dY8FMc');"></div>
+<div class="flex justify-between items-end border-t border-border-dark pt-3">
+<span class="text-gray-500 group-hover:text-gray-300 text-sm font-mono">Variant: Radiant</span>
+<span class="text-gray-600 font-mono text-xs">IDLE</span>
+</div>
+</div>
+</div>
+<div class="swiss-cell group relative aspect-[4/3] p-6 flex flex-col justify-between hover:bg-white/5 cursor-pointer transition-colors border border-transparent hover:border-border-dark">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-gray-600 group-hover:text-gray-400 font-mono text-xs mb-1 tracking-wider">STANDBY</span>
+<h4 class="text-2xl font-bold text-gray-300 group-hover:text-white mt-1 uppercase">Hausa</h4>
+</div>
+<span class="material-symbols-outlined text-gray-700 group-hover:text-gray-500">wifi_off</span>
+</div>
+<div class="space-y-4">
+<div class="h-24 w-full bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all border border-border-dark" data-alt="Abstract fluid dark art" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBL55zOI9ivjl2aD2mbusmD2xHZRctOIsQLL7ubWPHr7rj46Hfu2Ua5qNuUCcsnCI1x_Jxr2BZHjvzluIxgHjkDShmtbt_fF7fuf6WavSwcJiS_WlbG5P63UIyxtXmoYm_Q4p0b7VUzVymDP4O4mweXQ_997n0lVOyWXCvnJWT9CFRyJvnjsbG62oApl0fyYdfBCoE7QUOsGbIwaRBL12OtSJX9bUMk4C-Jl_UH0p_mgzDd1ZnMG369Jd-MYg3i_l_mreZ6vqSBLVU');"></div>
+<div class="flex justify-between items-end border-t border-border-dark pt-3">
+<span class="text-gray-500 group-hover:text-gray-300 text-sm font-mono">Variant: Firm</span>
+<span class="text-gray-600 font-mono text-xs">IDLE</span>
+</div>
+</div>
+</div>
+<div class="swiss-cell group relative aspect-[4/3] p-6 flex flex-col justify-between hover:bg-white/5 cursor-pointer transition-colors border border-transparent hover:border-border-dark">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-gray-600 group-hover:text-gray-400 font-mono text-xs mb-1 tracking-wider">STANDBY</span>
+<h4 class="text-2xl font-bold text-gray-300 group-hover:text-white mt-1 uppercase">Igbo</h4>
+</div>
+<span class="material-symbols-outlined text-gray-700 group-hover:text-gray-500">wifi_off</span>
+</div>
+<div class="space-y-4">
+<div class="h-24 w-full bg-cover bg-center opacity-40 grayscale group-hover:grayscale-0 transition-all border border-border-dark" data-alt="Abstract dark smoke pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBXrImpoFmYkNr9-L4tBtJ0OQFiHas9x5MnzF5VWoTSRYmHCLqa9h3UJgPCaSkY7aB0_MVDO8wTlTATkFEWPidBJ4s4XsCjQqsNUDGQnXi78JGm-AZAU5kDCTT7G-L3GQUvz1ePQsy7M50-ymRvBjbHiWzEAnXw7r9fTCJbdFQ-ISoU2NPa4zyGevdaQcCjv8eHbRaSpG0O4G-2CkThSNK6Grk3Re8DOyExucS7-kBjudEqOND-SPHeMRnNFURSMT1pP_JecaFQrRo');"></div>
+<div class="flex justify-between items-end border-t border-border-dark pt-3">
+<span class="text-gray-500 group-hover:text-gray-300 text-sm font-mono">Variant: Deep</span>
+<span class="text-gray-600 font-mono text-xs">IDLE</span>
+</div>
+</div>
+</div>
+<div class="swiss-cell group relative aspect-[4/3] p-6 flex flex-col justify-between hover:bg-white/5 cursor-pointer transition-colors opacity-50 border border-transparent hover:border-border-dark">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-gray-700 font-mono text-xs mb-1 tracking-wider">OFFLINE</span>
+<h4 class="text-2xl font-bold text-gray-500 mt-1 uppercase">Swahili</h4>
+</div>
+<span class="material-symbols-outlined text-gray-800">cloud_off</span>
+</div>
+<div class="flex justify-between items-end border-t border-border-dark pt-3 mt-auto">
+<span class="text-gray-600 text-sm font-mono">Variant: Coastal</span>
+<span class="text-gray-700 font-mono text-xs">--</span>
+</div>
+</div>
+<div class="swiss-cell group relative aspect-[4/3] p-6 flex flex-col justify-between hover:bg-white/5 cursor-pointer transition-colors opacity-50 border border-transparent hover:border-border-dark">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="text-gray-700 font-mono text-xs mb-1 tracking-wider">OFFLINE</span>
+<h4 class="text-2xl font-bold text-gray-500 mt-1 uppercase">Zulu</h4>
+</div>
+<span class="material-symbols-outlined text-gray-800">cloud_off</span>
+</div>
+<div class="flex justify-between items-end border-t border-border-dark pt-3 mt-auto">
+<span class="text-gray-600 text-sm font-mono">Variant: Royal</span>
+<span class="text-gray-700 font-mono text-xs">--</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<aside class="w-80 border-l border-border-dark bg-background-dark flex flex-col overflow-y-auto hidden xl:flex">
+<div class="p-6 border-b border-border-dark">
+<h3 class="text-white font-bold text-lg mb-1 uppercase">Parameter Control</h3>
+<p class="text-gray-500 text-sm font-mono">Fine-tune synthesis engine.</p>
+</div>
+<div class="p-6 flex flex-col gap-8">
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="text-gray-300 text-sm font-medium uppercase tracking-wide">Speed</label>
+<span class="font-mono text-primary text-xs border border-primary/20 bg-primary/5 px-2 py-0.5">1.0x</span>
+</div>
+<div class="relative h-px w-full bg-gray-700">
+<div class="absolute h-full w-1/2 bg-primary"></div>
+<div class="absolute h-3 w-3 bg-primary top-1/2 -translate-y-1/2 left-1/2 cursor-pointer hover:scale-125 transition-transform"></div>
+</div>
+<div class="flex justify-between text-xs text-gray-600 font-mono">
+<span>0.5x</span>
+<span>2.0x</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="text-gray-300 text-sm font-medium uppercase tracking-wide">Pitch</label>
+<span class="font-mono text-gray-400 text-xs px-2 py-0.5">Normal</span>
+</div>
+<div class="relative h-px w-full bg-gray-700">
+<div class="absolute h-full w-2/3 bg-gray-500"></div>
+<div class="absolute h-3 w-3 bg-gray-400 top-1/2 -translate-y-1/2 left-2/3 cursor-pointer hover:bg-primary transition-colors hover:scale-125"></div>
+</div>
+<div class="flex justify-between text-xs text-gray-600 font-mono">
+<span>Low</span>
+<span>High</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<label class="text-gray-300 text-sm font-medium uppercase tracking-wide">Stability</label>
+<span class="font-mono text-gray-400 text-xs px-2 py-0.5">0.75</span>
+</div>
+<div class="relative h-px w-full bg-gray-700">
+<div class="absolute h-full w-3/4 bg-gray-500"></div>
+<div class="absolute h-3 w-3 bg-gray-400 top-1/2 -translate-y-1/2 left-3/4 cursor-pointer hover:bg-primary transition-colors hover:scale-125"></div>
+</div>
+<div class="flex justify-between text-xs text-gray-600 font-mono">
+<span>Variable</span>
+<span>Constant</span>
+</div>
+</div>
+<hr class="border-border-dark my-2 opacity-50"/>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex flex-col">
+<span class="text-white text-sm font-medium uppercase">Noise Reduction</span>
+<span class="text-gray-500 text-xs font-mono mt-1">Suppress artifacts</span>
+</div>
+<div class="w-8 h-4 border border-primary bg-primary relative transition-colors">
+<div class="absolute w-2 h-2 bg-background-dark top-0.5 right-0.5"></div>
+</div>
+</div>
+<div class="flex items-center justify-between group cursor-pointer">
+<div class="flex flex-col">
+<span class="text-gray-400 text-sm font-medium group-hover:text-white transition-colors uppercase">Speaker Boost</span>
+<span class="text-gray-600 text-xs font-mono mt-1">Normalize peaks</span>
+</div>
+<div class="w-8 h-4 border border-gray-600 bg-transparent relative transition-colors group-hover:border-gray-400">
+<div class="absolute w-2 h-2 bg-gray-600 top-0.5 left-0.5 group-hover:bg-gray-400"></div>
+</div>
+</div>
+</div>
+<div class="mt-auto p-6 border-t border-border-dark bg-background-dark">
+<div class="flex flex-col gap-3">
+<div class="flex justify-between text-xs font-mono text-gray-500">
+<span>LATENCY</span>
+<span>12ms</span>
+</div>
+<div class="flex justify-between text-xs font-mono text-gray-500">
+<span>BUFFER</span>
+<span>1024kb</span>
+</div>
+<button class="w-full mt-2 border border-border-dark hover:bg-white/5 text-white font-medium py-3 rounded-none uppercase text-xs tracking-widest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                        Reset Defaults
+                    </button>
+</div>
+</div>
+</aside>
+</div>
+<div class="xl:hidden flex-none border-t border-border-dark bg-background-dark p-4 flex justify-between items-center">
+<span class="text-xs font-mono text-gray-500">SPEED: 1.0x</span>
+<button class="border border-border-dark text-white px-4 py-2 rounded-none text-sm uppercase">Parameters</button>
+</div>
+
+</body></html>

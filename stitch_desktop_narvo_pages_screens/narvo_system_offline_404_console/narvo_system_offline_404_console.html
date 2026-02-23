@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo System Offline 404 Console</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#ebd5ad", // Sand/Beige
+              "background-light": "#f8f7f6", // Not really used in this specific dark UI, but required by theme
+              "background-dark": "#1B211A", // Deep Matte Charcoal
+              "grid-line": "#628141", // Forest Green
+            },
+            fontFamily: {
+              "display": ["Space Grotesk", "sans-serif"],
+              "mono": ["JetBrains Mono", "monospace"],
+            },
+            borderRadius: {
+              "DEFAULT": "0.125rem", 
+              "lg": "0.25rem", 
+              "xl": "0.5rem", 
+              "full": "0.75rem"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom grid background pattern */
+        .bg-grid-pattern {
+            background-image: 
+                linear-gradient(to right, #628141 1px, transparent 1px),
+                linear-gradient(to bottom, #628141 1px, transparent 1px);
+            background-size: 80px 80px;
+        }
+        
+        /* Scanline effect overlay */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display selection:bg-primary selection:text-background-dark overflow-hidden">
+<!-- Grid Background Layer -->
+<div class="fixed inset-0 bg-grid-pattern opacity-20 pointer-events-none z-0"></div>
+<!-- Scanline Overlay -->
+<div class="fixed inset-0 scanlines opacity-30 pointer-events-none z-50"></div>
+<!-- Main Container -->
+<div class="relative z-10 flex flex-col h-screen w-full">
+<!-- Header / Status Bar -->
+<header class="flex items-center justify-between border-b border-grid-line/50 px-6 py-4 bg-background-dark/90 backdrop-blur-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-xl">satellite_alt</span>
+<h2 class="text-primary font-bold tracking-widest text-sm uppercase">NARVO SYSTEM // DIAGNOSTICS</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 bg-red-900/20 border border-red-500/30 rounded text-red-400 text-xs font-mono font-bold">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+</span>
+                    STATUS: OFFLINE
+                </div>
+<div class="text-slate-400 font-mono text-xs hidden sm:block">
+                    BUILD: v4.9.2_RC3
+                </div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow flex flex-col items-center justify-center p-6 relative">
+<!-- Central Error Block -->
+<div class="max-w-4xl w-full flex flex-col gap-8">
+<!-- Error Message -->
+<div class="text-center space-y-4">
+<h1 class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-slate-100">
+<span class="text-primary">[</span>SIGNAL LOST<span class="text-primary">]</span>
+</h1>
+<div class="flex items-center justify-center gap-3 text-red-400/80 font-mono text-xl md:text-2xl tracking-tight">
+<span class="material-symbols-outlined animate-pulse">warning</span>
+<span>ERROR_CODE: 404_NOT_FOUND</span>
+</div>
+<p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base font-light border-l-2 border-primary/40 pl-4 py-1 text-left md:text-center md:border-l-0 md:pl-0">
+                        Broadcast upline interrupted. The requested vector could not be located on the current grid. System standby mode active.
+                    </p>
+</div>
+<!-- Technical Diagnostics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-grid-line bg-background-dark/80 mt-8 backdrop-blur-md">
+<!-- Metric 1 -->
+<div class="p-4 border-b md:border-b-0 border-grid-line md:border-r flex flex-col gap-1 group hover:bg-white/5 transition-colors">
+<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Packet Loss</span>
+<div class="flex items-center gap-2 text-red-400 font-mono font-bold text-lg">
+<span class="material-symbols-outlined text-base">wifi_off</span>
+                            100%
+                        </div>
+</div>
+<!-- Metric 2 -->
+<div class="p-4 border-b md:border-b-0 border-grid-line lg:border-r flex flex-col gap-1 group hover:bg-white/5 transition-colors">
+<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Last Node</span>
+<div class="flex items-center gap-2 text-primary font-mono text-lg">
+<span class="material-symbols-outlined text-base">dns</span>
+                            West-Africa-01
+                        </div>
+</div>
+<!-- Metric 3 -->
+<div class="p-4 border-b md:border-b-0 border-grid-line md:border-r flex flex-col gap-1 group hover:bg-white/5 transition-colors">
+<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Latency</span>
+<div class="flex items-center gap-2 text-slate-200 font-mono text-lg">
+<span class="material-symbols-outlined text-base">timelapse</span>
+                            ∞ ms
+                        </div>
+</div>
+<!-- Metric 4 -->
+<div class="p-4 flex flex-col gap-1 group hover:bg-white/5 transition-colors">
+<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Timestamp (UTC)</span>
+<div class="flex items-center gap-2 text-slate-200 font-mono text-lg">
+<span class="material-symbols-outlined text-base">schedule</span>
+                            23:42:11
+                        </div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="flex justify-center pt-8">
+<button class="relative group overflow-hidden bg-primary text-background-dark font-bold py-4 px-8 rounded flex items-center gap-3 hover:bg-[#dcc69e] transition-all duration-200 shadow-[0_0_20px_rgba(235,213,173,0.2)]">
+<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></span>
+<span class="material-symbols-outlined">refresh</span>
+<span class="font-mono tracking-tight uppercase">[Re-initialize Connection]</span>
+</button>
+</div>
+</div>
+<!-- Debug lines decoration -->
+<div class="absolute bottom-12 left-0 w-full h-px bg-grid-line/30 hidden md:block"></div>
+<div class="absolute top-1/2 left-12 w-px h-full bg-grid-line/30 hidden md:block -translate-y-1/2"></div>
+<div class="absolute top-1/2 right-12 w-px h-full bg-grid-line/30 hidden md:block -translate-y-1/2"></div>
+<!-- Crosshairs decorations -->
+<div class="absolute top-12 left-12 text-grid-line hidden md:block">
+<span class="material-symbols-outlined text-xl">add</span>
+</div>
+<div class="absolute top-12 right-12 text-grid-line hidden md:block">
+<span class="material-symbols-outlined text-xl">add</span>
+</div>
+<div class="absolute bottom-12 left-12 text-grid-line hidden md:block">
+<span class="material-symbols-outlined text-xl">add</span>
+</div>
+<div class="absolute bottom-12 right-12 text-grid-line hidden md:block">
+<span class="material-symbols-outlined text-xl">add</span>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-grid-line/50 px-6 py-3 bg-background-dark/90 backdrop-blur-sm flex justify-between items-center text-xs text-slate-500 font-mono">
+<div class="flex gap-4">
+<span>MEM: 64MB OK</span>
+<span class="hidden sm:inline">GPU: RENDER_NULL</span>
+</div>
+<div class="uppercase tracking-widest opacity-50">
+                // Narvo Broadcast Corp © 2024
+             </div>
+</footer>
+</div>
+<!-- Tailwind Config for Animation -->
+<style>
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</body></html>

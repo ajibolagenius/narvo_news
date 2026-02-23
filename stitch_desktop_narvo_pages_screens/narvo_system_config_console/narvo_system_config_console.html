@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo System Config Console</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EBD5AB", // Sand/Beige
+                        "accent-green": "#628141", // Forest Green
+                        "text-sage": "#8BAE66", // Sage Green
+                        "text-white": "#F2F2F2", // 90% White
+                        "background-dark": "#1B211A", // Deep Matte Charcoal (User Request)
+                        "surface-dark": "#1B211A", // Matching background for seamless look
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "none": "0",
+                        "DEFAULT": "0", // Sharp edges requested
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "9999px" // Keep full for icons if needed, but toggles need to be sharp
+                    },
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1B211A; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #444; 
+        }input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+            height: 1px;}
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 12px;
+            width: 12px;
+            border-radius: 0;background: #EBD5AB;
+            cursor: pointer;
+            margin-top: -6px;border: none;
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 12px;
+            width: 12px;
+            border-radius: 0;
+            background: #EBD5AB;
+            cursor: pointer;
+            border: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 1px;cursor: pointer;
+            background: #628141;}
+        input[type=range]:focus {
+            outline: none;
+        }.grid-line-b {
+            border-bottom: 1px solid #628141;}
+        .grid-line-r {
+            border-right: 1px solid #628141;}.toggle-checkbox:checked {
+            right: 0;
+            border-color: #EBD5AB;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #EBD5AB;
+        }.rect-toggle {
+            appearance: none;
+            width: 44px;
+            height: 24px;
+            background: transparent;
+            border: 1px solid #628141;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+        }
+        .rect-toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: #8BAE66;transition: all 0.2s ease;
+        }
+        .rect-toggle:checked {
+            border-color: #EBD5AB;
+        }
+        .rect-toggle:checked::after {
+            left: 22px;
+            background: #EBD5AB;}
+    </style>
+</head>
+<body class="bg-background-dark text-text-white font-display min-h-screen overflow-hidden flex flex-col">
+<div class="flex flex-1 h-screen overflow-hidden">
+<aside class="w-64 flex flex-col bg-background-dark grid-line-r shrink-0 z-20">
+<div class="h-20 flex items-center px-6 grid-line-b">
+<div class="flex flex-col">
+<h1 class="text-white text-base font-semibold tracking-wider uppercase">Narvo <span class="text-primary">//</span> System</h1>
+<p class="text-text-sage text-xs font-normal tracking-wide">Broadcast Console v2.4.1</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col py-6 gap-0">
+<a class="group flex items-center gap-3 px-6 py-3 border-l-2 border-primary bg-white/5" href="#">
+<span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+<span class="text-white text-sm font-medium tracking-wide">General</span>
+</a>
+<a class="group flex items-center gap-3 px-6 py-3 border-l-2 border-transparent hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-sage group-hover:text-primary transition-colors text-[20px]">monitor</span>
+<span class="text-text-sage group-hover:text-white transition-colors text-sm font-medium tracking-wide">Display</span>
+</a>
+<a class="group flex items-center gap-3 px-6 py-3 border-l-2 border-transparent hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-sage group-hover:text-primary transition-colors text-[20px]">volume_up</span>
+<span class="text-text-sage group-hover:text-white transition-colors text-sm font-medium tracking-wide">Audio</span>
+</a>
+<a class="group flex items-center gap-3 px-6 py-3 border-l-2 border-transparent hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-sage group-hover:text-primary transition-colors text-[20px]">wifi</span>
+<span class="text-text-sage group-hover:text-white transition-colors text-sm font-medium tracking-wide">Network</span>
+</a>
+<a class="group flex items-center gap-3 px-6 py-3 border-l-2 border-transparent hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-text-sage group-hover:text-primary transition-colors text-[20px]">lock</span>
+<span class="text-text-sage group-hover:text-white transition-colors text-sm font-medium tracking-wide">Security</span>
+</a>
+<a class="group flex items-center gap-3 px-6 py-3 border-l-2 border-transparent hover:bg-white/5 transition-colors mt-auto grid-line-b" href="#">
+<span class="material-symbols-outlined text-text-sage group-hover:text-primary transition-colors text-[20px]">logout</span>
+<span class="text-text-sage group-hover:text-white transition-colors text-sm font-medium tracking-wide">Log Out</span>
+</a>
+</nav>
+</aside>
+<main class="flex-1 flex flex-col h-full overflow-y-auto bg-background-dark relative">
+<header class="h-20 flex items-center justify-between px-8 grid-line-b shrink-0 sticky top-0 bg-background-dark/95 backdrop-blur-none z-10">
+<div class="flex items-center gap-2">
+<span class="text-text-sage text-sm uppercase tracking-widest">Configuration</span>
+<span class="text-text-sage text-sm">/</span>
+<span class="text-white text-sm uppercase tracking-widest font-semibold">General Settings</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center w-8 h-8 rounded-none border border-accent-green hover:bg-accent-green/20 transition-colors">
+<span class="material-symbols-outlined text-text-sage text-[18px]">history</span>
+</button>
+<button class="flex items-center justify-center w-8 h-8 rounded-none border border-accent-green hover:bg-accent-green/20 transition-colors">
+<span class="material-symbols-outlined text-text-sage text-[18px]">help</span>
+</button>
+</div>
+</header>
+<div class="flex-1 max-w-4xl mx-auto w-full p-8 pb-20">
+<section class="mb-12">
+<div class="flex items-end justify-between mb-4 border-b border-accent-green pb-2">
+<h2 class="text-2xl font-bold text-white tracking-tight">Display &amp; Interface</h2>
+<span class="text-xs text-text-sage uppercase tracking-widest mb-1">Visual Output Config</span>
+</div>
+<div class="flex flex-col border border-accent-green">
+<div class="group flex items-center justify-between py-6 grid-line-b bg-transparent px-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-transparent border border-accent-green flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">contrast</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-base font-medium">High-Contrast Mode</span>
+<span class="text-text-sage text-sm">Increases legibility for bright studio environments</span>
+</div>
+</div>
+<input checked="" class="rect-toggle" type="checkbox"/>
+</div>
+<div class="group flex items-center justify-between py-6 bg-transparent px-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-transparent border border-accent-green flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">aspect_ratio</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-base font-medium">UI Scale</span>
+<span class="text-text-sage text-sm">Adjusts the density of interface elements</span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-white font-mono text-sm">100%</span>
+<div class="relative">
+<select class="appearance-none bg-background-dark border border-accent-green text-white text-sm focus:ring-0 focus:border-primary block w-32 p-2.5 pr-8 rounded-none">
+<option>Compact</option>
+<option selected="">Default</option>
+<option>Comfortable</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-text-sage">
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-12">
+<div class="flex items-end justify-between mb-4 border-b border-accent-green pb-2">
+<h2 class="text-2xl font-bold text-white tracking-tight">Notifications &amp; Haptics</h2>
+<span class="text-xs text-text-sage uppercase tracking-widest mb-1">Alert Management</span>
+</div>
+<div class="flex flex-col border border-accent-green">
+<div class="group flex items-center justify-between py-6 grid-line-b bg-transparent px-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-transparent border border-accent-green flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">vibration</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-base font-medium">Haptic Feedback</span>
+<span class="text-text-sage text-sm">Physical response for critical alerts</span>
+</div>
+</div>
+<input class="rect-toggle" type="checkbox"/>
+</div>
+<div class="group flex flex-col py-6 bg-transparent px-6 gap-6">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-transparent border border-accent-green flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-base font-medium">Alert Volume</span>
+<span class="text-text-sage text-sm">System-wide alert sound levels</span>
+</div>
+</div>
+<span class="text-white font-mono text-sm border border-accent-green px-2 py-1">65%</span>
+</div>
+<div class="pl-14 pr-2 w-full">
+<input class="w-full" max="100" min="0" type="range" value="65"/>
+</div>
+</div>
+</div>
+</section>
+<section class="mb-4">
+<div class="flex items-end justify-between mb-4 border-b border-accent-green pb-2">
+<h2 class="text-2xl font-bold text-white tracking-tight">Data &amp; Connectivity</h2>
+<span class="text-xs text-text-sage uppercase tracking-widest mb-1">Bandwidth Control</span>
+</div>
+<div class="flex flex-col border border-accent-green">
+<div class="group flex flex-col py-6 grid-line-b bg-transparent px-6 gap-6">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-transparent border border-accent-green flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">data_usage</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-base font-medium">Data-Usage Limits</span>
+<span class="text-text-sage text-sm">Monthly cap for cellular bonding</span>
+</div>
+</div>
+<span class="text-white font-mono text-sm border border-accent-green px-2 py-1">2.4 TB</span>
+</div>
+<div class="pl-14 pr-2 w-full flex items-center gap-4">
+<span class="text-text-sage text-xs">0</span>
+<input class="flex-1" max="5000" min="0" type="range" value="2400"/>
+<span class="text-text-sage text-xs">5TB</span>
+</div>
+</div>
+<div class="group flex items-center justify-between py-6 bg-transparent px-6">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 bg-transparent border border-accent-green flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">priority_high</span>
+</div>
+<div class="flex flex-col">
+<span class="text-white text-base font-medium">Bandwidth Priority</span>
+<span class="text-text-sage text-sm">Allocate resources during live broadcast</span>
+</div>
+</div>
+<div class="flex gap-0 border border-accent-green divide-x divide-accent-green">
+<button class="px-4 py-2 text-xs uppercase tracking-wider font-medium text-white bg-primary/10 hover:bg-primary/20 transition-colors">Streaming</button>
+<button class="px-4 py-2 text-xs uppercase tracking-wider font-medium text-text-sage bg-transparent hover:bg-accent-green/10 transition-colors">Ingest</button>
+<button class="px-4 py-2 text-xs uppercase tracking-wider font-medium text-text-sage bg-transparent hover:bg-accent-green/10 transition-colors">Voice</button>
+</div>
+</div>
+</div>
+</section>
+<div class="mt-12 flex justify-end gap-4">
+<button class="px-6 py-3 border border-accent-green text-text-sage rounded-none hover:bg-white/5 transition-colors text-sm font-medium tracking-wide uppercase">
+                        Reset Defaults
+                    </button>
+<button class="px-6 py-3 bg-primary text-background-dark border border-primary rounded-none hover:bg-primary/90 transition-colors text-sm font-bold tracking-wide uppercase">
+                        Save Changes
+                    </button>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

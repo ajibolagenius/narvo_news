@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo News - Deep Dive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EBD5AB", // Sand/Beige
+                        "accent-sage": "#8BAE66",
+                        "background-dark": "#1B211A", // Deep Matte Charcoal/Green
+                        "surface-dark": "#1B211A", // Matching background for flat look
+                        "border-green": "#628141", // Forest Green
+                        "slate": {
+                            900: "#0f172a",
+                            800: "#1e293b",
+                            700: "#334155",
+                            600: "#475569", // Replacing slate scales for better contrast on green bg
+                            500: "#64748b",
+                            400: "#94a3b8",
+                            300: "#cbd5e1",
+                            200: "#e2e8f0",
+                            100: "#f1f5f9",
+                        }
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"] 
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px", // Sharp corners for Swiss Grid
+                        "sm": "0px",
+                        "md": "0px",
+                        "lg": "0px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1B211A;
+            border-left: 1px solid #628141;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #EBD5AB;
+        }.swiss-grid-border {
+            border-color: #628141;
+        }* {
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
+    </style>
+</head>
+<body class="bg-background-dark text-slate-100 font-body min-h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-black">
+<header class="flex items-center justify-between border-b border-border-green bg-background-dark px-6 py-0 h-16 shrink-0 z-50">
+<div class="flex items-center gap-6 h-full">
+<div class="flex items-center gap-3 text-white border-r border-border-green pr-6 h-full">
+<div class="size-6 text-primary flex items-center">
+<span class="material-symbols-outlined !text-[24px]">grid_view</span>
+</div>
+<h2 class="text-white text-xl font-bold tracking-tight uppercase font-display">Narvo</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8 h-full">
+<a class="text-primary text-xs font-mono font-bold uppercase tracking-wider flex items-center h-full border-b-2 border-primary" href="#">Deep Dives</a>
+<a class="text-slate-400 hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-colors" href="#">Live Wire</a>
+<a class="text-slate-400 hover:text-white text-xs font-mono font-bold uppercase tracking-wider transition-colors" href="#">Archive</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center border border-border-green bg-transparent px-3 py-1.5 w-64">
+<span class="material-symbols-outlined text-border-green !text-[18px]">search</span>
+<input class="bg-transparent border-none text-xs font-mono text-primary focus:ring-0 w-full placeholder-border-green uppercase" placeholder="Search archives..." type="text"/>
+</div>
+<button class="size-9 bg-transparent border border-border-green flex items-center justify-center text-border-green hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined !text-[20px]">notifications</span>
+</button>
+<div class="size-9 bg-cover bg-center border border-border-green" data-alt="User profile avatar showing a man's face" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBauc_BDaouSvKtt6wFHIL2t-Ilk1Inq1TUs4kATXwsflvNMZ5qrZyFXtZ1rD5AkLW1GiCbYc2iiy_xyi85UiX2zh4Ag4YniUtTYI-16A6kONu5WRl9BWGMT9mY6gSZT2IUIchhFWxcN-PXTXbejlc5RRA90OZxnymrK7iIfF1BR9oxpQQhDF7aT8Yu1SpbljSkzcMkUvI5QgK9jDJEw9Bt2Jt83_UQUwGnbLA7gb5esLnsvqueBj12hMTlQJwgunBWKomamAeS5eY')"></div>
+</div>
+</header>
+<main class="flex flex-1 h-[calc(100vh-64px)] overflow-hidden">
+<aside class="w-20 lg:w-72 border-r border-border-green bg-background-dark hidden md:flex flex-col shrink-0">
+<div class="p-6 border-b border-border-green">
+<span class="text-[10px] font-bold text-border-green uppercase tracking-widest mb-4 block font-mono">Chapter Outline</span>
+<ul class="space-y-4">
+<li class="flex items-start gap-3 group cursor-pointer">
+<span class="text-primary text-xs font-mono mt-0.5">01</span>
+<span class="text-sm font-medium text-white group-hover:text-primary transition-colors font-display">The Northern Route</span>
+</li>
+<li class="flex items-start gap-3 group cursor-pointer">
+<span class="text-slate-500 text-xs font-mono mt-0.5">02</span>
+<span class="text-sm text-slate-400 group-hover:text-white transition-colors font-display">Semiconductor Flux</span>
+</li>
+<li class="flex items-start gap-3 group cursor-pointer">
+<span class="text-slate-500 text-xs font-mono mt-0.5">03</span>
+<span class="text-sm text-slate-400 group-hover:text-white transition-colors font-display">Raw Material Inflation</span>
+</li>
+<li class="flex items-start gap-3 group cursor-pointer">
+<span class="text-slate-500 text-xs font-mono mt-0.5">04</span>
+<span class="text-sm text-slate-400 group-hover:text-white transition-colors font-display">Future Projections</span>
+</li>
+</ul>
+</div>
+<div class="p-6 flex-1 overflow-y-auto">
+<span class="text-[10px] font-bold text-border-green uppercase tracking-widest mb-4 block font-mono">Metadata</span>
+<div class="grid grid-cols-1 gap-6">
+<div>
+<span class="text-[10px] text-border-green block mb-1 font-mono uppercase">Author</span>
+<span class="text-sm text-slate-300 font-display">Dr. Elena Rostova</span>
+</div>
+<div>
+<span class="text-[10px] text-border-green block mb-1 font-mono uppercase">Published</span>
+<span class="text-sm text-slate-300 font-display">Oct 24, 2023</span>
+</div>
+<div>
+<span class="text-[10px] text-border-green block mb-1 font-mono uppercase">Reading Time</span>
+<span class="text-sm text-slate-300 font-display">12 min read</span>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-border-green bg-background-dark">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-accent-sage !text-[16px]">verified_user</span>
+<span class="text-[10px] font-bold text-accent-sage uppercase tracking-wide font-mono">Transparency Score</span>
+</div>
+<div class="flex items-end gap-2 mb-2">
+<span class="text-3xl font-bold text-white leading-none font-mono">98%</span>
+<span class="text-[10px] text-slate-400 mb-1 font-mono uppercase">High Fidelity</span>
+</div>
+<div class="w-full bg-border-green h-[2px] overflow-hidden">
+<div class="bg-accent-sage h-full w-[98%]"></div>
+</div>
+<p class="text-[10px] text-slate-500 mt-2 leading-tight font-mono">
+                Sources verified against 4 primary databases. Minimal AI paraphrase detected.
+            </p>
+</div>
+</aside>
+<section class="flex-1 overflow-y-auto relative bg-background-dark scroll-smooth custom-scrollbar" id="main-content">
+<div class="max-w-3xl mx-auto py-12 px-8 pb-40">
+<div class="mb-10">
+<div class="flex gap-0 mb-6 border border-border-green w-fit">
+<span class="px-3 py-1 border-r border-border-green text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">Economics</span>
+<span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">Logistics</span>
+</div>
+<h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight mb-6 font-display uppercase">
+                    Global Supply Chain Disruptions: A Deep Dive
+                </h1>
+<p class="text-xl text-slate-300 font-light leading-relaxed font-display border-l-2 border-border-green pl-6">
+                    As new maritime routes open in Northern Europe, the global logistics network faces a seismic shift that could redefine trade for the next decade.
+                </p>
+</div>
+<figure class="mb-12 border border-border-green relative group">
+<img alt="Aerial view of shipping containers at a busy port" class="w-full h-[400px] object-cover opacity-90 grayscale-[20%] group-hover:grayscale-0 transition-all duration-500" data-alt="Aerial view of shipping containers at a busy port" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbthjW8r5Kgce-QioygwbTPQM3i1A3NjAIn0LLIYzJLM4rQfK-kc68pABZzX1a8qCLDF-LZ33ymnhpFdGnjWe86wAE6qxY10yas7WXXHpBoOnM4Pt1Gh6VjFCPxz-V6rPuSOPn2nfAhshiOIGQzgRwIhr94uYmKTllowKhWnPHxWKxwU4LXYYRzruWiUtbuWhLkLuIEIzS6mCmosSuXDZCLXBaAMPbumZjkU_U1m8uPBxsy1vA_lATW0TpR1Nrw8iD9QgBZsm-DqE"/>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-background-dark border-t border-border-green w-fit ml-auto">
+<figcaption class="text-[10px] text-primary font-mono uppercase tracking-wider">FIG 1.0 — Port of Rotterdam Container Terminal</figcaption>
+</div>
+</figure>
+<div class="border border-border-green bg-transparent p-6 mb-12 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-border-green"></div>
+<h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 font-display uppercase tracking-tight">
+<span class="material-symbols-outlined text-primary">tips_and_updates</span>
+                    Key Takeaways
+                </h3>
+<ul class="space-y-3">
+<li class="flex items-start gap-3 text-slate-300 text-base leading-relaxed font-body">
+<span class="mt-2 size-1.5 bg-primary shrink-0"></span>
+<span>Semiconductor shortage easing in Q4, signaling a return to pre-pandemic production levels.</span>
+</li>
+<li class="flex items-start gap-3 text-slate-300 text-base leading-relaxed font-body">
+<span class="mt-2 size-1.5 bg-primary shrink-0"></span>
+<span>New maritime routes established in Northern Europe are cutting transit times by 15%.</span>
+</li>
+<li class="flex items-start gap-3 text-slate-300 text-base leading-relaxed font-body">
+<span class="mt-2 size-1.5 bg-primary shrink-0"></span>
+<span>Inflationary pressure remains high on raw materials despite logistical improvements.</span>
+</li>
+</ul>
+</div>
+<article class="prose prose-invert prose-lg max-w-none font-body">
+<p class="text-slate-300 font-light leading-relaxed mb-6">
+                    The global logistics network is undergoing a seismic shift as new maritime routes open in Northern Europe. Analysts predict that while semiconductor shortages are easing, the pressure on raw materials remains a critical bottleneck for the next fiscal quarter. This duality presents a unique challenge for policymakers attempting to stabilize inflation without stifling growth.
+                </p>
+<p class="text-slate-300 font-light leading-relaxed mb-6">
+                    In recent months, the Port of Rotterdam has reported a 12% increase in throughput, directly correlated to the opening of the Arctic passage during summer months. This temporary relief, however, masks the underlying fragility of the Just-In-Time (JIT) manufacturing model which has been stretched to its breaking point.
+                </p>
+<h3 class="text-2xl font-bold text-white mt-10 mb-4 font-display uppercase tracking-tight">The Semiconductor Flux</h3>
+<p class="text-slate-300 font-light leading-relaxed mb-6">
+                    While automotive manufacturers celebrate the return of chip availability, consumer electronics sectors are warning of an overcorrection. "We are moving from famine to feast too quickly," notes Dr. Aris Thorne, a lead economist at TradeView. "Inventory bloat is the next crisis we aren't talking about."
+                </p>
+<div class="my-8 p-6 border border-border-green bg-transparent relative">
+<span class="absolute top-0 left-0 bg-background-dark px-2 -mt-3 text-primary text-4xl leading-none font-display">“</span>
+<p class="italic text-primary font-display text-xl leading-relaxed mb-2">
+                        The supply chain isn't just a line; it's a web. Pull one thread, and the whole structure vibrates.
+                    </p>
+<cite class="text-xs font-mono text-slate-500 not-italic uppercase tracking-widest">— Dr. Aris Thorne</cite>
+</div>
+<p class="text-slate-300 font-light leading-relaxed mb-6">
+                    Data from Q3 suggests that warehouse utilization is at an all-time high of 94% in major distribution hubs. This lack of slack means any minor disruption—a strike, a storm, a software glitch—can cascade into weeks of delays.
+                </p>
+</article>
+</div>
+<div class="fixed bottom-0 left-20 right-0 md:right-80 lg:left-72 lg:right-80 border-t border-border-green bg-background-dark z-40 p-0 h-24 flex items-center justify-between px-6">
+<div class="flex items-center gap-6 border-r border-border-green pr-6 h-full min-w-[240px]">
+<button class="bg-primary hover:bg-white text-black size-10 flex items-center justify-center transition-all">
+<span class="material-symbols-outlined !text-[24px]">play_arrow</span>
+</button>
+<div class="flex flex-col justify-center">
+<span class="text-[10px] text-border-green font-mono uppercase tracking-widest mb-1">Now Playing</span>
+<span class="text-sm text-white font-medium truncate font-display uppercase tracking-wide">Part 1: The Northern Route</span>
+</div>
+</div>
+<div class="flex-1 flex flex-col justify-center px-8 h-full">
+<div class="flex justify-between text-[10px] font-mono text-primary mb-1">
+<span>02:14</span>
+<span class="opacity-50">12:30</span>
+</div>
+<div class="w-full h-8 flex items-center gap-[2px] cursor-pointer relative group">
+<div class="absolute top-1/2 -translate-y-1/2 w-full h-[1px] bg-border-green z-0"></div>
+<div class="flex-1 h-full flex items-center justify-between gap-[3px] z-10">
+<div class="w-[3px] bg-primary h-[40%]"></div>
+<div class="w-[3px] bg-primary h-[60%]"></div>
+<div class="w-[3px] bg-primary h-[30%]"></div>
+<div class="w-[3px] bg-primary h-[80%]"></div>
+<div class="w-[3px] bg-primary h-[50%]"></div>
+<div class="w-[3px] bg-primary h-[90%]"></div>
+<div class="w-[3px] bg-primary h-[40%]"></div>
+<div class="w-[3px] bg-primary h-[20%]"></div>
+<div class="w-[3px] bg-primary h-[30%]"></div>
+<div class="w-[3px] bg-primary h-[60%]"></div>
+<div class="w-[3px] bg-primary h-[40%]"></div>
+<div class="w-[3px] bg-primary h-[70%]"></div>
+<div class="w-[3px] bg-primary h-[50%]"></div>
+<div class="w-[3px] bg-primary h-[30%]"></div>
+<div class="w-[3px] bg-primary h-[80%]"></div>
+<div class="w-[3px] bg-primary h-[40%]"></div>
+<div class="w-[3px] bg-primary h-[60%]"></div>
+<div class="w-[3px] bg-primary h-[30%]"></div>
+<div class="w-[3px] bg-primary h-[50%]"></div>
+<div class="w-[3px] bg-primary h-[90%]"></div>
+<div class="w-[3px] bg-primary h-[40%]"></div>
+<div class="w-[3px] bg-primary h-[20%]"></div>
+<div class="w-[3px] border border-border-green h-[50%]"></div>
+<div class="w-[3px] border border-border-green h-[30%]"></div>
+<div class="w-[3px] border border-border-green h-[60%]"></div>
+<div class="w-[3px] border border-border-green h-[40%]"></div>
+<div class="w-[3px] border border-border-green h-[70%]"></div>
+<div class="w-[3px] border border-border-green h-[30%]"></div>
+<div class="w-[3px] border border-border-green h-[50%]"></div>
+<div class="w-[3px] border border-border-green h-[20%]"></div>
+<div class="w-[3px] border border-border-green h-[40%]"></div>
+<div class="w-[3px] border border-border-green h-[60%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 border-l border-border-green pl-6 h-full">
+<div class="hidden sm:flex items-center bg-transparent border border-border-green px-3 py-1.5 gap-2 cursor-pointer hover:bg-border-green hover:text-white transition-colors">
+<span class="material-symbols-outlined text-primary !text-[16px]">language</span>
+<span class="text-[10px] text-primary font-mono font-bold uppercase tracking-wider">West African English</span>
+</div>
+<button class="flex items-center justify-center w-12 h-8 border border-border-green bg-transparent text-[10px] text-primary font-mono font-bold hover:bg-border-green hover:text-white transition-colors">
+                    1.5x
+                </button>
+</div>
+</div>
+</section>
+<aside class="w-80 border-l border-border-green bg-background-dark hidden xl:flex flex-col shrink-0">
+<div class="p-4 border-b border-border-green bg-background-dark">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary !text-[16px]">hub</span>
+<span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest font-mono">Contextual RAG</span>
+</div>
+<p class="text-[10px] text-slate-500 font-mono">AI-retrieved context based on your current reading position.</p>
+</div>
+<div class="p-4 space-y-4 overflow-y-auto flex-1">
+<div class="group cursor-pointer border border-border-green bg-transparent hover:bg-border-green/10 transition-all p-4 relative">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[9px] text-primary font-mono uppercase border border-primary px-1.5 py-0.5">Context</span>
+<span class="material-symbols-outlined text-border-green group-hover:text-primary !text-[16px]">arrow_outward</span>
+</div>
+<h4 class="text-sm font-bold text-slate-200 mb-2 leading-tight group-hover:text-white font-display uppercase">2023 Logistics Review</h4>
+<p class="text-xs text-slate-400 font-mono leading-relaxed">Comparitive data from last year showing a 40% dip in trans-pacific volume.</p>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<div class="group cursor-pointer border border-border-green bg-transparent hover:bg-border-green/10 transition-all p-4 relative">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[9px] text-primary font-mono uppercase border border-primary px-1.5 py-0.5">Related</span>
+<span class="material-symbols-outlined text-border-green group-hover:text-primary !text-[16px]">arrow_outward</span>
+</div>
+<h4 class="text-sm font-bold text-slate-200 mb-2 leading-tight group-hover:text-white font-display uppercase">The Taiwan Chip Shift</h4>
+<p class="text-xs text-slate-400 font-mono leading-relaxed">Deep dive into TSMC's expansion into Arizona and its impact on global freight.</p>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<div class="group cursor-pointer border border-border-green bg-transparent p-0 overflow-hidden relative">
+<div class="h-28 w-full bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Abstract map of global shipping lanes" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA5wrTLGs7EFXXkg_cf0hY4NDioVLVHUHtZay6L7jcR6rS9hRQm1JcGclTczHfx4f6zhZrAzAB59JmGOrVOAVRxCZQ7bWoXtiYcw812UIInlJmF684Mr4AZx1tqrDEh8RCImMb4AkE-R49bVjc0h5RSBj_TNqgbYUjcfMcAVs5WvfrTyepHL2BJ7zvq8TD6d4xAMHmCyGNJDEfTW_oDCalevOCAlEpBJTDxSjEIUHvvM09DscxiKldwf5HfHSKPEfIIPcIK89xVL3s')">
+<div class="absolute top-2 left-2">
+<span class="text-[9px] bg-background-dark text-white font-mono uppercase px-1.5 py-0.5 border border-border-green">Map Data</span>
+</div>
+</div>
+<div class="p-3 border-t border-border-green">
+<h4 class="text-sm font-bold text-slate-200 mb-1 leading-tight group-hover:text-white font-display uppercase">Interactive: New Routes</h4>
+<p class="text-xs text-slate-500 font-mono">Visualizing the Northern Passage traffic flow.</p>
+</div>
+</div>
+<div class="group cursor-pointer border border-border-green bg-transparent hover:bg-border-green/10 transition-all p-4 relative opacity-70 hover:opacity-100">
+<div class="flex justify-between items-start mb-3">
+<span class="text-[9px] text-slate-400 font-mono uppercase border border-slate-600 px-1.5 py-0.5">Definition</span>
+</div>
+<h4 class="text-sm font-bold text-slate-300 mb-2 leading-tight group-hover:text-white font-display uppercase">Term: "Just-In-Time"</h4>
+<p class="text-xs text-slate-500 font-mono leading-relaxed">A management strategy that aligns raw-material orders from suppliers directly with production schedules.</p>
+</div>
+</div>
+</aside>
+</main>
+
+</body></html>

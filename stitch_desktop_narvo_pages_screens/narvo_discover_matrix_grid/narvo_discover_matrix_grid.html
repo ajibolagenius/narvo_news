@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Refined Narvo Discover Matrix</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#628141", // Forest Green
+                        "accent": "#EBD5AB",  // Sand/Beige
+                        "background-dark": "#1B211A", // Deep Matte Charcoal
+                        "surface-dark": "#232922", // Slightly lighter for active states/hover if needed, derived from bg
+                        "text-main": "#E1E3DF",
+                        "text-muted": "#8F9E8B",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"], // Changed from Inter/Body to JetBrains for metrics
+                        "body": ["Space Grotesk", "sans-serif"], // Using Space Grotesk generally as per "headers" but often body follows suit in Swiss style, keeping mono for data
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px",
+                        "sm": "0px",
+                        "md": "0px",
+                        "lg": "0px",
+                        "full": "9999px",
+                    },
+                    borderWidth: {
+                        DEFAULT: '1px',
+                    }
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1B211A;
+            border-left: 1px solid #628141;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #628141;
+            border: 2px solid #1B211A; 
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #EBD5AB;
+        }
+        body {
+            background-color: #1B211A;
+            color: #E1E3DF;
+        }.grid-border {
+            border: 1px solid #628141;
+        }
+        .border-r-grid { border-right: 1px solid #628141; }
+        .border-b-grid { border-bottom: 1px solid #628141; }
+        .border-t-grid { border-top: 1px solid #628141; }
+        .border-l-grid { border-left: 1px solid #628141; }.no-glow {
+            box-shadow: none !important;
+            filter: none !important;
+        }
+    </style>
+</head>
+<body class="bg-background-dark min-h-screen text-text-main font-body overflow-hidden flex flex-col selection:bg-primary selection:text-white">
+<header class="h-16 flex border-b-grid bg-background-dark z-20 sticky top-0 shrink-0">
+<div class="w-[280px] border-r-grid flex items-center px-6 gap-3 shrink-0 bg-background-dark">
+<span class="material-symbols-outlined text-primary text-3xl">grid_4x4</span>
+<h1 class="text-white font-display font-bold text-xl tracking-wide uppercase">Narvo <span class="text-primary font-mono font-normal text-xs align-top ml-1">SYS.01</span></h1>
+</div>
+<div class="flex-1 flex items-center justify-between px-6 bg-background-dark">
+<div class="flex items-center gap-4 w-full max-w-md">
+<span class="material-symbols-outlined text-primary">search</span>
+<input class="bg-transparent border-none text-sm font-display tracking-widest text-text-main placeholder-primary focus:ring-0 w-full uppercase" placeholder="SEARCH FREQUENCIES..." type="text"/>
+</div>
+<div class="flex gap-8 text-xs font-mono tracking-widest text-primary hidden lg:flex">
+<span class="flex items-center gap-2"><span class="w-2 h-2 bg-accent rounded-full"></span> SYSTEM: ONLINE</span>
+<span>LATENCY: 12ms</span>
+<span>UTC: 14:02:45</span>
+</div>
+</div>
+<div class="w-[320px] border-l-grid flex items-center justify-end px-6 gap-6 shrink-0 bg-background-dark">
+<button class="text-primary hover:text-accent transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="text-primary hover:text-accent transition-colors"><span class="material-symbols-outlined">settings</span></button>
+<div class="w-8 h-8 bg-primary text-background-dark flex items-center justify-center font-display font-bold text-sm">JD</div>
+</div>
+</header>
+<main class="flex-1 flex overflow-hidden">
+<aside class="w-[280px] flex flex-col border-r-grid bg-background-dark overflow-y-auto shrink-0">
+<div class="p-0">
+<div class="px-6 py-4 border-b-grid">
+<h3 class="text-primary text-[10px] font-mono font-bold tracking-[0.2em] uppercase">Navigation Matrix</h3>
+</div>
+<nav class="flex flex-col">
+<a class="flex items-center gap-3 px-6 py-3 border-b-grid bg-primary text-background-dark font-display text-sm tracking-wide font-medium" href="#">
+<span class="material-symbols-outlined text-sm">explore</span>
+                    DISCOVER
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 border-b-grid hover:bg-surface-dark text-text-muted hover:text-accent transition-all font-display text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-sm">podcasts</span>
+                    PODCASTS
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 border-b-grid hover:bg-surface-dark text-text-muted hover:text-accent transition-all font-display text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-sm">radio</span>
+                    RADIO GARDEN
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 border-b-grid hover:bg-surface-dark text-text-muted hover:text-accent transition-all font-display text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined text-sm">bookmark</span>
+                    SAVED SIGNALS
+                </a>
+</nav>
+</div>
+<div class="flex-1 flex flex-col">
+<div class="px-6 py-4 border-b-grid mt-auto border-t-grid">
+<h3 class="text-primary text-[10px] font-mono font-bold tracking-[0.2em] uppercase">Active Channels</h3>
+</div>
+<div class="">
+<div class="group flex items-center justify-between px-6 py-3 border-b-grid hover:bg-surface-dark cursor-pointer transition-colors">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-accent"></span>
+<div class="flex flex-col">
+<span class="text-xs font-display text-white tracking-wider font-medium">NEWSGRID 24</span>
+<span class="text-[10px] text-primary font-mono">104.5 MHz</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-accent text-sm opacity-0 group-hover:opacity-100">graphic_eq</span>
+</div>
+<div class="group flex items-center justify-between px-6 py-3 border-b-grid hover:bg-surface-dark cursor-pointer transition-colors">
+<div class="flex items-center gap-3">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<div class="flex flex-col">
+<span class="text-xs font-display text-text-muted tracking-wider">TECH TALK</span>
+<span class="text-[10px] text-primary/70 font-mono">STREAM_02</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 mt-auto bg-background-dark">
+<div class="text-[10px] text-primary font-mono uppercase leading-relaxed">
+                Ver 2.4.0<br/>
+                Region: EU-West<br/>
+                Status: Connected
+            </div>
+</div>
+</aside>
+<div class="flex-1 overflow-y-auto relative bg-background-dark scroll-smooth">
+<div class="grid grid-cols-1 md:grid-cols-12 auto-rows-min border-b-grid">
+<div class="md:col-span-8 md:border-r-grid relative group overflow-hidden h-[400px]">
+<div class="absolute inset-0 bg-cover bg-center grayscale contrast-125" data-alt="Abstract cybernetic grid background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAShv3K3vMhViOclttfouwaAGpLq9biA7i8OqUdk2m4oDK7oFQQOv36_xGvpPDvivNeuTWc5hGODtFeIds7ZdodI9ge7jgDnHznNyACYV1xBNZOGv0EIlek5M-_RSH-kYkZFfJBGYCQA1JcVtFaQrkGAlR36Pv6W3RD3RGLvQnkx99-CSvSmRIL7g3DqEh0W8N43SZfj4A0tTbaKa6a4kayltEd4JytSd-7YWcbiOeGNA-tgnqtURwjv7bHMMzZcbflI4n8TrbKhtQ');"></div>
+<div class="absolute inset-0 bg-background-dark/30 mix-blend-multiply"></div>
+<div class="absolute bottom-0 left-0 w-full border-t-grid bg-background-dark/95 p-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="bg-accent text-background-dark text-[10px] font-bold px-1.5 py-0.5 font-mono tracking-widest uppercase">Live Broadcast</span>
+<span class="text-primary text-[10px] font-mono tracking-wider">SIGNAL_STRONG</span>
+</div>
+<h2 class="text-3xl md:text-4xl font-display font-bold text-white mb-2 tracking-tight uppercase">Global Market Shift</h2>
+<p class="text-text-muted font-display text-sm max-w-xl">Analysis of the emerging economic zones in the Pacific sector. Live commentary from Tokyo and Singapore studios.</p>
+</div>
+<div class="absolute top-4 right-4 text-accent font-mono text-[10px] bg-background-dark px-2 py-0.5 border border-primary">REC ●</div>
+<div class="absolute top-4 left-4 text-primary font-mono text-[10px] bg-background-dark px-2 py-0.5 border border-primary">CAM_01</div>
+<span class="material-symbols-outlined absolute center text-white/80 text-7xl pointer-events-none hover:text-accent transition-colors" style="top: 50%; left: 50%; transform: translate(-50%, -50%);">play_circle</span>
+</div>
+<div class="md:col-span-4 grid grid-cols-2 grid-rows-2 bg-background-dark">
+<div class="border-b-grid border-r-grid p-4 flex flex-col items-center justify-center relative group hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="relative mb-3">
+<div class="w-16 h-16 rounded-full border border-primary p-0.5 bg-background-dark">
+<img alt="Woman portrait" class="w-full h-full rounded-full object-cover grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIBBpgFh_21T74mjwOhNwMOSsu90oSHkcqj1opNqBGPSDWH3fXMolArHOdiVWnN-43oPmH2MmELIh2Sp6Cib4aZhn3cgercYHd4VOetK9lN3M3ZoZLiDNvUMJEnlBJdIUbIoh8dXSI8B1hgsS1LO5elMOkwwESj52Y0O00CQ3lCp5x1Ily85UyqXb0FPS2z-6h2i0jj97Jllo4QmUIrj_Yvd3W1QoiTY0bnHp_7xn8lGuefb5Sg-ozvu0qh29znymAajMPTEz5a4U"/>
+</div>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-background-dark rounded-full flex items-center justify-center border border-primary">
+<div class="w-2 h-2 bg-accent rounded-full"></div>
+</div>
+</div>
+<h4 class="text-white font-display font-bold text-sm tracking-wide uppercase">Elena R.</h4>
+<span class="text-[10px] text-primary font-mono uppercase tracking-widest mt-1">Politics</span>
+</div>
+<div class="border-b-grid p-4 flex flex-col items-center justify-center relative group hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="relative mb-3">
+<div class="w-16 h-16 rounded-full border border-primary p-0.5 bg-background-dark">
+<img alt="Man portrait" class="w-full h-full rounded-full object-cover grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAge_voNm7y4BR0_TySL5jcwutyS1BcN1ea7UqK5GuywYhg-pceMjbjT_p7IplUv0BZUC7Oifl1jyqOp-rGy-SKs_cK4fWxRCd2Zu-iwxDVFh-F8le0pF_0bZBATpqVWoLjliYRhrZNI_9cNnsStlxLth-_4isuoXlZoIhsK_nVuZO1XXNz-zVUNq_XnhLs4Trn6bTR-ALIZqBHjEOLkUtc3EPOg1-DuyE9osbjljQ8HypRJIFPBmuPrpd1rE1PL3HnV1b2DXHOE00"/>
+</div>
+</div>
+<h4 class="text-text-muted font-display font-bold text-sm tracking-wide uppercase group-hover:text-white">Marcus T.</h4>
+<span class="text-[10px] text-text-muted font-mono uppercase tracking-widest mt-1 group-hover:text-primary">Tech</span>
+</div>
+<div class="border-r-grid p-4 flex flex-col items-center justify-center relative group hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="relative mb-3">
+<div class="w-16 h-16 rounded-full border border-primary p-0.5 bg-background-dark">
+<img alt="Young woman portrait" class="w-full h-full rounded-full object-cover grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_uyoRrG2jI_QQcml_-CUwI7IptSvsbrM0UH_gSH4UCL2qKQjmrkl0pWy6_RBhwOjcOIoyPd7UT5DyNt10v0-D5gRIkvrtZrZyZyHWZlknSlF_rfCXByW4tNyk_uuxgChQyI0bsld1xX6fSU9EKrmOlpI7yMISvhfFi06o9tYQZzl7A8AnWDys4cXOdBS46eEJjPO5Tx6jfc8e1tCu7zXuKoYB0PYs3oCbgxuGRqUIU8sfZKoGwxI-bxmJhUGGxtm5fU_F2iiE8Qo"/>
+</div>
+</div>
+<h4 class="text-text-muted font-display font-bold text-sm tracking-wide uppercase group-hover:text-white">Sarah K.</h4>
+<span class="text-[10px] text-text-muted font-mono uppercase tracking-widest mt-1 group-hover:text-primary">Science</span>
+</div>
+<div class="p-4 flex flex-col items-center justify-center relative group hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="relative mb-3">
+<div class="w-16 h-16 rounded-full border border-primary p-0.5 bg-background-dark">
+<img alt="Man portrait" class="w-full h-full rounded-full object-cover grayscale contrast-125" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAU3re48zK0he2TDBdtjy22D0bAy99vB-eFa1z53tcRcgrym-p--u7_Yjllc0352zPHquzWeTCvZZjKV8tF0cBkj4AFyMWznT5WDp6lYF2sqk59bIP2wifYSGfK5VDSZva5vTzccbX08zhqaX42zfbUqT3FINpX-_841jQXBMkmZ7q74dSk9w3h9fPiC1piJC-3a5wTzVuZRT57saP_4qLhJ5FC3xGOy9xeGspyLAEi2V8oDb1dd2n4xxqEVynA7iY2IJibAlKeu0A"/>
+</div>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-background-dark rounded-full flex items-center justify-center border border-primary">
+<div class="w-2 h-2 bg-accent rounded-full"></div>
+</div>
+</div>
+<h4 class="text-white font-display font-bold text-sm tracking-wide uppercase">David L.</h4>
+<span class="text-[10px] text-primary font-mono uppercase tracking-widest mt-1">Finance</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 auto-rows-fr">
+<div class="lg:col-span-2 border-r-grid">
+<div class="flex items-center justify-between p-4 border-b-grid bg-background-dark sticky top-0 z-10">
+<h3 class="text-white font-display font-bold text-lg tracking-tight uppercase">Deep Dive Podcasts</h3>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-[10px] border border-primary bg-primary text-background-dark uppercase tracking-wider font-mono font-bold">Latest</button>
+<button class="px-3 py-1 text-[10px] border border-primary text-text-muted hover:text-white uppercase tracking-wider transition-colors font-mono">Popular</button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2">
+<div class="group border-b-grid border-r-grid p-6 hover:bg-surface-dark transition-colors cursor-pointer relative overflow-hidden">
+<div class="flex flex-col h-full">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-primary border border-primary px-1.5 py-0.5 bg-background-dark">EP. 402</span>
+<span class="text-[10px] font-mono text-text-muted">45m</span>
+</div>
+<h4 class="text-lg text-white font-display font-bold leading-tight mb-2 group-hover:text-accent transition-colors uppercase">The Geopolitical Shift</h4>
+<p class="text-xs text-text-muted font-display line-clamp-2 mb-4 flex-1">Understanding the new trade routes opening up in the Arctic circle and their impact.</p>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-primary text-lg">play_arrow</span>
+<span class="text-[10px] uppercase tracking-widest text-primary font-mono font-bold">Listen Now</span>
+</div>
+</div>
+</div>
+<div class="group border-b-grid p-6 hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="flex flex-col h-full">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-primary border border-primary px-1.5 py-0.5 bg-background-dark">EP. 89</span>
+<span class="text-[10px] font-mono text-text-muted">22m</span>
+</div>
+<h4 class="text-lg text-white font-display font-bold leading-tight mb-2 group-hover:text-accent transition-colors uppercase">Tech Horizons</h4>
+<p class="text-xs text-text-muted font-display line-clamp-2 mb-4 flex-1">Quantum computing breakthroughs announced this week in Zurich.</p>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-primary text-lg">play_arrow</span>
+<span class="text-[10px] uppercase tracking-widest text-primary font-mono font-bold">Listen Now</span>
+</div>
+</div>
+</div>
+<div class="group border-b-grid border-r-grid p-6 hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="flex flex-col h-full">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-primary border border-primary px-1.5 py-0.5 bg-background-dark">EP. 12</span>
+<span class="text-[10px] font-mono text-text-muted">60m</span>
+</div>
+<h4 class="text-lg text-white font-display font-bold leading-tight mb-2 group-hover:text-accent transition-colors uppercase">Urban Architecture</h4>
+<p class="text-xs text-text-muted font-display line-clamp-2 mb-4 flex-1">Reimagining public spaces in dense metropolitan areas post-2024.</p>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-primary text-lg">play_arrow</span>
+<span class="text-[10px] uppercase tracking-widest text-primary font-mono font-bold">Listen Now</span>
+</div>
+</div>
+</div>
+<div class="group border-b-grid p-6 hover:bg-surface-dark transition-colors cursor-pointer">
+<div class="flex flex-col h-full">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-primary border border-primary px-1.5 py-0.5 bg-background-dark">EP. 201</span>
+<span class="text-[10px] font-mono text-text-muted">33m</span>
+</div>
+<h4 class="text-lg text-white font-display font-bold leading-tight mb-2 group-hover:text-accent transition-colors uppercase">Soundscapes</h4>
+<p class="text-xs text-text-muted font-display line-clamp-2 mb-4 flex-1">Field recordings from the Amazon rainforest.</p>
+<div class="flex items-center gap-2 mt-auto">
+<span class="material-symbols-outlined text-primary text-lg">play_arrow</span>
+<span class="text-[10px] uppercase tracking-widest text-primary font-mono font-bold">Listen Now</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-1 flex flex-col h-full min-h-[400px]">
+<div class="flex items-center justify-between p-4 border-b-grid bg-background-dark">
+<h3 class="text-white font-display font-bold text-lg tracking-tight uppercase">Radio Garden</h3>
+<span class="flex items-center gap-1.5 text-[10px] text-accent font-mono uppercase border border-primary px-2 py-0.5 bg-background-dark">
+<span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
+                        Live Global
+                    </span>
+</div>
+<div class="relative flex-1 bg-background-dark overflow-hidden group">
+<div class="absolute inset-0 bg-cover bg-center opacity-20 grayscale contrast-150" data-alt="Satellite view" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCeQeg6CHlus-TcCT7PYZ6CtUJHovyeuJLFN9jRh4GhsyC6nHVG5RQBZoVdH21F3tIQa5xLhhAWnup6RgBZG5h2vZHBG8DkABfqHO8b1weAExzRa-WMCcJoxauiZwiAjDAABgZhc0Jj--86mO7d9ChD2VkOCO2oOpHjcpTaP0Ca-KHgyt4BIP63YkyruBuSlKnlRedkwmYOIngn-AfxkjRATSYiq3uEApOZxFkKBV8DzpALDWJghjl3eIjjUKl-LPeasq4qhkHCu8E');"></div>
+<div class="absolute inset-0" style="background-image: linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px); background-size: 40px 40px; opacity: 0.15;"></div>
+<div class="absolute top-1/3 left-1/4 group/point cursor-pointer">
+<div class="w-2 h-2 bg-accent border border-background-dark"></div> 
+<div class="absolute left-4 top-0 bg-background-dark border border-primary px-2 py-1 hidden group-hover/point:block z-10 whitespace-nowrap">
+<span class="text-xs text-white font-display block">New York, USA</span>
+<span class="text-[10px] text-primary font-mono block">WNYC 93.9</span>
+</div>
+</div>
+<div class="absolute top-1/2 left-1/2 group/point cursor-pointer">
+<div class="w-1.5 h-1.5 bg-primary"></div>
+<div class="absolute left-4 top-0 bg-background-dark border border-primary px-2 py-1 hidden group-hover/point:block z-10 whitespace-nowrap">
+<span class="text-xs text-white font-display block">London, UK</span>
+<span class="text-[10px] text-primary font-mono block">BBC R1</span>
+</div>
+</div>
+<div class="absolute bottom-1/3 right-1/4 group/point cursor-pointer">
+<div class="w-2 h-2 bg-accent border border-background-dark"></div>
+<div class="absolute right-4 top-0 bg-background-dark border border-primary px-2 py-1 hidden group-hover/point:block z-10 whitespace-nowrap text-right">
+<span class="text-xs text-white font-display block">Tokyo, JP</span>
+<span class="text-[10px] text-primary font-mono block">J-WAVE 81.3</span>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 right-0 border-t-grid bg-background-dark p-4">
+<div class="flex justify-between items-end">
+<div>
+<div class="text-[10px] text-primary font-mono uppercase tracking-widest mb-1">Frequency</div>
+<div class="text-2xl text-white font-display font-light">98.4 <span class="text-sm text-text-muted font-normal font-mono">MHz</span></div>
+<div class="text-xs text-text-muted font-display">Station: Zurich Alternative</div>
+</div>
+<button class="w-10 h-10 border border-primary text-primary flex items-center justify-center hover:bg-primary hover:text-background-dark transition-colors">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t-grid grid grid-cols-2 md:grid-cols-4 border-b-grid">
+<div class="p-4 border-r-grid">
+<div class="text-[10px] text-primary font-mono uppercase mb-2">Editor's Choice</div>
+<div class="h-24 bg-surface-dark border border-primary flex items-center justify-center text-text-muted text-xs font-mono uppercase tracking-wider">Ad Space</div>
+</div>
+<div class="p-4 border-r-grid">
+<div class="text-[10px] text-primary font-mono uppercase mb-2">System Log</div>
+<div class="font-mono text-[10px] text-text-muted space-y-1">
+<p>&gt; Initializing...</p>
+<p>&gt; Bitrate: 320kbps</p>
+<p>&gt; Server: EU-1</p>
+</div>
+</div>
+<div class="p-4 border-r-grid col-span-2">
+<div class="text-[10px] text-primary font-mono uppercase mb-2">Newsletter</div>
+<div class="flex">
+<input class="bg-background-dark border border-primary text-xs text-white px-3 py-2 w-full font-mono placeholder:text-text-muted focus:border-accent focus:ring-0 rounded-none" placeholder="ENTER EMAIL FOR UPDATES" type="email"/>
+<button class="bg-primary text-background-dark px-4 py-2 text-xs font-bold font-mono uppercase tracking-wider hover:bg-accent hover:text-background-dark transition-colors">Sub</button>
+</div>
+</div>
+</div>
+<div class="p-12 bg-background-dark"></div> 
+</div>
+<aside class="w-[320px] border-l-grid bg-background-dark flex flex-col shrink-0 hidden xl:flex">
+<div class="p-4 border-b-grid">
+<h3 class="text-white font-display font-bold text-sm tracking-wide uppercase mb-1">Signal Analysis</h3>
+<p class="text-[10px] text-text-muted font-mono">Real-time spectrum data</p>
+</div>
+<div class="h-40 border-b-grid p-4 flex items-end justify-between gap-1 bg-background-dark">
+<div class="w-full bg-primary/30 h-[40%]"></div>
+<div class="w-full bg-primary/50 h-[70%]"></div>
+<div class="w-full bg-primary/70 h-[50%]"></div>
+<div class="w-full bg-accent h-[90%]"></div> 
+<div class="w-full bg-primary/70 h-[60%]"></div>
+<div class="w-full bg-primary/50 h-[30%]"></div>
+<div class="w-full bg-primary/30 h-[45%]"></div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="grid grid-cols-2 border-b-grid">
+<div class="p-4 border-r-grid">
+<div class="text-[10px] text-text-muted font-mono uppercase">Buffer</div>
+<div class="text-xl text-white font-mono">100%</div>
+</div>
+<div class="p-4">
+<div class="text-[10px] text-text-muted font-mono uppercase">Packet Loss</div>
+<div class="text-xl text-primary font-mono">0.0%</div>
+</div>
+</div>
+<div class="p-4">
+<h4 class="text-xs font-bold text-white uppercase tracking-wider mb-6 mt-2 font-display">Upcoming Schedule</h4>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="w-12 text-[10px] font-mono text-primary text-right pt-0.5">14:30</div>
+<div>
+<div class="text-xs text-white font-bold font-display uppercase">Market Watch</div>
+<div class="text-[10px] text-text-muted font-display">Global Stocks &amp; Crypto</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-12 text-[10px] font-mono text-text-muted text-right pt-0.5">15:00</div>
+<div>
+<div class="text-xs text-text-main font-medium font-display uppercase">Design Systems</div>
+<div class="text-[10px] text-text-muted font-display">With Guest: Alex M.</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-12 text-[10px] font-mono text-text-muted text-right pt-0.5">16:15</div>
+<div>
+<div class="text-xs text-text-main font-medium font-display uppercase">Indie Music Hour</div>
+<div class="text-[10px] text-text-muted font-display">Discover new tracks</div>
+</div>
+</div>
+<div class="flex gap-4 opacity-50">
+<div class="w-12 text-[10px] font-mono text-text-muted text-right pt-0.5">17:00</div>
+<div>
+<div class="text-xs text-text-main font-medium font-display uppercase">Evening News</div>
+<div class="text-[10px] text-text-muted font-display">Daily Roundup</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 p-4 border-t-grid">
+<div class="bg-surface-dark border border-primary p-3 text-center">
+<span class="material-symbols-outlined text-primary text-2xl mb-1">qr_code_2</span>
+<p class="text-[10px] text-text-muted font-mono uppercase">Mobile App Link</p>
+</div>
+</div>
+</div>
+</aside>
+</main>
+
+</body></html>

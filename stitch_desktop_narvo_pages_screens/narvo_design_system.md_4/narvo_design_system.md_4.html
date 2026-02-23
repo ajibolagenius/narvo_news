@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo Auth Center Console</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --color-primary: #EBD5AB;
+            --color-bg: #1B211A;
+            --color-surface: #1B211A;--color-border: #628141;
+            --color-text-primary: #F2F2F2;
+            --color-text-secondary: #8BAE66;
+            --color-text-tertiary: #808080;
+        }
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-header {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .grid-border {
+            border: 1px solid var(--color-border);
+        }
+        .grid-border-r {
+            border-right: 1px solid var(--color-border);
+        }
+        .grid-border-b {
+            border-bottom: 1px solid var(--color-border);
+        }
+        .grid-border-l {
+            border-left: 1px solid var(--color-border);
+        }
+        .grid-border-t {
+            border-top: 1px solid var(--color-border);
+        }
+        .input-reset {
+            background: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+            color: var(--color-text-primary);
+            border-radius: 0;
+        }
+        .input-reset:focus {
+            box-shadow: none;
+            outline: none;
+            border: none;
+        }::placeholder {
+            color: var(--color-text-tertiary);
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body class="h-screen w-full overflow-hidden flex flex-col relative bg-[var(--color-bg)]">
+<header class="h-16 flex items-center justify-between px-8 grid-border-b bg-[var(--color-bg)] z-10 shrink-0">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[var(--color-primary)] text-xl">grid_view</span>
+<div class="font-header text-xl tracking-wide font-bold uppercase text-[var(--color-primary)]">Narvo</div>
+<div class="h-4 w-[1px] bg-[var(--color-border)] mx-2"></div>
+<div class="font-mono text-xs text-[var(--color-text-secondary)] uppercase tracking-wider">System v2.4.0</div>
+</div>
+<div class="flex items-center gap-8 font-mono text-xs text-[var(--color-text-secondary)]">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
+<span>NETWORK: STABLE</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>ZURICH 14:02</span>
+</div>
+</div>
+</header>
+<main class="flex-1 grid grid-cols-12 h-full">
+<div class="hidden lg:block lg:col-span-3 grid-border-r h-full relative">
+<div class="absolute inset-0 grid grid-rows-6">
+<div class="grid-border-b p-6 flex items-end">
+<span class="font-mono text-xs text-[var(--color-text-tertiary)]">LAT: 47.3769° N</span>
+</div>
+<div class="grid-border-b p-6 flex items-end">
+<span class="font-mono text-xs text-[var(--color-text-tertiary)]">LON: 8.5417° E</span>
+</div>
+<div class="grid-border-b"></div>
+<div class="grid-border-b"></div>
+<div class="grid-border-b"></div>
+<div class=""></div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-6 flex flex-col justify-center items-center relative">
+<div class="absolute inset-0 grid grid-cols-4 pointer-events-none">
+<div class="border-r border-[var(--color-border)] h-full opacity-30"></div>
+<div class="border-r border-[var(--color-border)] h-full opacity-30"></div>
+<div class="border-r border-[var(--color-border)] h-full opacity-30"></div>
+<div class="h-full"></div>
+</div>
+<div class="w-full max-w-md z-10 relative">
+<div class="grid-border bg-[var(--color-bg)] mb-[-1px]">
+<div class="p-4 flex justify-between items-center border-b border-[var(--color-border)]">
+<h2 class="font-header text-2xl font-medium tracking-tight text-[var(--color-text-primary)]">Secure Login</h2>
+<span class="material-symbols-outlined text-[var(--color-primary)]">lock_person</span>
+</div>
+<div class="h-1 w-full bg-[var(--color-surface)] overflow-hidden border-b border-[var(--color-border)]">
+<div class="h-full w-1/3 bg-[var(--color-primary)]"></div>
+</div>
+</div>
+<div class="grid-border bg-[var(--color-surface)] p-8 flex flex-col gap-6">
+<div class="group relative">
+<label class="font-mono text-xs uppercase text-[var(--color-text-secondary)] mb-2 block tracking-wider" for="username">Operator ID / Email</label>
+<div class="flex items-center border border-[var(--color-border)] bg-[var(--color-bg)] h-12 px-4 focus-within:border-[var(--color-primary)] transition-colors duration-200">
+<span class="material-symbols-outlined text-[var(--color-text-tertiary)] mr-3 text-lg">person</span>
+<input class="input-reset font-mono text-sm placeholder-[var(--color-text-tertiary)]" id="username" placeholder="ID-XXXX-XX" type="email"/>
+<div class="w-2 h-2 bg-[var(--color-text-secondary)] opacity-50 group-focus-within:bg-[var(--color-primary)] group-focus-within:opacity-100"></div>
+</div>
+</div>
+<div class="group relative">
+<div class="flex justify-between mb-2">
+<label class="font-mono text-xs uppercase text-[var(--color-text-secondary)] tracking-wider" for="password">Access Key</label>
+<a class="font-mono text-xs text-[var(--color-primary)] hover:underline opacity-80 hover:opacity-100" href="#">RECOVER KEY?</a>
+</div>
+<div class="flex items-center border border-[var(--color-border)] bg-[var(--color-bg)] h-12 px-4 focus-within:border-[var(--color-primary)] transition-colors duration-200">
+<span class="material-symbols-outlined text-[var(--color-text-tertiary)] mr-3 text-lg">key</span>
+<input class="input-reset font-mono text-sm placeholder-[var(--color-text-tertiary)]" id="password" placeholder="••••••••••••" type="password"/>
+<div class="w-2 h-2 bg-[var(--color-text-secondary)] opacity-50 group-focus-within:bg-[var(--color-primary)] group-focus-within:opacity-100"></div>
+</div>
+</div>
+<button class="w-full h-14 bg-[var(--color-primary)] text-[#1B211A] font-header font-bold uppercase tracking-wider text-lg hover:bg-[#d4c09a] transition-colors flex items-center justify-between px-6 mt-2 group border border-transparent hover:border-[var(--color-border)]">
+<span>Initialize Session</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-2 grid-border-l grid-border-r grid-border-b bg-[var(--color-bg)]">
+<div class="p-4 grid-border-r flex items-center gap-3">
+<span class="material-symbols-outlined text-[var(--color-text-tertiary)] text-lg">fingerprint</span>
+<div class="flex flex-col">
+<span class="font-mono text-[10px] text-[var(--color-text-tertiary)] uppercase">Biometric</span>
+<span class="font-mono text-xs text-[var(--color-text-primary)]">Sync Ready</span>
+</div>
+</div>
+<div class="p-4 flex items-center gap-3">
+<span class="material-symbols-outlined text-[var(--color-text-tertiary)] text-lg">shield</span>
+<div class="flex flex-col">
+<span class="font-mono text-[10px] text-[var(--color-text-tertiary)] uppercase">Security</span>
+<span class="font-mono text-xs text-[var(--color-text-primary)]">2FA Active</span>
+</div>
+</div>
+</div>
+<div class="mt-6 text-center">
+<p class="font-mono text-[10px] text-[var(--color-text-tertiary)] uppercase tracking-widest">
+                        Authorized Personnel Only<br/>
+                        Node: NRV-SW-08
+                    </p>
+</div>
+</div>
+</div>
+<div class="hidden lg:block lg:col-span-3 grid-border-l h-full relative">
+<div class="absolute inset-0 grid grid-rows-6">
+<div class="grid-border-b p-6 flex justify-end items-end">
+<span class="font-mono text-xs text-[var(--color-text-tertiary)]">STATUS: AWAITING</span>
+</div>
+<div class="grid-border-b p-6 flex justify-end items-end">
+<div class="flex flex-col items-end gap-1">
+<div class="h-[1px] w-12 bg-[var(--color-text-secondary)]"></div>
+<div class="h-[1px] w-8 bg-[var(--color-text-secondary)] opacity-50"></div>
+<div class="h-[1px] w-4 bg-[var(--color-text-secondary)] opacity-30"></div>
+</div>
+</div>
+<div class="grid-border-b"></div>
+<div class="grid-border-b"></div>
+<div class="grid-border-b"></div>
+<div class=""></div>
+</div>
+</div>
+</main>
+<footer class="h-12 grid-border-t bg-[var(--color-surface)] flex items-center justify-between px-8 text-[var(--color-text-secondary)] font-mono text-[10px] uppercase tracking-wider z-10 shrink-0">
+<div class="flex gap-6">
+<span class="hover:text-[var(--color-primary)] cursor-pointer transition-colors">Help Terminal</span>
+<span class="hover:text-[var(--color-primary)] cursor-pointer transition-colors">Privacy Protocol</span>
+</div>
+<div>
+            SESSION ID: <span class="text-[var(--color-text-primary)]">NULL</span>
+</div>
+</footer>
+</body></html>

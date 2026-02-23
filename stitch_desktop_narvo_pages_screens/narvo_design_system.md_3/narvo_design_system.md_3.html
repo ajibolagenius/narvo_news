@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo Onboarding Setup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --color-primary: #EBD5AB;
+            --color-bg: #1B211A;
+            --color-surface: #242B23;
+            --color-border: #628141;
+            --color-text-primary: #F2F2F2;
+            --color-text-secondary: #8BAE66;
+            --font-header: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-primary);
+            font-family: var(--font-body);
+        }
+        .font-header { font-family: var(--font-header); }
+        .font-mono-custom { font-family: var(--font-mono); }
+        .narvo-grid {
+            border: 1px solid var(--color-border);
+        }
+        .narvo-border-r {
+            border-right: 1px solid var(--color-border);
+        }
+        .narvo-border-b {
+            border-bottom: 1px solid var(--color-border);
+        }
+        .active-state {
+            background-color: var(--color-primary);
+            color: var(--color-bg);
+        }
+        .hover-state:hover {
+            background-color: var(--color-surface);
+            cursor: pointer;
+        }
+        .radio-check:checked + div {
+            background-color: var(--color-primary);
+            color: var(--color-bg);
+            border-color: var(--color-primary);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden selection:bg-[var(--color-primary)] selection:text-[var(--color-bg)]">
+<header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-[var(--color-bg)] z-10">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[var(--color-primary)]">graphic_eq</span>
+<h1 class="font-header text-xl tracking-wide uppercase font-bold text-[var(--color-text-primary)]">Narvo <span class="text-[var(--color-text-secondary)] font-light mx-2">///</span> Setup</h1>
+</div>
+<div class="font-mono-custom text-xs text-[var(--color-text-secondary)]">
+            SESSION_ID: 009-AF-X
+        </div>
+</header>
+<main class="flex-1 grid grid-cols-12 h-full">
+<section class="col-span-3 narvo-border-r h-full flex flex-col bg-[var(--color-bg)]">
+<div class="p-6 narvo-border-b">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] block mb-2">01 — LOCALE</span>
+<h2 class="font-header text-2xl font-medium">Regional Select</h2>
+<p class="text-[var(--color-text-secondary)] text-sm mt-2 leading-relaxed">Select your primary broadcast region for localized news aggregation.</p>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<ul class="flex flex-col">
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 active-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg font-bold">Lagos / West Africa</span>
+<span class="font-mono-custom text-xs opacity-80">UTC+1 • NIGERIA</span>
+</div>
+<input checked="" class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Nairobi / East Africa</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+3 • KENYA</span>
+</div>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Johannesburg / South</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+2 • SOUTH AFRICA</span>
+</div>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Accra / West Africa</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+0 • GHANA</span>
+</div>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Kigali / Central</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+2 • RWANDA</span>
+</div>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+</ul>
+</div>
+<div class="p-4 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
+<div class="flex justify-between items-center text-[var(--color-text-secondary)] text-xs font-mono-custom">
+<span>SIGNAL_STRENGTH</span>
+<span>98%</span>
+</div>
+<div class="w-full bg-[var(--color-bg)] h-1 mt-2 border border-[var(--color-border)]">
+<div class="h-full w-[98%] bg-[var(--color-text-secondary)]"></div>
+</div>
+</div>
+</section>
+<section class="col-span-4 narvo-border-r h-full flex flex-col bg-[var(--color-bg)] relative">
+<div class="p-6 narvo-border-b">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] block mb-2">02 — AUDIO ENGINE</span>
+<h2 class="font-header text-2xl font-medium">Voice Preference</h2>
+<p class="text-[var(--color-text-secondary)] text-sm mt-2 leading-relaxed">Choose the synthesis engine for your daily briefings.</p>
+</div>
+<div class="flex-1 p-6 flex flex-col gap-4">
+<div class="relative group">
+<input checked="" class="peer hidden" id="voice1" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice1">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">Pidgin: Sabi-Work</span>
+<span class="material-symbols-outlined text-lg">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Casual, rhythmic, direct.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
+</div>
+<div class="relative group">
+<input class="peer hidden" id="voice2" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice2">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">Yoruba: High-Fidelity</span>
+<span class="material-symbols-outlined text-lg opacity-50">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Formal, tonal precision, broadcast standard.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
+</div>
+<div class="relative group">
+<input class="peer hidden" id="voice3" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice3">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">Swahili: Metro</span>
+<span class="material-symbols-outlined text-lg opacity-50">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Urban, fast-paced, East African standard.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
+</div>
+<div class="relative group">
+<input class="peer hidden" id="voice4" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice4">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">English: Neutral Afro</span>
+<span class="material-symbols-outlined text-lg opacity-50">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Pan-African accent, clear, international.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
+</div>
+</div>
+<div class="h-24 border-t border-[var(--color-border)] flex items-center justify-center relative overflow-hidden bg-[var(--color-surface)]">
+<div class="absolute inset-0 flex items-center justify-center gap-1 opacity-40">
+<div class="w-1 h-4 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-8 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-12 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-6 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-10 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-16 bg-[var(--color-primary)]"></div> 
+<div class="w-1 h-8 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-4 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-12 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-6 bg-[var(--color-text-secondary)]"></div>
+</div>
+<span class="relative z-10 font-mono-custom text-xs text-[var(--color-text-primary)] bg-[var(--color-surface)] px-2">AUDIO VISUALIZER INACTIVE</span>
+</div>
+</section>
+<section class="col-span-5 h-full flex flex-col bg-[var(--color-bg)]">
+<div class="p-6 narvo-border-b">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] block mb-2">03 — FEED CALIBRATION</span>
+<h2 class="font-header text-2xl font-medium">Interest Matrix</h2>
+<p class="text-[var(--color-text-secondary)] text-sm mt-2 leading-relaxed">Select at least 5 topics to initialize the grid.</p>
+</div>
+<div class="flex-1 p-6">
+<div class="grid grid-cols-3 gap-[1px] border border-[var(--color-border)] bg-[var(--color-border)]">
+<label class="cursor-pointer group relative h-28 bg-[var(--color-primary)] text-[var(--color-bg)] flex flex-col justify-between p-3">
+<input checked="" class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px]">01</span>
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-header text-lg font-medium">Politics</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">02</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Tech</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-primary)] text-[var(--color-bg)] flex flex-col justify-between p-3">
+<input checked="" class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px]">03</span>
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-header text-lg font-medium">Sports</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">04</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Finance</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-primary)] text-[var(--color-bg)] flex flex-col justify-between p-3">
+<input checked="" class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px]">05</span>
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-header text-lg font-medium">Afrobeats</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">06</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Agri-Tech</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">07</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Energy</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">08</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Startups</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">09</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Culture</span>
+</label>
+</div>
+</div>
+<div class="mt-auto p-6 border-t border-[var(--color-border)] bg-[var(--color-surface)]">
+<div class="flex justify-between items-center mb-4">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)]">STATUS: READY TO INITIALIZE</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)]">3/5 STEPS</span>
+</div>
+<button class="w-full bg-[var(--color-primary)] text-[var(--color-bg)] font-header font-bold text-lg py-4 hover:brightness-110 active:brightness-90 transition-all flex items-center justify-center gap-2">
+<span>Initialize Narvo Feed</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+
+</body></html>
