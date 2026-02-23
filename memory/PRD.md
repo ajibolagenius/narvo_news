@@ -15,104 +15,74 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 ## Technical Stack
 - **Frontend**: React 18, TailwindCSS, React Router
 - **Backend**: FastAPI (Python)
-- **Database/Auth**: Supabase (PostgreSQL + Auth)
+- **Auth**: Supabase (email/password)
+- **Database**: MongoDB (bookmarks, preferences), Supabase (auth)
 - **AI**: Gemini 2.0 Flash (via Emergent LLM Key)
 - **TTS**: OpenAI TTS (via Emergent LLM Key)
 - **News Sources**: RSS feeds from 7 African sources
 
-## Architecture (Updated Feb 23, 2026)
+## Architecture
 ```
 /app/frontend/src/
 ├── App.js                    # Clean routing (~53 lines)
-├── App.css
-├── index.js
-├── index.css                 # Global styles, CSS variables, animations
 ├── lib/
-│   └── supabase.js          # Supabase client instance
+│   ├── supabase.js          # Supabase client
+│   └── audioCache.js        # IndexedDB audio caching
 ├── contexts/
 │   ├── AuthContext.js        # Supabase auth provider
-│   └── AudioContext.js       # Audio playback provider
+│   └── AudioContext.js       # Audio playback + auto-cache
 ├── hooks/
-│   └── useBookmarks.js      # Bookmark hook (localStorage + API sync)
+│   └── useBookmarks.js      # Bookmark hook (localStorage + MongoDB sync)
 ├── components/
-│   ├── LoadingScreen.js      # Boot animation
-│   ├── Clock.js              # UTC clock
-│   ├── AudioPlayer.js        # Persistent audio player bar
-│   └── ProtectedRoute.js     # Auth guard component
+│   ├── LoadingScreen.js, Clock.js, AudioPlayer.js, ProtectedRoute.js
 └── pages/
-    ├── LandingPage.js        # Public landing page
-    ├── AuthPage.js           # Login/Signup with Supabase
-    ├── OnboardingPage.js     # 3-panel setup (region, voice, interests)
-    ├── DashboardPage.js      # Live news feed + sidebar
-    ├── NewsDetailPage.js     # Story detail + narrative + TTS
-    ├── BookmarksPage.js      # Saved stories (offline capable)
-    ├── VoiceStudioPage.js    # Voice profile selection
-    ├── MorningBriefingPage.js # Daily audio digest
-    ├── SearchPage.js         # News search
-    └── SettingsPage.js       # Profile + logout
+    ├── LandingPage.js, AuthPage.js, OnboardingPage.js
+    ├── DashboardPage.js, NewsDetailPage.js, BookmarksPage.js
+    ├── VoiceStudioPage.js, MorningBriefingPage.js
+    ├── SearchPage.js, SettingsPage.js
 
 /app/backend/
-├── server.py                 # FastAPI with all endpoints
+├── server.py                 # FastAPI with MongoDB + Supabase
 └── tests/
-    ├── test_narvo_api.py
-    └── test_narvo_api_v2.py
 ```
 
-## What's Been Implemented
+## Completed Features (All Tested)
+1. Landing Page (Swiss Grid design)
+2. Supabase Auth (email/password signup/login)
+3. Protected Routes (redirect to /auth)
+4. Onboarding (3-panel: Region, Voice, Interests)
+5. Dashboard (live news feed + bookmark buttons)
+6. **Bookmarks with MongoDB persistence** (survives restarts)
+7. **Offline audio cache via IndexedDB** (auto-caches on play)
+8. **User preference sync** (onboarding saves to MongoDB, login restores)
+9. News Detail (AI narratives, TTS playback, bookmark)
+10. Voice Studio, Search, Settings, Audio Player, Morning Briefing
 
-### Completed Features
-1. **Landing Page** - Swiss Grid hero, news marquee, transmissions, pillars, modules
-2. **Supabase Auth** - Real email/password signup & login (replaces localStorage)
-3. **Protected Routes** - Dashboard, bookmarks, settings require auth
-4. **Onboarding** - 3-panel setup: Region, Voice, Interests
-5. **Dashboard** - Live news feed with bookmark buttons
-6. **Bookmarks/Saved Stories** - CRUD with offline cache (localStorage + backend)
-7. **News Detail** - AI narratives, key takeaways, TTS playback, bookmark
-8. **Voice Studio** - 5 regional voice profiles
-9. **Search Center** - Client-side search with results
-10. **Settings** - User profile, display toggles, logout
-11. **Audio Player** - Persistent bottom bar with controls
-12. **Morning Briefing** - AI-generated daily audio digest
-
-### Backend APIs (15 endpoints)
-- `/api/health` - System status
-- `/api/news` - RSS aggregation (7 sources)
-- `/api/news/{id}` - News detail with AI narrative
-- `/api/paraphrase` - AI narrative generation (Gemini)
-- `/api/tts/generate` - OpenAI TTS audio
-- `/api/voices` - Voice profiles
-- `/api/metrics` - Platform stats
-- `/api/regions`, `/api/categories`, `/api/trending`
-- `/api/briefing/generate` - Morning briefing + audio
-- `/api/briefing/latest` - Cached briefing
-- `/api/briefing/audio` - Custom script audio
-- `/api/bookmarks` (POST) - Add bookmark
-- `/api/bookmarks` (GET) - List user bookmarks
-- `/api/bookmarks/{id}` (DELETE) - Remove bookmark
+## Backend APIs (18+ endpoints)
+- Core: `/api/health`, `/api/news`, `/api/news/{id}`, `/api/voices`, `/api/metrics`
+- AI/TTS: `/api/paraphrase`, `/api/tts/generate`
+- Briefing: `/api/briefing/generate`, `/api/briefing/latest`, `/api/briefing/audio`
+- Bookmarks (MongoDB): `POST /api/bookmarks`, `GET /api/bookmarks`, `DELETE /api/bookmarks/{id}`
+- Preferences (MongoDB): `POST /api/preferences`, `GET /api/preferences`
+- Support: `/api/regions`, `/api/categories`, `/api/trending`
 
 ## Testing Status (Feb 23, 2026)
-- Backend: 100% (15/15)
+- Backend: 100% (18/18) - iteration_7.json
 - Frontend: 100% (all flows)
-- Test reports: iteration_5.json, iteration_6.json
+- MongoDB persistence verified
+- IndexedDB audio caching verified
 
 ## Prioritized Backlog
 
-### P0 - COMPLETE
-- [x] Landing, Auth, Onboarding UI
-- [x] Refactor App.js into components
-- [x] Supabase Auth (email/password)
-- [x] Bookmarks with offline cache
-
 ### P1 (High Priority)
-- [ ] Persist bookmarks to Supabase/MongoDB (currently in-memory)
-- [ ] Offline audio caching for bookmarked stories
 - [ ] Push notifications for breaking news
+- [ ] Email confirmation flow UX improvement
+- [ ] Playlist/queue functionality
 
 ### P2 (Medium Priority)
 - [ ] Dubawa fact-checking / Truth Tags
-- [ ] User preference sync to Supabase
-- [ ] Playlist/queue functionality
 - [ ] Share stories feature
+- [ ] Multi-language UI support
 
 ### P3 (Future)
 - [ ] React Native mobile app
