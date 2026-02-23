@@ -175,6 +175,17 @@ html, body, #root {
   box-shadow: 0 0 10px rgba(235, 213, 171, 0.4);
 }
 
+/* Marquee Animation */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 40s linear infinite;
+}
+
 /* Pulse Animation */
 @keyframes pulse {
   0%, 100% { opacity: 1; }
