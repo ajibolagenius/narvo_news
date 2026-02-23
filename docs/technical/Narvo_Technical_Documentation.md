@@ -1,6 +1,6 @@
 # Narvo Technical Documentation Overview
 
-Narvo is a mobile-first, voice-first platform that delivers AI-summarised news in localised voices. This document covers the technical architecture, stack, and implementation details.
+Narvo is a voice-first platform that delivers AI-summarised news in localised voices. This document covers the technical architecture, stack, and implementation details.
 
 **Key Innovation:** The combination of AI summarisation + localised voice synthesis addresses information overload while breaking down literacy and language barriers in emerging markets.
 
