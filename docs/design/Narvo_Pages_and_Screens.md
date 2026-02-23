@@ -1,7 +1,7 @@
 # Narvo Pages & Screens
 
-## Design Paradigm: The Technical Instrument
-Following the Swiss Grid principle, every page is treated as a high-fidelity instrument panel. Layouts are strictly segmented by 1px borders, and interaction is optimized for both desktop (cursor precision) and mobile (thumb-reach/gestures).
+## Design Paradigm: The High-Fidelity News Console
+Following the Swiss Grid principle, every page is treated as a high-fidelity **news broadcast panel**. Layouts are strictly segmented by 1px borders to ensure journalistic order. Interaction is optimized for both desktop (editorial precision) and mobile (broadcast consumption).
 
 ---
 

@@ -15,7 +15,7 @@ Narvo is a mobile-first, voice-first platform that delivers AI-summarised news i
 - Offline Support: MP3/audio downloads and cached content
 - Bento Grid Feed: Organised layout grouped by interest categories
 - Smart Notifications: Daily digests and breaking news alerts
-Narvo is an audio-first news broadcast platform. Its technical identity is defined by a **Monorepo** architecture and a "Technical Instrument" design language (Swiss Grid).
+Narvo is an audio-first news broadcast platform. Its technical identity is defined by a **Monorepo** architecture and a **"News-as-Instrument"** design language (Swiss Grid).
 
 **Key Innovation**: Contextual RAG Synthesis and Broadcast Paraphrasing.
 

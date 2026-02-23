@@ -1,6 +1,6 @@
 # Narvo App Copy: Source of Truth
 
-This document serves as the central repository for all user-facing text. It blends **Swiss Layout Precision** with **African Cultural Resonance**.
+This document serves as the central repository for all user-facing text for the **Narvo News Broadcast Platform**. It blends **Swiss Layout Precision** with **African Cultural Resonance**.
 
 ---
 

@@ -1,9 +1,9 @@
 # Narvo Design System
 
 ## Visual Philosophy
-**The Pitch:** A radical modernization of the news aggregation experience, stripping away bloat for a hyper-functional, grid-based interface. It transforms dense information into a scannable, precision instrument.
+**The Pitch:** A radical modernization of the news aggregation experience for a **Broadcast-Grade News Platform**. It strips away visual bloat for a hyper-functional, grid-based interface, transforming dense information into a scannable, precision-engineered news instrument.
 
-Narvo is grounded in **Strict Minimalism** and **Technical Precision**. The design should feel "engineered" rather than "decorated," drawing inspiration from Swiss design and high-end professional equipment. It is unapologetically digital, structural, and functional.
+Narvo is grounded in **Strict Minimalism** and **Technical Precision**, optimized for journalistic authority and high-fidelity audio delivery. The design should feel "engineered" like a professional broadcast studio console rather than a generic engineering tool.
 
 ## 1. Color Palette (The 10% Rule)
 To maintain extreme minimalism, the primary color acts as the sole signal for action, alerts, or active states, occupying no more than 10% of the screen.
