@@ -115,16 +115,6 @@ const DiscoverPage = () => {
     }
   };
 
-  const handlePlayFeatured = () => {
-    if (featuredNews) {
-      playTrack(featuredNews);
-    }
-  };
-
-  const handlePlayPodcast = (podcast) => {
-    playTrack({ id: podcast.id, title: podcast.title, summary: podcast.description });
-  };
-
   return (
     <main className="flex-1 flex flex-col bg-background-dark relative" data-testid="discover-page">
       <div className="flex-1 overflow-y-auto custom-scroll">
