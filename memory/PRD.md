@@ -139,17 +139,18 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - **Mobile Bottom Navigation**: 6-item bottom nav bar (Feed, Briefing, Saved, Voices, Search, More)
 - **Desktop Elements Hidden on Mobile**: Dashboard sidebar, telemetry sidebar, and detail sidebar properly hidden
 
-### Backend APIs (18+ endpoints)
+### Backend APIs (20+ endpoints)
 - Core: `/api/health`, `/api/news`, `/api/news/{id}`, `/api/voices`, `/api/metrics`
 - AI/TTS: `/api/paraphrase`, `/api/tts/generate`
 - Briefing: `/api/briefing/generate`, `/api/briefing/latest`, `/api/briefing/audio`
 - Bookmarks (MongoDB): `POST/GET/DELETE /api/bookmarks`
 - Preferences (MongoDB): `POST/GET /api/preferences`
 - Support: `/api/regions`, `/api/categories`, `/api/trending`
+- Radio (NEW): `/api/radio/stations?country={code}&limit={n}` (Radio Browser API)
 
 ## Testing
-- Backend: 100% (18/18) — iteration_8.json
-- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX), iteration_10.json (Library pages)
+- Backend: 100% (9/9 new tests) — iteration_11.json
+- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX), iteration_10.json (Library pages), iteration_11.json (User Profile & Radio)
 
 ## Prioritized Backlog
 
