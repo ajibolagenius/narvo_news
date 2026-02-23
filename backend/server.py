@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
+from pymongo import MongoClient
 import feedparser
 import httpx
 
@@ -33,6 +34,16 @@ supabase: Client = create_client(
     os.environ.get("SUPABASE_URL"),
     os.environ.get("SUPABASE_ANON_KEY")
 )
+
+# MongoDB for persistent storage
+mongo_client = MongoClient(os.environ.get("MONGO_URL"))
+db = mongo_client[os.environ.get("DB_NAME", "narvo")]
+bookmarks_col = db["bookmarks"]
+preferences_col = db["user_preferences"]
+
+# Create indexes
+bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
+preferences_col.create_index("user_id", unique=True)
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
