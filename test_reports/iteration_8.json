@@ -1,0 +1,104 @@
+{
+  "summary": "Complete UI rebuild testing - DashboardLayout with shared header/sidebar/player. All 18 backend tests passed (100%). Frontend UI components verified - landing page, dashboard with featured card + streams + telemetry, news detail with key takeaways + AI narrative, bookmarks, auth redirect, guest mode all working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Landing Page",
+        "issues": ["Minor: Right sidebar transmission items take 3+ seconds to load due to API call - could show loading skeleton"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_narvo_v8.py",
+    "/app/test_reports/pytest/pytest_results_v8.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "DashboardLayout correctly wraps all dashboard routes with shared header/sidebar/player",
+    "ProtectedRoute properly checks for user auth OR guest mode (narvo_guest localStorage)",
+    "NewsDetailPage generates AI narrative via Gemini and displays Key Takeaways section",
+    "Bookmarks sync between localStorage and MongoDB backend for persistence",
+    "All data-testid attributes present for testing"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_narvo_v8.py"
+  ],
+  "success_rate": {
+    "backend": "100% (18/18 tests passed)",
+    "frontend": "100% (all UI components and flows working)"
+  },
+  "test_credentials": "Guest mode: localStorage.setItem('narvo_guest', 'true'). No auth needed for testing.",
+  "seed_data_creation": "Test creates unique user IDs per test run for isolation",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "UI rebuild complete. DashboardLayout wraps /dashboard, /news/:id, /bookmarks, /voices, /briefing, /search, /settings with shared header + sidebar + audio player. Guest mode bypasses auth. Loading screen is 3.5 seconds. News detail AI narrative may take 5-10 seconds. All key data-testids present: dashboard-layout, dashboard-header, dashboard-sidebar, audio-player-bar, featured-card, featured-play-btn, featured-bookmark-btn, stream-card-*, play-btn-*, bookmark-btn-*, telemetry-sidebar, news-detail-page, news-title, play-story-btn, bookmark-detail-btn, back-btn, detail-sidebar, related-*, bookmarks-page, bookmarks-list.",
+  "features_tested": {
+    "layout_components": {
+      "DashboardLayout": "PASS - Wraps all dashboard routes with shared components",
+      "DashboardHeader": "PASS - Shows NARVO // DASHBOARD, search bar, signal stats, user avatar",
+      "DashboardSidebar": "PASS - 5 nav icons (Primary Stream, Morning Briefing, Saved Stories, Voice Studio, Search) + Settings",
+      "AudioPlayerBar": "PASS - News ticker marquee, play/pause, progress bar, volume controls"
+    },
+    "dashboard_page": {
+      "featured_transmission_card": "PASS - Image, headline, play button, bookmark button",
+      "synthesized_streams": "PASS - 14 news cards with source, tags, title, summary, play, bookmark",
+      "telemetry_sidebar": "PASS - Weather (28°C Lagos), trending tags, regional matrix health, metrics",
+      "filter_sort_buttons": "PASS - FILTERS and SORT_PRIORITY buttons in sub-header",
+      "load_more_button": "PASS - LOAD_ADDITIONAL_TRANSMISSIONS button"
+    },
+    "news_detail_page": {
+      "category_pills": "PASS - GENERAL and #GENERAL tags at top",
+      "headline_truth_tag": "PASS - Large headline with TRUTH_TAG: 100%",
+      "lead_paragraph": "PASS - With left border accent",
+      "hero_image_caption": "PASS - FIG 1.0 caption at bottom",
+      "audio_controls": "PASS - Play, West African English language, bookmark buttons",
+      "key_takeaways": "PASS - 3 bullet points when AI generates narrative",
+      "article_body": "PASS - AI-generated narrative with quote block",
+      "metadata_sidebar": "PASS - Category, Source, Truth Score, AI Synthesis status, tags, related stories",
+      "back_button": "PASS - Returns to dashboard",
+      "related_stories": "PASS - Clickable, navigate to other stories"
+    },
+    "bookmarks": {
+      "dashboard_bookmark_buttons": "PASS - Toggle bookmark state on cards",
+      "detail_page_bookmark": "PASS - Bookmark button works",
+      "bookmarks_page": "PASS - Shows saved stories with play, remove buttons"
+    },
+    "auth_and_guest_mode": {
+      "auth_redirect": "PASS - /dashboard redirects to /auth when not authenticated and not guest",
+      "guest_mode": "PASS - Oya, Play button sets narvo_guest=true and opens dashboard"
+    },
+    "landing_page": {
+      "start_broadcast_button": "PASS",
+      "oya_play_button": "PASS - Sets guest mode",
+      "transmission_sidebar": "PASS - Shows 4 news items from API"
+    },
+    "backend_apis": {
+      "health": "PASS",
+      "news_list": "PASS",
+      "news_detail": "PASS - With AI narrative generation",
+      "bookmarks_crud": "PASS - POST/GET/DELETE all working",
+      "preferences_crud": "PASS - POST/GET with upsert behavior",
+      "voices": "PASS - 5 voice profiles",
+      "regions": "PASS",
+      "categories": "PASS",
+      "trending": "PASS",
+      "metrics": "PASS"
+    }
+  },
+  "eslint_warnings": {
+    "DashboardPage.js": ["currentTrack, isPlaying assigned but never used"],
+    "NewsDetailPage.js": ["Quote imported but never used"],
+    "SettingsPage.js": ["User imported but never used"]
+  },
+  "notes": {
+    "ai_narrative": "News detail uses Gemini via emergentintegrations for narrative generation - takes 5-10 seconds",
+    "images": "All news images use same Unsplash stock image - may want to vary based on category",
+    "audio": "TTS uses OpenAI TTS via emergentintegrations"
+  }
+}
