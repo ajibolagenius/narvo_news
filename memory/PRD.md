@@ -159,6 +159,8 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - [x] Loading skeletons for API-dependent components ✅ (Feb 23, 2026)
 - [ ] Push notifications for breaking news
 - [ ] Playlist/queue functionality
+- [x] User Profile Pages (Account, Voice Studio, System Settings, Accessibility) ✅ (Feb 23, 2026)
+- [x] Live Radio Integration on Discover Page ✅ (Feb 23, 2026)
 
 ### P2 (Medium Priority)
 - [ ] Dubawa fact-checking / Truth Tags
@@ -166,6 +168,8 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - [ ] Multi-language UI support
 - [x] Mobile responsive refinements ✅ (Feb 23, 2026)
 - [x] Collapsible sidebar ✅ (Feb 23, 2026)
+- [ ] Connect User Profile pages to backend for saving preferences
+- [ ] Historical Morning Briefings browser
 
 ### P3 (Future)
 - [ ] React Native mobile app
