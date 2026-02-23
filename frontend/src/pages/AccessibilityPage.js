@@ -150,7 +150,7 @@ const AccessibilityPage = () => {
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-widest">LAYER_03</span>
             <h3 className="text-primary font-bold text-lg md:text-xl tracking-tight uppercase">UI_INTERACTION</h3>
           </div>
-          <HandPointing className="w-5 h-5 md:w-6 md:h-6 text-forest" />
+          <Pointer className="w-5 h-5 md:w-6 md:h-6 text-forest" />
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 space-y-8 md:space-y-10">
