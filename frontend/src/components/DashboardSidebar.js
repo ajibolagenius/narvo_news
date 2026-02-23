@@ -1,13 +1,14 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutGrid, Activity, FolderOpen, Globe, Settings, Bookmark, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { LayoutGrid, Activity, Bookmark, Search, Compass, WifiOff, Settings } from 'lucide-react';
 
 const navItems = [
   { icon: LayoutGrid, label: 'Feed', path: '/dashboard' },
   { icon: Activity, label: 'Briefing', path: '/briefing' },
-  { icon: Bookmark, label: 'Saved', path: '/bookmarks' },
-  { icon: FolderOpen, label: 'Voices', path: '/voices' },
-  { icon: Globe, label: 'Search', path: '/search' },
+  { icon: Bookmark, label: 'Saved', path: '/saved' },
+  { icon: Search, label: 'Search', path: '/search' },
+  { icon: Compass, label: 'Discover', path: '/discover' },
+  { icon: WifiOff, label: 'Offline', path: '/offline' },
 ];
 
 const DashboardSidebar = ({ open, onClose, mobile }) => {
@@ -18,7 +19,7 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
   if (mobile) {
     return (
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-background-dark narvo-border-t flex items-center justify-around z-30" data-testid="mobile-bottom-nav">
-        {navItems.map((item) => {
+        {navItems.slice(0, 5).map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
           return (
@@ -33,7 +34,7 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
             </button>
           );
         })}
-        <button onClick={() => navigate('/settings')} className="flex flex-col items-center gap-0.5 text-forest">
+        <button onClick={() => navigate('/settings')} className={`flex flex-col items-center gap-0.5 ${location.pathname === '/settings' ? 'text-primary' : 'text-forest'}`}>
           <Settings className="w-5 h-5" />
           <span className="mono-ui text-[8px] uppercase">More</span>
         </button>
@@ -82,7 +83,7 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
         <div className="narvo-border-t py-3 flex flex-col gap-1">
           <button
             onClick={() => navigate('/settings')}
-            className={`flex items-center gap-3 transition-all mx-2 text-forest hover:text-primary hover:bg-surface/30 ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
+            className={`flex items-center gap-3 transition-all mx-2 ${location.pathname === '/settings' ? 'text-primary bg-primary/5 narvo-border' : 'text-forest hover:text-primary hover:bg-surface/30'} ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
             title="Settings"
           >
             <Settings className="w-5 h-5 shrink-0" />
