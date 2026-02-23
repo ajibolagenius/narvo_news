@@ -112,7 +112,7 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 
 ## Testing
 - Backend: 100% (18/18) — iteration_8.json
-- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX enhancements)
+- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX), iteration_10.json (Library pages)
 
 ## Prioritized Backlog
 
