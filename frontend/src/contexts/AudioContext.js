@@ -17,7 +17,7 @@ export const AudioProvider = ({ children }) => {
 
   useEffect(() => {
     const audio = new Audio();
-    audio.volume = volume;
+    audio.volume = 0.8;
     audio.addEventListener('timeupdate', () => setProgress(audio.currentTime));
     audio.addEventListener('loadedmetadata', () => { setDuration(audio.duration); setIsLoading(false); });
     audio.addEventListener('ended', () => { setIsPlaying(false); setProgress(0); });
