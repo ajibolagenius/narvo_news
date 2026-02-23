@@ -587,7 +587,7 @@ async def generate_briefing_audio(
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
 # ===========================================
-# BOOKMARK ENDPOINTS (Supabase with in-memory fallback)
+# BOOKMARK ENDPOINTS (MongoDB persistent)
 # ===========================================
 @app.post("/api/bookmarks")
 async def add_bookmark(request: BookmarkRequest):
@@ -602,53 +602,28 @@ async def add_bookmark(request: BookmarkRequest):
         "source_url": request.source_url,
         "saved_at": request.saved_at or datetime.now(timezone.utc).isoformat(),
     }
-
-    if _supabase_tables_ready["bookmarks"]:
-        try:
-            # Delete existing then insert (upsert)
-            supabase.table("bookmarks").delete().eq("user_id", request.user_id).eq("story_id", request.story_id).execute()
-            supabase.table("bookmarks").insert(bookmark_data).execute()
-            return {"status": "ok", "bookmark": {k: v for k, v in bookmark_data.items() if k != "user_id"}, "storage": "supabase"}
-        except Exception as e:
-            print(f"[SUPABASE] Bookmark insert error: {e}")
-
-    # Fallback to in-memory
-    user_id = request.user_id
-    if user_id not in _bookmarks_store:
-        _bookmarks_store[user_id] = []
-    _bookmarks_store[user_id] = [b for b in _bookmarks_store[user_id] if b["story_id"] != request.story_id]
+    bookmarks_col.update_one(
+        {"user_id": request.user_id, "story_id": request.story_id},
+        {"$set": bookmark_data},
+        upsert=True
+    )
     result = {k: v for k, v in bookmark_data.items() if k != "user_id"}
-    _bookmarks_store[user_id].append(result)
-    return {"status": "ok", "bookmark": result, "storage": "memory"}
+    return {"status": "ok", "bookmark": result}
 
 @app.get("/api/bookmarks")
 async def get_bookmarks(user_id: str = Query(..., description="User ID")):
     """Get all bookmarks for a user"""
-    if _supabase_tables_ready["bookmarks"]:
-        try:
-            result = supabase.table("bookmarks").select("story_id,title,summary,source,category,source_url,saved_at").eq("user_id", user_id).order("saved_at", desc=True).execute()
-            return result.data
-        except Exception as e:
-            print(f"[SUPABASE] Bookmark fetch error: {e}")
-
-    return _bookmarks_store.get(user_id, [])
+    docs = list(bookmarks_col.find({"user_id": user_id}, {"_id": 0, "user_id": 0}).sort("saved_at", -1))
+    return docs
 
 @app.delete("/api/bookmarks/{story_id}")
 async def remove_bookmark(story_id: str, user_id: str = Query(..., description="User ID")):
     """Remove a bookmark"""
-    if _supabase_tables_ready["bookmarks"]:
-        try:
-            supabase.table("bookmarks").delete().eq("user_id", user_id).eq("story_id", story_id).execute()
-            return {"status": "ok", "storage": "supabase"}
-        except Exception as e:
-            print(f"[SUPABASE] Bookmark delete error: {e}")
-
-    if user_id in _bookmarks_store:
-        _bookmarks_store[user_id] = [b for b in _bookmarks_store[user_id] if b["story_id"] != story_id]
-    return {"status": "ok", "storage": "memory"}
+    bookmarks_col.delete_one({"user_id": user_id, "story_id": story_id})
+    return {"status": "ok"}
 
 # ===========================================
-# USER PREFERENCES ENDPOINTS
+# USER PREFERENCES ENDPOINTS (MongoDB persistent)
 # ===========================================
 @app.post("/api/preferences")
 async def save_preferences(request: UserPreferencesRequest):
@@ -660,43 +635,21 @@ async def save_preferences(request: UserPreferencesRequest):
         "interests": request.interests,
         "updated_at": datetime.now(timezone.utc).isoformat(),
     }
-
-    if _supabase_tables_ready["user_preferences"]:
-        try:
-            # Delete existing then insert
-            supabase.table("user_preferences").delete().eq("user_id", request.user_id).execute()
-            supabase.table("user_preferences").insert(prefs_data).execute()
-            return {"status": "ok", "preferences": {k: v for k, v in prefs_data.items() if k != "user_id"}, "storage": "supabase"}
-        except Exception as e:
-            print(f"[SUPABASE] Preferences save error: {e}")
-
-    # Fallback to in-memory
-    _preferences_store[request.user_id] = {k: v for k, v in prefs_data.items() if k != "user_id"}
-    return {"status": "ok", "preferences": _preferences_store[request.user_id], "storage": "memory"}
+    preferences_col.update_one(
+        {"user_id": request.user_id},
+        {"$set": prefs_data},
+        upsert=True
+    )
+    result = {k: v for k, v in prefs_data.items() if k != "user_id"}
+    return {"status": "ok", "preferences": result}
 
 @app.get("/api/preferences")
 async def get_preferences(user_id: str = Query(..., description="User ID")):
     """Get user preferences"""
-    if _supabase_tables_ready["user_preferences"]:
-        try:
-            result = supabase.table("user_preferences").select("region,voice,interests,updated_at").eq("user_id", user_id).limit(1).execute()
-            if result.data:
-                return result.data[0]
-        except Exception as e:
-            print(f"[SUPABASE] Preferences fetch error: {e}")
-
-    prefs = _preferences_store.get(user_id)
-    if prefs:
-        return prefs
+    doc = preferences_col.find_one({"user_id": user_id}, {"_id": 0, "user_id": 0})
+    if doc:
+        return doc
     return {"region": "lagos", "voice": "pidgin", "interests": ["politics", "sports", "afrobeats"]}
-
-@app.get("/api/storage-status")
-async def get_storage_status():
-    """Check which tables are using Supabase vs in-memory"""
-    return {
-        "bookmarks": "supabase" if _supabase_tables_ready["bookmarks"] else "memory",
-        "user_preferences": "supabase" if _supabase_tables_ready["user_preferences"] else "memory",
-    }
 
 if __name__ == "__main__":
     import uvicorn
