@@ -386,6 +386,175 @@ async def get_metrics():
         "network_load": "42%"
     }
 
+# Morning Briefing Cache
+_briefing_cache = {
+    "briefing": None,
+    "generated_at": None
+}
+
+async def generate_briefing_script(stories: List[dict]) -> str:
+    """Generate a broadcast script from top stories using Gemini"""
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        
+        stories_text = "\n\n".join([
+            f"**{s['title']}** ({s['source']})\n{s['summary']}"
+            for s in stories[:5]
+        ])
+        
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"briefing-{datetime.now().timestamp()}",
+            system_message="""You are a professional broadcast journalist for Narvo, creating a morning news briefing.
+
+Create a cohesive 5-minute radio-style morning briefing script that:
+1. Opens with a warm greeting and the date
+2. Smoothly transitions between stories
+3. Provides context and significance for each story
+4. Uses professional broadcast language
+5. Ends with a sign-off
+
+The script should sound natural when read aloud, approximately 700-900 words for a 5-minute briefing.
+Do NOT use markdown formatting - write in plain text suitable for TTS.
+Include transition phrases like "Moving on to...", "In other news...", "Meanwhile..."
+"""
+        ).with_model("gemini", "gemini-2.0-flash")
+        
+        user_message = UserMessage(
+            text=f"Create a morning briefing script from these top stories:\n\n{stories_text}"
+        )
+        response = await chat.send_message(user_message)
+        return response.strip()
+    except Exception as e:
+        print(f"Error generating briefing script: {e}")
+        # Fallback to simple concatenation
+        script = f"Good morning, this is your Narvo Morning Briefing for {datetime.now().strftime('%A, %B %d, %Y')}.\n\n"
+        for i, story in enumerate(stories[:5], 1):
+            script += f"Story {i}: {story['title']}. {story['summary']}\n\n"
+        script += "That's all for this morning's briefing. Stay informed with Narvo."
+        return script
+
+@app.get("/api/briefing/generate")
+async def generate_morning_briefing(
+    voice_id: str = Query("nova", description="Voice for TTS"),
+    force_regenerate: bool = Query(False, description="Force regeneration")
+):
+    """Generate or retrieve morning briefing with audio"""
+    global _briefing_cache
+    
+    now = datetime.now(timezone.utc)
+    cache_valid = (
+        _briefing_cache["briefing"] is not None and 
+        _briefing_cache["generated_at"] is not None and
+        (now - _briefing_cache["generated_at"]).total_seconds() < 3600  # 1 hour cache
+    )
+    
+    if cache_valid and not force_regenerate:
+        return _briefing_cache["briefing"]
+    
+    # Fetch top stories
+    all_news = []
+    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+    results = await asyncio.gather(*tasks)
+    
+    for items in results:
+        all_news.extend(items)
+    
+    # Sort by recency and get top 5
+    all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+    top_stories = all_news[:5]
+    
+    if not top_stories:
+        raise HTTPException(status_code=404, detail="No stories available for briefing")
+    
+    # Generate briefing script
+    script = await generate_briefing_script(top_stories)
+    
+    # Generate TTS audio
+    try:
+        from emergentintegrations.llm.openai import OpenAITextToSpeech
+        
+        # Truncate if too long (OpenAI limit is 4096 chars)
+        tts_text = script[:4000] if len(script) > 4000 else script
+        
+        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
+        audio_bytes = await tts.generate_speech(
+            text=tts_text,
+            model="tts-1",
+            voice=voice_id,
+            response_format="mp3",
+            speed=1.0
+        )
+        audio_b64 = base64.b64encode(audio_bytes).decode()
+        audio_url = f"data:audio/mpeg;base64,{audio_b64}"
+    except Exception as e:
+        print(f"TTS Error for briefing: {e}")
+        audio_url = None
+    
+    # Build briefing response
+    briefing = MorningBriefing(
+        id=f"briefing-{now.strftime('%Y%m%d-%H%M')}",
+        title=f"Morning Briefing - {now.strftime('%B %d, %Y')}",
+        generated_at=now.isoformat(),
+        duration_estimate="~5 minutes",
+        stories=[
+            BriefingStory(
+                id=s["id"],
+                title=s["title"],
+                summary=s["summary"][:200] + "..." if len(s.get("summary", "")) > 200 else s.get("summary", ""),
+                source=s["source"],
+                category=s.get("category", "General")
+            )
+            for s in top_stories
+        ],
+        script=script,
+        audio_url=audio_url,
+        voice_id=voice_id
+    )
+    
+    # Cache the briefing
+    _briefing_cache = {
+        "briefing": briefing,
+        "generated_at": now
+    }
+    
+    return briefing
+
+@app.get("/api/briefing/latest")
+async def get_latest_briefing():
+    """Get the most recent cached briefing (without regenerating)"""
+    if _briefing_cache["briefing"] is None:
+        raise HTTPException(status_code=404, detail="No briefing available. Generate one first.")
+    return _briefing_cache["briefing"]
+
+@app.post("/api/briefing/audio")
+async def generate_briefing_audio(
+    script: str = Query(..., description="Briefing script text"),
+    voice_id: str = Query("nova", description="Voice for TTS")
+):
+    """Generate audio for a custom briefing script"""
+    try:
+        from emergentintegrations.llm.openai import OpenAITextToSpeech
+        
+        tts_text = script[:4000] if len(script) > 4000 else script
+        
+        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
+        audio_bytes = await tts.generate_speech(
+            text=tts_text,
+            model="tts-1",
+            voice=voice_id,
+            response_format="mp3",
+            speed=1.0
+        )
+        audio_b64 = base64.b64encode(audio_bytes).decode()
+        
+        return {
+            "audio_url": f"data:audio/mpeg;base64,{audio_b64}",
+            "voice_id": voice_id
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
