@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, List, Any
 
 class NarvoAPITester:
-    def __init__(self, base_url="https://2f69e16b-2829-4055-be2c-574845da9e60.preview.emergentagent.com"):
+    def __init__(self, base_url="https://narvo-broadcast.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
