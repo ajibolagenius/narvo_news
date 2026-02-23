@@ -29,7 +29,21 @@ const AuthPage = () => {
           navigate('/onboarding');
         }
       } else {
-        await signIn(email, password);
+        const data = await signIn(email, password);
+        // Fetch preferences from server
+        if (data?.user) {
+          try {
+            const res = await fetch(`${API_URL}/api/preferences?user_id=${data.user.id}`);
+            if (res.ok) {
+              const prefs = await res.json();
+              if (prefs.updated_at) {
+                localStorage.setItem('narvo_preferences', JSON.stringify(prefs));
+                navigate('/dashboard');
+                return;
+              }
+            }
+          } catch {}
+        }
         const prefs = localStorage.getItem('narvo_preferences');
         navigate(prefs ? '/dashboard' : '/onboarding');
       }
