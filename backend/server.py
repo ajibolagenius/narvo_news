@@ -120,6 +120,19 @@ class UserPreferences(BaseModel):
     region: str = "Nigeria"
     interests: List[str] = []
 
+class BookmarkRequest(BaseModel):
+    user_id: str
+    story_id: str
+    title: str
+    summary: str = ""
+    source: str = ""
+    category: str = "General"
+    source_url: str = ""
+    saved_at: str = ""
+
+# In-memory bookmark store (keyed by user_id)
+_bookmarks_store: dict = {}
+
 # Helper Functions
 def generate_news_id(title: str, source: str) -> str:
     """Generate unique ID for news item"""
