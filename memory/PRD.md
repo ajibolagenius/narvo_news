@@ -84,6 +84,43 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
     - Time-ago labels (SAVED_2H_AGO, etc.)
     - Empty state with GO_TO_FEED button
 
+### User Profile & Preferences Pages (✅ NEW — Feb 23, 2026)
+11. **Account Page** — Subscription and metrics hub with:
+    - Premium Broadcast subscription panel
+    - System alerts (NEW_FEATURE, MAINTENANCE_DOWNTIME)
+    - Broadcast hours metric (142.5h with +12.4% growth)
+    - Signals processed metric (342 with bar visualization)
+    - Primary region status (Lagos, NG with lat/lon)
+    - User info footer with session details
+
+12. **Voice Studio Page** — Voice model selection with:
+    - Broadcast preview panel with waveform visualization
+    - Play/pause controls and time display
+    - Voice Matrix with 5 models (NOVA, ONYX, ECHO, ALLOY, SHIMMER)
+    - Region filter (AFRICA) and Dialect filter (ALL/PIDGIN)
+    - Selected voice info panel with APPLY_MODEL button
+
+13. **System Settings Page** — System configuration with:
+    - Display Entity: High Contrast Mode toggle, Interface Scaling dropdown
+    - Notification Syntax: Haptic Sync toggle, Alert Volume slider (0-100%)
+    - Data Throughput: Data Limit slider (0-5TB), Bandwidth Priority (STREAMING/INGEST/VOICE)
+    - RESET_DEFAULTS and SAVE_SYSTEM_CONFIG buttons
+
+14. **Accessibility Page** — Accessibility preferences with:
+    - Display Density (Compact/Standard/Expanded) with visual preview
+    - Font Scaling slider (75%-150%) with live OUTPUT_PREVIEW
+    - Gestural Control (Lateral Swipe, Pinch Zoom toggles)
+    - Voice Commands section with LISTENING_V2 indicator
+    - CALIBRATE_NEW_COMMAND button
+
+### Live Radio Integration (✅ NEW — Feb 23, 2026)
+- **Radio Garden** panel on Discover Page with:
+  - African country filters (NG, GH, KE, ZA, EG, MA) with flag icons
+  - Live radio station list (10 stations per country)
+  - NOW_PLAYING indicator with station name and bitrate
+  - Volume control and LIVE indicator
+  - Backend: `/api/radio/stations?country={code}&limit={n}` using Radio Browser API
+
 ### Shared Components (DashboardLayout)
 - **DashboardHeader**: NARVO // DASHBOARD, search bar (CMD+K), signal stats, user avatar, **sidebar toggle button**
 - **DashboardSidebar**: **Collapsible** 6-item navigation (Feed, Briefing, Saved, Search, Discover, Offline) + **mobile bottom nav**
