@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Radio, Bell, Timer, AudioWaveform, MapPin, FileText } from 'lucide-react';
+import { Bell, Timer, AudioWaveform, MapPin, FileText, Broadcast } from 'lucide-react';
 import Skeleton from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -135,7 +135,7 @@ const AccountPage = () => {
             <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest group-hover:text-background-dark">
               SIGNALS_PROCESSED
             </h3>
-            <Waveform className="w-5 h-5 text-forest group-hover:text-background-dark" />
+            <AudioWaveform className="w-5 h-5 text-forest group-hover:text-background-dark" />
           </div>
           
           <div className="space-y-2">
