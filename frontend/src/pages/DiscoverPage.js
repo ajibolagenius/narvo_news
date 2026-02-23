@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Play, PlayCircle, Pause, Radio, Globe, Volume2, VolumeX } from 'lucide-react';
+import { Play, PlayCircle, Pause, Radio, Volume2, VolumeX } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import Skeleton from '../components/Skeleton';
 
