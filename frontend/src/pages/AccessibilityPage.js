@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Rows, TextAa, Hand, HandPointing, Mic, Info } from 'lucide-react';
+import { Rows, Type, Hand, Pointer, Mic, Info } from 'lucide-react';
 
 const AccessibilityPage = () => {
   const [displayDensity, setDisplayDensity] = useState('compact');
