@@ -14,12 +14,11 @@ const PODCAST_EPISODES = [
 ];
 
 const DiscoverPage = () => {
-  const navigate = useNavigate();
   const [featuredNews, setFeaturedNews] = useState(null);
   const [loading, setLoading] = useState(true);
   const [podcastSort, setPodcastSort] = useState('latest');
   const [email, setEmail] = useState('');
-  const { playTrack, currentTrack, isPlaying } = useAudio();
+  const { playTrack } = useAudio();
   
   // Radio state
   const [radioStations, setRadioStations] = useState([]);
