@@ -1355,6 +1355,267 @@ const SettingsPage = () => {
   );
 };
 
+// Morning Briefing Page
+const MorningBriefingPage = () => {
+  const navigate = useNavigate();
+  const [briefing, setBriefing] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [generating, setGenerating] = useState(false);
+  const [selectedVoice, setSelectedVoice] = useState('nova');
+  const [voices, setVoices] = useState([]);
+  const { playTrack, currentTrack, isPlaying, isLoading: audioLoading } = useAudio();
+
+  useEffect(() => {
+    fetchVoices();
+    fetchLatestBriefing();
+  }, []);
+
+  const fetchVoices = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/voices`);
+      const data = await response.json();
+      setVoices(data);
+    } catch (error) {
+      console.error('Failed to fetch voices:', error);
+    }
+  };
+
+  const fetchLatestBriefing = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/briefing/latest`);
+      if (response.ok) {
+        const data = await response.json();
+        setBriefing(data);
+      }
+    } catch (error) {
+      console.error('No existing briefing:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateBriefing = async (forceRegenerate = false) => {
+    setGenerating(true);
+    try {
+      const response = await fetch(
+        `${API_URL}/api/briefing/generate?voice_id=${selectedVoice}&force_regenerate=${forceRegenerate}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setBriefing(data);
+      }
+    } catch (error) {
+      console.error('Failed to generate briefing:', error);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const playBriefing = () => {
+    if (briefing && briefing.audio_url) {
+      playTrack({
+        id: briefing.id,
+        title: briefing.title,
+        audio_url: briefing.audio_url,
+        source: 'NARVO MORNING BRIEFING'
+      });
+    }
+  };
+
+  const currentDate = new Date();
+  const greeting = currentDate.getHours() < 12 ? 'Good Morning' : 
+                   currentDate.getHours() < 17 ? 'Good Afternoon' : 'Good Evening';
+
+  return (
+    <div className="min-h-screen bg-narvo-bg" data-testid="briefing-page">
+      {/* Header */}
+      <header className="swiss-grid border-b border-narvo-border">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="text-narvo-text-dim hover:text-narvo-primary"
+              data-testid="back-btn"
+            >
+              ← [BACK]
+            </button>
+            <span className="font-header text-lg text-narvo-text">[Morning Briefing]</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Sunrise className="w-5 h-5 text-narvo-primary" />
+            <span className="font-mono text-xs text-narvo-text-secondary">
+              {currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-4xl mx-auto p-6">
+        {/* Hero Section */}
+        <div className="swiss-cell p-8 mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-16 h-16 rounded-full bg-narvo-primary/20 border border-narvo-primary flex items-center justify-center">
+              <Coffee className="w-8 h-8 text-narvo-primary" />
+            </div>
+            <div>
+              <h1 className="font-header text-2xl text-narvo-text">{greeting}, Oga!</h1>
+              <p className="text-narvo-text-secondary text-sm">
+                Your personalized 5-minute news digest is ready.
+              </p>
+            </div>
+          </div>
+          
+          {/* Voice Selection */}
+          <div className="border-t border-narvo-border pt-4 mt-4">
+            <span className="font-mono text-xs text-narvo-text-dim block mb-3">SELECT_BROADCAST_VOICE</span>
+            <div className="flex flex-wrap gap-2">
+              {voices.map((voice) => (
+                <button
+                  key={voice.id}
+                  onClick={() => setSelectedVoice(voice.id)}
+                  className={`tag cursor-pointer transition-colors ${
+                    selectedVoice === voice.id ? 'border-narvo-primary text-narvo-primary bg-narvo-primary/10' : ''
+                  }`}
+                  data-testid={`voice-select-${voice.id}`}
+                >
+                  {voice.accent}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Generate/Play Controls */}
+        <div className="swiss-cell p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <span className="font-mono text-xs text-narvo-text-dim block mb-2">BRIEFING_CONSOLE</span>
+              <span className="font-mono text-sm text-narvo-text">
+                {briefing ? `Generated: ${new Date(briefing.generated_at).toLocaleTimeString()}` : 'No briefing generated yet'}
+              </span>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => generateBriefing(true)}
+                className="btn-command-outline flex items-center gap-2"
+                disabled={generating}
+                data-testid="generate-briefing-btn"
+              >
+                <RefreshCw className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} />
+                {generating ? '[GENERATING...]' : '[Generate New]'}
+              </button>
+              
+              {briefing && briefing.audio_url && (
+                <button
+                  onClick={playBriefing}
+                  className="btn-command flex items-center gap-2"
+                  disabled={audioLoading && currentTrack?.id === briefing?.id}
+                  data-testid="play-briefing-btn"
+                >
+                  {audioLoading && currentTrack?.id === briefing?.id ? (
+                    <>[LOADING...]</>
+                  ) : currentTrack?.id === briefing?.id && isPlaying ? (
+                    <><Pause className="w-4 h-4" /> [PAUSE]</>
+                  ) : (
+                    <><Play className="w-4 h-4" /> [Oya, Play Briefing]</>
+                  )}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Loading State */}
+        {(loading || generating) && !briefing && (
+          <div className="swiss-cell p-8 text-center">
+            <div className="flex items-end gap-1 h-8 justify-center mb-4">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="waveform-bar w-2 rounded-t grid-breathing"
+                  style={{ height: `${Math.random() * 80 + 20}%`, animationDelay: `${i * 0.1}s` }}
+                />
+              ))}
+            </div>
+            <span className="font-mono text-sm text-narvo-text-secondary">
+              {generating ? '[GENERATING YOUR BRIEFING...]' : '[LOADING...]'}
+            </span>
+          </div>
+        )}
+
+        {/* Briefing Content */}
+        {briefing && (
+          <>
+            {/* Stories Included */}
+            <div className="swiss-cell p-6 mb-6">
+              <div className="flex items-center gap-2 mb-4">
+                <List className="w-5 h-5 text-narvo-text-secondary" />
+                <span className="font-header text-lg text-narvo-text">Stories in This Briefing</span>
+                <span className="tag ml-auto">{briefing.duration_estimate}</span>
+              </div>
+              
+              <div className="space-y-3">
+                {briefing.stories.map((story, idx) => (
+                  <div
+                    key={story.id}
+                    className="flex items-start gap-3 p-3 border border-narvo-border hover:border-narvo-text-secondary cursor-pointer transition-colors"
+                    onClick={() => navigate(`/news/${story.id}`)}
+                    data-testid={`briefing-story-${idx}`}
+                  >
+                    <span className="font-mono text-xs text-narvo-primary">{idx + 1}.</span>
+                    <div className="flex-1">
+                      <h4 className="font-header text-sm text-narvo-text mb-1">{story.title}</h4>
+                      <div className="flex items-center gap-2">
+                        <span className="tag text-xs">{story.category}</span>
+                        <span className="font-mono text-xs text-narvo-text-dim">{story.source}</span>
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-narvo-text-dim" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Full Script */}
+            <div className="swiss-cell p-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-header text-lg text-narvo-text">[Broadcast Script]</span>
+                <span className="font-mono text-xs text-narvo-text-dim">
+                  {briefing.script.split(' ').length} words
+                </span>
+              </div>
+              <div className="p-4 bg-narvo-bg border border-narvo-border max-h-96 overflow-y-auto custom-scrollbar">
+                <p className="text-narvo-text-secondary leading-relaxed whitespace-pre-wrap font-mono text-sm">
+                  {briefing.script}
+                </p>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* No Briefing State */}
+        {!loading && !generating && !briefing && (
+          <div className="swiss-cell p-12 text-center">
+            <Sunrise className="w-12 h-12 text-narvo-text-dim mx-auto mb-4" />
+            <h3 className="font-header text-xl text-narvo-text mb-2">No Briefing Yet</h3>
+            <p className="text-narvo-text-dim text-sm mb-6">
+              Generate your personalized morning briefing with top stories from across Africa.
+            </p>
+            <button
+              onClick={() => generateBriefing()}
+              className="btn-command"
+              data-testid="generate-first-briefing-btn"
+            >
+              [Generate Morning Briefing]
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Persistent Audio Player
 const AudioPlayer = () => {
   const { currentTrack, isPlaying, progress, duration, volume, togglePlay, seek, setVolumeLevel, isLoading } = useAudio();
