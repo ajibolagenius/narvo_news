@@ -45,7 +45,7 @@ const AuthPage = () => {
             <path d="M208,40H48A16,16,0,0,0,32,56V200a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40Zm0,160H48V56H208V200ZM64,96a8,8,0,0,1,8-8H184a8,8,0,0,1,0,16H72A8,8,0,0,1,64,96Zm0,32a8,8,0,0,1,8-8H184a8,8,0,0,1,0,16H72A8,8,0,0,1,64,128Zm0,32a8,8,0,0,1,8-8h72a8,8,0,0,1,0,16H72A8,8,0,0,1,64,160Z"/>
           </svg>
           <div className="font-display text-xl tracking-tight font-bold uppercase text-white">
-            NARVO <span className="text-forest font-light mx-2">//</span> ACCESS_CENTER
+            NARVO <span className="text-forest font-light mx-2">{'//'}</span> ACCESS_CENTER
           </div>
           <div className="h-4 w-[1px] bg-forest mx-2" />
           <div className="mono-ui text-[10px] text-forest">V.2.5.0_STABLE</div>

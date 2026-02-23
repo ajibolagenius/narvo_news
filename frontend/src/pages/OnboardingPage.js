@@ -47,7 +47,7 @@ const OnboardingPage = () => {
             <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/>
           </svg>
           <h1 className="font-display text-xl tracking-tight font-bold text-white uppercase">
-            NARVO <span className="text-forest font-light mx-2">//</span> SETUP_CONSOLE
+            NARVO <span className="text-forest font-light mx-2">{'//'}</span> SETUP_CONSOLE
           </h1>
         </div>
         <div className="mono-ui text-[10px] text-forest">SYSTEM_ACCESS_ID: <span className="text-primary">009-AF-X</span></div>
