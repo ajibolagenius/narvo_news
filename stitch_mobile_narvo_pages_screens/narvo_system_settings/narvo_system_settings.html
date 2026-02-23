@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo System Settings</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EBD5AB", // Sand/Beige
+                        "background-dark": "#1B211A", // Deep Dark Green
+                        "border-technical": "#628141", // Forest Green for lines
+                        "surface-dark": "#232a22", 
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0px", 
+                        "sm": "1px",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+        body {
+          min-height: max(884px, 100dvh);
+          background-color: #1B211A;
+        }.toggle-checkbox:checked {
+            right: 0;
+            border-color: #EBD5AB;
+        }.toggle-checkbox:checked + .toggle-label {
+            background-color: #EBD5AB;
+        }.peer:checked:after {
+            background-color: #1B211A;border-color: #EBD5AB;
+            transform: translateX(100%);
+        }
+        .peer:checked {
+            background-color: #EBD5AB;border-color: #EBD5AB;
+        }
+        .peer {
+            background-color: transparent;border-color: #628141;
+        }
+        .peer:after {
+             background-color: #628141;border-color: transparent;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark min-h-screen text-slate-100 font-display selection:bg-primary selection:text-background-dark overflow-x-hidden flex flex-col antialiased">
+<header class="sticky top-0 z-20 bg-background-dark/95 backdrop-blur-sm border-b border-border-technical px-6 py-4 pt-12 safe-top">
+<div class="flex items-center justify-between">
+<button class="group flex items-center gap-2 text-primary hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl">arrow_back_ios_new</span>
+<span class="text-xs font-medium tracking-wide uppercase font-mono">Back</span>
+</button>
+<div class="text-center">
+<h1 class="text-sm font-bold tracking-tight text-white uppercase font-display">System_Config</h1>
+<p class="text-[10px] text-border-technical font-mono tracking-widest uppercase">Ver. 4.2.0 // Build 892</p>
+</div>
+<button class="text-border-technical hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl">more_horiz</span>
+</button>
+</div>
+</header>
+<main class="flex-1 flex flex-col px-0 py-6 gap-8 w-full max-w-md mx-auto">
+<div class="px-6 border-l-2 border-primary ml-6 py-1">
+<h2 class="text-xl font-semibold text-white tracking-tight font-display">User Profile &amp; Preferences</h2>
+<p class="text-xs text-[#628141] mt-1 font-mono">ID: NARVO_OP_442 // SECTOR_7</p>
+</div>
+<div class="flex flex-col border-t border-b border-border-technical w-full">
+<div class="group relative flex items-center justify-between py-5 px-6 border-b border-border-technical hover:bg-white/5 transition-colors">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium text-white tracking-wide font-display">High Contrast</span>
+<span class="text-[10px] font-mono text-border-technical tracking-wider">SYS_ID: DISP_MOD_01</span>
+</div>
+<label class="flex items-center cursor-pointer relative" for="toggle-contrast">
+<input class="sr-only peer" id="toggle-contrast" type="checkbox"/>
+<div class="w-10 h-5 bg-transparent border border-border-technical rounded-full peer peer-focus:outline-none after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-border-technical after:rounded-full after:h-3.5 after:w-3.5 after:transition-all">
+</div>
+</label>
+</div>
+<div class="group relative flex items-center justify-between py-5 px-6 border-b border-border-technical hover:bg-white/5 transition-colors">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium text-primary tracking-wide font-display">Data Limiter</span>
+<span class="text-[10px] font-mono text-border-technical tracking-wider">SYS_ID: NET_THR_04</span>
+</div>
+<label class="flex items-center cursor-pointer relative" for="toggle-data">
+<input checked="" class="sr-only peer" id="toggle-data" type="checkbox"/>
+<div class="w-10 h-5 bg-transparent border border-border-technical rounded-full peer peer-focus:outline-none after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-border-technical after:rounded-full after:h-3.5 after:w-3.5 after:transition-all">
+</div>
+</label>
+</div>
+<div class="group relative flex items-center justify-between py-5 px-6 border-b border-border-technical hover:bg-white/5 transition-colors">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium text-primary tracking-wide font-display">Haptic Feedback</span>
+<span class="text-[10px] font-mono text-border-technical tracking-wider">SYS_ID: TAC_RES_09</span>
+</div>
+<label class="flex items-center cursor-pointer relative" for="toggle-haptic">
+<input checked="" class="sr-only peer" id="toggle-haptic" type="checkbox"/>
+<div class="w-10 h-5 bg-transparent border border-border-technical rounded-full peer peer-focus:outline-none after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-border-technical after:rounded-full after:h-3.5 after:w-3.5 after:transition-all">
+</div>
+</label>
+</div>
+<div class="group relative flex items-center justify-between py-5 px-6 border-b border-border-technical hover:bg-white/5 transition-colors">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium text-white tracking-wide font-display">Auto Archive</span>
+<span class="text-[10px] font-mono text-border-technical tracking-wider">SYS_ID: STR_MAN_02</span>
+</div>
+<label class="flex items-center cursor-pointer relative" for="toggle-archive">
+<input class="sr-only peer" id="toggle-archive" type="checkbox"/>
+<div class="w-10 h-5 bg-transparent border border-border-technical rounded-full peer peer-focus:outline-none after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-border-technical after:rounded-full after:h-3.5 after:w-3.5 after:transition-all">
+</div>
+</label>
+</div>
+<div class="group relative flex items-center justify-between py-5 px-6 border-border-technical hover:bg-white/5 transition-colors">
+<div class="flex flex-col gap-1">
+<span class="text-sm font-medium text-white tracking-wide font-display">Secure Connect</span>
+<span class="text-[10px] font-mono text-border-technical tracking-wider">SYS_ID: VPN_TUN_88</span>
+</div>
+<label class="flex items-center cursor-pointer relative" for="toggle-secure">
+<input class="sr-only peer" id="toggle-secure" type="checkbox"/>
+<div class="w-10 h-5 bg-transparent border border-border-technical rounded-full peer peer-focus:outline-none after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-border-technical after:rounded-full after:h-3.5 after:w-3.5 after:transition-all">
+</div>
+</label>
+</div>
+</div>
+<div class="flex-1"></div>
+<div class="mt-auto px-6">
+<div class="flex justify-between items-end mb-2">
+<h3 class="text-[10px] font-bold text-white uppercase tracking-widest font-mono">Local_Cache</h3>
+<span class="text-[10px] font-mono text-primary">65% USED</span>
+</div>
+<div class="relative h-3 w-full border border-primary/40 bg-transparent rounded-none p-[1px]">
+<div class="h-full bg-primary w-[65%] relative"></div>
+<div class="absolute inset-0 w-full h-full flex justify-between px-1 pointer-events-none">
+<div class="w-px h-full bg-background-dark"></div>
+<div class="w-px h-full bg-background-dark"></div>
+<div class="w-px h-full bg-background-dark"></div>
+<div class="w-px h-full bg-background-dark"></div>
+</div>
+</div>
+<div class="flex justify-between mt-2 font-mono text-[10px] text-border-technical">
+<span>1.2GB USED</span>
+<span>4.0GB AVAIL</span>
+</div>
+</div>
+</main>
+<nav class="sticky bottom-0 z-30 border-t border-border-technical bg-background-dark pb-6 pt-3 px-6 safe-bottom">
+<div class="flex items-center justify-between">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-border-technical hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">broadcast_on_personal</span>
+<span class="text-[10px] font-medium tracking-wide uppercase opacity-0 group-hover:opacity-100 transition-opacity font-display">Feed</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-border-technical hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">toc</span>
+<span class="text-[10px] font-medium tracking-wide uppercase opacity-0 group-hover:opacity-100 transition-opacity font-display">List</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary relative" href="#">
+<div class="absolute -top-3 w-1 h-1 bg-primary rounded-full shadow-[0_0_8px_1px_rgba(235,213,171,0.3)]"></div>
+<span class="material-symbols-outlined text-2xl fill-current">settings_suggest</span>
+<span class="text-[10px] font-medium tracking-wide uppercase font-display">Config</span>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-border-technical hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">person</span>
+<span class="text-[10px] font-medium tracking-wide uppercase opacity-0 group-hover:opacity-100 transition-opacity font-display">User</span>
+</a>
+</div>
+</nav>
+
+</body></html>

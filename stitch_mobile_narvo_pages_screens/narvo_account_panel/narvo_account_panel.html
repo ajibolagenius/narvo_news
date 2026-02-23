@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Refined Narvo Account Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "narvo-bg": "#1B211A",
+                        "narvo-border": "#628141",
+                        "narvo-beige": "#EBD5AB",
+                        "narvo-sage": "#8BAE66",
+                        "narvo-green": "#6be619", // Keep original primary green for specific highlights if needed, or replace
+                        "surface-dark": "#24321a",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+    @layer utilities {
+        .swiss-grid-item {
+            @apply border-b border-narvo-border;
+        }
+        .swiss-grid-r {
+            @apply border-r border-narvo-border;
+        }
+        .no-shadow {
+            box-shadow: none !important;
+        }
+    }
+</style>
+<style>::-webkit-scrollbar {
+        width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #1B211A;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #628141;
+    }
+    body {
+        background-color: #1B211A;
+    }
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-narvo-bg text-slate-100 font-display min-h-screen flex flex-col antialiased selection:bg-narvo-beige selection:text-black overflow-hidden">
+<div class="relative flex flex-col w-full max-w-md mx-auto h-screen border-x border-narvo-border bg-narvo-bg no-shadow">
+<div class="flex items-center justify-between px-5 py-4 border-b border-narvo-border bg-narvo-bg z-10">
+<div class="flex items-center gap-2 text-narvo-sage">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span class="text-xs font-mono tracking-widest uppercase text-narvo-sage">NARVO // SYS_OP</span>
+</div>
+<button class="text-narvo-sage hover:text-white transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="flex-1 flex flex-col overflow-y-auto">
+<div class="flex flex-col border-b border-narvo-border p-6 relative">
+<div class="absolute top-4 right-4 opacity-70">
+<span class="material-symbols-outlined text-narvo-border">fingerprint</span>
+</div>
+<div class="flex items-end justify-between w-full mb-6">
+<div class="w-20 h-20 bg-black border border-narvo-border flex items-center justify-center relative overflow-hidden grayscale contrast-125">
+<img alt="User Avatar" class="w-full h-full object-cover mix-blend-screen opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYkeG2fd0KgFrHrcfFPYORTA8Lgay3bPP3LQ-gNQ1jgOsW7NMXs7VPsaiNuDVbfxzrP8gXTQHMU8XEW-gUBviPM3FeJ6hs45sDGDcTtayRpyMdVeV8A2pJRq5OrmowCy5qixfeUgOQjkL5Ls3ofjQoa_rexAwxybvOBPS8SVsPORQ9UkAYi8vQX-WoEljNTqlyHaIOyapJ2RROD5kENKpWPoGg5lzflfcjvHdAVWCeU4m5oSWk-YVZBiVJ7PtpuMShOqUMmbfR3iES"/>
+<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjMDAwIiAvPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSIxIiBmaWxsPSIjMzMzIiAvPgo8L3N2Zz4=')] opacity-30 pointer-events-none"></div>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[10px] text-narvo-sage font-mono uppercase tracking-widest mb-1">Status</span>
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-none bg-narvo-beige"></span>
+<span class="text-narvo-beige text-xs font-mono font-bold tracking-wider">ONLINE</span>
+</div>
+</div>
+</div>
+<div class="space-y-1">
+<p class="text-xs text-narvo-sage font-mono tracking-wider">OPERATOR_ID</p>
+<h1 class="text-3xl text-white font-mono tracking-tighter">USR_8829</h1>
+</div>
+</div>
+<div class="flex flex-col border-b border-narvo-border p-6 bg-narvo-bg">
+<div class="flex justify-between items-start mb-3">
+<p class="text-xs text-narvo-sage font-mono tracking-wider">SUBSCRIPTION_TIER</p>
+<span class="material-symbols-outlined text-narvo-beige text-lg">verified</span>
+</div>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl text-white font-display font-bold tracking-tight">BROADCAST_ELITE</h2>
+<div class="px-2 py-1 border border-narvo-border bg-surface-dark rounded-none flex items-center gap-2">
+<span class="material-symbols-outlined text-narvo-beige text-[14px]">radar</span>
+<span class="text-[10px] text-narvo-beige font-mono font-bold">SIGNAL_ACTIVE</span>
+</div>
+</div>
+<div class="w-full h-px bg-narvo-border mt-2 relative">
+<div class="absolute top-0 left-0 h-px bg-narvo-beige w-[85%]"></div>
+</div>
+<div class="flex justify-between mt-2">
+<span class="text-[10px] text-narvo-sage font-mono">CYCLE_RENEWS: 14D</span>
+<span class="text-[10px] text-narvo-beige font-mono">85% CAP</span>
+</div>
+</div>
+<div class="grid grid-cols-2 border-b border-narvo-border">
+<div class="p-5 border-r border-narvo-border border-b border-narvo-border flex flex-col justify-between h-32 hover:bg-surface-dark transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-narvo-sage font-mono uppercase tracking-widest">Streams</span>
+<span class="material-symbols-outlined text-narvo-border text-sm">waves</span>
+</div>
+<p class="text-4xl font-display font-light text-white">124</p>
+</div>
+<div class="p-5 border-b border-narvo-border flex flex-col justify-between h-32 hover:bg-surface-dark transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-narvo-sage font-mono uppercase tracking-widest">Listening</span>
+<span class="material-symbols-outlined text-narvo-border text-sm">headphones</span>
+</div>
+<p class="text-4xl font-display font-light text-white">42<span class="text-xl text-narvo-sage font-normal">h</span></p>
+</div>
+<div class="p-5 border-r border-narvo-border flex flex-col justify-between h-32 hover:bg-surface-dark transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-narvo-sage font-mono uppercase tracking-widest">Archives</span>
+<span class="material-symbols-outlined text-narvo-border text-sm">folder_open</span>
+</div>
+<p class="text-4xl font-display font-light text-white">12</p>
+</div>
+<div class="p-5 flex flex-col justify-between h-32 hover:bg-surface-dark transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-narvo-sage font-mono uppercase tracking-widest">Sync</span>
+<span class="material-symbols-outlined text-narvo-border text-sm">sync_alt</span>
+</div>
+<p class="text-4xl font-display font-light text-white">98<span class="text-xl text-narvo-sage font-normal">%</span></p>
+</div>
+</div>
+<div class="flex flex-col pb-24">
+<button class="flex items-center justify-between p-5 w-full border-b border-narvo-border hover:bg-surface-dark transition-colors text-left group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 border border-narvo-border flex items-center justify-center text-narvo-sage group-hover:text-white group-hover:border-white transition-colors">
+<span class="material-symbols-outlined text-sm">tune</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-200 font-display">PREFERENCES</p>
+<p class="text-[10px] text-narvo-sage font-mono">AUDIO_CONFIG // NOTIFICATIONS</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-narvo-border group-hover:text-white transition-colors">chevron_right</span>
+</button>
+<button class="flex items-center justify-between p-5 w-full border-b border-narvo-border hover:bg-surface-dark transition-colors text-left group">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 border border-narvo-border flex items-center justify-center text-narvo-sage group-hover:text-red-400 group-hover:border-red-400 transition-colors">
+<span class="material-symbols-outlined text-sm">logout</span>
+</div>
+<div>
+<p class="text-sm font-bold text-slate-200 font-display group-hover:text-red-400 transition-colors">TERMINATE_SESSION</p>
+<p class="text-[10px] text-narvo-sage font-mono">LOGOUT_USER</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-narvo-border group-hover:text-red-400 transition-colors">chevron_right</span>
+</button>
+</div>
+</div>
+<div class="absolute bottom-0 w-full bg-narvo-bg border-t border-narvo-border grid grid-cols-4 z-50">
+<a class="flex flex-col items-center justify-center py-4 gap-1 group border-r border-narvo-border hover:bg-surface-dark transition-colors h-20" href="#">
+<span class="material-symbols-outlined text-narvo-sage group-hover:text-white transition-colors text-2xl">rss_feed</span>
+<span class="text-[9px] font-mono tracking-widest text-narvo-sage group-hover:text-white transition-colors">FEED</span>
+</a>
+<a class="flex flex-col items-center justify-center py-4 gap-1 group border-r border-narvo-border hover:bg-surface-dark transition-colors h-20" href="#">
+<span class="material-symbols-outlined text-narvo-sage group-hover:text-white transition-colors text-2xl">radar</span>
+<span class="text-[9px] font-mono tracking-widest text-narvo-sage group-hover:text-white transition-colors">SCAN</span>
+</a>
+<a class="flex flex-col items-center justify-center py-4 gap-1 group border-r border-narvo-border hover:bg-surface-dark transition-colors h-20" href="#">
+<span class="material-symbols-outlined text-narvo-sage group-hover:text-white transition-colors text-2xl">graphic_eq</span>
+<span class="text-[9px] font-mono tracking-widest text-narvo-sage group-hover:text-white transition-colors">SIGNAL</span>
+</a>
+<a class="flex flex-col items-center justify-center py-4 gap-1 group bg-surface-dark hover:bg-surface-dark transition-colors relative h-20" href="#">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-narvo-beige"></div>
+<span class="material-symbols-outlined text-white text-2xl">badge</span>
+<span class="text-[9px] font-mono tracking-widest text-white">ID</span>
+</a>
+</div>
+</div>
+
+</body></html>

@@ -2,21 +2,19 @@
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Landing Hero Dashboard</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<title>Narvo Onboarding Setup</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <style type="text/tailwindcss">
         :root {
+            --color-primary: #EBD5AB;
             --color-bg: #1B211A;
             --color-surface: #242B23;
-            --color-primary: #EBD5AB;
             --color-border: #628141;
             --color-text-primary: #F2F2F2;
             --color-text-secondary: #8BAE66;
-            --font-display: 'Space Grotesk', sans-serif;
+            --font-header: 'Space Grotesk', sans-serif;
             --font-body: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
@@ -25,233 +23,280 @@
             color: var(--color-text-primary);
             font-family: var(--font-body);
         }
-        .border-grid {
-            border-color: var(--color-border);
+        .font-header { font-family: var(--font-header); }
+        .font-mono-custom { font-family: var(--font-mono); }
+        .narvo-grid {
+            border: 1px solid var(--color-border);
         }
-        .font-display {
-            font-family: var(--font-display);
-        }
-        .font-mono {
-            font-family: var(--font-mono);
-        }
-        .bg-primary {
-            background-color: var(--color-primary);
-        }
-        .text-primary-color {
-            color: var(--color-primary);
-        }
-        .text-secondary {
-            color: var(--color-text-secondary);
-        }.swiss-grid-container {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            border-top: 1px solid var(--color-border);
-            border-left: 1px solid var(--color-border);
-        }
-        .swiss-col {
+        .narvo-border-r {
             border-right: 1px solid var(--color-border);
+        }
+        .narvo-border-b {
             border-bottom: 1px solid var(--color-border);
         }
-        .swiss-col-no-b {
-            border-right: 1px solid var(--color-border);
-        }button:focus {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
+        .active-state {
+            background-color: var(--color-primary);
+            color: var(--color-bg);
+        }
+        .hover-state:hover {
+            background-color: var(--color-surface);
+            cursor: pointer;
+        }
+        .radio-check:checked + div {
+            background-color: var(--color-primary);
+            color: var(--color-bg);
+            border-color: var(--color-primary);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col antialiased selection:bg-[#EBD5AB] selection:text-[#1B211A]">
-<header class="w-full border-b border-[var(--color-border)] bg-[var(--color-bg)] sticky top-0 z-50">
-<div class="grid grid-cols-12 w-full max-w-[1920px] mx-auto border-l border-r border-[var(--color-border)]">
-<div class="col-span-3 lg:col-span-2 border-r border-[var(--color-border)] h-16 flex items-center px-6">
-<span class="font-display font-bold text-2xl tracking-tight text-[var(--color-text-primary)]">NARVO</span>
+<body class="h-screen flex flex-col overflow-hidden selection:bg-[var(--color-primary)] selection:text-[var(--color-bg)]">
+<header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-[var(--color-bg)] z-10">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[var(--color-primary)]">graphic_eq</span>
+<h1 class="font-header text-xl tracking-wide uppercase font-bold text-[var(--color-text-primary)]">Narvo <span class="text-[var(--color-text-secondary)] font-light mx-2">///</span> Setup</h1>
 </div>
-<div class="hidden lg:flex lg:col-span-8 border-r border-[var(--color-border)] h-16 items-center">
-<nav class="flex h-full w-full">
-<a class="h-full flex items-center px-8 border-r border-[var(--color-border)] font-mono text-sm hover:bg-[var(--color-surface)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]" href="#">
-                        01 // NEWS
-                    </a>
-<a class="h-full flex items-center px-8 border-r border-[var(--color-border)] font-mono text-sm hover:bg-[var(--color-surface)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]" href="#">
-                        02 // BROADCAST
-                    </a>
-<a class="h-full flex items-center px-8 border-r border-[var(--color-border)] font-mono text-sm hover:bg-[var(--color-surface)] transition-colors text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]" href="#">
-                        03 // ARCHIVE
-                    </a>
-</nav>
-</div>
-<div class="col-span-9 lg:col-span-2 h-16 flex items-center justify-end px-6 bg-[var(--color-surface)]">
-<div class="flex items-center gap-2 font-mono text-xs text-[var(--color-text-secondary)]">
-<span class="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
-<span class="hidden sm:inline">LIVE FEED</span>
-<span>14:02 UTC</span>
-</div>
-</div>
-</div>
+<div class="font-mono-custom text-xs text-[var(--color-text-secondary)]">
+            SESSION_ID: 009-AF-X
+        </div>
 </header>
-<main class="flex-grow w-full max-w-[1920px] mx-auto border-l border-r border-[var(--color-border)]">
-<section class="grid grid-cols-12 min-h-[600px] border-b border-[var(--color-border)]">
-<div class="hidden lg:block lg:col-span-1 border-r border-[var(--color-border)] bg-[var(--color-bg)]">
-<div class="flex flex-col h-full items-center py-8 gap-8">
-<button class="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
-<span class="material-symbols-outlined text-3xl">grid_view</span>
-</button>
-<button class="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
-<span class="material-symbols-outlined text-3xl">equalizer</span>
-</button>
-<button class="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
-<span class="material-symbols-outlined text-3xl">settings_input_component</span>
-</button>
-<div class="mt-auto w-[1px] h-24 bg-[var(--color-border)]"></div>
-<span class="font-mono text-xs rotate-180 text-[var(--color-text-secondary)]" style="writing-mode: vertical-rl;">SYSTEM_READY</span>
+<main class="flex-1 grid grid-cols-12 h-full">
+<section class="col-span-3 narvo-border-r h-full flex flex-col bg-[var(--color-bg)]">
+<div class="p-6 narvo-border-b">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] block mb-2">01 — LOCALE</span>
+<h2 class="font-header text-2xl font-medium">Regional Select</h2>
+<p class="text-[var(--color-text-secondary)] text-sm mt-2 leading-relaxed">Select your primary broadcast region for localized news aggregation.</p>
 </div>
-</div>
-<div class="col-span-12 lg:col-span-8 border-r border-[var(--color-border)] flex flex-col relative">
-<div class="absolute inset-0 z-0 pointer-events-none opacity-20" style="background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 40px 40px;">
-</div>
-<div class="relative z-10 p-12 lg:p-24 flex flex-col justify-center h-full">
-<div class="mb-6 font-mono text-[var(--color-primary)] text-sm tracking-widest border border-[var(--color-primary)] inline-block w-fit px-3 py-1 uppercase">
-                        High-Fidelity News Transmission
-                    </div>
-<h1 class="font-display text-5xl lg:text-7xl font-light leading-tight mb-12 text-[var(--color-text-primary)]">
-                        Narvo: The Local Pulse, <br/>
-<span class="italic font-normal text-[var(--color-text-secondary)]">Refined.</span>
-</h1>
-<div class="flex flex-col sm:flex-row gap-6 items-start">
-<a class="group relative inline-flex items-center justify-center px-8 py-4 bg-[var(--color-primary)] text-[#1B211A] font-display font-bold text-lg hover:bg-[#D9C39B] transition-colors" href="#">
-<span>[Join the Broadcast]</span>
-<span class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</a>
-<a class="inline-flex items-center justify-center px-8 py-4 border border-[var(--color-text-secondary)] text-[var(--color-text-primary)] font-mono text-sm hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors" href="#">
-<span class="material-symbols-outlined mr-2 text-base">play_circle</span>
-                            LISTEN TO PREVIEW
-                        </a>
-</div>
-</div>
-<div class="mt-auto w-full border-t border-[var(--color-border)] py-3 px-6 bg-[var(--color-surface)] overflow-hidden whitespace-nowrap">
-<div class="font-mono text-xs text-[var(--color-text-secondary)] inline-block">
-                        BREAKING: NAIROBI MARKET INDEX UP 2.4% /// LAGOS TECH SUMMIT ANNOUNCES NEW PARTNERSHIP /// CAPE TOWN WATER RESERVES STABLE /// ADDIS ABABA TRANSPORT GRID OPTIMIZED ///
-                    </div>
-</div>
-</div>
-<div class="hidden lg:block lg:col-span-3 bg-[var(--color-surface)]">
-<div class="h-12 border-b border-[var(--color-border)] flex items-center px-4 justify-between">
-<span class="font-mono text-xs text-[var(--color-text-secondary)]">INCOMING_TRANSMISSIONS</span>
-<span class="material-symbols-outlined text-[var(--color-text-secondary)] text-sm">wifi_tethering</span>
-</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<ul class="flex flex-col">
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 active-state transition-colors">
 <div class="flex flex-col">
-<article class="p-6 border-b border-[var(--color-border)] group cursor-pointer hover:bg-[#2A3329] transition-colors">
-<div class="flex justify-between items-start mb-2">
-<span class="font-mono text-[10px] text-[var(--color-primary)] border border-[var(--color-primary)] px-1">AUDIO</span>
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)]">04m 12s</span>
+<span class="font-header text-lg font-bold">Lagos / West Africa</span>
+<span class="font-mono-custom text-xs opacity-80">UTC+1 • NIGERIA</span>
 </div>
-<h3 class="font-display text-lg leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors">West African Trade Bloc Expands Digital Infrastructure</h3>
-<p class="font-sans text-sm text-[var(--color-text-secondary)] line-clamp-2">New fiber optic lines connecting coastal hubs promise to reduce latency by 40%.</p>
-</article>
-<article class="p-6 border-b border-[var(--color-border)] group cursor-pointer hover:bg-[#2A3329] transition-colors">
-<div class="flex justify-between items-start mb-2">
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)] border border-[var(--color-text-secondary)] px-1">TEXT</span>
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)]">READ: 3m</span>
+<input checked="" class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm">check_circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Nairobi / East Africa</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+3 • KENYA</span>
 </div>
-<h3 class="font-display text-lg leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors">Solar Grid Independence in the Sahel</h3>
-<p class="font-sans text-sm text-[var(--color-text-secondary)] line-clamp-2">Local communities are bypassing national grids with decentralized solar arrays.</p>
-</article>
-<article class="p-6 group cursor-pointer hover:bg-[#2A3329] transition-colors">
-<div class="flex justify-between items-start mb-2">
-<span class="font-mono text-[10px] text-[var(--color-primary)] border border-[var(--color-primary)] px-1">AUDIO</span>
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)]">12m 05s</span>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Johannesburg / South</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+2 • SOUTH AFRICA</span>
 </div>
-<h3 class="font-display text-lg leading-snug mb-2 group-hover:text-[var(--color-primary)] transition-colors">The Future of Mobile Money</h3>
-<p class="font-sans text-sm text-[var(--color-text-secondary)] line-clamp-2">Interview with fintech leaders on the next generation of cross-border payments.</p>
-</article>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Accra / West Africa</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+0 • GHANA</span>
 </div>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+<li class="narvo-border-b">
+<label class="cursor-pointer group flex items-center justify-between p-5 hover-state transition-colors">
+<div class="flex flex-col">
+<span class="font-header text-lg">Kigali / Central</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] group-hover:text-[var(--color-text-primary)]">UTC+2 • RWANDA</span>
 </div>
-</section>
-<section class="grid grid-cols-1 md:grid-cols-3 border-b border-[var(--color-border)]">
-<div class="p-8 border-b md:border-b-0 md:border-r border-[var(--color-border)] bg-[var(--color-bg)] flex flex-col justify-between h-40 group hover:bg-[var(--color-surface)] transition-colors">
-<div class="flex justify-between items-start">
-<span class="font-mono text-xs text-[var(--color-text-secondary)] uppercase">Global Active Listeners</span>
-<span class="material-symbols-outlined text-[var(--color-primary)] text-lg opacity-50 group-hover:opacity-100">headphones</span>
+<input class="hidden" name="region" type="radio"/>
+<span class="material-symbols-outlined text-sm text-[var(--color-text-secondary)] opacity-0 group-hover:opacity-100">circle</span>
+</label>
+</li>
+</ul>
 </div>
-<div class="font-mono text-3xl text-[var(--color-text-primary)] mt-2">
-                    124,500 <span class="text-sm text-[var(--color-primary)] ml-1">▲</span>
+<div class="p-4 bg-[var(--color-surface)] border-t border-[var(--color-border)]">
+<div class="flex justify-between items-center text-[var(--color-text-secondary)] text-xs font-mono-custom">
+<span>SIGNAL_STRENGTH</span>
+<span>98%</span>
 </div>
-<div class="w-full bg-[#333] h-[1px] mt-4 relative overflow-hidden">
-<div class="absolute left-0 top-0 h-full bg-[var(--color-primary)] w-3/4"></div>
-</div>
-</div>
-<div class="p-8 border-b md:border-b-0 md:border-r border-[var(--color-border)] bg-[var(--color-bg)] flex flex-col justify-between h-40 group hover:bg-[var(--color-surface)] transition-colors">
-<div class="flex justify-between items-start">
-<span class="font-mono text-xs text-[var(--color-text-secondary)] uppercase">Broadcast Nodes Online</span>
-<span class="material-symbols-outlined text-[var(--color-primary)] text-lg opacity-50 group-hover:opacity-100">hub</span>
-</div>
-<div class="font-mono text-3xl text-[var(--color-text-primary)] mt-2">
-                    42 / 45
-                </div>
-<div class="flex gap-1 mt-4">
-<div class="h-1 w-1 bg-[var(--color-primary)] rounded-full"></div>
-<div class="h-1 w-1 bg-[var(--color-primary)] rounded-full"></div>
-<div class="h-1 w-1 bg-[var(--color-primary)] rounded-full"></div>
-<div class="h-1 w-1 bg-[var(--color-primary)] rounded-full"></div>
-<div class="h-1 w-1 bg-[var(--color-text-secondary)] rounded-full opacity-30"></div>
-</div>
-</div>
-<div class="p-8 bg-[var(--color-bg)] flex flex-col justify-between h-40 group hover:bg-[var(--color-surface)] transition-colors">
-<div class="flex justify-between items-start">
-<span class="font-mono text-xs text-[var(--color-text-secondary)] uppercase">Network Latency</span>
-<span class="material-symbols-outlined text-[var(--color-primary)] text-lg opacity-50 group-hover:opacity-100">speed</span>
-</div>
-<div class="font-mono text-3xl text-[var(--color-text-primary)] mt-2">
-                    12ms <span class="text-xs text-[var(--color-text-secondary)]">AVG</span>
-</div>
-<div class="flex items-end gap-[2px] mt-4 h-4">
-<div class="w-1 h-2 bg-[var(--color-primary)]"></div>
-<div class="w-1 h-3 bg-[var(--color-primary)]"></div>
-<div class="w-1 h-2 bg-[var(--color-primary)]"></div>
-<div class="w-1 h-4 bg-[var(--color-primary)]"></div>
-<div class="w-1 h-2 bg-[var(--color-primary)]"></div>
-<div class="w-1 h-1 bg-[var(--color-text-secondary)]"></div>
+<div class="w-full bg-[var(--color-bg)] h-1 mt-2 border border-[var(--color-border)]">
+<div class="h-full w-[98%] bg-[var(--color-text-secondary)]"></div>
 </div>
 </div>
 </section>
-<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-b border-[var(--color-border)]">
-<div class="border-r border-b md:border-b-0 border-[var(--color-border)] p-8 h-64 flex flex-col justify-between bg-[var(--color-surface)]">
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)]">01. REGIONAL FOCUS</span>
-<h4 class="font-display text-xl">Hyper-local reporting from 54 nations.</h4>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-[var(--color-border)] text-4xl">public</span>
+<section class="col-span-4 narvo-border-r h-full flex flex-col bg-[var(--color-bg)] relative">
+<div class="p-6 narvo-border-b">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] block mb-2">02 — AUDIO ENGINE</span>
+<h2 class="font-header text-2xl font-medium">Voice Preference</h2>
+<p class="text-[var(--color-text-secondary)] text-sm mt-2 leading-relaxed">Choose the synthesis engine for your daily briefings.</p>
+</div>
+<div class="flex-1 p-6 flex flex-col gap-4">
+<div class="relative group">
+<input checked="" class="peer hidden" id="voice1" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice1">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">Pidgin: Sabi-Work</span>
+<span class="material-symbols-outlined text-lg">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Casual, rhythmic, direct.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
+</div>
+<div class="relative group">
+<input class="peer hidden" id="voice2" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice2">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">Yoruba: High-Fidelity</span>
+<span class="material-symbols-outlined text-lg opacity-50">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Formal, tonal precision, broadcast standard.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
+</div>
+<div class="relative group">
+<input class="peer hidden" id="voice3" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice3">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">Swahili: Metro</span>
+<span class="material-symbols-outlined text-lg opacity-50">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Urban, fast-paced, East African standard.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
+</div>
+<div class="relative group">
+<input class="peer hidden" id="voice4" name="voice" type="radio"/>
+<label class="block border border-[var(--color-border)] p-5 cursor-pointer peer-checked:bg-[var(--color-primary)] peer-checked:text-[var(--color-bg)] peer-checked:border-[var(--color-primary)] hover:border-[var(--color-primary)] transition-all" for="voice4">
+<div class="flex justify-between items-start mb-3">
+<span class="font-header text-lg font-bold">English: Neutral Afro</span>
+<span class="material-symbols-outlined text-lg opacity-50">graphic_eq</span>
+</div>
+<p class="text-sm opacity-80 mb-4 font-mono-custom">Pan-African accent, clear, international.</p>
+<div class="flex items-center gap-2 text-xs uppercase tracking-wider font-bold">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Sample</span>
+</div>
+</label>
 </div>
 </div>
-<div class="border-r border-b md:border-b-0 border-[var(--color-border)] p-8 h-64 flex flex-col justify-between bg-[var(--color-bg)]">
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)]">02. AUDIO FIRST</span>
-<h4 class="font-display text-xl">Studio-quality streams optimized for low bandwidth.</h4>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-[var(--color-border)] text-4xl">graphic_eq</span>
+<div class="h-24 border-t border-[var(--color-border)] flex items-center justify-center relative overflow-hidden bg-[var(--color-surface)]">
+<div class="absolute inset-0 flex items-center justify-center gap-1 opacity-40">
+<div class="w-1 h-4 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-8 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-12 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-6 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-10 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-16 bg-[var(--color-primary)]"></div> 
+<div class="w-1 h-8 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-4 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-12 bg-[var(--color-text-secondary)]"></div>
+<div class="w-1 h-6 bg-[var(--color-text-secondary)]"></div>
 </div>
-</div>
-<div class="border-r border-b md:border-b-0 border-[var(--color-border)] p-8 h-64 flex flex-col justify-between bg-[var(--color-surface)]">
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)]">03. DATA DRIVEN</span>
-<h4 class="font-display text-xl">Real-time market analytics integrated into every feed.</h4>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-[var(--color-border)] text-4xl">analytics</span>
-</div>
-</div>
-<div class="p-8 h-64 flex flex-col justify-between bg-[var(--color-bg)]">
-<span class="font-mono text-[10px] text-[var(--color-text-secondary)]">04. COMMUNITY</span>
-<h4 class="font-display text-xl">Verified citizen journalism network.</h4>
-<div class="flex justify-end">
-<span class="material-symbols-outlined text-[var(--color-border)] text-4xl">groups</span>
-</div>
+<span class="relative z-10 font-mono-custom text-xs text-[var(--color-text-primary)] bg-[var(--color-surface)] px-2">AUDIO VISUALIZER INACTIVE</span>
 </div>
 </section>
-<footer class="bg-[var(--color-bg)] py-8 px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-<span class="font-display font-bold text-lg">NARVO</span>
-<span class="font-mono text-xs text-[var(--color-text-secondary)]">© 2024 NARVO BROADCAST SYSTEMS. ALL RIGHTS RESERVED.</span>
-<div class="flex gap-4">
-<a class="font-mono text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]" href="#">LEGAL</a>
-<a class="font-mono text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]" href="#">PRIVACY</a>
-<a class="font-mono text-xs text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]" href="#">CONTACT</a>
+<section class="col-span-5 h-full flex flex-col bg-[var(--color-bg)]">
+<div class="p-6 narvo-border-b">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)] block mb-2">03 — FEED CALIBRATION</span>
+<h2 class="font-header text-2xl font-medium">Interest Matrix</h2>
+<p class="text-[var(--color-text-secondary)] text-sm mt-2 leading-relaxed">Select at least 5 topics to initialize the grid.</p>
 </div>
-</footer>
+<div class="flex-1 p-6">
+<div class="grid grid-cols-3 gap-[1px] border border-[var(--color-border)] bg-[var(--color-border)]">
+<label class="cursor-pointer group relative h-28 bg-[var(--color-primary)] text-[var(--color-bg)] flex flex-col justify-between p-3">
+<input checked="" class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px]">01</span>
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-header text-lg font-medium">Politics</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">02</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Tech</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-primary)] text-[var(--color-bg)] flex flex-col justify-between p-3">
+<input checked="" class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px]">03</span>
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-header text-lg font-medium">Sports</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">04</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Finance</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-primary)] text-[var(--color-bg)] flex flex-col justify-between p-3">
+<input checked="" class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px]">05</span>
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-header text-lg font-medium">Afrobeats</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">06</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Agri-Tech</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">07</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Energy</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">08</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Startups</span>
+</label>
+<label class="cursor-pointer group relative h-28 bg-[var(--color-bg)] hover:bg-[var(--color-surface)] text-[var(--color-text-primary)] flex flex-col justify-between p-3 transition-colors">
+<input class="hidden" type="checkbox"/>
+<div class="flex justify-between items-start">
+<span class="font-mono-custom text-[10px] text-[var(--color-text-secondary)]">09</span>
+</div>
+<span class="font-header text-lg font-medium group-hover:text-[var(--color-primary)]">Culture</span>
+</label>
+</div>
+</div>
+<div class="mt-auto p-6 border-t border-[var(--color-border)] bg-[var(--color-surface)]">
+<div class="flex justify-between items-center mb-4">
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)]">STATUS: READY TO INITIALIZE</span>
+<span class="font-mono-custom text-xs text-[var(--color-text-secondary)]">3/5 STEPS</span>
+</div>
+<button class="w-full bg-[var(--color-primary)] text-[var(--color-bg)] font-header font-bold text-lg py-4 hover:brightness-110 active:brightness-90 transition-all flex items-center justify-center gap-2">
+<span>Initialize Narvo Feed</span>
+<span class="material-symbols-outlined text-xl">arrow_forward</span>
+</button>
+</div>
+</section>
 </main>
 
 </body></html>

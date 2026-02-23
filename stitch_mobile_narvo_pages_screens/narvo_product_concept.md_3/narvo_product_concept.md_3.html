@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo - Regional Select</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --narvo-bg: #1B211A;
+            --narvo-sand: #EBD5AB;
+            --narvo-sand-dim: #EBD5AB40;
+            --narvo-text: #F2F2F2;
+            --narvo-grid: #628141;--narvo-sage: #8BAE66;}
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--narvo-bg);
+            color: var(--narvo-text);
+        }
+        .font-grotesk {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .swiss-grid-bg {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, #2A3029 1px, transparent 1px),
+                              linear-gradient(to bottom, #2A3029 1px, transparent 1px);
+        }
+        .selected-glow {
+            box-shadow: 0 0 15px rgba(235, 213, 171, 0.1);
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="h-screen w-screen overflow-hidden flex flex-col swiss-grid-bg relative">
+<div class="w-full h-12 flex justify-between items-center px-6 pt-2 z-20">
+<div class="text-[10px] font-grotesk tracking-widest text-[#5C625B]">NARVO /// SYS.ONB.02</div>
+<div class="flex gap-1">
+<div class="w-1 h-1 bg-[#5C625B] rounded-full"></div>
+<div class="w-1 h-1 bg-[#5C625B] rounded-full"></div>
+<div class="w-1 h-1 bg-[var(--narvo-sand)] rounded-full"></div>
+</div>
+</div>
+<main class="flex-1 flex flex-col p-6 relative z-10">
+<header class="mb-8 mt-4 border-l border-[var(--narvo-sand)] pl-4">
+<div class="text-[10px] font-grotesk text-[var(--narvo-sand)] tracking-widest mb-2 uppercase">Config_Radius</div>
+<h1 class="font-grotesk text-4xl font-light leading-tight tracking-tight uppercase">
+                Select<br/>Regional<br/>Radius
+            </h1>
+<p class="mt-4 text-[#8C928B] text-sm font-light max-w-[280px] leading-relaxed">
+                Define the scope of your broadcast feed. This can be adjusted in real-time later.
+            </p>
+</header>
+<div class="flex-1 flex flex-col gap-4">
+<button class="group relative w-full flex-1 border border-[var(--narvo-grid)] bg-[#222821] hover:bg-[#2A3029] active:bg-[#252B24] transition-all duration-200 p-5 flex flex-col justify-between items-start text-left">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-[var(--narvo-sand-dim)]"></div>
+<div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-[var(--narvo-sand-dim)]"></div>
+<div class="w-full flex justify-between items-start">
+<span class="material-symbols-outlined text-[#5C625B] group-hover:text-[var(--narvo-sand)] transition-colors text-2xl font-light">location_on</span>
+<span class="text-[9px] font-mono text-[var(--narvo-sage)]">R: 20KM</span>
+</div>
+<div>
+<h3 class="font-grotesk text-xl uppercase tracking-wide text-[#8C928B] group-hover:text-white transition-colors">City (Local)</h3>
+<p class="text-[11px] text-[var(--narvo-sage)] mt-1 font-mono">HYPER-LOCAL TRAFFIC &amp; NEWS</p>
+</div>
+</button>
+<button class="group relative w-full flex-1 border border-[var(--narvo-sand)] bg-[#252B24] selected-glow p-5 flex flex-col justify-between items-start text-left z-10">
+<div class="absolute top-4 right-4 w-2 h-2 bg-[var(--narvo-sand)] rounded-full animate-pulse"></div>
+<div class="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-[var(--narvo-sand)]"></div>
+<div class="absolute bottom-0 right-0 w-3 h-3 border-b border-r border-[var(--narvo-sand)]"></div>
+<div class="w-full flex justify-between items-start">
+<span class="material-symbols-outlined text-[var(--narvo-sand)] text-2xl font-light">flag</span>
+<span class="text-[9px] font-mono text-[var(--narvo-sand)]">R: BORDERS</span>
+</div>
+<div>
+<h3 class="font-grotesk text-2xl uppercase tracking-wide text-[var(--narvo-sand)] font-medium">National</h3>
+<p class="text-[11px] text-[var(--narvo-sand)] mt-1 font-mono opacity-80">COUNTRY-WIDE BROADCAST</p>
+</div>
+</button>
+<button class="group relative w-full flex-1 border border-[var(--narvo-grid)] bg-[#222821] hover:bg-[#2A3029] active:bg-[#252B24] transition-all duration-200 p-5 flex flex-col justify-between items-start text-left">
+<div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-[var(--narvo-sand-dim)]"></div>
+<div class="w-full flex justify-between items-start">
+<span class="material-symbols-outlined text-[#5C625B] group-hover:text-[var(--narvo-sand)] transition-colors text-2xl font-light">public</span>
+<span class="text-[9px] font-mono text-[var(--narvo-sage)]">R: PAN-AFRICA</span>
+</div>
+<div>
+<h3 class="font-grotesk text-xl uppercase tracking-wide text-[#8C928B] group-hover:text-white transition-colors">Continental</h3>
+<p class="text-[11px] text-[var(--narvo-sage)] mt-1 font-mono">MARKET TRENDS &amp; GEOPOLITICS</p>
+</div>
+</button>
+</div>
+<div class="mt-8 mb-4 flex justify-end items-center border-t border-[#3C423B] pt-6">
+<div class="flex-1 mr-4">
+<div class="h-[1px] w-full bg-[#2A3029] relative overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-1/3 bg-[var(--narvo-sand)] opacity-30"></div>
+</div>
+<div class="flex justify-between text-[8px] font-mono text-[#5C625B] mt-1 uppercase">
+<span>Signal Strength</span>
+<span>98%</span>
+</div>
+</div>
+<button class="bg-[var(--narvo-sand)] text-black h-12 px-8 flex items-center justify-center gap-2 font-grotesk font-bold uppercase tracking-wider hover:bg-[#DBC396] transition-colors">
+<span>Confirm</span>
+<span class="material-symbols-outlined text-sm font-bold">arrow_forward</span>
+</button>
+</div>
+</main>
+<div class="absolute bottom-8 left-6 text-[8px] font-mono text-[#3C423B] -rotate-90 origin-bottom-left pointer-events-none">
+        NARVO_INTERFACE_V1.0
+    </div>
+
+</body></html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo - Contextual RAG Zone</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ebd5ad",
+                        "primary-dim": "#c1b39a",
+                        "background-dark": "#1B211A",
+                        "border-forest": "#2D4F32",
+                        "surface-dark": "#232922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"],
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #1B211A; /* Fallback */
+        }
+        /* Custom scrollbar for webkit to match theme */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2D4F32;
+            border-radius: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark text-slate-100 font-display antialiased selection:bg-primary selection:text-background-dark">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-hidden max-w-md mx-auto border-x border-border-forest shadow-2xl">
+<!-- Header -->
+<header class="sticky top-0 z-20 flex items-center justify-between border-b border-border-forest bg-background-dark/95 px-4 py-3 backdrop-blur-sm">
+<div class="flex items-center gap-3">
+<button class="flex size-10 items-center justify-center rounded-lg text-slate-300 hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold leading-tight tracking-tight text-white">Contextual RAG Zone</h1>
+</div>
+<button class="flex size-10 items-center justify-center rounded-lg text-primary hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Filter Tabs -->
+<div class="sticky top-[64px] z-10 flex gap-2 overflow-x-auto border-b border-border-forest bg-background-dark px-4 py-3 no-scrollbar">
+<button class="flex h-9 shrink-0 items-center gap-2 rounded border border-primary bg-primary px-4 text-xs font-bold uppercase tracking-wider text-background-dark shadow-[0_0_10px_rgba(235,213,173,0.1)] transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[18px]">grid_view</span>
+                    All Context
+                </button>
+<button class="flex h-9 shrink-0 items-center gap-2 rounded border border-border-forest bg-surface-dark px-4 text-xs font-bold uppercase tracking-wider text-slate-400 hover:border-primary/50 hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">psychology</span>
+                    Deep Context
+                </button>
+<button class="flex h-9 shrink-0 items-center gap-2 rounded border border-border-forest bg-surface-dark px-4 text-xs font-bold uppercase tracking-wider text-slate-400 hover:border-primary/50 hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]">history_edu</span>
+                    History
+                </button>
+</div>
+<!-- Featured Context (Hero) -->
+<div class="p-4">
+<div class="group relative flex w-full flex-col overflow-hidden rounded border border-border-forest bg-surface-dark transition-all hover:border-primary/50">
+<div class="absolute right-3 top-3 z-10 rounded bg-background-dark/80 px-2 py-1 font-mono text-[10px] text-primary backdrop-blur-md border border-border-forest">
+                        ACTIVE_NODE
+                    </div>
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark to-transparent opacity-90 z-10"></div>
+<img alt="Abstract visualization of a computer chip circuit board glowing in teal and dark blue" class="h-full w-full object-cover opacity-60 transition-transform duration-700 group-hover:scale-105" data-alt="Abstract visualization of a computer chip circuit board glowing in teal and dark blue" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjN39Ro-nRF-QgyDxQOWMtBdohBaGZCKSuH7ipTFGE3K6suLL3smwbhMHGA91FqLyizOd7-0DxlcgNIw0-oRd7nZnMXTKMLVjpAUshiiqqIG8aUK1SYxFLSqW7yuexc4o2TBIzEifP802L41PXSeqCT71nZamvEJxbbUNnyZVMzCErN8SVRpVLwX8S7QnvxuIWSP__MSD0IcFWZrTo1tuLIS5hKwHSNCYNVuiDpIfX5JnfOdKZoHOomu7N5LGECYHguEr2yV8AkpwB"/>
+</div>
+<div class="relative z-10 -mt-16 flex flex-col gap-3 p-4">
+<div class="flex items-center gap-2 font-mono text-xs text-primary">
+<span class="material-symbols-outlined text-[14px]">link</span>
+<span>LINK_ID: 882</span>
+<span class="h-1 w-1 rounded-full bg-slate-500"></span>
+<span class="text-slate-400">5 MIN READ</span>
+</div>
+<h2 class="font-display text-2xl font-bold leading-tight text-white">Semiconductor Supply Chain Analysis</h2>
+<p class="line-clamp-2 text-sm text-slate-400">
+                            A deep dive into the geopolitical shifts affecting global silicon wafer production and distribution networks in Q3.
+                        </p>
+<button class="mt-2 flex h-10 w-full items-center justify-center gap-2 rounded bg-primary text-sm font-bold uppercase tracking-wider text-background-dark hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+                            Read Analysis
+                        </button>
+</div>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-2 gap-3 px-4 pb-4">
+<!-- Card 1 -->
+<div class="group flex flex-col justify-between rounded border border-border-forest bg-surface-dark p-3 transition-colors hover:border-primary/40">
+<div class="mb-3 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[10px] text-slate-500">LINK_ID: 883</span>
+<span class="material-symbols-outlined text-[16px] text-primary">history</span>
+</div>
+<span class="mt-1 inline-flex w-fit items-center rounded border border-border-forest bg-background-dark px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-300">History</span>
+<h3 class="mt-2 font-display text-sm font-semibold leading-snug text-slate-100 group-hover:text-primary">The 1985 Plaza Accord: Parallels</h3>
+</div>
+<button class="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-white">
+<span class="material-symbols-outlined text-[16px]">play_circle</span>
+                        Play Context
+                    </button>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col justify-between rounded border border-border-forest bg-surface-dark p-3 transition-colors hover:border-primary/40">
+<div class="mb-3 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[10px] text-slate-500">LINK_ID: 884</span>
+<span class="material-symbols-outlined text-[16px] text-primary">analytics</span>
+</div>
+<span class="mt-1 inline-flex w-fit items-center rounded border border-border-forest bg-background-dark px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-300">Data Point</span>
+<h3 class="mt-2 font-display text-sm font-semibold leading-snug text-slate-100 group-hover:text-primary">Inflation Metrics Q3 Projection</h3>
+</div>
+<button class="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-white">
+<span class="material-symbols-outlined text-[16px]">bar_chart</span>
+                        View Graph
+                    </button>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col justify-between rounded border border-border-forest bg-surface-dark p-3 transition-colors hover:border-primary/40">
+<div class="mb-3 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[10px] text-slate-500">LINK_ID: 885</span>
+<span class="material-symbols-outlined text-[16px] text-primary">psychology</span>
+</div>
+<span class="mt-1 inline-flex w-fit items-center rounded border border-border-forest bg-background-dark px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-300">Deep Context</span>
+<h3 class="mt-2 font-display text-sm font-semibold leading-snug text-slate-100 group-hover:text-primary">Rare Earth Metals: Market Volatility</h3>
+</div>
+<button class="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-white">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+                        Read More
+                    </button>
+</div>
+<!-- Card 4 -->
+<div class="group flex flex-col justify-between rounded border border-border-forest bg-surface-dark p-3 transition-colors hover:border-primary/40">
+<div class="mb-3 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[10px] text-slate-500">LINK_ID: 886</span>
+<span class="material-symbols-outlined text-[16px] text-primary">public</span>
+</div>
+<span class="mt-1 inline-flex w-fit items-center rounded border border-border-forest bg-background-dark px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-300">Geo-Pol</span>
+<h3 class="mt-2 font-display text-sm font-semibold leading-snug text-slate-100 group-hover:text-primary">Maritime Trade Routes Disruption</h3>
+</div>
+<button class="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-white">
+<span class="material-symbols-outlined text-[16px]">map</span>
+                        View Map
+                    </button>
+</div>
+<!-- Card 5 (Full Width) -->
+<div class="col-span-2 group flex flex-row items-center justify-between rounded border border-border-forest bg-surface-dark p-3 transition-colors hover:border-primary/40">
+<div class="flex flex-col gap-1 pr-4">
+<div class="flex items-center gap-2">
+<span class="font-mono text-[10px] text-slate-500">LINK_ID: 887</span>
+<span class="material-symbols-outlined text-[16px] text-primary">verified_user</span>
+</div>
+<h3 class="font-display text-sm font-semibold text-slate-100 group-hover:text-primary">Cybersecurity Protocols Update v2.4</h3>
+</div>
+<button class="flex shrink-0 size-8 items-center justify-center rounded border border-border-forest bg-background-dark text-primary hover:bg-primary hover:text-background-dark transition-all">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- Card 6 -->
+<div class="group flex flex-col justify-between rounded border border-border-forest bg-surface-dark p-3 transition-colors hover:border-primary/40">
+<div class="mb-3 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[10px] text-slate-500">LINK_ID: 888</span>
+<span class="material-symbols-outlined text-[16px] text-primary">history</span>
+</div>
+<span class="mt-1 inline-flex w-fit items-center rounded border border-border-forest bg-background-dark px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-300">History</span>
+<h3 class="mt-2 font-display text-sm font-semibold leading-snug text-slate-100 group-hover:text-primary">The Dot-Com Bubble: Lessons</h3>
+</div>
+<button class="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-white">
+<span class="material-symbols-outlined text-[16px]">play_circle</span>
+                        Play Context
+                    </button>
+</div>
+<!-- Card 7 -->
+<div class="group flex flex-col justify-between rounded border border-border-forest bg-surface-dark p-3 transition-colors hover:border-primary/40">
+<div class="mb-3 flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="font-mono text-[10px] text-slate-500">LINK_ID: 889</span>
+<span class="material-symbols-outlined text-[16px] text-primary">bolt</span>
+</div>
+<span class="mt-1 inline-flex w-fit items-center rounded border border-border-forest bg-background-dark px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-slate-300">Impact</span>
+<h3 class="mt-2 font-display text-sm font-semibold leading-snug text-slate-100 group-hover:text-primary">Energy Grid Load Analysis</h3>
+</div>
+<button class="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-white">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+                        Read Brief
+                    </button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 z-30 flex w-full max-w-md items-center justify-between border-t border-border-forest bg-background-dark px-6 pb-6 pt-3 backdrop-blur-lg">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">newspaper</span>
+<span class="text-[10px] font-medium uppercase tracking-wide">Feed</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary group" href="#">
+<div class="relative">
+<span class="material-symbols-outlined fill-current">layers</span>
+<span class="absolute -right-1 -top-1 size-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-wide">Context</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">search</span>
+<span class="text-[10px] font-medium uppercase tracking-wide">Search</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">person</span>
+<span class="text-[10px] font-medium uppercase tracking-wide">Profile</span>
+</a>
+</nav>
+</div>
+</body></html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Narvo - News Detail Deep Dive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ebd5ad",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#1B211A", // Overriding per user request
+                        "sage": "#8BAE66",
+                        "olive": "#628141",
+                        "surface": "#242A23", // Slightly lighter than background for cards
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar hide for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col antialiased selection:bg-primary selection:text-background-dark">
+<!-- Sticky Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between border-b border-surface/50 bg-background-dark/95 backdrop-blur-md px-4 py-3">
+<button class="flex items-center justify-center rounded-full text-slate-100 hover:bg-surface p-1 transition-colors">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h2 class="text-base font-bold uppercase tracking-widest text-primary/80">Deep Dive</h2>
+<div class="w-8"></div> <!-- Spacer for alignment -->
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto px-4 pb-32 pt-4">
+<!-- Metadata Tags -->
+<div class="no-scrollbar mb-6 flex gap-2 overflow-x-auto pb-2">
+<div class="flex shrink-0 items-center justify-center rounded border border-surface bg-surface px-3 py-1.5">
+<span class="text-xs font-medium uppercase tracking-wide text-slate-300">Tech &amp; AI</span>
+</div>
+<div class="flex shrink-0 items-center justify-center rounded border border-surface bg-surface px-3 py-1.5">
+<span class="text-xs font-medium uppercase tracking-wide text-slate-300">Reuters</span>
+</div>
+<div class="flex shrink-0 items-center justify-center gap-1.5 rounded border border-sage/30 bg-sage/10 px-3 py-1.5">
+<span class="material-symbols-outlined text-[14px] text-sage">verified</span>
+<span class="text-xs font-medium uppercase tracking-wide text-sage">Paraphrase Transparency: High</span>
+</div>
+</div>
+<!-- Headline -->
+<h1 class="mb-6 text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
+            The Future of Quantum Computing in Finance
+        </h1>
+<!-- Hero Image -->
+<div class="mb-8 w-full overflow-hidden rounded-lg bg-surface">
+<div class="relative aspect-video w-full bg-cover bg-center" data-alt="Abstract quantum computing digital network visualization" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBqoGrUWIq_Y-xcQjFNDoPeSiLITaIYvF8sL5ZG7au8FbWVkNI_DVsz6u8YL0VRUOlqFZ9BNWa-MFUa2ov4H53t_SFXAG4yd5ZfOfsWszJ7eNlIeSvgA7KXNxV4RDiuuHwWSWGmpsHOcjsDcQvLSkXJYtUMZDHbzGqsuQ0k6sHcTwG2TlIKKgz8VdlwYjsjJCZHB1kbhPnBuGO8L1_GioQLCZsiG0Udm8_Yjy6tJ5cMWyq7pijEkywqkFq_X2rIYf7MdMlybfeShUgB');">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent"></div>
+</div>
+<div class="flex items-center justify-between px-3 py-2 text-xs text-slate-400">
+<span>Oct 24, 2023 • 8:42 AM EST</span>
+<span>By Sarah Jenkins</span>
+</div>
+</div>
+<!-- Key Takeaways Box -->
+<section class="mb-8 rounded-lg border border-olive bg-gradient-to-br from-olive/10 to-transparent p-5">
+<div class="mb-3 flex items-center gap-2">
+<span class="material-symbols-outlined text-olive">bolt</span>
+<h3 class="text-lg font-bold text-primary">Key Takeaways</h3>
+</div>
+<ul class="space-y-3 font-body text-sm leading-relaxed text-slate-200">
+<li class="flex gap-3">
+<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-olive"></span>
+<span>30% increase in calculation speed for high-frequency trading algorithms.</span>
+</li>
+<li class="flex gap-3">
+<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-olive"></span>
+<span>New encryption standards proposed to combat quantum decryption threats.</span>
+</li>
+<li class="flex gap-3">
+<span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-olive"></span>
+<span>Market adoption in major banking sectors expected by late 2026.</span>
+</li>
+</ul>
+</section>
+<!-- Main Narrative Body -->
+<article class="font-body text-lg leading-8 text-slate-300">
+<p class="mb-6 first-letter:float-left first-letter:mr-3 first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:leading-[0.8]">
+                In a groundbreaking development yesterday, researchers announced a significant leap forward in quantum processing capabilities tailored specifically for the financial sector. The new architecture promises to redefine how rapidly complex market simulations can be executed.
+            </p>
+<p class="mb-6">
+                Traditionally, Monte Carlo simulations used for risk assessment take hours to run on conventional supercomputers. The new quantum approach reduces this time to mere minutes, potentially offering early adopters a substantial edge in market responsiveness.
+            </p>
+<div class="my-8 border-l-2 border-primary pl-6 italic text-slate-400">
+                "We are looking at a paradigm shift that hasn't been seen since the introduction of electronic trading in the 1980s." — Dr. Aris Thorne
+            </div>
+<p class="mb-6">
+                However, with great power comes great responsibility. Regulatory bodies are already scrambling to understand the implications of such speed. The primary concern revolves around fairness and the potential for quantum-enabled market manipulation that existing surveillance tools might miss.
+            </p>
+<p class="mb-6">
+                Furthermore, the security implications are profound. Current RSA encryption methods could be rendered obsolete, necessitating a swift transition to post-quantum cryptography standards.
+            </p>
+<p class="mb-6 text-slate-500">
+                [End of free preview. Subscribe to Narvo Pro for full technical analysis.]
+            </p>
+</article>
+</main>
+<!-- Bottom Playback Console & Nav -->
+<div class="fixed bottom-0 left-0 right-0 z-40 flex flex-col bg-background-dark border-t border-surface/50 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+<!-- Playback Controls -->
+<div class="flex flex-col gap-3 px-4 py-3 pb-2">
+<!-- Progress Bar -->
+<div class="relative h-1 w-full overflow-hidden rounded-full bg-surface">
+<div class="absolute left-0 top-0 h-full w-[45%] rounded-full bg-primary"></div>
+</div>
+<div class="flex items-center justify-between">
+<!-- Play/Pause & Time -->
+<div class="flex items-center gap-3">
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-background-dark shadow-lg transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[24px] fill-1">play_arrow</span>
+</button>
+<div class="flex flex-col">
+<span class="text-xs font-bold text-white">02:14 <span class="text-slate-500">/ 05:00</span></span>
+<span class="text-[10px] uppercase tracking-wider text-primary">Now Playing</span>
+</div>
+</div>
+<!-- Right Controls: Speed & Voice -->
+<div class="flex items-center gap-3">
+<!-- Speed Toggle -->
+<div class="flex overflow-hidden rounded border border-surface bg-surface/50">
+<button class="px-2 py-1 text-xs font-bold text-slate-400 hover:text-white transition-colors">1x</button>
+<div class="w-px bg-surface"></div>
+<button class="bg-primary px-2 py-1 text-xs font-bold text-background-dark">1.5x</button>
+</div>
+<!-- Voice Toggle -->
+<div class="flex items-center gap-2 rounded border border-surface bg-surface/50 p-1 pl-2">
+<span class="material-symbols-outlined text-[16px] text-slate-400">graphic_eq</span>
+<div class="relative inline-flex h-4 w-7 items-center rounded-full bg-primary/20 transition-colors">
+<span class="translate-x-3.5 inline-block h-3 w-3 transform rounded-full bg-primary transition-transform"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="flex justify-between gap-2 border-t border-surface/30 bg-background-dark px-6 pb-6 pt-3">
+<a class="group flex flex-1 flex-col items-center justify-end gap-1" href="#">
+<span class="material-symbols-outlined text-[24px] text-slate-500 group-hover:text-primary transition-colors">home</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary">Home</span>
+</a>
+<a class="group flex flex-1 flex-col items-center justify-end gap-1" href="#">
+<span class="material-symbols-outlined text-[24px] text-slate-500 group-hover:text-primary transition-colors">search</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary">Explore</span>
+</a>
+<a class="group flex flex-1 flex-col items-center justify-end gap-1" href="#">
+<span class="material-symbols-outlined text-[24px] text-primary transition-colors fill-1">layers</span>
+<span class="text-[10px] font-medium text-primary">Deep Dive</span>
+</a>
+<a class="group flex flex-1 flex-col items-center justify-end gap-1" href="#">
+<span class="material-symbols-outlined text-[24px] text-slate-500 group-hover:text-primary transition-colors">bookmark</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary">Saved</span>
+</a>
+</nav>
+</div>
+</body></html>
