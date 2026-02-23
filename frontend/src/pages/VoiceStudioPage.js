@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Waveform, Radio, CircleOff, Check } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, AudioWaveform, Radio, CircleOff, Check } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import Skeleton from '../components/Skeleton';
 
@@ -162,7 +162,7 @@ const VoiceStudioPage = () => {
                       </h4>
                     </div>
                     {status.active ? (
-                      <Waveform className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                      <AudioWaveform className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                     ) : (
                       <CircleOff className="w-5 h-5 md:w-6 md:h-6 text-forest" />
                     )}

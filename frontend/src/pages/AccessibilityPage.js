@@ -8,7 +8,7 @@ const AccessibilityPage = () => {
     lateralSwipe: true,
     pinchZoom: false,
   });
-  const [voiceCommands, setVoiceCommands] = useState([
+  const [voiceCommands] = useState([
     { id: 1, command: '"NARVO, OPEN NEWSFEED"', active: true },
     { id: 2, command: '"NARVO, BRIGHTNESS UP"', active: true },
   ]);
