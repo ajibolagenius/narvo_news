@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { PlayCircle, Languages, Bookmark, BookmarkCheck, ArrowDown, Activity, CloudSun } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
-import { useAuth } from '../contexts/AuthContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -10,127 +10,263 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { playTrack, currentTrack, isPlaying, isLoading: audioLoading } = useAudio();
-  const { user } = useAuth();
+  const [metrics, setMetrics] = useState(null);
+  const { playTrack, currentTrack, isPlaying } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
 
   useEffect(() => {
-    fetch(`${API_URL}/api/news?limit=10`)
-      .then(res => res.json())
-      .then(data => { setNews(data); setLoading(false); })
-      .catch(() => setLoading(false));
+    Promise.all([
+      fetch(`${API_URL}/api/news?limit=15`).then(r => r.json()),
+      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
+    ]).then(([newsData, metricsData]) => {
+      setNews(newsData);
+      setMetrics(metricsData);
+      setLoading(false);
+    }).catch(() => setLoading(false));
   }, []);
 
-  const displayName = user?.email?.split('@')[0] || 'Guest';
+  const featured = news[0];
+  const stream = news.slice(1);
 
   const toggleBookmark = (e, item) => {
     e.stopPropagation();
-    if (isBookmarked(item.id)) {
-      removeBookmark(item.id);
-    } else {
-      addBookmark(item);
-    }
+    if (isBookmarked(item.id)) removeBookmark(item.id);
+    else addBookmark(item);
+  };
+
+  const timeAgo = (idx) => {
+    const times = ['1HR_AGO', '2HR_AGO', '3HR_AGO', '4HR_AGO', '6HR_AGO', '8HR_AGO', '12HR_AGO'];
+    return times[idx % times.length];
   };
 
   return (
-    <div className="min-h-screen bg-background-dark" data-testid="dashboard-page">
-      <header className="border-b border-forest">
-        <div className="flex items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-4">
-            <svg className="w-6 h-6 text-primary" viewBox="0 0 256 256" fill="currentColor">
-              <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/>
-            </svg>
-            <span className="font-display text-lg font-bold text-white">NARVO</span>
+    <>
+      {/* Primary Feed Container */}
+      <main className="flex-1 flex flex-col bg-background-dark min-w-0">
+        {/* Feed Sub-Header */}
+        <div className="h-14 flex items-center justify-between px-8 bg-surface/30 narvo-border-b shrink-0">
+          <div className="flex items-center gap-3">
+            <span className="mono-ui text-[10px] text-forest">CHANNEL: <span className="text-primary">NIGERIA_LGS_01</span></span>
+            <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
+            <span className="mono-ui text-[10px] text-forest">LIVE_TRANSMISSION</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="mono-ui text-[10px] text-forest">STATUS: <span className="text-primary">ONLINE</span></span>
-            <Link to="/search" data-testid="nav-search">
-              <svg className="w-5 h-5 text-forest hover:text-primary" viewBox="0 0 256 256" fill="currentColor">
-                <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32Z"/>
-              </svg>
-            </Link>
+            <button className="mono-ui text-[10px] text-forest border border-forest px-3 py-1 hover:bg-forest hover:text-white transition-colors" data-testid="filter-btn">FILTERS</button>
+            <button className="mono-ui text-[10px] text-primary border border-primary px-3 py-1 hover:bg-primary hover:text-background-dark transition-colors" data-testid="sort-btn">SORT_PRIORITY</button>
           </div>
         </div>
-      </header>
 
-      <div className="flex">
-        <aside className="w-64 border-r border-forest min-h-screen hidden lg:block">
-          <nav className="p-4">
-            <span className="mono-ui text-[10px] text-forest block mb-4">NAVIGATION</span>
-            <Link to="/briefing" className="flex items-center gap-3 p-3 border border-primary bg-primary/10 mb-2" data-testid="nav-briefing">
-              <svg className="w-4 h-4 text-primary" viewBox="0 0 256 256" fill="currentColor"><path d="M80,56V24a8,8,0,0,1,16,0V56a8,8,0,0,1-16,0Zm40,8a8,8,0,0,0,8-8V24a8,8,0,0,0-16,0V56A8,8,0,0,0,120,64Z"/></svg>
-              <span className="mono-ui text-xs text-primary">Morning Briefing</span>
-            </Link>
-            <Link to="/dashboard" className="flex items-center gap-3 p-3 border border-forest mb-2 bg-forest/10" data-testid="nav-stream">
-              <svg className="w-4 h-4 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Z"/></svg>
-              <span className="mono-ui text-xs text-forest">Primary Stream</span>
-            </Link>
-            <Link to="/bookmarks" className="flex items-center gap-3 p-3 border border-forest mb-2" data-testid="nav-bookmarks">
-              <svg className="w-4 h-4 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z"/></svg>
-              <span className="mono-ui text-xs text-forest">Saved Stories</span>
-            </Link>
-            <Link to="/voices" className="flex items-center gap-3 p-3 border border-forest mb-2" data-testid="nav-voices">
-              <svg className="w-4 h-4 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M128,176a48.05,48.05,0,0,0,48-48V64a48,48,0,0,0-96,0v64A48.05,48.05,0,0,0,128,176Z"/></svg>
-              <span className="mono-ui text-xs text-forest">Voice Studio</span>
-            </Link>
-            <Link to="/settings" className="flex items-center gap-3 p-3 border border-forest" data-testid="nav-settings">
-              <svg className="w-4 h-4 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Z"/></svg>
-              <span className="mono-ui text-xs text-forest">Settings</span>
-            </Link>
-          </nav>
-        </aside>
+        {/* Feed Content */}
+        <div className="flex-1 overflow-y-auto custom-scroll p-8" data-testid="news-feed">
+          <div className="max-w-4xl mx-auto flex flex-col gap-12">
+            {loading ? (
+              <div className="flex items-center justify-center py-20">
+                <div className="flex items-end gap-1 h-8">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="w-1 bg-forest animate-pulse" style={{ height: `${Math.random() * 100}%`, animationDelay: `${i * 0.1}s` }} />
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Featured Transmission */}
+                {featured && (
+                  <section>
+                    <span className="mono-ui text-[9px] text-primary block mb-4 font-bold tracking-[0.2em]">{'//'} PRIORITY_TRANSMISSION</span>
+                    <article
+                      className="narvo-border bg-surface/50 group relative overflow-hidden flex flex-col md:flex-row min-h-[320px] cursor-pointer"
+                      onClick={() => navigate(`/news/${featured.id}`)}
+                      data-testid="featured-card"
+                    >
+                      <div className="absolute top-0 left-0 w-1 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="md:w-1/2 relative bg-background-dark overflow-hidden min-h-[200px]">
+                        <img
+                          alt={featured.title}
+                          className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale hover:grayscale-0 absolute inset-0"
+                          src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-background-dark/80 to-transparent" />
+                        <div className="absolute top-4 left-4 flex gap-2">
+                          <span className="bg-primary text-background-dark font-mono text-[9px] font-bold px-2 py-0.5 uppercase tracking-tighter">Feature</span>
+                          <span className="bg-black/50 text-white font-mono text-[9px] px-2 py-0.5 uppercase border border-white/20 backdrop-blur-md">{new Date().toISOString().split('T')[1].split('.')[0].slice(0,5)} UTC</span>
+                        </div>
+                      </div>
+                      <div className="flex-1 p-8 flex flex-col justify-between">
+                        <div>
+                          <span className="mono-ui text-[10px] text-forest block mb-2 font-bold tracking-widest">NARRATIVE_NODE {'//'} {featured.category?.toUpperCase()}</span>
+                          <h2 className="font-display text-3xl font-bold uppercase tracking-tight text-white mb-4 leading-none group-hover:text-primary transition-colors">
+                            {featured.title}
+                          </h2>
+                          <p className="text-sm text-forest font-mono leading-relaxed mb-6 opacity-80 line-clamp-3">
+                            {featured.summary}
+                          </p>
+                        </div>
+                        <div className="flex gap-4">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); playTrack(featured); }}
+                            className="flex-1 h-12 bg-primary text-background-dark font-display font-bold text-sm uppercase flex items-center justify-center gap-3 hover:bg-white transition-all"
+                            data-testid="featured-play-btn"
+                          >
+                            <PlayCircle className="w-6 h-6" />
+                            <span>Play Briefing</span>
+                          </button>
+                          <button className="w-12 h-12 narvo-border flex items-center justify-center text-primary group-hover:border-primary transition-colors" title="Translate" onClick={(e) => e.stopPropagation()}>
+                            <Languages className="w-5 h-5" />
+                          </button>
+                          <button
+                            className={`w-12 h-12 narvo-border flex items-center justify-center transition-colors ${isBookmarked(featured.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary'}`}
+                            onClick={(e) => toggleBookmark(e, featured)}
+                            data-testid="featured-bookmark-btn"
+                          >
+                            {isBookmarked(featured.id) ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  </section>
+                )}
 
-        <main className="flex-1 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="font-display text-2xl text-white mb-1">[Live Feed]</h2>
-              <span className="mono-ui text-[10px] text-text-secondary">Welcome, Oga {displayName}</span>
+                {/* Synthesized Streams */}
+                <section className="space-y-6">
+                  <div className="flex items-center justify-between border-b border-forest/30 pb-2">
+                    <span className="mono-ui text-[9px] text-forest font-bold tracking-[0.2em]">{'//'} SYNTHESIZED_STREAMS</span>
+                    <span className="mono-ui text-[8px] text-forest/50 uppercase">Active_Nodes: {String(stream.length).padStart(2, '0')}</span>
+                  </div>
+
+                  <div className="narvo-border bg-surface/20 divide-y divide-forest/10">
+                    {stream.map((item, idx) => (
+                      <article
+                        key={item.id}
+                        className="p-6 group hover:bg-surface/40 transition-colors cursor-pointer"
+                        onClick={() => navigate(`/news/${item.id}`)}
+                        data-testid={`stream-card-${item.id}`}
+                      >
+                        <div className="flex flex-col gap-3">
+                          <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-3">
+                              <span className="bg-forest/20 text-primary mono-ui text-[8px] px-2 py-0.5 border border-forest/30">SOURCE:{item.source?.toUpperCase().replace(/\s/g, '_')}</span>
+                              <span className="mono-ui text-[8px] text-forest/50">{timeAgo(idx)}</span>
+                            </div>
+                            <div className="flex gap-2">
+                              {item.tags?.slice(0, 2).map((tag, i) => (
+                                <span key={i} className="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#{tag.toUpperCase()}</span>
+                              ))}
+                              {!item.tags?.length && <span className="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#{item.category?.toUpperCase()}</span>}
+                            </div>
+                          </div>
+                          <h3 className="font-display text-xl font-bold uppercase tracking-tight text-white group-hover:text-primary transition-colors leading-tight">
+                            {item.title}
+                          </h3>
+                          <p className="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                            {item.summary}
+                          </p>
+                          <div className="flex items-center gap-6 pt-1">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); playTrack(item); }}
+                              className="mono-ui text-[9px] text-primary flex items-center gap-2 hover:text-white transition-colors"
+                              data-testid={`play-btn-${item.id}`}
+                            >
+                              <svg className="w-4 h-4 text-forest" viewBox="0 0 256 256" fill="currentColor">
+                                <path d="M56,96v64a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0ZM88,24a8,8,0,0,0-8,8V224a8,8,0,0,0,16,0V32A8,8,0,0,0,88,24Zm40,32a8,8,0,0,0-8,8V192a8,8,0,0,0,16,0V64A8,8,0,0,0,128,56Z"/>
+                              </svg>
+                              <span>GENERATE_AUDIO_BRIEF</span>
+                            </button>
+                            <div className="flex-1 h-[1px] bg-forest/10" />
+                            <button
+                              onClick={(e) => toggleBookmark(e, item)}
+                              className={`transition-colors ${isBookmarked(item.id) ? 'text-primary' : 'text-forest hover:text-primary'}`}
+                              data-testid={`bookmark-btn-${item.id}`}
+                            >
+                              {isBookmarked(item.id) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+
+                  <button className="w-full h-12 narvo-border bg-surface/10 mono-ui text-[10px] text-forest hover:bg-surface hover:text-primary transition-all flex items-center justify-center gap-3" data-testid="load-more-btn">
+                    <ArrowDown className="w-4 h-4" />
+                    <span>LOAD_ADDITIONAL_TRANSMISSIONS</span>
+                  </button>
+                </section>
+              </>
+            )}
+          </div>
+        </div>
+      </main>
+
+      {/* Right Sidebar: Telemetry */}
+      <aside className="w-80 hidden xl:flex flex-col narvo-border-l bg-background-dark shrink-0" data-testid="telemetry-sidebar">
+        <div className="h-20 flex items-center px-6 narvo-border-b bg-surface/10">
+          <span className="mono-ui text-xs font-bold text-forest tracking-widest uppercase flex items-center gap-3">
+            <Activity className="text-primary w-4 h-4" /> Telemetry_Center
+          </span>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
+          {/* Weather */}
+          <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-2 opacity-20"><CloudSun className="w-10 h-10" /></div>
+            <span className="mono-ui text-[9px] text-forest block mb-3 font-bold tracking-widest">REGIONAL_ENV_METRICS</span>
+            <div className="flex items-end justify-between">
+              <div>
+                <span className="font-display text-3xl font-bold text-white tracking-tighter">28°C</span>
+                <span className="mono-ui text-[9px] text-forest block mt-1">LAGOS, NIGERIA</span>
+              </div>
+              <div className="text-right">
+                <span className="mono-ui text-[9px] text-primary font-bold">HUMIDITY: 62%</span>
+                <span className="mono-ui text-[9px] text-forest block">WIND: 12km/h</span>
+              </div>
             </div>
           </div>
 
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="text-center">
-                <div className="flex items-end gap-1 h-8 justify-center mb-4">
-                  {Array.from({ length: 10 }).map((_, i) => (
-                    <div key={i} className="w-2 bg-forest breathing-grid" style={{ height: `${Math.random() * 80 + 20}%` }} />
-                  ))}
-                </div>
-                <span className="mono-ui text-xs text-text-secondary">[PROCESSING SIGNAL...]</span>
-              </div>
+          {/* Trending Tags */}
+          <div>
+            <span className="mono-ui text-[9px] text-forest block mb-4 font-bold tracking-widest">PULSE_TAGS_TRENDING</span>
+            <div className="flex flex-wrap gap-2">
+              {['#ECONOMY_VOL', '#SOLAR_GRID', '#AI_SYNTH', '#ENERGY_DENSITY', '#NIGERIAN_TECH'].map(tag => (
+                <span key={tag} className="narvo-border px-2 py-1 mono-ui text-[8px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">
+                  {tag}
+                </span>
+              ))}
             </div>
-          ) : (
-            <div className="space-y-4" data-testid="news-feed">
-              {news.map((item) => (
-                <div key={item.id} className="border border-forest bg-surface p-6 hover:border-text-secondary cursor-pointer transition-colors" onClick={() => navigate(`/news/${item.id}`)} data-testid={`news-card-${item.id}`}>
-                  <div className="flex items-start justify-between mb-3">
-                    <span className="mono-ui text-[9px] text-primary border border-primary px-1">{item.category?.toUpperCase()}</span>
-                    <span className="mono-ui text-[10px] text-forest">{item.source}</span>
+          </div>
+
+          {/* Regional Matrix Health */}
+          <div>
+            <span className="mono-ui text-[9px] text-forest block mb-4 font-bold tracking-widest">REGIONAL_MATRIX_HEALTH</span>
+            <div className="space-y-4">
+              {[
+                { name: 'LAGOS_NODE', pct: 98, color: 'bg-primary', textColor: 'text-primary' },
+                { name: 'NAIROBI_NODE', pct: 84, color: 'bg-forest', textColor: 'text-forest' },
+                { name: 'ACCRA_NODE', pct: 91, color: 'bg-primary', textColor: 'text-primary' },
+                { name: 'JHB_NODE', pct: 76, color: 'bg-forest', textColor: 'text-forest' },
+              ].map(node => (
+                <div key={node.name} className="space-y-1">
+                  <div className="flex justify-between mono-ui text-[9px]">
+                    <span className="text-white">{node.name}</span>
+                    <span className={`${node.textColor} font-bold`}>{node.pct}%</span>
                   </div>
-                  <h3 className="font-display text-lg text-white mb-2 line-clamp-2">{item.title}</h3>
-                  <p className="text-slate-400 text-sm mb-4 line-clamp-2">{item.summary}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      {item.tags?.slice(0, 2).map((tag, idx) => (
-                        <span key={idx} className="mono-ui text-[9px] text-forest border border-forest px-1">{tag}</span>
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button onClick={(e) => toggleBookmark(e, item)} className={`border px-3 py-2 text-xs mono-ui transition-all ${isBookmarked(item.id) ? 'border-primary bg-primary/10 text-primary' : 'border-forest text-forest hover:border-primary hover:text-primary'}`} data-testid={`bookmark-btn-${item.id}`}>
-                        {isBookmarked(item.id) ? '[SAVED]' : '[SAVE]'}
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); playTrack(item); }} className="bg-primary text-background-dark font-display font-bold px-4 py-2 text-xs hover:bg-white transition-all flex items-center gap-2" disabled={audioLoading && currentTrack?.id === item.id} data-testid={`play-btn-${item.id}`}>
-                        {currentTrack?.id === item.id && isPlaying ? '[PAUSE]' : '[LISTEN]'}
-                      </button>
-                    </div>
-                  </div>
+                  <div className="h-1 w-full bg-forest/20"><div className={`h-full ${node.color}`} style={{ width: `${node.pct}%` }} /></div>
                 </div>
               ))}
             </div>
-          )}
-        </main>
-      </div>
-    </div>
+          </div>
+
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-2 gap-[1px] narvo-border bg-forest">
+            <div className="bg-background-dark p-4 flex flex-col justify-between h-24">
+              <span className="mono-ui text-[8px] text-forest">LISTENERS</span>
+              <span className="font-display text-2xl font-bold text-white tracking-tighter">{metrics?.total_listeners || '14.2K'}</span>
+            </div>
+            <div className="bg-background-dark p-4 flex flex-col justify-between h-24">
+              <span className="mono-ui text-[8px] text-forest">SOURCES</span>
+              <span className="font-display text-2xl font-bold text-primary tracking-tighter">{metrics?.total_sources || '7'}</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 };
 
