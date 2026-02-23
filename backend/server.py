@@ -587,6 +587,116 @@ async def generate_briefing_audio(
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
 # ===========================================
+# RADIO STATIONS API (Radio Browser)
+# ===========================================
+RADIO_BROWSER_API = "https://de1.api.radio-browser.info"
+
+class RadioStation(BaseModel):
+    id: str
+    name: str
+    url: str
+    url_resolved: Optional[str] = None
+    country: str
+    countrycode: str
+    state: Optional[str] = None
+    language: Optional[str] = None
+    tags: Optional[str] = None
+    votes: int = 0
+    codec: Optional[str] = None
+    bitrate: int = 0
+    favicon: Optional[str] = None
+
+@app.get("/api/radio/stations", response_model=List[RadioStation])
+async def get_radio_stations(
+    country: str = Query(None, description="Filter by country code (e.g., NG, GH, ZA)"),
+    limit: int = Query(20, ge=1, le=100, description="Max stations to return"),
+    search: str = Query(None, description="Search by station name")
+):
+    """Get African radio stations from Radio Browser API"""
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            # Build query params
+            params = {
+                "limit": limit,
+                "hidebroken": "true",
+                "order": "votes",
+                "reverse": "true"
+            }
+            
+            if search:
+                # Search by name
+                url = f"{RADIO_BROWSER_API}/json/stations/byname/{search}"
+            elif country:
+                # Filter by country code
+                url = f"{RADIO_BROWSER_API}/json/stations/bycountrycodeexact/{country}"
+            else:
+                # Default: Get top African stations
+                # We'll search for major African countries
+                url = f"{RADIO_BROWSER_API}/json/stations/search"
+                params["countrycodeList"] = "NG,GH,KE,ZA,EG,MA,TZ,UG,ET,SN,CI,CM,AO,ZW"
+            
+            response = await client.get(url, params=params)
+            response.raise_for_status()
+            data = response.json()
+            
+            stations = []
+            for item in data[:limit]:
+                stations.append(RadioStation(
+                    id=item.get("stationuuid", ""),
+                    name=item.get("name", "Unknown Station"),
+                    url=item.get("url", ""),
+                    url_resolved=item.get("url_resolved", item.get("url", "")),
+                    country=item.get("country", ""),
+                    countrycode=item.get("countrycode", ""),
+                    state=item.get("state", ""),
+                    language=item.get("language", ""),
+                    tags=item.get("tags", ""),
+                    votes=item.get("votes", 0),
+                    codec=item.get("codec", ""),
+                    bitrate=item.get("bitrate", 0),
+                    favicon=item.get("favicon", "")
+                ))
+            
+            return stations
+    except httpx.TimeoutException:
+        raise HTTPException(status_code=504, detail="Radio API timeout")
+    except Exception as e:
+        print(f"Radio API error: {e}")
+        # Return fallback stations
+        return [
+            RadioStation(
+                id="fallback-1", name="Cool FM Lagos", url="https://stream.coolfm.ng/live",
+                country="Nigeria", countrycode="NG", votes=1000, bitrate=128
+            ),
+            RadioStation(
+                id="fallback-2", name="Wazobia FM", url="https://stream.wazobiafm.com/live",
+                country="Nigeria", countrycode="NG", votes=800, bitrate=128
+            ),
+            RadioStation(
+                id="fallback-3", name="Metro FM South Africa", url="https://stream.metrofm.co.za/live",
+                country="South Africa", countrycode="ZA", votes=600, bitrate=128
+            ),
+        ]
+
+@app.get("/api/radio/countries")
+async def get_radio_countries():
+    """Get list of African countries with radio stations"""
+    return [
+        {"code": "NG", "name": "Nigeria", "flag": "🇳🇬"},
+        {"code": "GH", "name": "Ghana", "flag": "🇬🇭"},
+        {"code": "KE", "name": "Kenya", "flag": "🇰🇪"},
+        {"code": "ZA", "name": "South Africa", "flag": "🇿🇦"},
+        {"code": "EG", "name": "Egypt", "flag": "🇪🇬"},
+        {"code": "MA", "name": "Morocco", "flag": "🇲🇦"},
+        {"code": "TZ", "name": "Tanzania", "flag": "🇹🇿"},
+        {"code": "UG", "name": "Uganda", "flag": "🇺🇬"},
+        {"code": "ET", "name": "Ethiopia", "flag": "🇪🇹"},
+        {"code": "SN", "name": "Senegal", "flag": "🇸🇳"},
+        {"code": "CI", "name": "Côte d'Ivoire", "flag": "🇨🇮"},
+        {"code": "CM", "name": "Cameroon", "flag": "🇨🇲"},
+    ]
+
+# ===========================================
 # BOOKMARK ENDPOINTS (MongoDB persistent)
 # ===========================================
 @app.post("/api/bookmarks")
