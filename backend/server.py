@@ -120,6 +120,12 @@ class UserPreferences(BaseModel):
     region: str = "Nigeria"
     interests: List[str] = []
 
+class UserPreferencesRequest(BaseModel):
+    user_id: str
+    region: str = "lagos"
+    voice: str = "pidgin"
+    interests: List[str] = []
+
 class BookmarkRequest(BaseModel):
     user_id: str
     story_id: str
@@ -130,8 +136,26 @@ class BookmarkRequest(BaseModel):
     source_url: str = ""
     saved_at: str = ""
 
-# In-memory bookmark store (keyed by user_id)
+# In-memory fallback stores
 _bookmarks_store: dict = {}
+_preferences_store: dict = {}
+_supabase_tables_ready = {"bookmarks": False, "user_preferences": False}
+
+async def _init_supabase_tables():
+    """Try to detect/create Supabase tables on startup"""
+    global _supabase_tables_ready
+    for table_name in ["bookmarks", "user_preferences"]:
+        try:
+            result = supabase.table(table_name).select("*").limit(1).execute()
+            _supabase_tables_ready[table_name] = True
+            print(f"[SUPABASE] Table '{table_name}' ready")
+        except Exception as e:
+            _supabase_tables_ready[table_name] = False
+            print(f"[SUPABASE] Table '{table_name}' not available ({e}), using in-memory fallback")
+
+@app.on_event("startup")
+async def startup_event():
+    await _init_supabase_tables()
 
 # Helper Functions
 def generate_news_id(title: str, source: str) -> str:
