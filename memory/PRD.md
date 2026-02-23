@@ -12,6 +12,26 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - Truth Tags for source verification
 - Morning Briefing feature with auto-generated 5-minute audio digest
 
+## Design System (Updated Feb 23, 2026)
+### Colors - The 10% Rule
+- **Primary (Signal):** `#EBD5AB` - Sand/Beige, 10% max
+- **Background:** `#1B211A` - Deep Matte Charcoal
+- **Surface:** `#242B23` - Muted Green/Grey
+- **Border:** `#628141` - Forest Green
+- **Text Primary:** `#F2F2F2` - 90% White
+- **Text Secondary:** `#8BAE66` - Sage Green
+
+### Typography
+- **Display:** Space Grotesk
+- **Body:** Inter
+- **Mono/System:** JetBrains Mono
+
+### Design Principles
+- Strict Minimalism (no shadows, no gradients, 0px radii)
+- Swiss Grid visible architecture (1px borders)
+- Broadcast-grade technical aesthetic
+- Audio-first UI feedback
+
 ## User Personas
 1. **African Professional** - Needs quick, reliable news updates during commute
 2. **Diaspora Audience** - Wants to stay connected with home news in familiar accents
