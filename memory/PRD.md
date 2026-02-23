@@ -12,100 +12,107 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - Truth Tags for source verification
 - Morning Briefing feature with auto-generated 5-minute audio digest
 
-## Design System
-### Colors - The 10% Rule
-- **Primary (Signal):** `#EBD5AB` - Sand/Beige, 10% max
-- **Background:** `#1B211A` - Deep Matte Charcoal
-- **Surface:** `#242B23` - Muted Green/Grey
-- **Border:** `#628141` - Forest Green
-- **Text Primary:** `#F2F2F2` - 90% White
-- **Text Secondary:** `#8BAE66` - Sage Green
-
-### Typography
-- **Display:** Space Grotesk
-- **Body:** Inter
-- **Mono/System:** JetBrains Mono
-
-### Design Principles
-- Strict Minimalism (no shadows, no gradients, 0px radii)
-- Swiss Grid visible architecture (1px borders)
-- Broadcast-grade technical aesthetic
-- Audio-first UI feedback
-
 ## Technical Stack
 - **Frontend**: React 18, TailwindCSS, React Router
 - **Backend**: FastAPI (Python)
-- **Database**: Supabase (PostgreSQL)
+- **Database/Auth**: Supabase (PostgreSQL + Auth)
 - **AI**: Gemini 2.0 Flash (via Emergent LLM Key)
 - **TTS**: OpenAI TTS (via Emergent LLM Key)
 - **News Sources**: RSS feeds from 7 African sources
 
+## Architecture (Updated Feb 23, 2026)
+```
+/app/frontend/src/
+├── App.js                    # Clean routing (~53 lines)
+├── App.css
+├── index.js
+├── index.css                 # Global styles, CSS variables, animations
+├── lib/
+│   └── supabase.js          # Supabase client instance
+├── contexts/
+│   ├── AuthContext.js        # Supabase auth provider
+│   └── AudioContext.js       # Audio playback provider
+├── hooks/
+│   └── useBookmarks.js      # Bookmark hook (localStorage + API sync)
+├── components/
+│   ├── LoadingScreen.js      # Boot animation
+│   ├── Clock.js              # UTC clock
+│   ├── AudioPlayer.js        # Persistent audio player bar
+│   └── ProtectedRoute.js     # Auth guard component
+└── pages/
+    ├── LandingPage.js        # Public landing page
+    ├── AuthPage.js           # Login/Signup with Supabase
+    ├── OnboardingPage.js     # 3-panel setup (region, voice, interests)
+    ├── DashboardPage.js      # Live news feed + sidebar
+    ├── NewsDetailPage.js     # Story detail + narrative + TTS
+    ├── BookmarksPage.js      # Saved stories (offline capable)
+    ├── VoiceStudioPage.js    # Voice profile selection
+    ├── MorningBriefingPage.js # Daily audio digest
+    ├── SearchPage.js         # News search
+    └── SettingsPage.js       # Profile + logout
+
+/app/backend/
+├── server.py                 # FastAPI with all endpoints
+└── tests/
+    ├── test_narvo_api.py
+    └── test_narvo_api_v2.py
+```
+
 ## What's Been Implemented
 
-### MVP Features - All Complete
-1. **Loading Screen** - Animated boot sequence with status messages
-2. **Landing Page** - Swiss Grid hero, news marquee scroller, incoming transmissions panel, core pillars, technical modules, CTA section, footer
-3. **Authentication** - Login form with localStorage-based session
-4. **Onboarding** - 3-panel setup: Regional Node, Vocal Matrix, Interest Matrix
-5. **Dashboard** - Live news feed with sidebar navigation
-6. **News Detail** - AI-generated narratives, TTS playback
-7. **Voice Studio** - 5 regional voice profiles
-8. **Search Center** - Text search placeholder
-9. **Settings** - Display toggles, logout
-10. **Audio Player** - Persistent player with controls
-11. **Morning Briefing** - Auto-generated audio digest with AI script
+### Completed Features
+1. **Landing Page** - Swiss Grid hero, news marquee, transmissions, pillars, modules
+2. **Supabase Auth** - Real email/password signup & login (replaces localStorage)
+3. **Protected Routes** - Dashboard, bookmarks, settings require auth
+4. **Onboarding** - 3-panel setup: Region, Voice, Interests
+5. **Dashboard** - Live news feed with bookmark buttons
+6. **Bookmarks/Saved Stories** - CRUD with offline cache (localStorage + backend)
+7. **News Detail** - AI narratives, key takeaways, TTS playback, bookmark
+8. **Voice Studio** - 5 regional voice profiles
+9. **Search Center** - Client-side search with results
+10. **Settings** - User profile, display toggles, logout
+11. **Audio Player** - Persistent bottom bar with controls
+12. **Morning Briefing** - AI-generated daily audio digest
 
-### Backend APIs - All Working
+### Backend APIs (15 endpoints)
 - `/api/health` - System status
-- `/api/news` - RSS aggregation from 7 sources
+- `/api/news` - RSS aggregation (7 sources)
 - `/api/news/{id}` - News detail with AI narrative
 - `/api/paraphrase` - AI narrative generation (Gemini)
-- `/api/tts/generate` - OpenAI TTS audio generation
-- `/api/voices` - Voice profile list
-- `/api/metrics` - Platform statistics
-- `/api/regions`, `/api/categories`, `/api/trending` - Supporting data
-- `/api/briefing/generate` - Generate morning briefing with audio
-- `/api/briefing/latest` - Get cached briefing
-- `/api/briefing/audio` - Generate audio for custom script
-
-### News Sources
-1. Vanguard Nigeria
-2. Punch Nigeria
-3. Daily Trust
-4. Premium Times
-5. The Guardian Nigeria
-6. BBC Africa
-7. Al Jazeera
+- `/api/tts/generate` - OpenAI TTS audio
+- `/api/voices` - Voice profiles
+- `/api/metrics` - Platform stats
+- `/api/regions`, `/api/categories`, `/api/trending`
+- `/api/briefing/generate` - Morning briefing + audio
+- `/api/briefing/latest` - Cached briefing
+- `/api/briefing/audio` - Custom script audio
+- `/api/bookmarks` (POST) - Add bookmark
+- `/api/bookmarks` (GET) - List user bookmarks
+- `/api/bookmarks/{id}` (DELETE) - Remove bookmark
 
 ## Testing Status (Feb 23, 2026)
-- Backend: 100% (12/12 endpoints working)
-- Frontend: 100% (all pages + flows working)
-- Test report: `/app/test_reports/iteration_5.json`
+- Backend: 100% (15/15)
+- Frontend: 100% (all flows)
+- Test reports: iteration_5.json, iteration_6.json
 
 ## Prioritized Backlog
 
-### P0 (Critical) - ALL COMPLETE
-- [x] Landing Page with Swiss Grid design
-- [x] Auth Page
-- [x] Onboarding Page (3-panel)
-- [x] Dashboard with live news feed
-- [x] TTS audio generation
-- [x] AI narrative synthesis
-- [x] Morning Briefing feature
+### P0 - COMPLETE
+- [x] Landing, Auth, Onboarding UI
+- [x] Refactor App.js into components
+- [x] Supabase Auth (email/password)
+- [x] Bookmarks with offline cache
 
-### P1 (High Priority) - NEXT
-- [ ] Refactor monolithic App.js into component files
-- [ ] Set up react-router-dom properly with lazy loading
-- [ ] User account persistence with Supabase Auth
-- [ ] Save/bookmark stories
-- [ ] Offline audio caching
+### P1 (High Priority)
+- [ ] Persist bookmarks to Supabase/MongoDB (currently in-memory)
+- [ ] Offline audio caching for bookmarked stories
+- [ ] Push notifications for breaking news
 
 ### P2 (Medium Priority)
-- [ ] Dubawa fact-checking / Truth Tags integration
-- [ ] User preference sync
+- [ ] Dubawa fact-checking / Truth Tags
+- [ ] User preference sync to Supabase
 - [ ] Playlist/queue functionality
 - [ ] Share stories feature
-- [ ] Push notifications for breaking news
 
 ### P3 (Future)
 - [ ] React Native mobile app
@@ -114,6 +121,3 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - [ ] WebSocket real-time updates
 - [ ] Scheduled 5 AM briefing generation
 - [ ] Historical Morning Briefings browser
-
-## Architecture Note
-Currently all frontend code lives in a single `/app/frontend/src/App.js` file (1250+ lines). This is the highest priority refactoring task - needs to be split into separate component files with proper routing.
