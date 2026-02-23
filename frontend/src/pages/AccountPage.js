@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Bell, Timer, AudioWaveform, MapPin, FileText, Broadcast } from 'lucide-react';
+import { Bell, Timer, AudioWaveform, MapPin, FileText, RadioTower } from 'lucide-react';
 import Skeleton from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -32,7 +32,7 @@ const AccountPage = () => {
         {/* Subscription Panel */}
         <div className="flex-1 p-6 md:p-10 lg:narvo-border-r hover:bg-primary/5 transition-all group relative overflow-hidden">
           <div className="absolute -top-10 -right-10 opacity-5 group-hover:opacity-10 transition-opacity">
-            <Broadcast className="w-64 h-64 md:w-72 md:h-72 text-primary group-hover:text-background-dark" />
+            <RadioTower className="w-64 h-64 md:w-72 md:h-72 text-primary group-hover:text-background-dark" />
           </div>
           
           <div className="relative z-10 h-full flex flex-col justify-between">
