@@ -288,36 +288,37 @@ async def paraphrase_content(request: ParaphraseRequest):
 
 @app.post("/api/tts/generate", response_model=TTSResponse)
 async def generate_tts(request: TTSRequest):
-    """Generate text-to-speech audio using ElevenLabs"""
+    """Generate text-to-speech audio using OpenAI TTS via Emergent"""
     try:
-        voice_settings = VoiceSettings(
-            stability=request.stability,
-            similarity_boost=request.similarity_boost,
-            style=0.0,
-            use_speaker_boost=True
-        )
+        from emergentintegrations.llm.openai import OpenAITextToSpeech
         
-        audio_generator = eleven_client.text_to_speech.convert(
-            text=request.text,
-            voice_id=request.voice_id,
-            model_id="eleven_multilingual_v2",
-            voice_settings=voice_settings
-        )
+        # Map voice_id to OpenAI voice if needed
+        voice = request.voice_id if request.voice_id in ["alloy", "ash", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"] else "nova"
         
-        # Collect audio data
-        audio_data = b""
-        for chunk in audio_generator:
-            audio_data += chunk
+        # Truncate text to 4096 chars (OpenAI limit)
+        text = request.text[:4096] if len(request.text) > 4096 else request.text
+        
+        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
+        
+        # Generate speech using tts-1 model
+        audio_bytes = await tts.generate_speech(
+            text=text,
+            model="tts-1",
+            voice=voice,
+            response_format="mp3",
+            speed=1.0
+        )
         
         # Convert to base64
-        audio_b64 = base64.b64encode(audio_data).decode()
+        audio_b64 = base64.b64encode(audio_bytes).decode()
         
         return TTSResponse(
             audio_url=f"data:audio/mpeg;base64,{audio_b64}",
             text=request.text,
-            voice_id=request.voice_id
+            voice_id=voice
         )
     except Exception as e:
+        print(f"TTS Error: {e}")
         raise HTTPException(status_code=500, detail=f"TTS generation failed: {str(e)}")
 
 @app.get("/api/voices", response_model=List[VoiceProfile])
