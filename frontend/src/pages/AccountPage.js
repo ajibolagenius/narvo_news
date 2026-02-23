@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { Broadcast, Bell, Timer, Waveform, MapPin, CreditCard, FileText, AlertTriangle } from 'lucide-react';
+import { Broadcast, Bell, Timer, Waveform, MapPin, FileText } from 'lucide-react';
 import Skeleton from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
