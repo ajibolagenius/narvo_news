@@ -10,10 +10,10 @@ const VoiceStudioPage = () => {
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [previewPlaying, setPreviewPlaying] = useState(false);
-  const [previewTime, setPreviewTime] = useState('00:14');
+  const [previewTime] = useState('00:14');
   const [regionFilter, setRegionFilter] = useState('AFRICA');
   const [dialectFilter, setDialectFilter] = useState('ALL');
-  const { playTrack, currentTrack, isPlaying } = useAudio();
+  const { playTrack } = useAudio();
 
   useEffect(() => {
     fetch(`${API_URL}/api/voices`)
