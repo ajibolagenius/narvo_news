@@ -58,7 +58,7 @@ const LandingPage = () => {
             <button onClick={() => navigate('/auth')} className="bg-primary text-background-dark font-display font-bold px-8 py-4 text-lg hover:bg-white transition-all" data-testid="start-broadcast-btn">
               [Start Broadcast]
             </button>
-            <button onClick={() => navigate('/dashboard')} className="border border-forest text-forest font-display font-bold px-8 py-4 text-lg hover:bg-forest hover:text-white transition-all" data-testid="demo-btn">
+            <button onClick={() => { localStorage.setItem('narvo_guest', 'true'); navigate('/dashboard'); }} className="border border-forest text-forest font-display font-bold px-8 py-4 text-lg hover:bg-forest hover:text-white transition-all" data-testid="demo-btn">
               [Oya, Play]
             </button>
           </div>
