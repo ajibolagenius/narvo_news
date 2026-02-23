@@ -15,6 +15,9 @@ import VoiceStudioPage from './pages/VoiceStudioPage';
 import MorningBriefingPage from './pages/MorningBriefingPage';
 import SearchPage from './pages/SearchPage';
 import SettingsPage from './pages/SettingsPage';
+import DiscoverPage from './pages/DiscoverPage';
+import OfflinePage from './pages/OfflinePage';
+import SavedPage from './pages/SavedPage';
 import './App.css';
 
 function App() {
@@ -37,9 +40,12 @@ function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/news/:id" element={<NewsDetailPage />} />
               <Route path="/bookmarks" element={<BookmarksPage />} />
+              <Route path="/saved" element={<SavedPage />} />
               <Route path="/voices" element={<VoiceStudioPage />} />
               <Route path="/briefing" element={<MorningBriefingPage />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/discover" element={<DiscoverPage />} />
+              <Route path="/offline" element={<OfflinePage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
