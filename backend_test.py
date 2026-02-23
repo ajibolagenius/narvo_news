@@ -254,6 +254,95 @@ class NarvoAPITester:
             self.log_test("AI Paraphrase", False, f"Exception: {str(e)}")
             return False
 
+    def test_briefing_generate_endpoint(self) -> bool:
+        """Test /api/briefing/generate endpoint"""
+        try:
+            # Test briefing generation with default voice
+            response = self.session.get(
+                f"{self.base_url}/api/briefing/generate?voice_id=nova&force_regenerate=true",
+                timeout=120  # Briefing generation can take longer
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ['id', 'title', 'generated_at', 'duration_estimate', 'stories', 'script', 'voice_id']
+                
+                missing_fields = [field for field in required_fields if field not in data]
+                if not missing_fields:
+                    # Check if stories array has content
+                    if isinstance(data.get('stories'), list) and len(data['stories']) > 0:
+                        # Check if script is generated
+                        if data.get('script') and len(data['script']) > 100:
+                            self.log_test("Briefing Generation", True, f"Generated briefing with {len(data['stories'])} stories")
+                            return True
+                        else:
+                            self.log_test("Briefing Generation", False, "Script too short or missing")
+                            return False
+                    else:
+                        self.log_test("Briefing Generation", False, "No stories in briefing")
+                        return False
+                else:
+                    self.log_test("Briefing Generation", False, f"Missing fields: {missing_fields}")
+                    return False
+            else:
+                self.log_test("Briefing Generation", False, f"Status code: {response.status_code}, Response: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Briefing Generation", False, f"Exception: {str(e)}")
+            return False
+
+    def test_briefing_latest_endpoint(self) -> bool:
+        """Test /api/briefing/latest endpoint"""
+        try:
+            response = self.session.get(f"{self.base_url}/api/briefing/latest")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if 'id' in data and 'title' in data and 'stories' in data:
+                    self.log_test("Latest Briefing", True, f"Retrieved cached briefing: {data.get('id')}")
+                    return True
+                else:
+                    self.log_test("Latest Briefing", False, "Invalid briefing format")
+                    return False
+            elif response.status_code == 404:
+                # This is acceptable if no briefing exists yet
+                self.log_test("Latest Briefing", True, "No cached briefing (404 expected)")
+                return True
+            else:
+                self.log_test("Latest Briefing", False, f"Status code: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Latest Briefing", False, f"Exception: {str(e)}")
+            return False
+
+    def test_briefing_audio_endpoint(self) -> bool:
+        """Test /api/briefing/audio endpoint"""
+        try:
+            test_script = "Good morning, this is your Narvo briefing test. Today's top story from Nigeria."
+            
+            response = self.session.post(
+                f"{self.base_url}/api/briefing/audio?script={test_script}&voice_id=nova",
+                timeout=60
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if 'audio_url' in data and data['audio_url'].startswith('data:audio'):
+                    self.log_test("Briefing Audio", True, "Custom briefing audio generated")
+                    return True
+                else:
+                    self.log_test("Briefing Audio", False, "Invalid audio response format")
+                    return False
+            else:
+                self.log_test("Briefing Audio", False, f"Status code: {response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Briefing Audio", False, f"Exception: {str(e)}")
+            return False
+
     def test_supporting_endpoints(self):
         """Test supporting endpoints"""
         endpoints = [
