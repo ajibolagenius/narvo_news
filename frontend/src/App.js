@@ -540,12 +540,21 @@ const DashboardPage = () => {
               <span className="font-mono text-xs text-narvo-text-dim block mb-4">NAVIGATION</span>
               
               <Link
-                to="/dashboard"
+                to="/briefing"
                 className="flex items-center gap-3 p-3 border border-narvo-primary bg-narvo-primary/10 mb-2"
+                data-testid="nav-morning-briefing"
+              >
+                <Coffee className="w-4 h-4 text-narvo-primary" />
+                <span className="font-mono text-sm text-narvo-primary">Morning Briefing</span>
+              </Link>
+              
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-3 p-3 border border-narvo-border hover:border-narvo-text-secondary mb-2"
                 data-testid="nav-primary-stream"
               >
-                <Radio className="w-4 h-4 text-narvo-primary" />
-                <span className="font-mono text-sm text-narvo-primary">Primary Stream</span>
+                <Radio className="w-4 h-4 text-narvo-text-dim" />
+                <span className="font-mono text-sm text-narvo-text-dim">Primary Stream</span>
               </Link>
               
               <button
