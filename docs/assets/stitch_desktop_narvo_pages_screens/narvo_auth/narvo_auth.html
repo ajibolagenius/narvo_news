@@ -1,191 +1,274 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Auth Center Console</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<style type="text/tailwindcss">
-        :root {
-            --color-primary: #EBD5AB;
-            --color-bg: #1B211A;
-            --color-surface: #1B211A;--color-border: #628141;
-            --color-text-primary: #F2F2F2;
-            --color-text-secondary: #8BAE66;
-            --color-text-tertiary: #808080;
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Secure Access Center</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    },
+                    borderRadius: {
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
+                    },
+                },
+            },
         }
+    </script>
+    <style>
         body {
-            background-color: var(--color-bg);
-            color: var(--color-text-primary);
+            background-color: #1B211A;
+            color: #F2F2F2;
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
         }
-        .font-header {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .font-mono {
+
+        .mono-ui {
             font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        .grid-border {
-            border: 1px solid var(--color-border);
+
+        .narvo-border {
+            border: 1px solid #628141;
         }
-        .grid-border-r {
-            border-right: 1px solid var(--color-border);
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
         }
-        .grid-border-b {
-            border-bottom: 1px solid var(--color-border);
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
         }
-        .grid-border-l {
-            border-left: 1px solid var(--color-border);
+
+        .narvo-border-t {
+            border-top: 1px solid #628141;
         }
-        .grid-border-t {
-            border-top: 1px solid var(--color-border);
-        }
+
         .input-reset {
             background: transparent;
             border: none;
             outline: none;
             width: 100%;
-            color: var(--color-text-primary);
+            color: #F2F2F2;
             border-radius: 0;
         }
+
         .input-reset:focus {
             box-shadow: none;
             outline: none;
             border: none;
-        }::placeholder {
-            color: var(--color-text-tertiary);
-            opacity: 0.7;
+        }
+
+        ::placeholder {
+            color: #8BAE66;
+            opacity: 0.5;
         }
     </style>
 </head>
-<body class="h-screen w-full overflow-hidden flex flex-col relative bg-[var(--color-bg)]">
-<header class="h-16 flex items-center justify-between px-8 grid-border-b bg-[var(--color-bg)] z-10 shrink-0">
-<div class="flex items-center gap-4">
-<span class="material-symbols-outlined text-[var(--color-primary)] text-xl">grid_view</span>
-<div class="font-header text-xl tracking-wide font-bold uppercase text-[var(--color-primary)]">Narvo</div>
-<div class="h-4 w-[1px] bg-[var(--color-border)] mx-2"></div>
-<div class="font-mono text-xs text-[var(--color-text-secondary)] uppercase tracking-wider">System v2.4.0</div>
-</div>
-<div class="flex items-center gap-8 font-mono text-xs text-[var(--color-text-secondary)]">
-<div class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse"></span>
-<span>NETWORK: STABLE</span>
-</div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">schedule</span>
-<span>ZURICH 14:02</span>
-</div>
-</div>
-</header>
-<main class="flex-1 grid grid-cols-12 h-full">
-<div class="hidden lg:block lg:col-span-3 grid-border-r h-full relative">
-<div class="absolute inset-0 grid grid-rows-6">
-<div class="grid-border-b p-6 flex items-end">
-<span class="font-mono text-xs text-[var(--color-text-tertiary)]">LAT: 47.3769° N</span>
-</div>
-<div class="grid-border-b p-6 flex items-end">
-<span class="font-mono text-xs text-[var(--color-text-tertiary)]">LON: 8.5417° E</span>
-</div>
-<div class="grid-border-b"></div>
-<div class="grid-border-b"></div>
-<div class="grid-border-b"></div>
-<div class=""></div>
-</div>
-</div>
-<div class="col-span-12 lg:col-span-6 flex flex-col justify-center items-center relative">
-<div class="absolute inset-0 grid grid-cols-4 pointer-events-none">
-<div class="border-r border-[var(--color-border)] h-full opacity-30"></div>
-<div class="border-r border-[var(--color-border)] h-full opacity-30"></div>
-<div class="border-r border-[var(--color-border)] h-full opacity-30"></div>
-<div class="h-full"></div>
-</div>
-<div class="w-full max-w-md z-10 relative">
-<div class="grid-border bg-[var(--color-bg)] mb-[-1px]">
-<div class="p-4 flex justify-between items-center border-b border-[var(--color-border)]">
-<h2 class="font-header text-2xl font-medium tracking-tight text-[var(--color-text-primary)]">Secure Login</h2>
-<span class="material-symbols-outlined text-[var(--color-primary)]">lock_person</span>
-</div>
-<div class="h-1 w-full bg-[var(--color-surface)] overflow-hidden border-b border-[var(--color-border)]">
-<div class="h-full w-1/3 bg-[var(--color-primary)]"></div>
-</div>
-</div>
-<div class="grid-border bg-[var(--color-surface)] p-8 flex flex-col gap-6">
-<div class="group relative">
-<label class="font-mono text-xs uppercase text-[var(--color-text-secondary)] mb-2 block tracking-wider" for="username">Operator ID / Email</label>
-<div class="flex items-center border border-[var(--color-border)] bg-[var(--color-bg)] h-12 px-4 focus-within:border-[var(--color-primary)] transition-colors duration-200">
-<span class="material-symbols-outlined text-[var(--color-text-tertiary)] mr-3 text-lg">person</span>
-<input class="input-reset font-mono text-sm placeholder-[var(--color-text-tertiary)]" id="username" placeholder="ID-XXXX-XX" type="email"/>
-<div class="w-2 h-2 bg-[var(--color-text-secondary)] opacity-50 group-focus-within:bg-[var(--color-primary)] group-focus-within:opacity-100"></div>
-</div>
-</div>
-<div class="group relative">
-<div class="flex justify-between mb-2">
-<label class="font-mono text-xs uppercase text-[var(--color-text-secondary)] tracking-wider" for="password">Access Key</label>
-<a class="font-mono text-xs text-[var(--color-primary)] hover:underline opacity-80 hover:opacity-100" href="#">RECOVER KEY?</a>
-</div>
-<div class="flex items-center border border-[var(--color-border)] bg-[var(--color-bg)] h-12 px-4 focus-within:border-[var(--color-primary)] transition-colors duration-200">
-<span class="material-symbols-outlined text-[var(--color-text-tertiary)] mr-3 text-lg">key</span>
-<input class="input-reset font-mono text-sm placeholder-[var(--color-text-tertiary)]" id="password" placeholder="••••••••••••" type="password"/>
-<div class="w-2 h-2 bg-[var(--color-text-secondary)] opacity-50 group-focus-within:bg-[var(--color-primary)] group-focus-within:opacity-100"></div>
-</div>
-</div>
-<button class="w-full h-14 bg-[var(--color-primary)] text-[#1B211A] font-header font-bold uppercase tracking-wider text-lg hover:bg-[#d4c09a] transition-colors flex items-center justify-between px-6 mt-2 group border border-transparent hover:border-[var(--color-border)]">
-<span>Initialize Session</span>
-<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
-</div>
-<div class="grid grid-cols-2 grid-border-l grid-border-r grid-border-b bg-[var(--color-bg)]">
-<div class="p-4 grid-border-r flex items-center gap-3">
-<span class="material-symbols-outlined text-[var(--color-text-tertiary)] text-lg">fingerprint</span>
-<div class="flex flex-col">
-<span class="font-mono text-[10px] text-[var(--color-text-tertiary)] uppercase">Biometric</span>
-<span class="font-mono text-xs text-[var(--color-text-primary)]">Sync Ready</span>
-</div>
-</div>
-<div class="p-4 flex items-center gap-3">
-<span class="material-symbols-outlined text-[var(--color-text-tertiary)] text-lg">shield</span>
-<div class="flex flex-col">
-<span class="font-mono text-[10px] text-[var(--color-text-tertiary)] uppercase">Security</span>
-<span class="font-mono text-xs text-[var(--color-text-primary)]">2FA Active</span>
-</div>
-</div>
-</div>
-<div class="mt-6 text-center">
-<p class="font-mono text-[10px] text-[var(--color-text-tertiary)] uppercase tracking-widest">
-                        Authorized Personnel Only<br/>
-                        Node: NRV-SW-08
+
+<body
+    class="h-screen w-full overflow-hidden flex flex-col relative bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Header Console -->
+    <header class="h-16 flex items-center justify-between px-8 narvo-border-b bg-background-dark z-10 shrink-0">
+        <div class="flex items-center gap-4">
+            <i class="ph ph-shield-check text-primary text-2xl"></i>
+            <div class="font-display text-xl tracking-tight font-bold uppercase text-white">
+                NARVO <span class="text-forest font-light mx-2">//</span> ACCESS_CENTER
+            </div>
+            <div class="h-4 w-[1px] bg-forest mx-2"></div>
+            <div class="mono-ui text-[10px] text-forest">V.2.5.0_STABLE</div>
+        </div>
+        <div class="flex items-center gap-8 mono-ui text-[10px] text-forest">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 bg-primary animate-pulse"></span>
+                <span>SECURE_CONNECTION: ACTIVE</span>
+            </div>
+            <div class="hidden md:flex items-center gap-2">
+                <i class="ph ph-clock text-sm"></i>
+                <span>UTC <span id="clock">00:00:00</span></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 grid grid-cols-12 h-full">
+        <!-- Sidebar Left: Telemetry -->
+        <div class="hidden lg:block lg:col-span-3 narvo-border-r h-full relative">
+            <div class="absolute inset-0 grid grid-rows-6">
+                <div class="narvo-border-b p-6 flex flex-col justify-end">
+                    <span class="mono-ui text-[9px] text-forest block mb-1">NODE_ID</span>
+                    <span class="mono-ui text-[10px] text-white">NRV-LGS-X1</span>
+                </div>
+                <div class="narvo-border-b p-6 flex flex-col justify-end">
+                    <span class="mono-ui text-[9px] text-forest block mb-1">ENCRYPTION</span>
+                    <span class="mono-ui text-[10px] text-primary">AES-256-GCM</span>
+                </div>
+                <div class="narvo-border-b"></div>
+                <div class="narvo-border-b"></div>
+                <div class="narvo-border-b"></div>
+                <div class="p-6 flex items-end">
+                    <span class="mono-ui text-[9px] text-forest animate-pulse">AWAITING_INPUT_SIGNAL...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center: Auth Console -->
+        <div class="col-span-12 lg:col-span-6 flex flex-col justify-center items-center relative p-6">
+            <div class="absolute inset-0 grid grid-cols-4 pointer-events-none opacity-5">
+                <div class="border-r border-forest h-full"></div>
+                <div class="border-r border-forest h-full"></div>
+                <div class="border-r border-forest h-full"></div>
+                <div class="h-full"></div>
+            </div>
+
+            <div class="w-full max-w-md z-10 relative">
+                <!-- Tab/Header Indicator -->
+                <div class="narvo-border bg-background-dark mb-[-1px]">
+                    <div class="p-4 flex justify-between items-center border-b border-forest">
+                        <h2 class="font-display text-2xl font-bold uppercase tracking-tight text-white">Initialize
+                            Session</h2>
+                        <i class="ph ph-fingerprint text-primary text-2xl"></i>
+                    </div>
+                    <div class="h-1 w-full bg-surface overflow-hidden border-b border-forest">
+                        <div class="h-full w-1/3 bg-primary"></div>
+                    </div>
+                </div>
+
+                <!-- Input Hub -->
+                <div class="narvo-border bg-surface/50 backdrop-blur-sm p-8 flex flex-col gap-6">
+                    <div class="group relative">
+                        <label class="mono-ui text-[10px] text-forest mb-2 block font-bold">Operator Credential</label>
+                        <div
+                            class="flex items-center border border-forest bg-background-dark h-12 px-4 focus-within:border-primary transition-all">
+                            <i
+                                class="ph ph-identification-card text-forest mr-3 text-lg group-focus-within:text-primary"></i>
+                            <input class="input-reset mono-ui text-sm" placeholder="ID-XXXX-XXXX" type="email" />
+                            <div
+                                class="w-1.5 h-1.5 bg-forest opacity-30 group-focus-within:bg-primary group-focus-within:opacity-100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group relative">
+                        <div class="flex justify-between mb-2">
+                            <label class="mono-ui text-[10px] text-forest font-bold">Access Code</label>
+                            <a class="mono-ui text-[9px] text-primary hover:underline" href="#">[Recover_Key]</a>
+                        </div>
+                        <div
+                            class="flex items-center border border-forest bg-background-dark h-12 px-4 focus-within:border-primary transition-all">
+                            <i class="ph ph-key text-forest mr-3 text-lg group-focus-within:text-primary"></i>
+                            <input class="input-reset mono-ui text-sm" placeholder="••••••••••••" type="password" />
+                            <div
+                                class="w-1.5 h-1.5 bg-forest opacity-30 group-focus-within:bg-primary group-focus-within:opacity-100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button
+                        class="w-full h-14 bg-primary text-background-dark font-display font-bold uppercase tracking-tighter text-lg hover:bg-white transition-all flex items-center justify-between px-6 mt-2 group border border-transparent">
+                        <span>Initiate Sync</span>
+                        <i class="ph ph-arrow-right text-2xl group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+
+                <!-- Footer Metrics -->
+                <div class="grid grid-cols-2 narvo-border border-t-0 bg-background-dark">
+                    <div class="p-4 border-r border-forest flex items-center gap-3">
+                        <i class="ph ph-user-focus text-forest text-lg"></i>
+                        <div class="flex flex-col">
+                            <span class="mono-ui text-[9px] text-forest">AUTHENTICATION</span>
+                            <span class="mono-ui text-[10px] text-white">Biometric_Ready</span>
+                        </div>
+                    </div>
+                    <div class="p-4 flex items-center gap-3">
+                        <i class="ph ph-shield-check text-forest text-lg"></i>
+                        <div class="flex flex-col">
+                            <span class="mono-ui text-[9px] text-forest">PROTOCOL</span>
+                            <span class="mono-ui text-[10px] text-white">2FA_ENFORCED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <p class="mono-ui text-[9px] text-forest leading-relaxed">
+                        Authorized Access Only. Internal Signal NRV-00-1.<br />
+                        Clearance Level: [LEVEL_4_BROADCAST]
                     </p>
-</div>
-</div>
-</div>
-<div class="hidden lg:block lg:col-span-3 grid-border-l h-full relative">
-<div class="absolute inset-0 grid grid-rows-6">
-<div class="grid-border-b p-6 flex justify-end items-end">
-<span class="font-mono text-xs text-[var(--color-text-tertiary)]">STATUS: AWAITING</span>
-</div>
-<div class="grid-border-b p-6 flex justify-end items-end">
-<div class="flex flex-col items-end gap-1">
-<div class="h-[1px] w-12 bg-[var(--color-text-secondary)]"></div>
-<div class="h-[1px] w-8 bg-[var(--color-text-secondary)] opacity-50"></div>
-<div class="h-[1px] w-4 bg-[var(--color-text-secondary)] opacity-30"></div>
-</div>
-</div>
-<div class="grid-border-b"></div>
-<div class="grid-border-b"></div>
-<div class="grid-border-b"></div>
-<div class=""></div>
-</div>
-</div>
-</main>
-<footer class="h-12 grid-border-t bg-[var(--color-surface)] flex items-center justify-between px-8 text-[var(--color-text-secondary)] font-mono text-[10px] uppercase tracking-wider z-10 shrink-0">
-<div class="flex gap-6">
-<span class="hover:text-[var(--color-primary)] cursor-pointer transition-colors">Help Terminal</span>
-<span class="hover:text-[var(--color-primary)] cursor-pointer transition-colors">Privacy Protocol</span>
-</div>
-<div>
-            SESSION ID: <span class="text-[var(--color-text-primary)]">NULL</span>
-</div>
-</footer>
-</body></html>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Right: System Logs -->
+        <div class="hidden lg:block lg:col-span-3 border-l border-forest h-full relative">
+            <div class="absolute inset-0 grid grid-rows-6">
+                <div class="narvo-border-b p-6 flex justify-end items-end">
+                    <span class="mono-ui text-[10px] text-forest">SECURE_HANDSHAKE: <span
+                            class="text-primary">PASS</span></span>
+                </div>
+                <div class="narvo-border-b p-6 flex flex-col justify-end items-end gap-1">
+                    <div class="h-[1px] w-12 bg-forest"></div>
+                    <div class="h-[1px] w-8 bg-forest opacity-50"></div>
+                    <div class="h-[1px] w-4 bg-forest opacity-30"></div>
+                </div>
+                <div class="narvo-border-b"></div>
+                <div class="narvo-border-b"></div>
+                <div class="narvo-border-b"></div>
+                <div class="p-6 flex flex-col justify-end items-end text-right">
+                    <span class="mono-ui text-[9px] text-forest uppercase">Node_Location</span>
+                    <span class="mono-ui text-[10px] text-white">6.5244° N, 3.3792° E</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Footer -->
+    <footer
+        class="h-12 narvo-border-t bg-surface/30 flex items-center justify-between px-8 text-forest mono-ui text-[9px] z-10 shrink-0">
+        <div class="flex gap-6">
+            <a href="#"
+                class="hover:text-primary transition-colors pr-6 narvo-border-r border-forest/30">HELP_TERMINAL</a>
+            <a href="#" class="hover:text-primary transition-colors">PRIVACY_PROTOCOL_2026</a>
+        </div>
+        <div class="flex items-center gap-2">
+            <i class="ph ph-hard-drive text-sm"></i>
+            <span>SYSTEM_STORAGE: 84% READ_ONLY</span>
+        </div>
+    </footer>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = now.toISOString().split('T')[1].split('.')[0];
+            document.getElementById('clock').textContent = time;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
+</body>
+
+</html>

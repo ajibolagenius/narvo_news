@@ -23,6 +23,24 @@ To maintain extreme minimalism, colors are used sparingly as technical indicator
 - **Text Primary:** `#F2F2F2` (90% White) - High-fidelity content, headers, and primary values.
 - **Text Secondarys/Labels:** `#8BAE66` (Sage Green) or `#808080` (50% Grey) - Metadata, units, timestamps, and utility labels.
 
+### Semantic Label Palette
+Used for metadata categorization and tag-based filtering. These colors are paired with a 10% opacity background of the same hue for subtle classification.
+
+| Category | Text Color | Border/Active Color | Context |
+| :--- | :--- | :--- | :--- |
+| **Finance** | `#EBD5AB` | `#EBD5AB` | Market data, economic shifts |
+| **Environ** | `#93C5FD` | `#1E3A8A` | Climate, ecology, geography |
+| **Tech** | `#D8B4FE` | `#581C87` | AI, hardware, infrastructure |
+| **Urgent** | `#FCA5A5` | `#7F1D1D` | Critical breaking news, alerts |
+| **Politics** | `#FDBA74` | `#7C2D12` | Policy, governance, regional law |
+| **Science** | `#5EEAD4` | `#134E4A` | Research, health, space |
+| **Culture** | `#F472B6` | `#831843` | Art, music, social trends |
+| **Sports** | `#FB923C` | `#7C2D12` | Athletics, competitions |
+| **Health** | `#4ADE80` | `#064E3B` | Wellness, medicine, outbreaks |
+| **Security** | `#94A3B8` | `#1E293B` | Defense, cyber, law enforcement |
+| **Opinion** | `#A8A29E` | `#44403C` | Editorials, commentary |
+| **Legal** | `#818CF8` | `#312E81` | Jurisprudence, court rulings |
+
 ## 4. Design Tokens (The Unified Grid)
 Uniformity across Web and Mobile is maintained via these strict spacing and shape tokens.
 
