@@ -99,7 +99,7 @@ class VoiceProfile(BaseModel):
     description: str
 
 class UserPreferences(BaseModel):
-    voice_id: str = "21m00Tcm4TlvDq8ikWAM"
+    voice_id: str = "nova"
     region: str = "Nigeria"
     interests: List[str] = []
 
