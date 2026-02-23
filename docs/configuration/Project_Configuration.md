@@ -1,4 +1,4 @@
-# Project Configuration: Version 2
+# Project Configuration
 
 ## Agent Instructions
 

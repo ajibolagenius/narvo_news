@@ -1,4 +1,4 @@
-# Narvo Project Documentation: Version 2
+# Narvo Project Documentation
 
 ## Overview
 

@@ -1,6 +1,4 @@
-# Narvo Technical Documentation
-
-## Overview
+# Narvo Technical Documentation Overview
 
 Narvo is a mobile-first, voice-first platform that delivers AI-summarised news in localised voices. This document covers the technical architecture, stack, and implementation details.
 

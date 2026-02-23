@@ -1,4 +1,4 @@
-# Narvo Pitch Deck: Version 2
+# Narvo Pitch Deck
 
 ## Slide 1: Title Slide
 
@@ -86,7 +86,7 @@ Narvo is a precision-engineered news platform that transforms fragmented info in
 ### The Pivot
 We've evolved from a standard summarizer to a **Broadcast Entity**. Our AI (Gemini/RAG) doesn't just shorten text; it recasts news into authoritative narrative bulletins.
 
-### Why Version 2?
+### Why Narvo?
 - **Extreme Minimalism**: Low bandwidth, low cognitive load, premium feel.
 - **Audio-First**: Accessible news for users on the move.
 - **Monorepo Strategy**: Lower dev costs, unified experience across devices.
