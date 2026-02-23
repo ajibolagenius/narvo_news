@@ -4,7 +4,8 @@ import {
   Radio, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX,
   Search, Menu, Settings, User, Bookmark, Archive, Globe, Map,
   Mic, Building, TrendingUp, Cpu, Trophy, Heart, Newspaper,
-  ChevronRight, Signal, Clock, CheckCircle, AlertCircle, X, LogOut
+  ChevronRight, Signal, Clock, CheckCircle, AlertCircle, X, LogOut,
+  Coffee, Sunrise, RefreshCw, List
 } from 'lucide-react';
 import './App.css';
 
