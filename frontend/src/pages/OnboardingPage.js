@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [selectedRegion, setSelectedRegion] = useState('lagos');
   const [selectedVoice, setSelectedVoice] = useState('pidgin');
   const [selectedInterests, setSelectedInterests] = useState(['politics', 'sports', 'afrobeats']);
