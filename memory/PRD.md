@@ -10,6 +10,7 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - AI-powered narrative synthesis
 - Live news aggregation from African sources
 - Truth Tags for source verification
+- Morning Briefing feature with auto-generated 5-minute audio digest
 
 ## User Personas
 1. **African Professional** - Needs quick, reliable news updates during commute
@@ -23,6 +24,7 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - Regional voice selection (Pidgin, Yoruba, Hausa, Igbo, Standard)
 - Truth Tags with source attribution
 - Live news from RSS feeds
+- Morning Briefing auto-generation
 
 ## Technical Stack
 - **Frontend**: React 18, TailwindCSS, React Router
@@ -43,6 +45,17 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 6. **Search Center** - Full-text search with category filtering
 7. **Settings** - User preferences, display toggles
 8. **Audio Player** - Persistent player with controls, waveform visualization
+9. **Morning Briefing** - Auto-generated audio digest with AI script ✅ NEW
+
+### Morning Briefing Feature (NEW)
+- `/briefing` page with personalized greeting
+- Voice selection for briefing narration
+- AI-generated broadcast script (Gemini 2.0 Flash)
+- TTS audio generation (OpenAI)
+- List of 5 top stories included
+- Full script view
+- Generate New / Play Briefing controls
+- 1-hour caching for performance
 
 ### Backend APIs
 - `/api/health` - System status
@@ -53,6 +66,9 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - `/api/voices` - Voice profile list
 - `/api/metrics` - Platform statistics
 - `/api/regions`, `/api/categories`, `/api/trending` - Supporting data
+- `/api/briefing/generate` - Generate morning briefing with audio ✅ NEW
+- `/api/briefing/latest` - Get cached briefing ✅ NEW
+- `/api/briefing/audio` - Generate audio for custom script ✅ NEW
 
 ### News Sources
 1. Vanguard Nigeria
@@ -65,17 +81,19 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 
 ## Prioritized Backlog
 
-### P0 (Critical)
+### P0 (Critical) - COMPLETE
 - [x] TTS audio generation
 - [x] AI narrative synthesis
 - [x] News feed display
 - [x] Basic authentication
+- [x] Morning Briefing feature
 
 ### P1 (High Priority)
 - [ ] User account persistence with Supabase Auth
 - [ ] Save/bookmark stories
 - [ ] Offline audio caching
 - [ ] Push notifications for breaking news
+- [ ] Scheduled 5 AM briefing generation
 
 ### P2 (Medium Priority)
 - [ ] Dubawa fact-checking integration
@@ -87,19 +105,18 @@ Build a full-stack web application for Narvo - a broadcast-grade news platform w
 - [ ] React Native mobile app
 - [ ] Admin dashboard for content curation
 - [ ] Voice cloning for regional accents
-- [ ] Predictive pre-caching (5 AM sync)
 - [ ] WebSocket real-time updates
 
 ## Next Tasks
-1. Implement Supabase Auth for persistent user accounts
-2. Add story bookmarking functionality
-3. Implement offline storage for audio
-4. Add social sharing features
-5. Build admin curation console
+1. Implement scheduled briefing generation at 5 AM local time
+2. Add Supabase Auth for persistent user accounts
+3. Implement story bookmarking functionality
+4. Build offline storage for audio
+5. Add social sharing features
 
 ## Testing Status
-- Backend: 100% (12/12 endpoints working)
-- Frontend: 100% (all UI functional)
+- Backend: 100% (15/15 endpoints working)
+- Frontend: 100% (all UI functional including Morning Briefing)
 - TTS: Working with OpenAI via Emergent LLM Key
 
 ## Design System
