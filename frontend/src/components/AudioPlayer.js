@@ -12,7 +12,7 @@ const AudioPlayer = () => {
       <div className="flex items-center gap-4 px-6 py-3">
         <div className="flex-1 min-w-0">
           <span className="mono-ui text-[10px] text-forest block truncate">{currentTrack.source || 'NARVO'}</span>
-          <span className="font-display text-sm text-white block truncate">{currentTrack.title}</span>
+          <span className="font-display text-sm text-content block truncate">{currentTrack.title}</span>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => seek(Math.max(0, progress - 10))} className="text-forest hover:text-primary" data-testid="audio-rewind-btn">

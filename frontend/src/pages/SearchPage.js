@@ -84,7 +84,7 @@ const SearchPage = () => {
         <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
         <div className="max-w-4xl mx-auto space-y-6 md:space-y-10 relative z-10">
           <div className="space-y-2">
-            <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight text-white leading-none">
+            <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight text-content leading-none">
               Global Archive <span className="text-primary">Search.</span>
             </h2>
             <p className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-[0.2em]">
@@ -99,7 +99,7 @@ const SearchPage = () => {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-background-dark/80 narvo-border pl-12 md:pl-16 pr-20 md:pr-24 py-4 md:py-6 text-base md:text-xl mono-ui text-white placeholder-forest focus:outline-none focus:border-primary focus:bg-background-dark transition-all"
+              className="w-full bg-background-dark/80 narvo-border pl-12 md:pl-16 pr-20 md:pr-24 py-4 md:py-6 text-base md:text-xl mono-ui text-content placeholder-forest focus:outline-none focus:border-primary focus:bg-background-dark transition-all"
               placeholder="QUERY_KEYWORD_REGION_OR_SEGMENT_ID..."
               data-testid="search-input"
               autoFocus
@@ -141,14 +141,14 @@ const SearchPage = () => {
           <div className="flex items-center gap-1 md:gap-2 border border-forest/30 p-1">
             <button 
               onClick={() => setSortBy('latest')}
-              className={`px-2 md:px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold ${sortBy === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white'}`}
+              className={`px-2 md:px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold ${sortBy === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
               data-testid="sort-latest"
             >
               LATEST
             </button>
             <button 
               onClick={() => setSortBy('relevance')}
-              className={`px-2 md:px-3 py-1 mono-ui text-[8px] md:text-[9px] ${sortBy === 'relevance' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-white'}`}
+              className={`px-2 md:px-3 py-1 mono-ui text-[8px] md:text-[9px] ${sortBy === 'relevance' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
               data-testid="sort-relevance"
             >
               RELEVANCE
@@ -202,7 +202,7 @@ const SearchPage = () => {
                       <Bookmark className="w-4 h-4" fill={isBookmarked(item.id) ? 'currentColor' : 'none'} />
                     </button>
                   </div>
-                  <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                  <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors line-clamp-2">
                     {item.title}
                   </h4>
                   <p className="text-[11px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
@@ -230,7 +230,7 @@ const SearchPage = () => {
                 <MagnifyingGlass className="w-8 h-8 text-forest" />
               </div>
               <div className="space-y-2">
-                <h3 className="font-display text-2xl font-bold text-white uppercase">NO_RESULTS_FOUND</h3>
+                <h3 className="font-display text-2xl font-bold text-content uppercase">NO_RESULTS_FOUND</h3>
                 <p className="mono-ui text-[10px] text-forest">QUERY: "{query.toUpperCase()}" RETURNED_ZERO_MATCHES</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -266,7 +266,7 @@ const SearchPage = () => {
                     </span>
                     <Bookmark className="w-4 h-4 text-forest group-hover:text-primary transition-colors" />
                   </div>
-                  <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                  <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors line-clamp-2">
                     {item.title}
                   </h4>
                   <p className="text-[11px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">

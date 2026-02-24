@@ -221,7 +221,7 @@ const NewsDetailPage = () => {
             </div>
 
             {/* Headline */}
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-[1.1] tracking-tight mb-4 md:mb-6 font-display uppercase" data-testid="news-title">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-content leading-[1.1] tracking-tight mb-4 md:mb-6 font-display uppercase" data-testid="news-title">
               {news.title}
             </h1>
 
@@ -265,12 +265,12 @@ const NewsDetailPage = () => {
               <span className="text-[9px] md:text-[10px] text-forest font-mono uppercase tracking-widest mb-1">
                 {isCurrentlyPlaying ? t('news_detail.now_playing') : t('news_detail.narrative_audio')}
               </span>
-              <span className="text-xs md:text-sm text-white font-medium font-display uppercase tracking-wide truncate">
+              <span className="text-xs md:text-sm text-content font-medium font-display uppercase tracking-wide truncate">
                 {news.title?.slice(0, 50)}...
               </span>
             </div>
             <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto sm:ml-auto">
-              <button className="hidden md:flex narvo-border px-3 py-1.5 items-center gap-2 hover:bg-forest hover:text-white transition-colors">
+              <button className="hidden md:flex narvo-border px-3 py-1.5 items-center gap-2 hover:bg-forest hover:text-content transition-colors">
                 <Translate weight="bold" className="w-4 h-4 text-primary" />
                 <span className="text-[10px] text-primary font-mono font-bold uppercase tracking-wider">West African English</span>
               </button>
@@ -299,7 +299,7 @@ const NewsDetailPage = () => {
           {news.key_takeaways?.length > 0 && (
             <div className="narvo-border bg-transparent p-4 md:p-6 mb-8 md:mb-12 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-1 h-full bg-forest" />
-              <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4 flex items-center gap-2 font-display uppercase tracking-tight">
+              <h3 className="text-base md:text-lg font-bold text-content mb-3 md:mb-4 flex items-center gap-2 font-display uppercase tracking-tight">
                 <Lightbulb weight="fill" className="text-primary w-4 h-4 md:w-5 md:h-5" />
                 {t('news_detail.key_takeaways')}
               </h3>
@@ -340,7 +340,7 @@ const NewsDetailPage = () => {
             <span className="mono-ui text-[9px] md:text-[10px] text-forest block mb-2 md:mb-3 font-bold tracking-widest">{t('news_detail.source_attribution')}</span>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <span className="text-white font-display font-bold text-sm md:text-base">{news.source}</span>
+                <span className="text-content font-display font-bold text-sm md:text-base">{news.source}</span>
                 <span className="mono-ui text-[9px] md:text-[10px] text-forest block mt-1">{formatPublishedDate(news.published)}</span>
               </div>
               <div className="flex gap-2">
@@ -394,11 +394,11 @@ const NewsDetailPage = () => {
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
                 <span className="text-forest">{t('news_detail.source')}</span>
-                <span className="text-white">{news.source?.toUpperCase() || 'UNKNOWN'}</span>
+                <span className="text-content">{news.source?.toUpperCase() || 'UNKNOWN'}</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
                 <span className="text-forest">{t('news_detail.region')}</span>
-                <span className="text-white">{news.region?.toUpperCase() || 'AFRICA'}</span>
+                <span className="text-content">{news.region?.toUpperCase() || 'AFRICA'}</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
                 <span className="text-forest">{t('news_detail.read_time')}</span>
@@ -445,7 +445,7 @@ const NewsDetailPage = () => {
               <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
               <div className="flex flex-wrap gap-1.5 xl:gap-2">
                 {news.tags.map((tag, i) => (
-                  <span key={i} className="narvo-border px-1.5 xl:px-2 py-1 mono-ui text-[8px] xl:text-[9px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#{tag.toUpperCase()}</span>
+                  <span key={i} className="narvo-border px-1.5 xl:px-2 py-1 mono-ui text-[8px] xl:text-[9px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#{tag.toUpperCase()}</span>
                 ))}
               </div>
             </div>
@@ -467,7 +467,7 @@ const NewsDetailPage = () => {
                       <span className="mono-ui text-[8px] xl:text-[9px] text-primary">{item.source}</span>
                       <TruthTag storyId={item.id} compact />
                     </div>
-                    <h4 className="text-xs xl:text-sm text-white font-display font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                    <h4 className="text-xs xl:text-sm text-content font-display font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
                       {item.title}
                     </h4>
                   </div>

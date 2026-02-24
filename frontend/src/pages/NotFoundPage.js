@@ -16,8 +16,8 @@ const NotFoundPage = () => {
   const metrics = [
     { label: 'PACKET_LOSS', value: '100%', icon: WifiSlash, color: 'text-red-400' },
     { label: 'LAST_NODE', value: 'NGR_WEST_01', icon: Desktop, color: 'text-primary' },
-    { label: 'LATENCY', value: '∞ MS', icon: Timer, color: 'text-white' },
-    { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-white' },
+    { label: 'LATENCY', value: '∞ MS', icon: Timer, color: 'text-content' },
+    { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-content' },
   ];
 
   return (
@@ -44,7 +44,7 @@ const NotFoundPage = () => {
         <div className="max-w-4xl w-full space-y-12">
           {/* Large Error Display */}
           <div className="text-center space-y-6">
-            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-white">
+            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-content">
               <span className="text-primary">[</span>SIGNAL LOST<span className="text-primary">]</span>
             </h1>
             <div className="flex items-center justify-center gap-3 text-red-500 mono-ui text-xl md:text-2xl font-bold">

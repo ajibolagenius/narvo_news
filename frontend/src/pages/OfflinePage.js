@@ -105,13 +105,13 @@ const OfflinePage = () => {
               <FolderOpen className="w-4 h-4" />
               <span className="mono-ui text-[9px] md:text-[10px] font-bold tracking-[0.2em]">LOCAL_STORAGE_INDEX</span>
             </div>
-            <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight text-white leading-none">
+            <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight text-content leading-none">
               Cached <span className="text-primary">Archives.</span>
             </h2>
           </div>
           <div className="flex flex-col items-start md:items-end mono-ui text-[9px] md:text-[10px]">
             <span className="text-forest tracking-wider mb-1 md:mb-2 font-bold">CAPACITY_LIMIT</span>
-            <div className="text-white text-base md:text-lg">
+            <div className="text-content text-base md:text-lg">
               {formatSize(totalSize)} <span className="text-forest">/ 50.0 GB</span>
             </div>
           </div>
@@ -131,7 +131,7 @@ const OfflinePage = () => {
       {/* Command Bar */}
       <section className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 md:gap-6 py-4 md:py-6 narvo-border-b border-forest/30">
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
-          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 mono-ui text-[9px] md:text-[10px] font-bold text-white hover:bg-primary hover:text-background-dark transition-all group">
+          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 mono-ui text-[9px] md:text-[10px] font-bold text-content hover:bg-primary hover:text-background-dark transition-all group">
             <Funnel className="w-4 h-4" />
             <span>FILTER</span>
           </button>
@@ -139,21 +139,21 @@ const OfflinePage = () => {
           <div className="flex items-center gap-1 md:gap-2">
             <button 
               onClick={() => setFilterType('all')}
-              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'all' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white transition-colors'}`}
+              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'all' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-all"
             >
               ALL
             </button>
             <button 
               onClick={() => setFilterType('audio')}
-              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'audio' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white transition-colors'}`}
+              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'audio' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-audio"
             >
               AUDIO
             </button>
             <button 
               onClick={() => setFilterType('text')}
-              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'text' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white transition-colors'}`}
+              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'text' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-text"
             >
               TEXT
@@ -216,7 +216,7 @@ const OfflinePage = () => {
                   </div>
                 </div>
                 
-                <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-3 uppercase tracking-tighter">
+                <h3 className="font-display text-xl md:text-2xl font-bold text-content mb-3 uppercase tracking-tighter">
                   NO CACHED DATA
                 </h3>
                 <p className="text-forest text-xs md:text-sm mono-ui leading-relaxed mb-6 lowercase">
@@ -273,7 +273,7 @@ const OfflinePage = () => {
                   </div>
                   
                   <div className="col-span-11 md:col-span-5 flex flex-col gap-1 min-w-0">
-                    <span className={`mono-ui text-[10px] md:text-[11px] font-bold truncate ${isActive ? 'text-primary' : isCorrupted ? 'italic' : 'text-white'} group-hover:text-primary transition-colors`}>
+                    <span className={`mono-ui text-[10px] md:text-[11px] font-bold truncate ${isActive ? 'text-primary' : isCorrupted ? 'italic' : 'text-content'} group-hover:text-primary transition-colors`}>
                       {item.title}
                     </span>
                     <span className={`mono-ui text-[8px] md:text-[9px] truncate tracking-widest ${isActive ? 'text-primary/70' : 'text-forest'}`}>
@@ -291,13 +291,13 @@ const OfflinePage = () => {
                   
                   <div className={`col-span-2 flex items-center justify-end gap-2 md:gap-3 ${isActive ? '' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
                     {isCorrupted ? (
-                      <button className="text-white hover:text-primary">
+                      <button className="text-content hover:text-primary">
                         <ArrowCounterClockwise className="w-4 h-4 md:w-5 md:h-5" />
                       </button>
                     ) : (
                       <button 
                         onClick={() => handlePlay(item)}
-                        className={`${isActive ? 'text-primary' : 'text-white'} hover:text-primary`}
+                        className={`${isActive ? 'text-primary' : 'text-content'} hover:text-primary`}
                         data-testid={`play-cached-${item.id}`}
                       >
                         {isActive ? <Pause className="w-4 h-4 md:w-5 md:h-5" /> : <Play className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" />}
@@ -305,7 +305,7 @@ const OfflinePage = () => {
                     )}
                     <button 
                       onClick={() => handleRemove(item.id)}
-                      className={`${isActive ? 'text-primary/50' : 'text-white'} hover:text-primary`}
+                      className={`${isActive ? 'text-primary/50' : 'text-content'} hover:text-primary`}
                       data-testid={`remove-cached-${item.id}`}
                     >
                       <Trash className="w-4 h-4" />
@@ -326,7 +326,7 @@ const OfflinePage = () => {
             <button 
               onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className={currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-white transition-colors'}
+              className={currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-content transition-colors'}
             >
               PREV_SIGNAL
             </button>
@@ -335,7 +335,7 @@ const OfflinePage = () => {
                 <button
                   key={page}
                   onClick={() => setCurrentPage(page)}
-                  className={page === currentPage ? 'text-primary underline underline-offset-4 decoration-2' : 'hover:text-white transition-colors'}
+                  className={page === currentPage ? 'text-primary underline underline-offset-4 decoration-2' : 'hover:text-content transition-colors'}
                 >
                   {String(page).padStart(2, '0')}
                 </button>
@@ -344,7 +344,7 @@ const OfflinePage = () => {
             <button 
               onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className={currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'text-white hover:text-primary transition-colors'}
+              className={currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'text-content hover:text-primary transition-colors'}
             >
               NEXT_SIGNAL
             </button>

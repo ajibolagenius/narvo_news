@@ -41,7 +41,7 @@ const VoiceManagementPage = () => {
             <div key={idx} className="bg-background-dark p-6 space-y-4">
               <span className="mono-ui text-[8px] text-forest font-bold tracking-widest">{kpi.label}</span>
               <div className="flex items-baseline gap-2">
-                <span className="font-display text-4xl font-bold text-white">{kpi.value}</span>
+                <span className="font-display text-4xl font-bold text-content">{kpi.value}</span>
                 {kpi.unit && <span className="mono-ui text-[12px] text-forest font-bold">{kpi.unit}</span>}
                 {kpi.change && <span className="mono-ui text-[10px] text-primary font-bold">{kpi.change}</span>}
               </div>
@@ -67,19 +67,19 @@ const VoiceManagementPage = () => {
         {/* Voice Matrix */}
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="font-display text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-4">
+            <h2 className="font-display text-2xl font-bold text-content uppercase tracking-tight flex items-center gap-4">
               <Broadcast className="w-6 h-6 text-primary" />
               Active_Voice_Matrix
             </h2>
             <div className="flex gap-4">
               <button 
                 onClick={fetchData}
-                className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase"
+                className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase"
               >
                 <ArrowClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 Refresh
               </button>
-              <button className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase">
+              <button className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase">
                 <Funnel className="w-4 h-4" />
                 Filter
               </button>
@@ -111,7 +111,7 @@ const VoiceManagementPage = () => {
                           <Broadcast className="w-5 h-5" />
                         </div>
                         <div>
-                          <p className="text-white">{voice.name}</p>
+                          <p className="text-content">{voice.name}</p>
                           <p className="text-[8px] text-forest">ID: {voice.id}</p>
                         </div>
                       </div>

@@ -49,7 +49,7 @@ const BookmarksPage = () => {
               {bookmarks.length === 0 ? (
                 <div className="narvo-border bg-surface/20 p-8 md:p-12 text-center">
                   <Bookmark className="w-10 h-10 md:w-12 md:h-12 text-forest mx-auto mb-3 md:mb-4" />
-                  <h3 className="font-display text-lg md:text-xl text-white mb-2 uppercase">No Saved Stories</h3>
+                  <h3 className="font-display text-lg md:text-xl text-content mb-2 uppercase">No Saved Stories</h3>
                   <p className="text-forest text-xs md:text-sm mb-4 md:mb-6 font-mono">Bookmark stories to access them offline.</p>
                   <Link to="/dashboard" className="bg-primary text-background-dark font-display font-bold px-4 md:px-6 py-2 md:py-3 text-sm md:text-base hover:bg-white transition-all inline-block" data-testid="go-to-feed-btn">
                     [Go to Feed]
@@ -71,10 +71,10 @@ const BookmarksPage = () => {
                           </div>
                           <span className="mono-ui text-[7px] md:text-[8px] text-forest/50">{item.source}</span>
                         </div>
-                        <h3 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-white group-hover:text-primary transition-colors leading-tight">{item.title}</h3>
+                        <h3 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content group-hover:text-primary transition-colors leading-tight">{item.title}</h3>
                         <p className="text-xs md:text-sm text-forest font-mono leading-relaxed opacity-70 line-clamp-2">{item.summary}</p>
                         <div className="flex items-center gap-3 md:gap-6 pt-1">
-                          <button onClick={(e) => { e.stopPropagation(); playTrack({ id: item.story_id, title: item.title, summary: item.summary, source: item.source }); }} className="mono-ui text-[9px] md:text-[10px] text-primary flex items-center gap-2 hover:text-white transition-colors" data-testid={`play-bookmark-${item.story_id}`}>
+                          <button onClick={(e) => { e.stopPropagation(); playTrack({ id: item.story_id, title: item.title, summary: item.summary, source: item.source }); }} className="mono-ui text-[9px] md:text-[10px] text-primary flex items-center gap-2 hover:text-content transition-colors" data-testid={`play-bookmark-${item.story_id}`}>
                             {currentTrack?.id === item.story_id && isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                             <span className="hidden sm:inline">{isCached(item.story_id) ? 'PLAY_OFFLINE' : 'GENERATE_AUDIO'}</span>
                             <span className="sm:hidden">PLAY</span>

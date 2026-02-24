@@ -57,7 +57,7 @@ const SavedPage = () => {
       {/* Dashboard Header */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-6 mb-8 md:mb-12 border-b border-forest/30 pb-6 md:pb-10">
         <div className="space-y-2 md:space-y-4">
-          <h2 className="font-display text-4xl md:text-6xl font-bold uppercase tracking-tighter text-white leading-none">
+          <h2 className="font-display text-4xl md:text-6xl font-bold uppercase tracking-tighter text-content leading-none">
             Saved <span className="text-primary">Stories.</span>
           </h2>
           <p className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-[0.3em]">
@@ -73,7 +73,7 @@ const SavedPage = () => {
             <CheckSquare className="w-4 h-4" />
             <span>SELECT_ALL</span>
           </button>
-          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold text-white hover:bg-forest transition-colors">
+          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold text-content hover:bg-forest transition-colors">
             <Archive className="w-4 h-4" />
             <span>ARCHIVE_X</span>
           </button>
@@ -82,7 +82,7 @@ const SavedPage = () => {
             disabled={selectedIds.length === 0}
             className={`flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold transition-colors ${
               selectedIds.length > 0 
-                ? 'text-red-400 hover:bg-red-400 hover:text-white' 
+                ? 'text-red-400 hover:bg-red-400 hover:text-content' 
                 : 'text-forest/50 cursor-not-allowed'
             }`}
             data-testid="delete-selected-btn"
@@ -125,7 +125,7 @@ const SavedPage = () => {
             </div>
 
             {/* Title & Message */}
-            <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-4 uppercase tracking-tighter">
+            <h3 className="font-display text-2xl md:text-3xl font-bold text-content mb-4 uppercase tracking-tighter">
               ARCHIVE EMPTY
             </h3>
             <p className="text-forest text-sm mono-ui leading-relaxed mb-8 md:mb-10 lowercase">
@@ -188,7 +188,7 @@ const SavedPage = () => {
                     {item.source || item.category || 'NEWS_DESK'}
                   </span>
                 </div>
-                <h3 className="font-display text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors uppercase line-clamp-3">
+                <h3 className="font-display text-xl md:text-2xl font-bold leading-tight text-content group-hover:text-primary transition-colors uppercase line-clamp-3">
                   {item.title}
                 </h3>
               </div>
@@ -218,7 +218,7 @@ const SavedPage = () => {
       {/* Load More */}
       {bookmarks.length > 6 && (
         <div className="mt-12 md:mt-16 flex justify-center">
-          <button className="mono-ui text-[10px] md:text-[11px] font-bold text-forest hover:text-white transition-all border-b border-dashed border-forest/40 hover:border-white pb-2 tracking-[0.3em]">
+          <button className="mono-ui text-[10px] md:text-[11px] font-bold text-forest hover:text-content transition-all border-b border-dashed border-forest/40 hover:border-white pb-2 tracking-[0.3em]">
             FETCH_ADDITIONAL_TRANSMISSIONS
           </button>
         </div>

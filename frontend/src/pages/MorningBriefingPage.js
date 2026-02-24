@@ -138,7 +138,7 @@ const MorningBriefingPage = () => {
                       {briefing.date === today ? 'LIVE_BROADCAST' : 'ARCHIVED_BROADCAST'}
                     </span>
                   </div>
-                  <h2 className="font-display text-xl md:text-3xl text-white mb-2 md:mb-3 uppercase tracking-tight">{briefing.title}</h2>
+                  <h2 className="font-display text-xl md:text-3xl text-content mb-2 md:mb-3 uppercase tracking-tight">{briefing.title}</h2>
                   <div className="flex items-center gap-4 mb-4 md:mb-6">
                     <span className="mono-ui text-[9px] md:text-[10px] text-forest narvo-border px-2 py-0.5 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
@@ -216,7 +216,7 @@ const MorningBriefingPage = () => {
                 <div className="w-20 h-20 mx-auto mb-6 narvo-border flex items-center justify-center">
                   <Radio className="w-10 h-10 text-forest/30" />
                 </div>
-                <h3 className="font-display text-lg text-white uppercase mb-3">NO_BRIEFING_LOADED</h3>
+                <h3 className="font-display text-lg text-content uppercase mb-3">NO_BRIEFING_LOADED</h3>
                 <p className="mono-ui text-[10px] text-forest mb-6">Generate your first morning briefing</p>
                 <button 
                   onClick={generateBriefing}
@@ -279,7 +279,7 @@ const MorningBriefingPage = () => {
                         <span className="mono-ui text-[7px] text-primary bg-primary/10 px-1 py-0.5">TODAY</span>
                       )}
                     </div>
-                    <span className={`mono-ui text-[8px] ${isSelected ? 'text-white' : 'text-forest/60'}`}>
+                    <span className={`mono-ui text-[8px] ${isSelected ? 'text-content' : 'text-forest/60'}`}>
                       {item.stories?.length || 0} STORIES • {item.duration_estimate || '~3 MIN'}
                     </span>
                   </button>

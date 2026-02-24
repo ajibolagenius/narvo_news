@@ -61,7 +61,7 @@ const OnboardingPage = () => {
           <svg className="w-6 h-6 text-primary" viewBox="0 0 256 256" fill="currentColor">
             <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/>
           </svg>
-          <h1 className="font-display text-xl tracking-tight font-bold text-white uppercase">
+          <h1 className="font-display text-xl tracking-tight font-bold text-content uppercase">
             NARVO <span className="text-forest font-light mx-2">{'//'}</span> {t('onboarding.setup_console')}
           </h1>
         </div>
@@ -72,7 +72,7 @@ const OnboardingPage = () => {
         <section className="col-span-12 md:col-span-3 border-r border-forest h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
             <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.locale_matrix')}</span>
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">{t('onboarding.regional_node')}</h2>
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-content">{t('onboarding.regional_node')}</h2>
             <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.regional_desc')}</p>
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar">
@@ -102,7 +102,7 @@ const OnboardingPage = () => {
         <section className="col-span-12 md:col-span-4 border-r border-forest h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
             <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.voice_engine')}</span>
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">{t('onboarding.vocal_matrix')}</h2>
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-content">{t('onboarding.vocal_matrix')}</h2>
             <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.voice_desc')}</p>
           </div>
           <div className="flex-1 p-6 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
@@ -138,7 +138,7 @@ const OnboardingPage = () => {
         <section className="col-span-12 md:col-span-5 h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
             <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.interest_matrix_label')}</span>
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">{t('onboarding.interest_matrix')}</h2>
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-content">{t('onboarding.interest_matrix')}</h2>
             <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.interest_desc')}</p>
           </div>
           <div className="flex-1 p-6 flex flex-col">
@@ -146,7 +146,7 @@ const OnboardingPage = () => {
               {interests.map((interest, idx) => {
                 const isSelected = selectedInterests.includes(interest.id);
                 return (
-                  <label key={interest.id} className={`cursor-pointer group relative h-28 flex flex-col justify-between p-3 transition-colors ${isSelected ? 'bg-primary text-background-dark' : 'bg-background-dark hover:bg-forest/10 text-white'}`} data-testid={`interest-${interest.id}`}>
+                  <label key={interest.id} className={`cursor-pointer group relative h-28 flex flex-col justify-between p-3 transition-colors ${isSelected ? 'bg-primary text-background-dark' : 'bg-background-dark hover:bg-forest/10 text-content'}`} data-testid={`interest-${interest.id}`}>
                     <input type="checkbox" checked={isSelected} onChange={() => toggleInterest(interest.id)} className="hidden" />
                     <div className="flex justify-between items-start">
                       <span className={`mono-ui text-[9px] ${isSelected ? '' : 'text-forest'}`}>{String(idx + 1).padStart(2, '0')}</span>

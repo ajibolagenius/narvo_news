@@ -102,7 +102,7 @@ const SystemGearSixPage = () => {
         {/* 01: Display & Interface */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               {t('system_settings.display_entity')}
             </h2>
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
@@ -118,7 +118,7 @@ const SystemGearSixPage = () => {
                   <Sun className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.high_contrast')}</h3>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.high_contrast')}</h3>
                   <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.high_contrast_desc')}</p>
                 </div>
               </div>
@@ -142,7 +142,7 @@ const SystemGearSixPage = () => {
                   <Monitor className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.interface_scaling')}</h3>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.interface_scaling')}</h3>
                   <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.interface_scaling_desc')}</p>
                 </div>
               </div>
@@ -151,7 +151,7 @@ const SystemGearSixPage = () => {
                 <select 
                   value={settings.interfaceScale}
                   onChange={(e) => updateSetting('interfaceScale', e.target.value)}
-                  className="appearance-none bg-surface/20 narvo-border px-3 md:px-4 py-2 pr-8 md:pr-10 mono-ui text-[9px] md:text-[10px] text-white focus:outline-none focus:border-primary transition-all cursor-pointer"
+                  className="appearance-none bg-surface/20 narvo-border px-3 md:px-4 py-2 pr-8 md:pr-10 mono-ui text-[9px] md:text-[10px] text-content focus:outline-none focus:border-primary transition-all cursor-pointer"
                   data-testid="select-interface-scale"
                 >
                   <option value="COMPACT">COMPACT</option>
@@ -166,7 +166,7 @@ const SystemGearSixPage = () => {
         {/* 02: Notification Engine */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               {t('system_settings.notification_syntax')}
             </h2>
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
@@ -182,7 +182,7 @@ const SystemGearSixPage = () => {
                   <Vibrate className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.haptic_sync')}</h3>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.haptic_sync')}</h3>
                   <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.haptic_sync_desc')}</p>
                 </div>
               </div>
@@ -207,7 +207,7 @@ const SystemGearSixPage = () => {
                     <Bell className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.alert_amplitude')}</h3>
+                    <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.alert_amplitude')}</h3>
                     <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.alert_amplitude_desc')}</p>
                   </div>
                 </div>
@@ -233,7 +233,7 @@ const SystemGearSixPage = () => {
         {/* 03: Data & Throughput */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               {t('system_settings.data_throughput')}
             </h2>
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
@@ -250,7 +250,7 @@ const SystemGearSixPage = () => {
                     <Gauge className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.data_limit')}</h3>
+                    <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.data_limit')}</h3>
                     <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.data_limit_desc')}</p>
                   </div>
                 </div>
@@ -280,7 +280,7 @@ const SystemGearSixPage = () => {
                   <Zap className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.bandwidth_priority')}</h3>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.bandwidth_priority')}</h3>
                   <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.bandwidth_priority_desc')}</p>
                 </div>
               </div>
@@ -292,7 +292,7 @@ const SystemGearSixPage = () => {
                     className={`px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] font-bold transition-all ${
                       settings.bandwidthPriority === option 
                         ? 'bg-primary text-background-dark' 
-                        : 'text-forest hover:text-white hover:bg-surface/10'
+                        : 'text-forest hover:text-content hover:bg-surface/10'
                     }`}
                     data-testid={`bandwidth-${option.toLowerCase()}`}
                   >

@@ -86,7 +86,7 @@ const OperationHubPage = () => {
           telemetryData.map((item, idx) => (
             <div key={idx} className="flex flex-col gap-0.5 min-w-max">
               <span className="mono-ui text-[8px] text-forest font-bold">{item.label}</span>
-              <span className={`mono-ui text-[12px] font-bold ${item.highlight ? 'text-primary' : 'text-white'}`}>
+              <span className={`mono-ui text-[12px] font-bold ${item.highlight ? 'text-primary' : 'text-content'}`}>
                 {item.value} {item.status && <span className="text-[9px] text-forest font-normal">{item.status}</span>}
               </span>
             </div>
@@ -111,11 +111,11 @@ const OperationHubPage = () => {
         {/* Header */}
         <div className="flex justify-between items-end">
           <div>
-            <h2 className="font-display text-3xl font-bold text-white uppercase tracking-tight">Operation_Overlook</h2>
+            <h2 className="font-display text-3xl font-bold text-content uppercase tracking-tight">Operation_Overlook</h2>
             <p className="mono-ui text-[10px] text-forest font-bold tracking-widest mt-1">REAL_TIME_NODE_MONITORING</p>
           </div>
           <div className="flex gap-4">
-            <button className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:bg-forest hover:text-white transition-all flex items-center gap-2">
+            <button className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:bg-forest hover:text-content transition-all flex items-center gap-2">
               <FileText className="w-4 h-4" />
               GEN_REPORT
             </button>
@@ -136,7 +136,7 @@ const OperationHubPage = () => {
                   <Icon className="w-5 h-5 text-primary" />
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="font-display text-4xl font-bold text-white">{metric.value}</span>
+                  <span className="font-display text-4xl font-bold text-content">{metric.value}</span>
                   {metric.unit && <span className="mono-ui text-[12px] text-forest font-bold">{metric.unit}</span>}
                   {metric.change && <span className="mono-ui text-[9px] text-primary font-bold">{metric.change}</span>}
                 </div>
@@ -155,11 +155,11 @@ const OperationHubPage = () => {
           {/* Chart */}
           <div className="lg:col-span-2 narvo-border bg-black/40 p-8 flex flex-col gap-6">
             <div className="flex justify-between items-center">
-              <h3 className="mono-ui text-[11px] text-white font-bold tracking-widest">INGEST_VOLUME // 24H_CYCLE</h3>
+              <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">INGEST_VOLUME // 24H_CYCLE</h3>
               <div className="flex gap-4 mono-ui text-[9px] font-bold text-forest">
-                <span className="hover:text-white cursor-pointer">1H</span>
+                <span className="hover:text-content cursor-pointer">1H</span>
                 <span className="text-primary underline underline-offset-4">24H</span>
-                <span className="hover:text-white cursor-pointer">7D</span>
+                <span className="hover:text-content cursor-pointer">7D</span>
               </div>
             </div>
             <div className="flex-1 h-64 relative narvo-border bg-background-dark/60 overflow-hidden">
@@ -181,7 +181,7 @@ const OperationHubPage = () => {
           {/* Alerts */}
           <div className="narvo-border bg-black/40 p-8 flex flex-col gap-6">
             <div className="flex justify-between items-center">
-              <h3 className="mono-ui text-[11px] text-white font-bold tracking-widest">{t('admin.system_alerts')}</h3>
+              <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">{t('admin.system_alerts')}</h3>
               <span className="mono-ui text-[9px] bg-primary/10 text-primary border border-primary px-2 py-0.5">{alerts.length}_NEW</span>
             </div>
             <div className="space-y-4 overflow-y-auto custom-scroll pr-2">
@@ -195,7 +195,7 @@ const OperationHubPage = () => {
                   >
                     <Icon className={`w-5 h-5 ${colorClass}`} />
                     <div className="space-y-1">
-                      <p className={`mono-ui text-[10px] font-bold ${alert.type === 'error' ? 'text-red-500' : 'text-white'}`}>{alert.title}</p>
+                      <p className={`mono-ui text-[10px] font-bold ${alert.type === 'error' ? 'text-red-500' : 'text-content'}`}>{alert.title}</p>
                       <p className={`text-[9px] font-bold ${alert.type === 'error' ? 'text-red-500/70' : 'text-forest'}`}>{alert.description}</p>
                     </div>
                   </div>
@@ -208,7 +208,7 @@ const OperationHubPage = () => {
         {/* Streams Table */}
         <div className="narvo-border overflow-hidden bg-black/20">
           <div className="px-8 py-6 narvo-border-b flex justify-between items-center bg-background-dark">
-            <h3 className="mono-ui text-[11px] text-white font-bold tracking-widest">ACTIVE_SIGNAL_MATRIX</h3>
+            <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">ACTIVE_SIGNAL_MATRIX</h3>
             <div className="flex gap-4">
               <div className="relative">
                 <input 
@@ -218,7 +218,7 @@ const OperationHubPage = () => {
                 />
                 <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-forest w-4 h-4" />
               </div>
-              <button className="px-4 py-2 narvo-border mono-ui text-[9px] text-forest font-bold hover:text-white transition-colors uppercase">
+              <button className="px-4 py-2 narvo-border mono-ui text-[9px] text-forest font-bold hover:text-content transition-colors uppercase">
                 Sort: Status
               </button>
             </div>
@@ -241,13 +241,13 @@ const OperationHubPage = () => {
                     <td className="px-8 py-5">
                       <div className={`flex items-center gap-3 ${stream.status === 'OFFLINE' ? 'text-forest opacity-50' : ''}`}>
                         <span className={`w-1.5 h-1.5 ${stream.status === 'LIVE' ? 'bg-primary animate-pulse' : 'bg-forest'}`} />
-                        <span className={stream.status === 'LIVE' ? 'text-white' : ''}>{stream.status}</span>
+                        <span className={stream.status === 'LIVE' ? 'text-content' : ''}>{stream.status}</span>
                       </div>
                     </td>
                     <td className={`px-8 py-5 ${stream.status === 'LIVE' ? 'text-primary' : ''}`}>{stream.id}</td>
                     <td className="px-8 py-5">{stream.source}</td>
                     <td className="px-8 py-5 uppercase">{stream.region}</td>
-                    <td className={`px-8 py-5 text-right ${stream.status === 'OFFLINE' ? 'opacity-50' : 'text-white'}`}>{stream.bitrate}</td>
+                    <td className={`px-8 py-5 text-right ${stream.status === 'OFFLINE' ? 'opacity-50' : 'text-content'}`}>{stream.bitrate}</td>
                     <td className="px-8 py-5 text-right font-normal">{stream.uptime}</td>
                   </tr>
                 ))}

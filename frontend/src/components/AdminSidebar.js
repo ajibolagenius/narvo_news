@@ -23,13 +23,13 @@ const AdminSidebar = () => {
             <Radio className="w-5 h-5 text-red-500" />
           </div>
           <div>
-            <h2 className="font-display text-lg font-bold text-white uppercase">{t('nav.admin')}</h2>
+            <h2 className="font-display text-lg font-bold text-content uppercase">{t('nav.admin')}</h2>
             <span className="mono-ui text-[8px] text-red-500 font-bold">CONTROL_CENTER</span>
           </div>
         </div>
         <button
           onClick={() => navigate('/dashboard')}
-          className="w-full py-2 narvo-border text-forest mono-ui text-[9px] font-bold hover:text-white hover:bg-forest/20 transition-all flex items-center justify-center gap-2"
+          className="w-full py-2 narvo-border text-forest mono-ui text-[9px] font-bold hover:text-content hover:bg-forest/20 transition-all flex items-center justify-center gap-2"
         >
           <CaretLeft className="w-4 h-4" />
           {t('news_detail.back_to_feed')}
@@ -50,7 +50,7 @@ const AdminSidebar = () => {
               className={`w-full flex items-center gap-3 px-4 py-3 transition-all text-left ${
                 isActive 
                   ? 'bg-primary/10 text-primary narvo-border border-primary/50' 
-                  : 'text-forest hover:text-white hover:bg-surface/20 narvo-border border-transparent'
+                  : 'text-forest hover:text-content hover:bg-surface/20 narvo-border border-transparent'
               }`}
               data-testid={`admin-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
             >
@@ -73,7 +73,7 @@ const AdminSidebar = () => {
           <div className="space-y-2 mono-ui text-[8px] text-forest">
             <div className="flex justify-between">
               <span>UPTIME</span>
-              <span className="text-white">99.98%</span>
+              <span className="text-content">99.98%</span>
             </div>
             <div className="flex justify-between">
               <span>API_HEALTH</span>

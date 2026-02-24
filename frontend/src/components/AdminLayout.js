@@ -16,7 +16,7 @@ const AdminLayout = () => {
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             <Clock className="w-6 h-6 text-primary" />
-            <span className="font-display text-xl font-bold text-white tracking-tight">NARVO</span>
+            <span className="font-display text-xl font-bold text-content tracking-tight">NARVO</span>
           </button>
           <div className="h-6 w-px bg-forest/30" />
           <span className="mono-ui text-xs text-red-500 font-bold tracking-widest">ADMIN_CONSOLE</span>
