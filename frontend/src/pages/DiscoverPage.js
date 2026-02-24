@@ -270,6 +270,14 @@ const DiscoverPage = () => {
                     </div>
                   ))}
                 </div>
+              ) : radioStations.length === 0 ? (
+                <div className="p-4 flex flex-col items-center justify-center min-h-[200px]">
+                  <div className="narvo-border bg-surface/10 p-6 text-center">
+                    <Radio className="w-8 h-8 text-forest mx-auto mb-3 opacity-50" />
+                    <h4 className="font-display text-sm font-bold text-white uppercase mb-2">NO STATIONS FOUND</h4>
+                    <p className="mono-ui text-[9px] text-forest">Try selecting another country.</p>
+                  </div>
+                </div>
               ) : (
                 <div className="p-4 space-y-2">
                   {radioStations.map(station => (
