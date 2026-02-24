@@ -20,7 +20,7 @@ const DashboardLayout = () => {
   const toggleSidebar = () => setSidebarOpen(p => !p);
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col bg-[var(--color-bg)]" data-testid="dashboard-layout">
+    <div className="h-screen overflow-hidden flex flex-col bg-[rgb(var(--color-bg))]" data-testid="dashboard-layout">
       <DashboardHeader onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
       <BreakingNewsBanner />
       <div className="flex-1 flex overflow-hidden relative">
