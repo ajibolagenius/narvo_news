@@ -798,6 +798,7 @@ class UserSettings(BaseModel):
     gestural_swipe: bool = True
     gestural_pinch: bool = False
     voice_commands: bool = False
+    broadcast_language: str = "en"  # en, pcm, yo, ha, ig
 
 @app.get("/api/settings/{user_id}")
 async def get_user_settings(user_id: str):
