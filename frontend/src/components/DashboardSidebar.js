@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutGrid, Activity, Bookmark, Search, Compass, WifiOff, Settings, User, Mic, Monitor, Accessibility, ChevronDown } from 'lucide-react';
+import { LayoutGrid, Activity, Bookmark, Search, Compass, WifiOff, Settings, User, Mic, Monitor, Accessibility, ChevronDown, Shield } from 'lucide-react';
 
 const navItems = [
   { icon: LayoutGrid, label: 'Feed', path: '/dashboard' },
