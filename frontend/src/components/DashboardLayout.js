@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import AudioPlayerBar from './AudioPlayerBar';
@@ -8,10 +9,10 @@ import { BreakingNewsBanner } from './BreakingNews';
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const saved = localStorage.getItem('narvo_sidebar');
-    // Default to open (true) - user preference takes priority if saved
     if (saved !== null) return saved === 'true';
-    return true; // Default open
+    return true;
   });
+  const location = useLocation();
 
   useEffect(() => {
     localStorage.setItem('narvo_sidebar', String(sidebarOpen));
@@ -29,10 +30,20 @@ const DashboardLayout = () => {
           onClose={() => setSidebarOpen(false)} 
           onToggle={toggleSidebar}
         />
-        <Outlet />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="flex-1 flex flex-col overflow-hidden"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </div>
       <AudioPlayerBar />
-      {/* Mobile Bottom Nav */}
       <DashboardSidebar mobile />
     </div>
   );
