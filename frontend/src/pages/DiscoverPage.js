@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
-import { downloadAndCacheAudio, isAudioCached } from '../lib/audioCache';
+import { useDownloadQueue } from '../contexts/DownloadQueueContext';
+import { isAudioCached } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
@@ -16,11 +17,9 @@ const DiscoverPage = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [podcastLoading, setPodcastLoading] = useState(true);
   const [trendingTopics, setTrendingTopics] = useState([]);
-  const [downloadingPodcasts, setDownloadingPodcasts] = useState({});
   const [cachedPodcasts, setCachedPodcasts] = useState({});
-  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
-  const [downloadAllProgress, setDownloadAllProgress] = useState(0);
   const { playTrack } = useAudio();
+  const { addToQueue, addSingleToQueue, queue, isProcessing } = useDownloadQueue();
   
   // Radio state
   const [radioStations, setRadioStations] = useState([]);
