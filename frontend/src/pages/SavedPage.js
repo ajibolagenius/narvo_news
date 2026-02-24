@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckSquare, Archive, Trash2, ArrowUpRight, Bookmark, Satellite, RotateCcw } from 'lucide-react';
+import { CheckSquare, Archive, Trash2, ArrowUpRight, Bookmark, Satellite, RotateCcw } from '@phosphor-icons/react';
 import { useBookmarks } from '../hooks/useBookmarks';
 import Skeleton from '../components/Skeleton';
 

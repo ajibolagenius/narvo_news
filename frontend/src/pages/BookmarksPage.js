@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { getAllCachedIds, removeCachedAudio } from '../lib/audioCache';
-import { Bookmark, Play, Pause, Trash2, Check } from 'lucide-react';
+import { Bookmark, Play, Pause, Trash2, Check } from '@phosphor-icons/react';
 import { ListSkeleton } from '../components/Skeleton';
 
 const BookmarksPage = () => {

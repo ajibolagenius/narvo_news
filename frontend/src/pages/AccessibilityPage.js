@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Rows, Type, Hand, Pointer, Mic, Info, Loader2, Save } from 'lucide-react';
+import { Rows, Type, Hand, Pointer, Mic, Info, Loader2, Save } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 

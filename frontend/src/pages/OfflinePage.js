@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderOpen, Play, Pause, Trash2, AlertOctagon, RotateCcw, Filter, Waves, Mic, Speaker, WifiOff } from 'lucide-react';
+import { FolderOpen, Play, Pause, Trash2, AlertOctagon, RotateCcw, Filter, Waves, Mic, Speaker, WifiOff } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { getAllCachedIds, getCachedAudio, removeCachedAudio } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
