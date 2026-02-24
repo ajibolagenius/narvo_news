@@ -158,6 +158,41 @@ Desktop-only admin panel with distinct sidebar (red accent, CONTROL_CENTER heade
 
 **Note:** Admin pages currently use MOCK DATA. Backend integration pending.
 
+### System States & Events (✅ NEW — Feb 24, 2026)
+Global pages for error states, empty content, and notifications.
+
+19. **404 Not Found Page** (`/404` or any invalid route) — Error display with:
+    - **[SIGNAL LOST]** large heading with primary color brackets
+    - ERROR_CODE: 404_NOT_FOUND with alert icon
+    - Grid overlay background with scanline effect
+    - Technical metrics (PACKET_LOSS: 100%, LAST_NODE, LATENCY: ∞ MS, live TIMESTAMP_UTC)
+    - **[RE-INITIALIZE CONNECTION]** button (navigates to home)
+    - Corner crosshair decorations
+    - Footer: CONNECTION_STATUS: INTERRUPTED
+
+20. **500 Server Error Page** (`/500`) — Critical error display with:
+    - **[SYSTEM HALT]** heading with red brackets
+    - ERROR_CODE: 500_INTERNAL_FAILURE with warning icon
+    - Red warning pulse background effect
+    - Critical metrics (SERVER_STATUS: CRITICAL, CPU_LOAD: 99.9%, MEMORY: OVERFLOW)
+    - **[RETRY CONNECTION]** and **[RETURN TO BASE]** buttons
+    - Footer: SYSTEM_STATUS: CRITICAL (animated)
+
+21. **EmptyState Component** — Reusable empty content placeholder with:
+    - Matrix grid background with 4 slot wireframes
+    - Central overlay card with satellite icon
+    - Configurable variants: default, search, saved, offline
+    - **INITIATE REFRESH** and **SYSTEM DIAGNOSTICS** buttons
+    - ERR_CODE display and NARVO_SYS version
+
+22. **HapticAlerts System** — Global notification system with:
+    - 6 alert types: success, warning, error, breaking, sync, notification
+    - Presets: SYNC_SUCCESS, SYNC_FAILED, BREAKING_NEWS, OFFLINE_SAVED, BOOKMARK_ADDED/REMOVED, VOICE_CHANGED, NETWORK_ERROR, SETTINGS_SAVED
+    - Auto-dismiss with progress bar animation (5s default)
+    - Haptic vibration patterns for mobile devices
+    - Top-right corner positioning with slide-in animation
+    - **Notification Test Panel** in Settings page for testing
+
 ### Shared Components (DashboardLayout)
 - **DashboardHeader**: NARVO // DASHBOARD, search bar (CMD+K), signal stats, user avatar, **sidebar toggle button**
 - **DashboardSidebar**: **Collapsible** 6-item navigation (Feed, Briefing, Saved, Search, Discover, Offline) + **mobile bottom nav**
