@@ -423,15 +423,105 @@ async def get_categories():
 
 @app.get("/api/trending")
 async def get_trending():
-    """Get trending tags and topics"""
-    return {
-        "tags": ["#POLITICS", "#ECONOMY", "#NIGERIA", "#AFRICA", "#TECH"],
-        "topics": [
-            {"name": "Elections 2025", "count": "12.5k"},
-            {"name": "Naira Exchange", "count": "8.2k"},
-            {"name": "AfCFTA Trade", "count": "5.1k"},
-        ]
-    }
+    """Get trending tags and topics based on recent news"""
+    try:
+        # Fetch recent news to analyze trends
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for items in results:
+            if isinstance(items, list):
+                all_news.extend(items)
+        
+        # Extract and count categories/keywords
+        category_counts = {}
+        keyword_counts = {}
+        keywords_to_track = ["election", "economy", "trade", "climate", "technology", "health", "politics", "africa"]
+        
+        for item in all_news:
+            cat = item.get("category", "general").lower()
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+            
+            title_lower = item.get("title", "").lower()
+            for kw in keywords_to_track:
+                if kw in title_lower:
+                    keyword_counts[kw] = keyword_counts.get(kw, 0) + 1
+        
+        # Sort by count
+        top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+        top_keywords = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+        
+        return {
+            "tags": [f"#{cat.upper()}" for cat, _ in top_categories],
+            "topics": [
+                {"name": kw.title(), "count": f"{cnt * 100}+"}
+                for kw, cnt in top_keywords
+            ][:5],
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        # Fallback to static data
+        return {
+            "tags": ["#POLITICS", "#ECONOMY", "#NIGERIA", "#AFRICA", "#TECH"],
+            "topics": [
+                {"name": "Elections 2025", "count": "12.5k"},
+                {"name": "Naira Exchange", "count": "8.2k"},
+                {"name": "AfCFTA Trade", "count": "5.1k"},
+            ]
+        }
+
+@app.get("/api/search")
+async def search_news(
+    q: str = Query(..., description="Search query"),
+    category: str = Query(None, description="Filter by category"),
+    source: str = Query(None, description="Filter by source"),
+    limit: int = Query(20, le=50, description="Max results"),
+    skip: int = Query(0, description="Offset for pagination")
+):
+    """Search news articles from RSS feeds"""
+    try:
+        # Fetch all news
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for items in results:
+            if isinstance(items, list):
+                all_news.extend(items)
+        
+        # Search filter
+        query_lower = q.lower()
+        filtered = []
+        for item in all_news:
+            # Text matching
+            title_match = query_lower in item.get("title", "").lower()
+            summary_match = query_lower in item.get("summary", "").lower()
+            
+            if title_match or summary_match:
+                # Category filter
+                if category and item.get("category", "").lower() != category.lower():
+                    continue
+                # Source filter
+                if source and item.get("source", "").lower() != source.lower():
+                    continue
+                filtered.append(item)
+        
+        # Sort by relevance (title matches first) then by date
+        filtered.sort(key=lambda x: (
+            query_lower not in x.get("title", "").lower(),
+            x.get("published", "")
+        ), reverse=True)
+        
+        total = len(filtered)
+        paginated = filtered[skip:skip + limit]
+        
+        return {
+            "results": paginated,
+            "total": total,
+            "query": q,
+            "filters": {"category": category, "source": source}
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
 
 # ===========================================
 # ADMIN DASHBOARD METRICS API
