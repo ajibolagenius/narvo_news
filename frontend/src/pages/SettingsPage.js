@@ -12,6 +12,7 @@ const SettingsPage = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const { showAlert } = useHapticAlert();
 
   const handleLogout = async () => {
@@ -37,7 +38,7 @@ const SettingsPage = () => {
           status: 'PREMIUM_ACTIVE'
         },
         { 
-          icon: Mic, 
+          icon: Microphone, 
           label: t('settings.voice_studio'), 
           desc: 'BROADCAST_VOICE_MODEL // DIALECT_CONFIG', 
           path: '/voices',
@@ -56,7 +57,7 @@ const SettingsPage = () => {
           status: 'CONFIGURED'
         },
         { 
-          icon: Accessibility, 
+          icon: AccessibilityIcon, 
           label: t('settings.accessibility'), 
           desc: 'DENSITY // FONTS // GESTURES // VOICE_CMD', 
           path: '/accessibility',
@@ -67,8 +68,8 @@ const SettingsPage = () => {
   ];
 
   const systemStats = [
-    { icon: Shield, label: 'ENCRYPTION', value: 'AES-256-GCM' },
-    { icon: Zap, label: 'AUTH_PROVIDER', value: 'SUPABASE' },
+    { icon: ShieldCheck, label: 'ENCRYPTION', value: 'AES-256-GCM' },
+    { icon: Lightning, label: 'AUTH_PROVIDER', value: 'SUPABASE' },
     { icon: Database, label: 'STORAGE_USED', value: '2.4 GB' },
     { icon: Clock, label: 'SESSION_TIME', value: '04:32:18' },
   ];
