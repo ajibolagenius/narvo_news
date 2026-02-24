@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Zap, ArrowRight, X } from 'lucide-react';
 import Clock from '../components/Clock';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -9,9 +10,20 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [news, setNews] = useState([]);
+  const [breaking, setBreaking] = useState([]);
+  const [metrics, setMetrics] = useState(null);
+  const [breakingDismissed, setBreakingDismissed] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/news?limit=4`).then(res => res.json()).then(setNews).catch(console.error);
+    Promise.all([
+      fetch(`${API_URL}/api/news?limit=4`).then(r => r.json()),
+      fetch(`${API_URL}/api/news/breaking`).then(r => r.json()).catch(() => []),
+      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
+    ]).then(([newsData, breakingData, metricsData]) => {
+      setNews(newsData);
+      setBreaking(breakingData);
+      setMetrics(metricsData);
+    }).catch(console.error);
   }, []);
 
   return (
