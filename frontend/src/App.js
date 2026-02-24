@@ -58,9 +58,11 @@ function App() {
     <LenisProvider>
     <AuthProvider>
       <AudioProvider>
+      <DownloadQueueProvider>
       <BreakingNewsProvider>
         <HapticAlertProvider>
           <Router>
+            <DownloadQueueIndicator />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<LandingPage />} />
@@ -99,6 +101,7 @@ function App() {
           </Router>
         </HapticAlertProvider>
       </BreakingNewsProvider>
+      </DownloadQueueProvider>
       </AudioProvider>
     </AuthProvider>
     </LenisProvider>
