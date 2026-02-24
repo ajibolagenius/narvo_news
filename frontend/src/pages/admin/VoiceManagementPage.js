@@ -1,8 +1,6 @@
 import React from 'react';
 import { RadioTower, Filter, PlusSquare, MoreVertical, Loader2 } from 'lucide-react';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
-
 const VoiceManagementPage = () => {
   const kpiData = [
     { label: 'ACTIVE_VOICES', value: '24', change: '+2%', progress: 70 },
