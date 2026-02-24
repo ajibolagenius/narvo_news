@@ -195,6 +195,32 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                     import re
                     summary = re.sub(r'<[^>]+>', '', summary)
                     
+                    # Extract image URL from RSS entry
+                    image_url = None
+                    # Try media:content
+                    if hasattr(entry, 'media_content') and entry.media_content:
+                        for media in entry.media_content:
+                            if media.get('medium') == 'image' or (media.get('type', '').startswith('image')):
+                                image_url = media.get('url')
+                                break
+                        if not image_url and entry.media_content:
+                            image_url = entry.media_content[0].get('url')
+                    # Try media:thumbnail
+                    if not image_url and hasattr(entry, 'media_thumbnail') and entry.media_thumbnail:
+                        image_url = entry.media_thumbnail[0].get('url')
+                    # Try enclosure links
+                    if not image_url:
+                        for link in entry.get('links', []):
+                            if link.get('type', '').startswith('image') or link.get('rel') == 'enclosure':
+                                image_url = link.get('href')
+                                break
+                    # Try extracting from HTML content
+                    if not image_url:
+                        content_html = entry.get('summary', '') or entry.get('description', '')
+                        img_match = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', content_html)
+                        if img_match:
+                            image_url = img_match.group(1)
+                    
                     category = extract_category(title, summary)
                     items.append({
                         "id": generate_news_id(title, feed_info["name"]),
@@ -207,7 +233,8 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                         "category": category,
                         "truth_score": 100,
                         "tags": extract_tags(title, category),
-                        "listen_count": 0
+                        "listen_count": 0,
+                        "image_url": image_url,
                     })
                 return items
     except Exception as e:
