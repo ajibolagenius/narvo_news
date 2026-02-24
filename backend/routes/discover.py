@@ -6,49 +6,60 @@ import httpx
 
 router = APIRouter(prefix="/api", tags=["discover"])
 
-# Curated podcast episodes
+# Sample audio URLs from free sources for testing
+# Using Internet Archive's public domain audio samples
+SAMPLE_AUDIO_URLS = [
+    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",  # ~6MB
+    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",  # ~6MB
+    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",  # ~6MB
+    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",  # ~6MB
+    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",  # ~6MB
+    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",  # ~6MB
+]
+
+# Curated podcast episodes with real audio URLs for offline caching
 PODCAST_EPISODES = [
     {
         "id": "ep402", "episode": "EP. 402", 
         "title": "The Geopolitical Shift: Arctic Routes", 
         "duration": "45:00", "category": "World Affairs",
         "description": "Understanding the opening trade routes incident at the North Pole and environmental impact analysis.",
-        "audio_url": None
+        "audio_url": SAMPLE_AUDIO_URLS[0]
     },
     {
         "id": "ep089", "episode": "EP. 089", 
         "title": "Tech Horizons: Quantum Synthesis", 
         "duration": "22:15", "category": "Technology",
         "description": "Exclusive breakthrough from Zurich Labs on neural interface ready for human trials phase 1.",
-        "audio_url": None
+        "audio_url": SAMPLE_AUDIO_URLS[1]
     },
     {
         "id": "ep012", "episode": "EP. 012", 
         "title": "Urban Architecture: Megacities", 
         "duration": "60:00", "category": "Development",
         "description": "Reimagining dense metropolitan spaces with Nigeria 2050 infrastructure planning data.",
-        "audio_url": None
+        "audio_url": SAMPLE_AUDIO_URLS[2]
     },
     {
         "id": "ep201", "episode": "EP. 201", 
         "title": "Soundscapes: Amazon Rainforest", 
         "duration": "33:45", "category": "Environment",
         "description": "Binaural field recordings with biodiversity metrics and audio sample analysis.",
-        "audio_url": None
+        "audio_url": SAMPLE_AUDIO_URLS[3]
     },
     {
         "id": "ep156", "episode": "EP. 156", 
         "title": "African Markets: Digital Currency Revolution", 
         "duration": "38:30", "category": "Finance",
         "description": "Analysis of cryptocurrency adoption across African nations and regulatory frameworks.",
-        "audio_url": None
+        "audio_url": SAMPLE_AUDIO_URLS[4]
     },
     {
         "id": "ep078", "episode": "EP. 078", 
         "title": "Climate Dispatch: Sahel Region Report", 
         "duration": "28:15", "category": "Climate",
         "description": "Latest climate data from the Sahel region covering desertification and water security.",
-        "audio_url": None
+        "audio_url": SAMPLE_AUDIO_URLS[5]
     },
 ]
 
