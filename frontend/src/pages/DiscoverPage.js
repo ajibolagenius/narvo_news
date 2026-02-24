@@ -101,89 +101,64 @@ const DiscoverPage = () => {
     playTrack({ id: podcast.id, title: podcast.title, summary: podcast.description });
   };
 
+  // Check if a podcast is currently in the download queue
+  const isInQueue = (podcastId) => {
+    return queue.some(item => item.id === podcastId && item.status !== 'complete' && item.status !== 'failed');
+  };
+
+  // Get download progress for a podcast in queue
+  const getQueueProgress = (podcastId) => {
+    const item = queue.find(item => item.id === podcastId);
+    return item?.progress || 0;
+  };
+
   const handleDownloadPodcast = async (podcast) => {
     if (!podcast.audio_url) {
       alert('This podcast does not have a downloadable audio file yet.');
       return;
     }
     
-    setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: 0 }));
-    
     // Use the backend proxy endpoint to avoid CORS issues
     const proxyUrl = `${API_URL}/api/podcasts/${podcast.id}/audio`;
     
-    const success = await downloadAndCacheAudio(
-      podcast.id,
-      proxyUrl,
-      {
-        title: podcast.title,
-        source: podcast.episode,
-        duration: podcast.duration,
-        type: 'podcast'
-      },
-      (progress) => {
-        setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: progress }));
-      }
-    );
-    
-    if (success) {
-      setCachedPodcasts(prev => ({ ...prev, [podcast.id]: true }));
-    }
-    
-    setDownloadingPodcasts(prev => {
-      const { [podcast.id]: _, ...rest } = prev;
-      return rest;
+    addSingleToQueue({
+      id: podcast.id,
+      audioUrl: proxyUrl,
+      title: podcast.title,
+      source: podcast.episode,
+      duration: podcast.duration,
+      type: 'podcast'
     });
   };
 
   // Download all podcasts that aren't cached yet
   const handleDownloadAll = async () => {
-    const podcastsToDownload = podcasts.filter(p => p.audio_url && !cachedPodcasts[p.id]);
+    const podcastsToDownload = podcasts.filter(p => p.audio_url && !cachedPodcasts[p.id] && !isInQueue(p.id));
     if (podcastsToDownload.length === 0) return;
     
-    setIsDownloadingAll(true);
-    setDownloadAllProgress(0);
+    const items = podcastsToDownload.map(podcast => ({
+      id: podcast.id,
+      audioUrl: `${API_URL}/api/podcasts/${podcast.id}/audio`,
+      title: podcast.title,
+      source: podcast.episode,
+      duration: podcast.duration,
+      type: 'podcast'
+    }));
     
-    let completed = 0;
-    
-    for (const podcast of podcastsToDownload) {
-      const proxyUrl = `${API_URL}/api/podcasts/${podcast.id}/audio`;
-      
-      setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: 0 }));
-      
-      const success = await downloadAndCacheAudio(
-        podcast.id,
-        proxyUrl,
-        {
-          title: podcast.title,
-          source: podcast.episode,
-          duration: podcast.duration,
-          type: 'podcast'
-        },
-        (progress) => {
-          setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: progress }));
-          // Calculate overall progress
-          const overallProgress = Math.round(((completed + (progress / 100)) / podcastsToDownload.length) * 100);
-          setDownloadAllProgress(overallProgress);
-        }
-      );
-      
-      if (success) {
-        setCachedPodcasts(prev => ({ ...prev, [podcast.id]: true }));
-      }
-      
-      setDownloadingPodcasts(prev => {
-        const { [podcast.id]: _, ...rest } = prev;
-        return rest;
-      });
-      
-      completed++;
-      setDownloadAllProgress(Math.round((completed / podcastsToDownload.length) * 100));
-    }
-    
-    setIsDownloadingAll(false);
-    setDownloadAllProgress(0);
+    addToQueue(items);
   };
+
+  // Update cached status when queue items complete
+  useEffect(() => {
+    const completedIds = queue.filter(item => item.status === 'complete').map(item => item.id);
+    if (completedIds.length > 0) {
+      setCachedPodcasts(prev => {
+        const updated = { ...prev };
+        completedIds.forEach(id => { updated[id] = true; });
+        return updated;
+      });
+    }
+  }, [queue]);
   
   const playRadio = (station) => {
     if (audioRef.current) {
