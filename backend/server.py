@@ -1255,7 +1255,7 @@ def is_crawler(user_agent: str) -> bool:
     ua_lower = user_agent.lower()
     return any(crawler in ua_lower for crawler in CRAWLER_USER_AGENTS)
 
-@app.get("/share/{news_id}", response_class=HTMLResponse)
+@app.get("/api/share/{news_id}", response_class=HTMLResponse)
 async def share_page(news_id: str, request: Request):
     """
     Shareable page that serves proper OG meta tags for social media crawlers.
