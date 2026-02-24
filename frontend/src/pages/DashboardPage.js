@@ -326,7 +326,7 @@ const DashboardPage = () => {
                     <span>{loadingMore ? 'LOADING...' : `LOAD_MORE // ${Math.max(0, news.length - 1 - visibleCount)} REMAINING`}</span>
                   </button>
                   )}
-                </section>
+                  </motion.section>
               </>
             )}
           </div>
