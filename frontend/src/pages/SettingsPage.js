@@ -57,7 +57,7 @@ const SettingsPage = () => {
           status: 'CONFIGURED'
         },
         { 
-          icon: AccessibilityIcon, 
+          icon: Wheelchair, 
           label: t('settings.accessibility'), 
           desc: 'DENSITY // FONTS // GESTURES // VOICE_CMD', 
           path: '/accessibility',
