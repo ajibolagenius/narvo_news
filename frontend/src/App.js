@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { AudioProvider } from './contexts/AudioContext';
+import { HapticAlertProvider } from './components/HapticAlerts';
 import LoadingScreen from './components/LoadingScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
@@ -22,6 +23,8 @@ import SavedPage from './pages/SavedPage';
 import AccountPage from './pages/AccountPage';
 import SystemSettingsPage from './pages/SystemSettingsPage';
 import AccessibilityPage from './pages/AccessibilityPage';
+import NotFoundPage from './pages/NotFoundPage';
+import ServerErrorPage from './pages/ServerErrorPage';
 // Admin Pages
 import OperationHubPage from './pages/admin/OperationHubPage';
 import CurationConsolePage from './pages/admin/CurationConsolePage';
@@ -39,37 +42,42 @@ function App() {
   return (
     <AuthProvider>
       <AudioProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/auth" element={<AuthPage />} />
-            <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
-            {/* Dashboard routes with shared layout (header + sidebar + player) */}
-            <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-              <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/news/:id" element={<NewsDetailPage />} />
-              <Route path="/bookmarks" element={<BookmarksPage />} />
-              <Route path="/saved" element={<SavedPage />} />
-              <Route path="/voices" element={<VoiceStudioPage />} />
-              <Route path="/briefing" element={<MorningBriefingPage />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/discover" element={<DiscoverPage />} />
-              <Route path="/offline" element={<OfflinePage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="/account" element={<AccountPage />} />
-              <Route path="/system" element={<SystemSettingsPage />} />
-              <Route path="/accessibility" element={<AccessibilityPage />} />
-            </Route>
-            {/* Admin routes with separate layout */}
-            <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-              <Route path="/admin/operations" element={<OperationHubPage />} />
-              <Route path="/admin/curation" element={<CurationConsolePage />} />
-              <Route path="/admin/voices" element={<VoiceManagementPage />} />
-              <Route path="/admin/moderation" element={<ModerationHubPage />} />
-            </Route>
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
+        <HapticAlertProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/auth" element={<AuthPage />} />
+              <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
+              {/* Dashboard routes with shared layout (header + sidebar + player) */}
+              <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/news/:id" element={<NewsDetailPage />} />
+                <Route path="/bookmarks" element={<BookmarksPage />} />
+                <Route path="/saved" element={<SavedPage />} />
+                <Route path="/voices" element={<VoiceStudioPage />} />
+                <Route path="/briefing" element={<MorningBriefingPage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/discover" element={<DiscoverPage />} />
+                <Route path="/offline" element={<OfflinePage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/account" element={<AccountPage />} />
+                <Route path="/system" element={<SystemSettingsPage />} />
+                <Route path="/accessibility" element={<AccessibilityPage />} />
+              </Route>
+              {/* Admin routes with separate layout */}
+              <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+                <Route path="/admin/operations" element={<OperationHubPage />} />
+                <Route path="/admin/curation" element={<CurationConsolePage />} />
+                <Route path="/admin/voices" element={<VoiceManagementPage />} />
+                <Route path="/admin/moderation" element={<ModerationHubPage />} />
+              </Route>
+              {/* Error Pages */}
+              <Route path="/404" element={<NotFoundPage />} />
+              <Route path="/500" element={<ServerErrorPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Router>
+        </HapticAlertProvider>
       </AudioProvider>
     </AuthProvider>
   );
