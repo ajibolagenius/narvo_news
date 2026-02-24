@@ -477,7 +477,7 @@ const NewsDetailPage = () => {
           )}
         </div>
       </aside>
-    </>
+    </div>
   );
 };
 
