@@ -33,7 +33,7 @@ const VoiceManagementPage = () => {
   ];
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="voice-management-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="voice-management-page">
       <div className="p-8 space-y-8 flex-1 overflow-y-auto custom-scroll">
         {/* KPI Board */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 bg-forest narvo-border">
