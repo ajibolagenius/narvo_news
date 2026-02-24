@@ -727,33 +727,6 @@ async def analyze_claim(text: str = Query(..., description="Text to fact-check")
     )
 
 
-@app.get("/api/news/breaking")
-async def get_breaking_news():
-    """Get breaking/urgent news stories. Returns the most recent stories marked as breaking."""
-    try:
-        all_news = news_col.find(
-            {},
-            {"_id": 0}
-        ).sort("published", -1).limit(30)
-        
-        stories = list(all_news)
-        breaking = []
-        
-        for story in stories:
-            title_lower = (story.get("title", "") or "").lower()
-            # Mark as breaking if title contains breaking indicators
-            if any(kw in title_lower for kw in ["breaking", "urgent", "flash", "just in", "developing"]):
-                breaking.append(story)
-        
-        # If no natural breaking stories, pick the most recent one as "developing"
-        if not breaking and stories:
-            latest = stories[0]
-            latest["is_developing"] = True
-            breaking = [latest]
-        
-        return breaking[:3]
-    except Exception:
-        return []
 
 @app.get("/api/metrics")
 async def get_metrics():
