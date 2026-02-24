@@ -78,7 +78,7 @@ const SearchPage = () => {
   const popularTags = ['#CURRENCY_SHIFT', '#LAGOS_TRANSIT', '#RENEWABLE_GRID'];
 
   return (
-    <main className="flex-1 flex flex-col bg-background-dark overflow-y-auto custom-scroll h-full" data-testid="search-page">
+    <main className="flex-1 flex flex-col bg-background-dark overflow-y-auto custom-scroll min-h-0" data-testid="search-page">
       {/* Hero Search Section */}
       <section className="py-12 md:py-20 px-4 md:px-10 narvo-border-b bg-surface/10 relative overflow-hidden shrink-0">
         <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
