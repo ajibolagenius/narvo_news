@@ -103,7 +103,7 @@ const OnboardingPage = () => {
           <div className="p-6 border-b border-forest">
             <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.voice_engine')}</span>
             <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">{t('onboarding.vocal_matrix')}</h2>
-            <p className="text-forest text-xs mt-2 leading-relaxed font-mono">Calibrate the regional synthesis engine for high-fidelity audio delivery.</p>
+            <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.voice_desc')}</p>
           </div>
           <div className="flex-1 p-6 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
             {voices.map((voice) => (
@@ -119,7 +119,7 @@ const OnboardingPage = () => {
                   <p className="mono-ui text-[10px] opacity-70 mb-4">{voice.desc}</p>
                   <div className="flex items-center gap-2 text-[10px] mono-ui font-bold">
                     <svg className="w-4 h-4" viewBox="0 0 256 256" fill="currentColor"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"/></svg>
-                    <span>AUDITION_MODE</span>
+                    <span>{t('onboarding.audition_mode')}</span>
                   </div>
                 </label>
               </div>
@@ -137,9 +137,9 @@ const OnboardingPage = () => {
 
         <section className="col-span-12 md:col-span-5 h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
-            <span className="mono-ui text-[10px] text-forest block mb-2">P-03 // NARRATIVE_CALIBRATION</span>
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">Interest Matrix</h2>
-            <p className="text-forest text-xs mt-2 leading-relaxed font-mono">Map your cognitive interest grid for precise news delivery.</p>
+            <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.interest_matrix_label')}</span>
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">{t('onboarding.interest_matrix')}</h2>
+            <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.interest_desc')}</p>
           </div>
           <div className="flex-1 p-6 flex flex-col">
             <div className="grid grid-cols-3 gap-[1px] border border-forest bg-forest">
