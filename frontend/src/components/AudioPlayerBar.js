@@ -1,78 +1,184 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Play, Pause, SkipBack, SkipForward, Volume2, ListMusic, X, Trash2, GripVertical } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
-import { Headphones, ChevronLeft, Play, Pause, ChevronRight, Volume2 } from 'lucide-react';
+
+const formatTime = (s) => {
+  if (!s || isNaN(s)) return '00:00';
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+};
 
 const AudioPlayerBar = () => {
-  const { currentTrack, isPlaying, progress, duration, togglePlay, seek, isLoading, volume, setVolumeLevel } = useAudio();
-
-  const formatTime = (s) => `${Math.floor(s / 60)}:${Math.floor(s % 60).toString().padStart(2, '0')}`;
-  const progressPct = duration > 0 ? (progress / duration) * 100 : 0;
+  const { t } = useTranslation();
+  const {
+    currentTrack, isPlaying, currentTime, duration,
+    togglePlay, seek, playNext, playPrev,
+    queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
+  } = useAudio();
+  const [showQueue, setShowQueue] = useState(false);
 
   return (
-    <footer className="hidden md:flex flex-col bg-background-dark border-t-2 border-primary z-20 shrink-0" data-testid="audio-player-bar">
+    <footer className="hidden md:flex flex-col bg-background-dark border-t-2 border-primary z-20 shrink-0 relative" data-testid="audio-player-bar">
+      {/* Queue Panel */}
+      {showQueue && (
+        <div className="absolute bottom-full right-0 w-96 max-h-80 bg-background-dark narvo-border border-b-0 overflow-hidden flex flex-col z-50" data-testid="queue-panel">
+          <div className="flex items-center justify-between px-4 py-3 narvo-border-b bg-surface/10">
+            <div className="flex items-center gap-2">
+              <ListMusic className="w-4 h-4 text-primary" />
+              <span className="mono-ui text-[10px] text-white font-bold">QUEUE // {queue.length} TRACKS</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {queue.length > 0 && (
+                <button
+                  onClick={clearQueue}
+                  className="mono-ui text-[8px] text-forest hover:text-red-400 font-bold transition-colors"
+                  data-testid="clear-queue-btn"
+                >
+                  CLEAR_ALL
+                </button>
+              )}
+              <button onClick={() => setShowQueue(false)} className="p-1 hover:bg-surface/20 transition-colors">
+                <X className="w-3.5 h-3.5 text-forest" />
+              </button>
+            </div>
+          </div>
+          <div className="overflow-y-auto custom-scroll flex-1">
+            {queue.length === 0 ? (
+              <div className="p-8 text-center">
+                <ListMusic className="w-8 h-8 text-forest/30 mx-auto mb-3" />
+                <p className="mono-ui text-[10px] text-forest">{t('player.no_track')}</p>
+                <p className="mono-ui text-[8px] text-forest/50 mt-1">Add stories to build your playlist</p>
+              </div>
+            ) : (
+              queue.map((track, idx) => (
+                <div
+                  key={track.id || idx}
+                  className={`flex items-center gap-3 px-4 py-3 transition-all group cursor-pointer ${
+                    idx === queueIndex ? 'bg-primary/10 border-l-2 border-primary' : 'hover:bg-surface/10 border-l-2 border-transparent'
+                  }`}
+                  onClick={() => playFromQueue(idx)}
+                  data-testid={`queue-item-${idx}`}
+                >
+                  <GripVertical className="w-3 h-3 text-forest/30 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <span className={`mono-ui text-[10px] font-bold block truncate ${
+                      idx === queueIndex ? 'text-primary' : 'text-white'
+                    }`}>
+                      {track.title || `Track ${idx + 1}`}
+                    </span>
+                    <span className="mono-ui text-[8px] text-forest block truncate">
+                      {track.source || 'Unknown'} {idx === queueIndex && isPlaying ? '// NOW_PLAYING' : ''}
+                    </span>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); removeFromQueue(track.id); }}
+                    className="p-1 opacity-0 group-hover:opacity-100 hover:text-red-400 text-forest transition-all"
+                    data-testid={`queue-remove-${idx}`}
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Controls Console */}
       <div className="h-[72px] flex items-center justify-between px-6 bg-background-dark narvo-border-t">
         {/* Track Info */}
         <div className="flex items-center gap-4 w-1/4 min-w-0">
-          <div className="h-11 w-11 narvo-border flex items-center justify-center bg-surface shrink-0">
-            <Headphones className="text-primary w-5 h-5" />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-display font-bold text-sm text-white uppercase tracking-tight truncate">
-              {currentTrack?.title || 'No Track Selected'}
-            </span>
-            <span className="mono-ui text-[10px] text-forest truncate">
-              {currentTrack?.source || 'NARVO // Standby'}
-            </span>
-          </div>
+          {currentTrack ? (
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 bg-primary/20 narvo-border shrink-0 flex items-center justify-center">
+                {isPlaying ? (
+                  <div className="flex items-center gap-0.5">
+                    {[1, 2, 3].map(i => <div key={i} className="w-1 bg-primary animate-pulse" style={{ height: `${8 + i * 4}px`, animationDelay: `${i * 0.15}s` }} />)}
+                  </div>
+                ) : (
+                  <Play className="w-4 h-4 text-primary" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <p className="mono-ui text-[10px] text-white font-bold truncate">{currentTrack.title || 'Unknown'}</p>
+                <p className="mono-ui text-[8px] text-forest truncate">{currentTrack.source || t('player.standby')}</p>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-surface/20 narvo-border shrink-0" />
+              <span className="mono-ui text-[10px] text-forest">{t('player.standby')}</span>
+            </div>
+          )}
         </div>
 
-        {/* Playback Controls */}
-        <div className="flex-1 max-w-xl flex flex-col items-center gap-1.5">
-          <div className="flex items-center gap-6">
-            <button onClick={() => seek(Math.max(0, progress - 15))} className="text-forest hover:text-white transition-colors" data-testid="player-prev">
-              <ChevronLeft className="w-5 h-5" />
+        {/* Center Controls */}
+        <div className="flex flex-col items-center gap-1 flex-1 max-w-md">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={playPrev}
+              className="text-forest hover:text-white transition-colors disabled:opacity-30"
+              disabled={queueIndex <= 0}
+              data-testid="player-prev"
+            >
+              <SkipBack className="w-5 h-5" />
             </button>
             <button
               onClick={togglePlay}
-              className="w-11 h-11 bg-primary text-background-dark flex items-center justify-center hover:bg-white transition-all"
-              disabled={isLoading || !currentTrack}
+              className="w-10 h-10 bg-primary flex items-center justify-center hover:bg-white transition-colors"
               data-testid="player-play-pause"
             >
-              {isLoading ? (
-                <div className="w-5 h-5 border-2 border-background-dark border-t-transparent animate-spin" />
-              ) : isPlaying ? (
-                <Pause className="w-5 h-5" />
-              ) : (
-                <Play className="w-5 h-5 ml-0.5" />
-              )}
+              {isPlaying ? <Pause className="w-5 h-5 text-background-dark" /> : <Play className="w-5 h-5 text-background-dark ml-0.5" />}
             </button>
-            <button onClick={() => seek(Math.min(duration, progress + 15))} className="text-forest hover:text-white transition-colors" data-testid="player-next">
-              <ChevronRight className="w-5 h-5" />
+            <button
+              onClick={playNext}
+              className="text-forest hover:text-white transition-colors disabled:opacity-30"
+              disabled={queueIndex >= queue.length - 1}
+              data-testid="player-next"
+            >
+              <SkipForward className="w-5 h-5" />
             </button>
           </div>
-          <div className="w-full flex items-center gap-2">
-            <span className="mono-ui text-[10px] text-forest w-8 text-right">{formatTime(progress)}</span>
-            <div
-              className="flex-1 h-1 bg-forest/20 relative cursor-pointer group"
-              onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); seek(((e.clientX - r.left) / r.width) * duration); }}
-            >
-              <div className="absolute top-0 left-0 h-full bg-primary transition-all" style={{ width: `${progressPct}%` }} />
+          {/* Progress bar */}
+          <div className="flex items-center gap-3 w-full">
+            <span className="mono-ui text-[9px] text-forest w-10 text-right">{formatTime(currentTime)}</span>
+            <div className="flex-1 h-1 bg-forest/30 cursor-pointer relative group" onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const pct = (e.clientX - rect.left) / rect.width;
+              seek(pct * duration);
+            }}>
+              <div
+                className="h-full bg-primary transition-all"
+                style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
+              />
+              <div
+                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ left: `${duration ? (currentTime / duration) * 100 : 0}%`, transform: 'translate(-50%, -50%)' }}
+              />
             </div>
-            <span className="mono-ui text-[10px] text-forest/50 w-8">{formatTime(duration)}</span>
+            <span className="mono-ui text-[9px] text-forest w-10">{formatTime(duration)}</span>
           </div>
         </div>
 
-        {/* Volume */}
-        <div className="flex items-center justify-end gap-4 w-1/4">
-          <div className="hidden lg:flex items-center gap-3">
-            <Volume2 className="text-forest w-4 h-4" />
-            <div className="w-20 h-1 bg-forest/20 relative cursor-pointer" onClick={(e) => {
-              const r = e.currentTarget.getBoundingClientRect();
-              setVolumeLevel((e.clientX - r.left) / r.width);
-            }}>
-              <div className="absolute top-0 left-0 h-full bg-forest" style={{ width: `${volume * 100}%` }} />
-            </div>
+        {/* Right Controls */}
+        <div className="flex items-center gap-4 w-1/4 justify-end">
+          <Volume2 className="w-4 h-4 text-forest" />
+          <button
+            onClick={() => setShowQueue(!showQueue)}
+            className={`p-2 transition-colors relative ${showQueue ? 'text-primary bg-primary/10' : 'text-forest hover:text-white'}`}
+            data-testid="queue-toggle-btn"
+          >
+            <ListMusic className="w-5 h-5" />
+            {queue.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-background-dark mono-ui text-[8px] font-bold flex items-center justify-center">
+                {queue.length}
+              </span>
+            )}
+          </button>
+          <div className="mono-ui text-[8px] text-forest hidden lg:block">
+            CODEC: AAC_256
           </div>
         </div>
       </div>
