@@ -17,11 +17,11 @@ Narvo is not a traditional news aggregator; it is a **Broadcast-Grade News Platf
 To maintain extreme minimalism, colors are used sparingly as technical indicators rather than decorative elements.
 
 - **Dark Mode (The Anti-light):** `#1B211A` (Deep Matte Charcoal/Green) - The base surface for all views.
-- **Light Mode (Standard-Light):** `#EBD5AB` (Sand/Beige) - The base surface for light mode concepts.
-- **Primary (Signal):** `#EBD5AB` (Sand/Beige) - Used for active states and critical alerts in dark mode; switched to `#1B211A` or `#628141` in light mode to maintain contrast. Strictly limited to **10%** of screen real estate.
-- **Surface (Secondary):** `#242B23` (Muted Green/Grey) - Used for alternating row backgrounds or depthless cards. (Light mode equivalent: `#D9C5A0`).
-- **Structural (Border):** `#628141` (Forest Green) - 1px structural grid lines that define the layout.
-- **Text Primary:** `#F2F2F2` (90% White) - High-fidelity content in dark mode. (Light mode equivalent: `#1B211A`).
+- **Light Mode (Clean Lab):** `#FFFFFF` (Pure White) - The base surface for a precision-focused light mode.
+- **Primary (Signal):** `#EBD5AB` (Sand/Beige) in dark mode; switched to `#628141` (Forest Green) in light mode to drive action and hierarchy. Strictly limited to **10%** of screen real estate.
+- **Surface (Secondary):** `#242B23` (Muted Green/Grey) in dark mode. (Light mode equivalent: `#EFF3ED` Soft Sage Tint).
+- **Structural (Border):** `#628141` (Forest Green) in dark mode. (Light mode equivalent: `#1B211A` for technical focus).
+- **Text Primary:** `#F2F2F2` (90% White) in dark mode. (Light mode equivalent: `#1B211A`).
 - **Text Secondarys/Labels:** `#8BAE66` (Sage Green) or `#808080` (50% Grey) - Metadata, units, and utility labels.
 
 ### Semantic Label Palette
@@ -87,10 +87,10 @@ Precision is reinforced through **Absolute Sharpness**.
 }
 
 [data-theme='light'] {
-  --color-primary: #1B211A;
-  --color-bg: #EBD5AB;
-  --color-surface: #D9C5A0;
-  --color-border: #628141;
+  --color-primary: #628141;
+  --color-bg: #FFFFFF;
+  --color-surface: #EFF3ED;
+  --color-border: #1B211A;
   --color-text-primary: #1B211A;
   --color-text-secondary: #628141;
   --color-text-dim: #808080;
