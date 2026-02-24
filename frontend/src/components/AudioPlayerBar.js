@@ -1,6 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ListMusic, X, Trash2, GripVertical } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Play, Pause, SkipBack, SkipForward, SpeakerHigh, SpeakerSlash, 
+  Queue, X, Trash, DotsSixVertical, Repeat, Broadcast
+} from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 
 const formatTime = (s) => {
@@ -13,16 +17,15 @@ const formatTime = (s) => {
 const AudioPlayerBar = () => {
   const { t } = useTranslation();
   const {
-    currentTrack, isPlaying, isLoading, currentTime, duration,
+    currentTrack, isPlaying, isLoading, isTransitioning, currentTime, duration,
     togglePlay, seek, playNext, playPrev,
     queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
-    volume, isMuted, setVolume, toggleMute,
+    volume, isMuted, setVolume, toggleMute, autoPlay, setAutoPlay,
   } = useAudio();
   const [showQueue, setShowQueue] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const volumeRef = useRef(null);
 
-  // Close volume slider when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (volumeRef.current && !volumeRef.current.contains(e.target)) {
@@ -39,155 +42,153 @@ const AudioPlayerBar = () => {
     setVolume(pct);
   };
 
-  return (
-    <footer className="hidden md:flex flex-col bg-background-dark border-t-2 border-primary z-20 shrink-0 relative" data-testid="audio-player-bar">
-      {/* Queue Panel */}
-      {showQueue && (
-        <div className="absolute bottom-full right-0 w-96 max-h-80 bg-background-dark narvo-border border-b-0 overflow-hidden flex flex-col z-50" data-testid="queue-panel">
-          <div className="flex items-center justify-between px-4 py-3 narvo-border-b bg-surface/10">
-            <div className="flex items-center gap-2">
-              <ListMusic className="w-4 h-4 text-primary" />
-              <span className="mono-ui text-[10px] text-white font-bold">QUEUE // {queue.length} TRACKS</span>
-            </div>
-            <div className="flex items-center gap-2">
-              {queue.length > 0 && (
-                <button
-                  onClick={clearQueue}
-                  className="mono-ui text-[8px] text-forest hover:text-red-400 font-bold transition-colors"
-                  data-testid="clear-queue-btn"
-                >
-                  CLEAR_ALL
-                </button>
-              )}
-              <button onClick={() => setShowQueue(false)} className="p-1 hover:bg-surface/20 transition-colors">
-                <X className="w-3.5 h-3.5 text-forest" />
-              </button>
-            </div>
-          </div>
-          <div className="overflow-y-auto custom-scroll flex-1">
-            {queue.length === 0 ? (
-              <div className="p-8 text-center">
-                <ListMusic className="w-8 h-8 text-forest/30 mx-auto mb-3" />
-                <p className="mono-ui text-[10px] text-forest">{t('player.no_track')}</p>
-                <p className="mono-ui text-[8px] text-forest/50 mt-1">Add stories to build your playlist</p>
-              </div>
-            ) : (
-              queue.map((track, idx) => (
-                <div
-                  key={track.id || idx}
-                  className={`flex items-center gap-3 px-4 py-3 transition-all group cursor-pointer ${
-                    idx === queueIndex ? 'bg-primary/10 border-l-2 border-primary' : 'hover:bg-surface/10 border-l-2 border-transparent'
-                  }`}
-                  onClick={() => playFromQueue(idx)}
-                  data-testid={`queue-item-${idx}`}
-                >
-                  <GripVertical className="w-3 h-3 text-forest/30 shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <span className={`mono-ui text-[10px] font-bold block truncate ${
-                      idx === queueIndex ? 'text-primary' : 'text-white'
-                    }`}>
-                      {track.title || `Track ${idx + 1}`}
-                    </span>
-                    <span className="mono-ui text-[8px] text-forest block truncate">
-                      {track.source || 'Unknown'} {idx === queueIndex && isPlaying ? '// NOW_PLAYING' : ''}
-                    </span>
-                  </div>
-                  <button
-                    onClick={(e) => { e.stopPropagation(); removeFromQueue(track.id); }}
-                    className="p-1 opacity-0 group-hover:opacity-100 hover:text-red-400 text-forest transition-all"
-                    data-testid={`queue-remove-${idx}`}
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
+  const handleSeek = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    seek(pct * duration);
+  };
 
-      {/* Controls Console */}
-      <div className="h-[72px] flex items-center justify-between px-6 bg-background-dark narvo-border-t">
+  return (
+    <footer className="hidden md:flex flex-col bg-[var(--color-bg)] border-t-2 border-[var(--color-primary)] z-20 shrink-0 relative" data-testid="audio-player-bar">
+      {/* Queue Panel */}
+      <AnimatePresence>
+        {showQueue && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.2 }}
+            className="absolute bottom-full right-0 w-96 max-h-80 bg-[var(--color-bg)] border border-[var(--color-border)] border-b-0 overflow-hidden flex flex-col z-50"
+            data-testid="queue-panel"
+          >
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)]/10">
+              <div className="flex items-center gap-2">
+                <Queue weight="fill" className="w-4 h-4 text-[var(--color-primary)]" />
+                <span className="font-mono text-[10px] text-[var(--color-text-primary)] font-bold uppercase">QUEUE // {queue.length} TRACKS</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setAutoPlay(!autoPlay)}
+                  className={`p-1.5 transition-colors ${autoPlay ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-secondary)]'}`}
+                  title={autoPlay ? 'Auto-play ON' : 'Auto-play OFF'}
+                >
+                  <Repeat weight={autoPlay ? 'fill' : 'regular'} className="w-4 h-4" />
+                </button>
+                {queue.length > 0 && (
+                  <button onClick={clearQueue} className="p-1.5 text-[var(--color-text-secondary)] hover:text-red-500 transition-colors" title="Clear Queue">
+                    <Trash weight="bold" className="w-4 h-4" />
+                  </button>
+                )}
+                <button onClick={() => setShowQueue(false)} className="p-1.5 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors">
+                  <X weight="bold" className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto custom-scroll">
+              {queue.length === 0 ? (
+                <div className="p-6 text-center">
+                  <Queue className="w-8 h-8 text-[var(--color-text-dim)] mx-auto mb-2" />
+                  <p className="font-mono text-[10px] text-[var(--color-text-dim)]">QUEUE_EMPTY</p>
+                </div>
+              ) : (
+                queue.map((track, idx) => (
+                  <div
+                    key={track.id}
+                    onClick={() => playFromQueue(idx)}
+                    className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-all border-b border-[var(--color-border)]/30 ${
+                      idx === queueIndex ? 'bg-[var(--color-primary)]/5 border-l-2 border-l-[var(--color-primary)]' : 'hover:bg-[var(--color-surface)]/30'
+                    }`}
+                  >
+                    <DotsSixVertical className="w-4 h-4 text-[var(--color-text-dim)] cursor-grab" />
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-xs truncate block ${idx === queueIndex ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-primary)]'}`}>
+                        {track.title}
+                      </span>
+                      <span className="font-mono text-[9px] text-[var(--color-text-dim)]">{track.source}</span>
+                    </div>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); removeFromQueue(track.id); }}
+                      className="p-1 text-[var(--color-text-dim)] hover:text-red-500 transition-colors"
+                    >
+                      <X weight="bold" className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Player */}
+      <div className="flex items-center h-16 px-4 gap-4">
         {/* Track Info */}
-        <div className="flex items-center gap-4 w-1/4 min-w-0">
+        <div className="flex items-center gap-3 w-1/4 min-w-0">
           {currentTrack ? (
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 bg-primary/20 narvo-border shrink-0 flex items-center justify-center">
-                {isLoading ? (
-                  <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin rounded-full" />
+            <>
+              <div className="w-10 h-10 bg-[var(--color-primary)]/20 border border-[var(--color-border)] shrink-0 flex items-center justify-center">
+                {isLoading || isTransitioning ? (
+                  <div className="w-4 h-4 border-2 border-[var(--color-primary)] border-t-transparent animate-spin rounded-full" />
                 ) : isPlaying ? (
                   <div className="flex items-center gap-0.5">
-                    {[1, 2, 3].map(i => <div key={i} className="w-1 bg-primary animate-pulse" style={{ height: `${8 + i * 4}px`, animationDelay: `${i * 0.15}s` }} />)}
+                    {[1, 2, 3].map(i => <div key={i} className="w-1 bg-[var(--color-primary)] animate-pulse" style={{ height: `${8 + i * 4}px`, animationDelay: `${i * 0.15}s` }} />)}
                   </div>
                 ) : (
-                  <Play className="w-4 h-4 text-primary" />
+                  <Play weight="fill" className="w-4 h-4 text-[var(--color-primary)]" />
                 )}
               </div>
-              <div className="min-w-0">
-                <p className="mono-ui text-[10px] text-white font-bold truncate">{currentTrack.title || 'Unknown'}</p>
-                <p className="mono-ui text-[8px] text-forest truncate">{currentTrack.source || t('player.standby')}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs text-[var(--color-text-primary)] truncate font-medium">{currentTrack.title}</p>
+                <p className="font-mono text-[9px] text-[var(--color-text-secondary)] truncate uppercase">{currentTrack.source}</p>
               </div>
-            </div>
+            </>
           ) : (
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-surface/20 narvo-border shrink-0" />
-              <span className="mono-ui text-[10px] text-forest">{t('player.standby')}</span>
+              <div className="w-10 h-10 border border-dashed border-[var(--color-border)] flex items-center justify-center">
+                <Broadcast className="w-4 h-4 text-[var(--color-text-dim)]" />
+              </div>
+              <span className="font-mono text-[10px] text-[var(--color-text-dim)]">NO_SIGNAL</span>
             </div>
           )}
         </div>
 
         {/* Center Controls */}
-        <div className="flex flex-col items-center gap-1 flex-1 max-w-md">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={playPrev}
-              className="text-forest hover:text-white transition-colors disabled:opacity-30"
-              disabled={queueIndex <= 0}
-              data-testid="player-prev"
-            >
-              <SkipBack className="w-5 h-5" />
+        <div className="flex-1 flex flex-col items-center gap-2">
+          <div className="flex items-center gap-3">
+            <button onClick={playPrev} disabled={queueIndex <= 0} className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] disabled:opacity-30 transition-colors">
+              <SkipBack weight="fill" className="w-4 h-4" />
             </button>
             <button
               onClick={togglePlay}
-              disabled={isLoading}
-              className="w-10 h-10 bg-primary flex items-center justify-center hover:bg-white transition-colors disabled:opacity-50"
+              disabled={isLoading || !currentTrack}
+              className="w-10 h-10 bg-[var(--color-primary)] flex items-center justify-center hover:bg-white transition-colors disabled:opacity-50"
               data-testid="player-play-pause"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-background-dark border-t-transparent animate-spin rounded-full" />
+                <div className="w-5 h-5 border-2 border-[var(--color-bg)] border-t-transparent animate-spin rounded-full" />
               ) : isPlaying ? (
-                <Pause className="w-5 h-5 text-background-dark" />
+                <Pause weight="fill" className="w-5 h-5 text-[var(--color-bg)]" />
               ) : (
-                <Play className="w-5 h-5 text-background-dark ml-0.5" />
+                <Play weight="fill" className="w-5 h-5 text-[var(--color-bg)] ml-0.5" />
               )}
             </button>
-            <button
-              onClick={playNext}
-              className="text-forest hover:text-white transition-colors disabled:opacity-30"
-              disabled={queueIndex >= queue.length - 1}
-              data-testid="player-next"
-            >
-              <SkipForward className="w-5 h-5" />
+            <button onClick={playNext} disabled={queueIndex >= queue.length - 1} className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] disabled:opacity-30 transition-colors">
+              <SkipForward weight="fill" className="w-4 h-4" />
             </button>
           </div>
-          {/* Progress bar */}
-          <div className="flex items-center gap-3 w-full">
-            <span className="mono-ui text-[9px] text-forest w-10 text-right">{formatTime(currentTime)}</span>
-            <div className="flex-1 h-1 bg-forest/30 cursor-pointer relative group" onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const pct = (e.clientX - rect.left) / rect.width;
-              seek(pct * duration);
-            }}>
-              <div
-                className="h-full bg-primary transition-all"
-                style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
-              />
-              <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ left: `${duration ? (currentTime / duration) * 100 : 0}%`, transform: 'translate(-50%, -50%)' }}
-              />
+          
+          {/* Progress Bar */}
+          <div className="flex items-center gap-3 w-full max-w-md">
+            <span className="font-mono text-[9px] text-[var(--color-text-dim)] w-10 text-right">{formatTime(currentTime)}</span>
+            <div className="flex-1 h-1 bg-[var(--color-surface)] cursor-pointer group" onClick={handleSeek}>
+              <motion.div
+                className="h-full bg-[var(--color-primary)] relative"
+                style={{ width: duration ? `${(currentTime / duration) * 100}%` : '0%' }}
+              >
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-[var(--color-primary)] opacity-0 group-hover:opacity-100 transition-opacity" />
+              </motion.div>
             </div>
-            <span className="mono-ui text-[9px] text-forest w-10">{formatTime(duration)}</span>
+            <span className="font-mono text-[9px] text-[var(--color-text-dim)] w-10">{formatTime(duration)}</span>
           </div>
         </div>
 
@@ -198,54 +199,50 @@ const AudioPlayerBar = () => {
             <button
               onClick={toggleMute}
               onMouseEnter={() => setShowVolumeSlider(true)}
-              className="text-forest hover:text-white transition-colors p-1"
+              className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors p-1"
               data-testid="volume-btn"
             >
               {isMuted || volume === 0 ? (
-                <VolumeX className="w-4 h-4" />
+                <SpeakerSlash weight="fill" className="w-5 h-5" />
               ) : (
-                <Volume2 className="w-4 h-4" />
+                <SpeakerHigh weight="fill" className="w-5 h-5" />
               )}
             </button>
-            {showVolumeSlider && (
-              <div 
-                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-background-dark narvo-border"
-                onMouseLeave={() => setShowVolumeSlider(false)}
-              >
-                <div 
-                  className="w-24 h-1.5 bg-forest/30 cursor-pointer relative group"
-                  onClick={handleVolumeChange}
-                  data-testid="volume-slider"
+            <AnimatePresence>
+              {showVolumeSlider && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-[var(--color-bg)] border border-[var(--color-border)]"
+                  onMouseLeave={() => setShowVolumeSlider(false)}
                 >
-                  <div
-                    className="h-full bg-primary transition-all"
-                    style={{ width: `${isMuted ? 0 : volume * 100}%` }}
-                  />
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary"
-                    style={{ left: `${isMuted ? 0 : volume * 100}%`, transform: 'translate(-50%, -50%)' }}
-                  />
-                </div>
-                <span className="mono-ui text-[8px] text-forest block text-center mt-1">
-                  {isMuted ? 'MUTED' : `${Math.round(volume * 100)}%`}
-                </span>
-              </div>
-            )}
+                  <div className="w-24 h-1.5 bg-[var(--color-surface)] cursor-pointer relative" onClick={handleVolumeChange} data-testid="volume-slider">
+                    <div className="h-full bg-[var(--color-primary)] transition-all" style={{ width: `${isMuted ? 0 : volume * 100}%` }} />
+                  </div>
+                  <span className="font-mono text-[8px] text-[var(--color-text-secondary)] block text-center mt-1">
+                    {isMuted ? 'MUTED' : `${Math.round(volume * 100)}%`}
+                  </span>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+          
           <button
             onClick={() => setShowQueue(!showQueue)}
-            className={`p-2 transition-colors relative ${showQueue ? 'text-primary bg-primary/10' : 'text-forest hover:text-white'}`}
+            className={`p-2 transition-colors relative ${showQueue ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/10' : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'}`}
             data-testid="queue-toggle-btn"
           >
-            <ListMusic className="w-5 h-5" />
+            <Queue weight={showQueue ? 'fill' : 'regular'} className="w-5 h-5" />
             {queue.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-background-dark mono-ui text-[8px] font-bold flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[var(--color-primary)] text-[var(--color-bg)] font-mono text-[8px] font-bold flex items-center justify-center">
                 {queue.length}
               </span>
             )}
           </button>
-          <div className="mono-ui text-[8px] text-forest hidden lg:block">
-            CODEC: AAC_256
+          
+          <div className="font-mono text-[8px] text-[var(--color-text-secondary)] hidden lg:block">
+            {autoPlay && <span className="text-[var(--color-primary)]">●</span>} AUTO
           </div>
         </div>
       </div>
