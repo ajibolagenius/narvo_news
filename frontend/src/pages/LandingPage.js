@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Clock from '../components/Clock';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [news, setNews] = useState([]);
 
   useEffect(() => {
