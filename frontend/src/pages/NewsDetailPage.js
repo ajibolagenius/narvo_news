@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, Pause, Bookmark, BookmarkCheck, Languages, ExternalLink, ArrowLeft, Lightbulb } from 'lucide-react';
+import { Play, Pause, Bookmark, BookmarkCheck, Languages, ExternalLink, ArrowLeft, Lightbulb, Share2, Clock, Eye, Radio } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
+import { useHapticAlert } from '../components/HapticAlerts';
 import { ArticleSkeleton } from '../components/Skeleton';
+import TruthTag from '../components/TruthTag';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -13,25 +15,122 @@ const NewsDetailPage = () => {
   const [news, setNews] = useState(null);
   const [loading, setLoading] = useState(true);
   const [relatedNews, setRelatedNews] = useState([]);
+  const [readTime, setReadTime] = useState(0);
   const { playTrack, currentTrack, isPlaying } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
+  const { showAlert } = useHapticAlert();
+  const hasAutoPlayed = useRef(false);
 
   useEffect(() => {
     setLoading(true);
+    hasAutoPlayed.current = false;
+    
     Promise.all([
       fetch(`${API_URL}/api/news/${id}`).then(r => r.ok ? r.json() : null),
-      fetch(`${API_URL}/api/news?limit=5`).then(r => r.json()).catch(() => []),
+      fetch(`${API_URL}/api/news?limit=6`).then(r => r.json()).catch(() => []),
     ]).then(([newsData, related]) => {
-      if (!newsData) { navigate('/dashboard'); return; }
+      if (!newsData) { 
+        navigate('/dashboard'); 
+        return; 
+      }
       setNews(newsData);
-      setRelatedNews(related.filter(r => r.id !== id).slice(0, 3));
+      
+      // Filter related news by same category, excluding current article
+      const sameCategory = related.filter(r => r.id !== id && r.category === newsData.category);
+      const otherNews = related.filter(r => r.id !== id && r.category !== newsData.category);
+      setRelatedNews([...sameCategory, ...otherNews].slice(0, 3));
+      
+      // Calculate read time (average 200 words per minute)
+      const text = (newsData.narrative || newsData.summary || '');
+      const wordCount = text.split(/\s+/).length;
+      setReadTime(Math.max(1, Math.ceil(wordCount / 200)));
+      
       setLoading(false);
     }).catch(() => navigate('/dashboard'));
   }, [id, navigate]);
 
+  // Auto-play audio when news loads
+  useEffect(() => {
+    if (news && !loading && !hasAutoPlayed.current) {
+      hasAutoPlayed.current = true;
+      // Small delay to ensure UI is ready
+      const timer = setTimeout(() => {
+        playTrack(news);
+        showAlert({
+          type: 'sync',
+          title: 'AUTO_PLAY_STARTED',
+          message: `Now playing: ${news.title.slice(0, 40)}...`,
+          code: 'PLAY_OK',
+          duration: 3000,
+        });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [news, loading, playTrack, showAlert]);
+
   const toggleBookmark = () => {
-    if (isBookmarked(news.id)) removeBookmark(news.id);
-    else addBookmark(news);
+    if (isBookmarked(news.id)) {
+      removeBookmark(news.id);
+      showAlert('BOOKMARK_REMOVED');
+    } else {
+      addBookmark(news);
+      showAlert('BOOKMARK_ADDED');
+    }
+  };
+
+  const shareStory = async () => {
+    const shareUrl = `${window.location.origin}/news/${news.id}`;
+    const shareText = `${news.title} - Listen on NARVO`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: news.title,
+          text: shareText,
+          url: shareUrl,
+        });
+        showAlert({
+          type: 'success',
+          title: 'SHARED_SUCCESS',
+          message: 'Story shared successfully.',
+          code: 'SHARE_OK',
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          await navigator.clipboard.writeText(shareUrl);
+          showAlert({
+            type: 'sync',
+            title: 'LINK_COPIED',
+            message: 'Story link copied to clipboard.',
+            code: 'CLIP_OK',
+          });
+        }
+      }
+    } else {
+      await navigator.clipboard.writeText(shareUrl);
+      showAlert({
+        type: 'sync',
+        title: 'LINK_COPIED',
+        message: 'Story link copied to clipboard.',
+        code: 'CLIP_OK',
+      });
+    }
+  };
+
+  const formatPublishedDate = (dateStr) => {
+    if (!dateStr) return 'Today';
+    try {
+      const date = new Date(dateStr);
+      const now = new Date();
+      const diffHours = Math.floor((now - date) / (1000 * 60 * 60));
+      
+      if (diffHours < 1) return 'Just now';
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffHours < 48) return 'Yesterday';
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch {
+      return dateStr;
+    }
   };
 
   if (loading || !news) {
@@ -57,32 +156,51 @@ const NewsDetailPage = () => {
   }
 
   const narrativeParagraphs = (news.narrative || news.summary || '').split('\n').filter(p => p.trim());
+  const isCurrentlyPlaying = currentTrack?.id === news.id && isPlaying;
 
   return (
     <>
       {/* Main Article Content */}
       <section className="flex-1 overflow-y-auto relative bg-background-dark custom-scroll" data-testid="news-detail-page">
         <div className="max-w-3xl mx-auto py-8 md:py-12 px-4 md:px-8 pb-32 md:pb-40">
-          {/* Back + Category Tags */}
+          {/* Back + Truth Tag Header */}
           <div className="mb-4 md:mb-6 flex items-center justify-between">
-            <button onClick={() => navigate('/dashboard')} className="mono-ui text-[10px] md:text-xs text-forest hover:text-primary flex items-center gap-2 transition-colors" data-testid="back-btn">
+            <button 
+              onClick={() => navigate('/dashboard')} 
+              className="mono-ui text-[10px] md:text-xs text-forest hover:text-primary flex items-center gap-2 transition-colors" 
+              data-testid="back-btn"
+            >
               <ArrowLeft className="w-4 h-4" />
               <span>BACK_TO_FEED</span>
             </button>
-            <span className="mono-ui text-[9px] md:text-[10px] text-forest">TRUTH_TAG: <span className="text-primary font-bold">{news.truth_score || 100}%</span></span>
+            <div className="flex items-center gap-3">
+              <TruthTag storyId={news.id} />
+            </div>
           </div>
 
-          {/* Category Pills */}
+          {/* Category Pills + Meta */}
           <div className="mb-6 md:mb-10">
-            <div className="flex gap-0 mb-4 md:mb-6 narvo-border w-fit">
-              <span className="px-2 md:px-3 py-1 narvo-border-r text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
-                {news.category || 'General'}
-              </span>
-              {news.tags?.slice(0, 1).map((tag, i) => (
-                <span key={i} className="px-2 md:px-3 py-1 text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
-                  {tag}
+            <div className="flex flex-wrap items-center gap-3 mb-4 md:mb-6">
+              <div className="flex gap-0 narvo-border w-fit">
+                <span className="px-2 md:px-3 py-1 narvo-border-r text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
+                  {news.category || 'General'}
                 </span>
-              ))}
+                {news.tags?.slice(0, 1).map((tag, i) => (
+                  <span key={i} className="px-2 md:px-3 py-1 text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center gap-4 mono-ui text-[9px] md:text-[10px] text-forest">
+                <span className="flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" />
+                  {readTime} MIN READ
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Eye className="w-3 h-3" />
+                  {formatPublishedDate(news.published)}
+                </span>
+              </div>
             </div>
 
             {/* Headline */}
@@ -101,27 +219,38 @@ const NewsDetailPage = () => {
             <img
               alt={news.title}
               className="w-full h-[200px] sm:h-[300px] md:h-[400px] object-cover opacity-90 grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
-              src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=1200"
+              src={news.image_url || "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=1200"}
             />
             <div className="absolute bottom-0 left-0 right-0 p-2 bg-background-dark narvo-border-t w-fit ml-auto">
               <figcaption className="text-[9px] md:text-[10px] text-primary font-mono uppercase tracking-wider">
                 FIG 1.0 — {news.source || 'Source'} / {news.category}
               </figcaption>
             </div>
+            {/* Now Playing Indicator */}
+            {isCurrentlyPlaying && (
+              <div className="absolute top-4 left-4 flex items-center gap-2 bg-primary px-3 py-1.5">
+                <Radio className="w-4 h-4 text-background-dark animate-pulse" />
+                <span className="mono-ui text-[9px] text-background-dark font-bold">NOW_PLAYING</span>
+              </div>
+            )}
           </figure>
 
           {/* Audio Controls Bar */}
           <div className="narvo-border bg-surface/30 p-3 md:p-5 mb-8 md:mb-12 flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-4">
             <button
               onClick={() => playTrack(news)}
-              className="bg-primary hover:bg-white text-background-dark w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all shrink-0"
+              className={`${isCurrentlyPlaying ? 'bg-white' : 'bg-primary hover:bg-white'} text-background-dark w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all shrink-0`}
               data-testid="play-story-btn"
             >
-              {currentTrack?.id === news.id && isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+              {isCurrentlyPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
             </button>
             <div className="flex flex-col justify-center flex-1 min-w-0">
-              <span className="text-[9px] md:text-[10px] text-forest font-mono uppercase tracking-widest mb-1">Narrative Audio</span>
-              <span className="text-xs md:text-sm text-white font-medium font-display uppercase tracking-wide truncate">{news.title?.slice(0, 50)}...</span>
+              <span className="text-[9px] md:text-[10px] text-forest font-mono uppercase tracking-widest mb-1">
+                {isCurrentlyPlaying ? 'NOW PLAYING' : 'NARRATIVE AUDIO'}
+              </span>
+              <span className="text-xs md:text-sm text-white font-medium font-display uppercase tracking-wide truncate">
+                {news.title?.slice(0, 50)}...
+              </span>
             </div>
             <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto sm:ml-auto">
               <button className="hidden md:flex narvo-border px-3 py-1.5 items-center gap-2 hover:bg-forest hover:text-white transition-colors">
@@ -130,6 +259,14 @@ const NewsDetailPage = () => {
               </button>
               <button className="md:hidden narvo-border p-2 text-primary">
                 <Languages className="w-4 h-4" />
+              </button>
+              <button
+                onClick={shareStory}
+                className="narvo-border w-10 h-10 flex items-center justify-center text-forest hover:text-primary transition-colors"
+                title="Share Story"
+                data-testid="share-story-btn"
+              >
+                <Share2 className="w-5 h-5" />
               </button>
               <button
                 onClick={toggleBookmark}
@@ -166,7 +303,7 @@ const NewsDetailPage = () => {
               <React.Fragment key={i}>
                 <p className="text-slate-300 font-light leading-relaxed mb-4 md:mb-6 text-sm md:text-base">{para}</p>
                 {/* Insert a quote block after 2nd paragraph */}
-                {i === 1 && (
+                {i === 1 && narrativeParagraphs.length > 2 && (
                   <div className="my-6 md:my-8 p-4 md:p-6 narvo-border bg-transparent relative">
                     <span className="absolute top-0 left-0 bg-background-dark px-2 -mt-3 text-primary text-2xl md:text-4xl leading-none font-display">"</span>
                     <p className="italic text-primary font-display text-base md:text-xl leading-relaxed mb-2">
@@ -187,14 +324,29 @@ const NewsDetailPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-white font-display font-bold text-sm md:text-base">{news.source}</span>
-                <span className="mono-ui text-[9px] md:text-[10px] text-forest block mt-1">{news.published || 'Today'}</span>
+                <span className="mono-ui text-[9px] md:text-[10px] text-forest block mt-1">{formatPublishedDate(news.published)}</span>
               </div>
-              {news.source_url && (
-                <a href={news.source_url} target="_blank" rel="noopener noreferrer" className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors w-fit">
-                  <ExternalLink className="w-3 h-3" />
-                  <span>ORIGINAL_SOURCE</span>
-                </a>
-              )}
+              <div className="flex gap-2">
+                <button
+                  onClick={shareStory}
+                  className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
+                  data-testid="share-source-btn"
+                >
+                  <Share2 className="w-3 h-3" />
+                  <span>SHARE</span>
+                </button>
+                {news.source_url && (
+                  <a 
+                    href={news.source_url} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span>ORIGINAL_SOURCE</span>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -206,27 +358,60 @@ const NewsDetailPage = () => {
           <span className="mono-ui text-[10px] xl:text-xs font-bold text-forest tracking-widest uppercase">Article_Metadata</span>
         </div>
         <div className="flex-1 overflow-y-auto p-4 xl:p-6 space-y-6 xl:space-y-8 custom-scroll">
+          {/* Truth Tag Display */}
+          <div className="narvo-border bg-primary/5 p-3 xl:p-4 border-primary/30">
+            <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">VERIFICATION_STATUS</span>
+            <div className="flex items-center justify-between">
+              <TruthTag storyId={news.id} />
+              <span className="mono-ui text-[8px] text-forest">DUBAWA_AI</span>
+            </div>
+          </div>
+
           {/* Article Info */}
           <div className="narvo-border bg-surface/20 p-3 xl:p-4">
             <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">SIGNAL_METADATA</span>
             <div className="space-y-2 xl:space-y-3">
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
                 <span className="text-forest">CATEGORY</span>
-                <span className="text-primary font-bold">{news.category?.toUpperCase()}</span>
+                <span className="text-primary font-bold">{news.category?.toUpperCase() || 'GENERAL'}</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
                 <span className="text-forest">SOURCE</span>
-                <span className="text-white">{news.source?.toUpperCase()}</span>
+                <span className="text-white">{news.source?.toUpperCase() || 'UNKNOWN'}</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
-                <span className="text-forest">TRUTH_SCORE</span>
-                <span className="text-primary font-bold">{news.truth_score || 100}%</span>
+                <span className="text-forest">REGION</span>
+                <span className="text-white">{news.region?.toUpperCase() || 'AFRICA'}</span>
+              </div>
+              <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
+                <span className="text-forest">READ_TIME</span>
+                <span className="text-primary font-bold">{readTime} MIN</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
                 <span className="text-forest">AI_SYNTHESIS</span>
                 <span className="text-primary font-bold">{news.narrative ? 'COMPLETE' : 'PENDING'}</span>
               </div>
             </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="flex gap-2">
+            <button
+              onClick={shareStory}
+              className="flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              data-testid="sidebar-share-btn"
+            >
+              <Share2 className="w-3 h-3" />
+              SHARE
+            </button>
+            <button
+              onClick={toggleBookmark}
+              className={`flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] flex items-center justify-center gap-2 transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary hover:border-primary'}`}
+              data-testid="sidebar-bookmark-btn"
+            >
+              {isBookmarked(news.id) ? <BookmarkCheck className="w-3 h-3" /> : <Bookmark className="w-3 h-3" />}
+              {isBookmarked(news.id) ? 'SAVED' : 'SAVE'}
+            </button>
           </div>
 
           {/* Tags */}
@@ -253,7 +438,10 @@ const NewsDetailPage = () => {
                     onClick={() => navigate(`/news/${item.id}`)}
                     data-testid={`related-${item.id}`}
                   >
-                    <span className="mono-ui text-[8px] xl:text-[9px] text-primary block mb-1 xl:mb-2">{item.source}</span>
+                    <div className="flex items-center gap-2 mb-1 xl:mb-2">
+                      <span className="mono-ui text-[8px] xl:text-[9px] text-primary">{item.source}</span>
+                      <TruthTag storyId={item.id} compact />
+                    </div>
                     <h4 className="text-xs xl:text-sm text-white font-display font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
                       {item.title}
                     </h4>
