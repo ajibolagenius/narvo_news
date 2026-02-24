@@ -29,7 +29,7 @@ const AccountPage = () => {
   ];
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll bg-background-dark" data-testid="account-page">
+    <main className="flex-1 overflow-y-auto custom-scroll bg-background-dark min-h-0" data-testid="account-page">
       {/* Upper Section: Subscription & Alerts */}
       <div className="narvo-border-b flex flex-col lg:flex-row min-h-[300px] lg:min-h-[400px]">
         {/* Subscription Panel */}
