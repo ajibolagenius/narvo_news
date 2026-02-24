@@ -11,136 +11,113 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - **AI**: Gemini 2.0 Flash (via Emergent LLM Key)
 - **TTS**: OpenAI TTS (via Emergent LLM Key)
 - **News Sources**: RSS feeds from 7 African sources
-- **i18n**: react-i18next with 6 languages (EN, FR, YO, HA, PCM, SW)
+- **i18n**: react-i18next with 7 languages (EN, FR, YO, HA, IG, PCM, SW)
 
 ## Architecture
 ```
 /app/frontend/src/
 ├── App.js
-├── i18n/                          # NEW: Internationalization
-│   ├── index.js                   # i18n config with 6 languages
+├── i18n/
+│   ├── index.js                   # i18n config with 7 languages
 │   └── locales/
-│       ├── en.json                # English (default)
-│       ├── fr.json                # Français
-│       ├── yo.json                # Yorùbá
-│       ├── ha.json                # Hausa
-│       ├── pcm.json               # Pidgin English
-│       └── sw.json                # Kiswahili
+│       ├── en.json, fr.json, yo.json, ha.json, ig.json, pcm.json, sw.json
 ├── lib/
 │   ├── supabase.js
-│   └── audioCache.js
+│   ├── audioCache.js
+│   └── categoryImages.js          # NEW: Category-to-image mapping
 ├── contexts/
 │   ├── AuthContext.js
 │   └── AudioContext.js
 ├── hooks/
 │   └── useBookmarks.js
 ├── components/
-│   ├── DashboardLayout.js
-│   ├── DashboardHeader.js         # i18n integrated
-│   ├── DashboardSidebar.js        # i18n integrated
+│   ├── DashboardLayout.js         # BreakingNewsBanner integrated
+│   ├── DashboardHeader.js         # i18n
+│   ├── DashboardSidebar.js        # i18n
 │   ├── AudioPlayerBar.js
 │   ├── AdminLayout.js
-│   ├── AdminSidebar.js
+│   ├── AdminSidebar.js            # i18n
+│   ├── BreakingNews.js            # NEW: Provider, Banner, NotificationToggle
 │   ├── EmptyState.js
 │   ├── HapticAlerts.js
 │   ├── TruthTag.js
-│   ├── Skeleton.js
-│   └── LoadingScreen.js, Clock.js, ProtectedRoute.js
+│   └── Skeleton.js, LoadingScreen.js, Clock.js, ProtectedRoute.js
 └── pages/
-    ├── LandingPage.js
+    ├── LandingPage.js             # i18n
     ├── AuthPage.js
-    ├── OnboardingPage.js
-    ├── DashboardPage.js
-    ├── NewsDetailPage.js           # TruthTag, Share, Autoplay, i18n
-    ├── SearchPage.js               # EmptyState integrated
-    ├── DiscoverPage.js             # i18n, EmptyState for radio
-    ├── OfflinePage.js              # EmptyState integrated
-    ├── SavedPage.js                # EmptyState integrated
-    ├── SettingsPage.js             # Language selector, i18n
-    ├── SystemSettingsPage.js       # Backend persistence, i18n
-    ├── AccessibilityPage.js        # Backend persistence, i18n
-    ├── AccountPage.js
-    ├── VoiceStudioPage.js          # Backend persistence
+    ├── OnboardingPage.js          # i18n
+    ├── DashboardPage.js           # i18n + category images
+    ├── NewsDetailPage.js          # i18n + TruthTag + Share + Autoplay
+    ├── SearchPage.js              # EmptyState
+    ├── DiscoverPage.js            # i18n + EmptyState
+    ├── OfflinePage.js             # EmptyState
+    ├── SavedPage.js               # EmptyState
+    ├── SettingsPage.js            # i18n + language selector + NotificationToggle
+    ├── SystemSettingsPage.js      # i18n + backend persistence
+    ├── AccessibilityPage.js       # i18n + backend persistence
+    ├── AccountPage.js             # i18n
+    ├── VoiceStudioPage.js         # backend persistence
     ├── MorningBriefingPage.js
-    ├── NotFoundPage.js
-    ├── ServerErrorPage.js
-    └── admin/
-        ├── OperationHubPage.js
-        ├── CurationConsolePage.js
-        ├── VoiceManagementPage.js
-        └── ModerationHubPage.js
+    ├── NotFoundPage.js, ServerErrorPage.js
+    └── admin/ (4 pages, all i18n)
 ```
 
 ## Completed Features
 
-### Core Pages (Feb 23, 2026)
-1. Landing Page, Auth, Onboarding, Dashboard Console, News Deep Dive
-2. Voice Studio, Morning Briefing, Settings
-3. Search, Discover, Offline, Saved pages
-4. Loading skeletons, responsive design, collapsible sidebar
+### Phase 1: Core Pages (Feb 23, 2026)
+- Landing, Auth, Onboarding, Dashboard, News Detail, Voice Studio, Morning Briefing, Settings
+- Search, Discover, Offline, Saved pages
+- Loading skeletons, responsive design, collapsible sidebar
 
-### User Profile & Settings (Feb 23-24, 2026)
-5. Account, Voice Studio, System Settings, Accessibility pages
-6. Voice Studio backend persistence
-7. System Settings backend persistence (Feb 24)
-8. Accessibility backend persistence (Feb 24)
+### Phase 2: User Profile & Settings (Feb 23-24)
+- Account, Voice Studio, System Settings, Accessibility pages
+- Backend persistence for Voice Studio, System Settings, Accessibility
 
-### Admin Dashboard (Feb 24, 2026)
-9. Operation Hub, Curation Console, Voice Management, Moderation Zone
-10. Backend API integration for admin metrics
+### Phase 3: Admin Dashboard (Feb 24)
+- Operation Hub, Curation Console, Voice Management, Moderation Zone
+- Backend API integration for admin metrics
 
-### System States & Events (Feb 24, 2026)
-11. 404/500 error pages
-12. EmptyState component (integrated: Search, Saved, Offline, Discover)
-13. HapticAlerts global notification system
+### Phase 4: System States & Events (Feb 24)
+- 404/500 error pages, EmptyState component, HapticAlerts system
+- TruthTag (fact-check badges), Share feature
 
-### Core Feature Enhancements (Feb 24, 2026)
-14. TruthTag (fact-check badges) on Dashboard and News Detail
-15. Share feature (Web Share API + clipboard fallback)
-16. News Detail: TruthTag, Share, Autoplay, metadata sidebar
+### Phase 5: Multi-Language & Category Media (Feb 24)
+- 7 languages: English, Français, Yorùbá, Hausa, Igbo, Pidgin, Kiswahili
+- i18n applied to ALL pages (landing, onboarding, account, dashboard, news detail, discover, settings, admin)
+- Language selector on Settings Hub with region tags
+- Category-specific images for news cards (politics, tech, sports, finance, culture, health, environment)
+- Breaking news banner (in-app red alert bar with dismiss/READ_NOW)
+- Browser push notification support via Notification API
+- NotificationToggle in Settings page
 
-### Multi-Language UI (i18n) (Feb 24, 2026)
-17. 6 languages: English, Français, Yorùbá, Hausa, Pidgin, Kiswahili
-18. Language selector on Settings Hub page
-19. Translated: sidebar nav, header, settings pages, news detail, discover page
-20. Language persisted in localStorage
-
-### Backend APIs (30+ endpoints)
-- Core: `/api/health`, `/api/news`, `/api/news/{id}`, `/api/voices`, `/api/metrics`
-- AI/TTS: `/api/paraphrase`, `/api/tts/generate`
-- Briefing: `/api/briefing/generate`, `/api/briefing/latest`, `/api/briefing/audio`
-- Bookmarks: `POST/GET/DELETE /api/bookmarks`
-- Preferences: `POST/GET /api/preferences`
-- Radio: `/api/radio/stations`
-- Admin: `/api/admin/metrics`, `/api/admin/alerts`, `/api/admin/streams`, `/api/admin/voices`, `/api/admin/moderation`, `/api/admin/stats`
-- Fact-check (MOCK): `/api/factcheck/{story_id}`, `/api/factcheck/analyze`
-- Settings: `GET/POST /api/settings/{user_id}`, `GET/POST /api/settings/{user_id}/voice`
-
-### Design System
-- Semantic Label Palette (12 category colors)
-- Swiss Grid design with mono UI elements
-- Dark theme with forest/primary accent
+### Backend APIs (35+ endpoints)
+- Core: /api/health, /api/news, /api/news/breaking, /api/news/{id}, /api/voices, /api/metrics
+- AI/TTS: /api/paraphrase, /api/tts/generate
+- Briefing: /api/briefing/generate, /api/briefing/latest, /api/briefing/audio
+- Bookmarks: POST/GET/DELETE /api/bookmarks
+- Preferences: POST/GET /api/preferences
+- Radio: /api/radio/stations
+- Admin: /api/admin/metrics, /api/admin/alerts, /api/admin/streams, /api/admin/voices, /api/admin/moderation, /api/admin/stats
+- Fact-check (MOCK): /api/factcheck/{story_id}, /api/factcheck/analyze
+- Settings: GET/POST /api/settings/{user_id}, GET/POST /api/settings/{user_id}/voice
 
 ## Testing
-- Backend: 100% pass rate across 16 iterations
-- Frontend: 100% pass rate
-- Test reports: /app/test_reports/iteration_1.json through iteration_16.json
+- 17 test iterations, all 100% pass rate
+- Test reports: /app/test_reports/iteration_1.json through iteration_17.json
 
 ## Prioritized Backlog
 
-### P1 (High Priority)
-- [ ] Category-specific images (vary by news category)
-- [ ] Push notifications for breaking news
-- [ ] Playlist/queue functionality
-- [ ] Dynamic Open Graph Images
-- [ ] Real Dubawa API integration (replace mock)
+### P1
+- [ ] Real Dubawa API integration (replace mock fact-checking)
+- [ ] Playlist/queue functionality for news stories
+- [ ] Dynamic Open Graph Images for sharing
 
-### P2 (Medium Priority)
-- [ ] Multi-language UI: extend translations to remaining pages (admin, account, onboarding)
+### P2
 - [ ] Historical Morning Briefings browser
 - [ ] Full backend functionality for Search, Discover, Offline, Saved pages
+- [ ] PWA support with service worker for offline
 
-### P3 (Future)
+### P3
 - [ ] React Native mobile app
 - [ ] Voice cloning for regional accents
 - [ ] WebSocket real-time updates
