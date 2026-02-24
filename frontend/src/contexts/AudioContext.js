@@ -122,7 +122,7 @@ export const AudioProvider = ({ children }) => {
     }
   }, []);
 
-  const playTrack = useCallback(async (track) => {
+  const playTrack = useCallback(async (track, forcePlay = false) => {
     if (!track) return;
     
     setError(null);
@@ -139,6 +139,12 @@ export const AudioProvider = ({ children }) => {
         audio.pause();
       }
       return;
+    }
+    
+    // If something is playing and not forcing, add to queue instead
+    if (isPlaying && !forcePlay && currentTrack) {
+      addToQueue(track);
+      return { queued: true };
     }
     
     // If no audio URL, generate TTS
@@ -166,7 +172,12 @@ export const AudioProvider = ({ children }) => {
     setDuration(0);
     setCurrentTime(0);
     setIsLoading(false);
-  }, [currentTrack, generateTTS]);
+  }, [currentTrack, isPlaying, generateTTS, addToQueue]);
+
+  // Force play - always plays immediately
+  const forcePlayTrack = useCallback(async (track) => {
+    return playTrack(track, true);
+  }, [playTrack]);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
