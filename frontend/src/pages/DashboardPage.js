@@ -131,7 +131,7 @@ const DashboardPage = () => {
                 {/* Featured Transmission */}
                 {featured && (
                   <section>
-                    <span className="mono-ui text-[10px] md:text-xs text-primary block mb-4 font-bold tracking-[0.2em]">{'//'} PRIORITY_TRANSMISSION</span>
+                    <span className="mono-ui text-[10px] md:text-xs text-primary block mb-4 font-bold tracking-[0.2em]">{'//'} {t('dashboard.featured_transmission')}</span>
                     <article
                       className="narvo-border bg-surface/50 group relative overflow-hidden flex flex-col md:flex-row min-h-[280px] md:min-h-[320px] cursor-pointer"
                       onClick={() => navigate(`/news/${featured.id}`)}
@@ -142,7 +142,7 @@ const DashboardPage = () => {
                         <img
                           alt={featured.title}
                           className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale hover:grayscale-0 absolute inset-0"
-                          src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800"
+                          src={getCategoryImage(featured.category || featured.tags?.[0], featured.id)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-background-dark/80 to-transparent" />
                         <div className="absolute top-4 left-4 flex gap-2">
@@ -167,7 +167,7 @@ const DashboardPage = () => {
                             data-testid="featured-play-btn"
                           >
                             <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
-                            <span>Play Briefing</span>
+                            <span>{t('dashboard.listen_now')}</span>
                           </button>
                           <button className="w-11 h-11 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary" title="Translate" onClick={(e) => e.stopPropagation()}>
                             <Languages className="w-5 h-5" />
