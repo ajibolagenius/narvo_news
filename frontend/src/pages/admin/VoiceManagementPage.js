@@ -68,7 +68,7 @@ const VoiceManagementPage = () => {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="font-display text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-4">
-              <RadioTower className="w-6 h-6 text-primary" />
+              <Broadcast className="w-6 h-6 text-primary" />
               Active_Voice_Matrix
             </h2>
             <div className="flex gap-4">
@@ -76,11 +76,11 @@ const VoiceManagementPage = () => {
                 onClick={fetchData}
                 className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <ArrowClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 Refresh
               </button>
               <button className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase">
-                <Filter className="w-4 h-4" />
+                <Funnel className="w-4 h-4" />
                 Filter
               </button>
               <button className="px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all flex items-center gap-2 uppercase">
@@ -108,7 +108,7 @@ const VoiceManagementPage = () => {
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 narvo-border bg-background-dark flex items-center justify-center ${voice.status === 'LIVE' ? 'text-primary' : 'text-forest'} group-hover:border-primary transition-all`}>
-                          <RadioTower className="w-5 h-5" />
+                          <Broadcast className="w-5 h-5" />
                         </div>
                         <div>
                           <p className="text-white">{voice.name}</p>
@@ -137,14 +137,14 @@ const VoiceManagementPage = () => {
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 text-forest italic">
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <CircleNotch className="w-4 h-4 animate-spin" />
                           <span>TRAINING</span>
                         </div>
                       )}
                     </td>
                     <td className="px-8 py-5 text-right">
                       <button className="p-2 hover:bg-forest/20 rounded transition-colors">
-                        <MoreVertical className="w-5 h-5" />
+                        <DotsThreeVertical className="w-5 h-5" />
                       </button>
                     </td>
                   </tr>
