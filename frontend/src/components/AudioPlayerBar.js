@@ -16,20 +16,11 @@ const AudioPlayerBar = () => {
     currentTrack, isPlaying, isLoading, currentTime, duration,
     togglePlay, seek, playNext, playPrev,
     queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
+    volume, isMuted, setVolume, toggleMute,
   } = useAudio();
   const [showQueue, setShowQueue] = useState(false);
-  const [volume, setVolume] = useState(0.8);
-  const [isMuted, setIsMuted] = useState(false);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const volumeRef = useRef(null);
-
-  // Apply volume to any playing audio
-  useEffect(() => {
-    const audioElements = document.querySelectorAll('audio');
-    audioElements.forEach(audio => {
-      audio.volume = isMuted ? 0 : volume;
-    });
-  }, [volume, isMuted]);
 
   // Close volume slider when clicking outside
   useEffect(() => {
@@ -46,11 +37,6 @@ const AudioPlayerBar = () => {
     const rect = e.currentTarget.getBoundingClientRect();
     const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     setVolume(pct);
-    if (pct > 0) setIsMuted(false);
-  };
-
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
   };
 
   return (
