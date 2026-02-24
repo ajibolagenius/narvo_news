@@ -41,10 +41,12 @@ mongo_client = MongoClient(os.environ.get("MONGO_URL"))
 db = mongo_client[os.environ.get("DB_NAME", "narvo")]
 bookmarks_col = db["bookmarks"]
 preferences_col = db["user_preferences"]
+briefings_col = db["briefings"]
 
 # Create indexes
 bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
 preferences_col.create_index("user_id", unique=True)
+briefings_col.create_index("date", unique=True)
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
