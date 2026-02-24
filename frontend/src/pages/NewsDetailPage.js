@@ -163,6 +163,18 @@ const NewsDetailPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>{news.title} — NARVO</title>
+        <meta property="og:title" content={news.title} />
+        <meta property="og:description" content={news.narrative?.slice(0, 160) || `Listen on Narvo — Audio-first news for Africa`} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`${API_URL}/news/${id}`} />
+        <meta property="og:image" content={`${API_URL}/api/og/${id}`} />
+        <meta property="og:site_name" content="NARVO" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={news.title} />
+        <meta name="twitter:description" content={news.narrative?.slice(0, 160) || 'Audio-first news for Africa'} />
+      </Helmet>
       {/* Main Article Content */}
       <section className="flex-1 overflow-y-auto relative bg-background-dark custom-scroll" data-testid="news-detail-page">
         <div className="max-w-3xl mx-auto py-8 md:py-12 px-4 md:px-8 pb-32 md:pb-40">
