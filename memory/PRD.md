@@ -110,9 +110,20 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - Reorganized dashboard sidebar navigation
 - Audio player bar cleaned up (removed news scroll, added queue controls)
 
+### Phase 7: Full Backend & Redesigns (Feb 24)
+- Fixed audio player with TTS on-demand generation (stories without pre-existing audio now work)
+- Completely redesigned Morning Briefing page with military broadcast aesthetic
+- Historical briefings browser with date-based archive sidebar
+- Full backend for Search page: search RSS content, category filtering, trending topics
+- Full backend for Saved page: MongoDB bookmark persistence, filter/sort functionality
+- Dynamic OG images on news detail page with proper share URL (uses window.location.origin)
+- Removed footer from Discover page
+- Created modular backend structure: /app/backend/routes/, /app/backend/models/, /app/backend/services/
+- Refactored AudioContext.js for cleaner TTS integration
+
 ## Testing
-- 18 test iterations, all 100% pass rate
-- Test reports: /app/test_reports/iteration_1.json through iteration_18.json
+- 19 test iterations, all 100% pass rate
+- Test reports: /app/test_reports/iteration_1.json through iteration_19.json
 
 ## Prioritized Backlog
 
@@ -120,9 +131,8 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - [ ] Real Dubawa API integration (replace mock fact-checking)
 
 ### P2
-- [ ] Historical Morning Briefings browser
-- [ ] Full backend functionality for Search, Discover, Offline, Saved pages
 - [ ] PWA support with service worker for offline
+- [ ] Full backend for Offline page (IndexedDB sync)
 
 ### P3
 - [ ] React Native mobile app
@@ -130,6 +140,6 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - [ ] WebSocket real-time updates
 - [ ] Scheduled 5 AM briefing generation
 
-### Refactoring
-- [ ] Break monolithic server.py into structured routes/models/services
-- [ ] Refactor AudioContext.js (large file with complex queue logic)
+### Completed Refactoring
+- [x] Created modular backend structure (routes/, models/, services/) - ready for migration
+- [x] Refactored AudioContext.js with TTS on-demand generation
