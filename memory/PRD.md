@@ -121,9 +121,16 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - Created modular backend structure: /app/backend/routes/, /app/backend/models/, /app/backend/services/
 - Refactored AudioContext.js for cleaner TTS integration
 
+### Phase 8: Bug Fixes & Reversions (Feb 24)
+- Reverted Search page to original "GLOBAL ARCHIVE SEARCH" design with VOICE_INPUT_PROTOCOL button
+- Reverted Saved page to original "SAVED STORIES" design with SELECT_ALL/ARCHIVE_X/DELETE_SIG controls
+- Restored Briefing page to broadcast theme with improved visual hierarchy + ARCHIVE_LOG historical sidebar
+- Fixed OG images/share URLs: New /api/share/{news_id} endpoint serves proper meta tags for social media crawlers
+- Fixed audio player volume icon: Now clickable with mute toggle and volume slider
+
 ## Testing
-- 19 test iterations, all 100% pass rate
-- Test reports: /app/test_reports/iteration_1.json through iteration_19.json
+- 20 test iterations, all 100% pass rate
+- Test reports: /app/test_reports/iteration_1.json through iteration_20.json
 
 ## Prioritized Backlog
 
@@ -143,3 +150,4 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 ### Completed Refactoring
 - [x] Created modular backend structure (routes/, models/, services/) - ready for migration
 - [x] Refactored AudioContext.js with TTS on-demand generation
+- [x] Volume control with mute toggle in AudioContext
