@@ -62,7 +62,7 @@ const OnboardingPage = () => {
             <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/>
           </svg>
           <h1 className="font-display text-xl tracking-tight font-bold text-white uppercase">
-            NARVO <span className="text-forest font-light mx-2">{'//'}</span> SETUP_CONSOLE
+            NARVO <span className="text-forest font-light mx-2">{'//'}</span> {t('onboarding.setup_console')}
           </h1>
         </div>
         <div className="mono-ui text-[10px] text-forest">SYSTEM_ACCESS_ID: <span className="text-primary">009-AF-X</span></div>
@@ -71,9 +71,9 @@ const OnboardingPage = () => {
       <main className="flex-1 grid grid-cols-12 h-full overflow-hidden">
         <section className="col-span-12 md:col-span-3 border-r border-forest h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
-            <span className="mono-ui text-[10px] text-forest block mb-2">P-01 // LOCALE_MATRIX</span>
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">Regional Node</h2>
-            <p className="text-forest text-xs mt-2 leading-relaxed font-mono">Select production node for regional news calibration.</p>
+            <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.locale_matrix')}</span>
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">{t('onboarding.regional_node')}</h2>
+            <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.regional_desc')}</p>
           </div>
           <div className="flex-1 overflow-y-auto custom-scrollbar">
             <ul className="flex flex-col">
@@ -94,15 +94,15 @@ const OnboardingPage = () => {
             </ul>
           </div>
           <div className="p-4 bg-surface border-t border-forest">
-            <div className="flex justify-between items-center text-forest text-[10px] mono-ui"><span>SIGNAL_QUALITY</span><span className="text-primary">98.4%</span></div>
+            <div className="flex justify-between items-center text-forest text-[10px] mono-ui"><span>{t('onboarding.signal_quality')}</span><span className="text-primary">98.4%</span></div>
             <div className="w-full bg-background-dark h-1 mt-2 border border-forest"><div className="h-full w-[98%] bg-primary" /></div>
           </div>
         </section>
 
         <section className="col-span-12 md:col-span-4 border-r border-forest h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
-            <span className="mono-ui text-[10px] text-forest block mb-2">P-02 // VOICE_SYNTHESIS_ENGINE</span>
-            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">Vocal Matrix</h2>
+            <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.voice_engine')}</span>
+            <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">{t('onboarding.vocal_matrix')}</h2>
             <p className="text-forest text-xs mt-2 leading-relaxed font-mono">Calibrate the regional synthesis engine for high-fidelity audio delivery.</p>
           </div>
           <div className="flex-1 p-6 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
