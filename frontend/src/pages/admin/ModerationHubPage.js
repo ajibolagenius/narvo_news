@@ -63,7 +63,7 @@ const ModerationHubPage = () => {
   return (
     <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="moderation-hub-page">
       {/* Header */}
-      <div className="px-8 py-6 narvo-border-b flex justify-between items-center bg-black/20 shrink-0">
+      <div className="px-8 py-6 narvo-border-b flex justify-between items-center bg-background-dark/20 shrink-0">
         <div className="flex items-baseline gap-4">
           <h2 className="font-display text-2xl font-bold text-content uppercase tracking-tight">Incoming_Matrix</h2>
           <span className="mono-ui text-[9px] text-forest font-bold border border-forest px-2 py-0.5">LIVE_WATCH</span>
@@ -129,7 +129,7 @@ const ModerationHubPage = () => {
                   </h3>
                   
                   {item.has_image && (
-                    <div className="aspect-video narvo-border bg-black/40 overflow-hidden relative">
+                    <div className="aspect-video narvo-border bg-background-dark/40 overflow-hidden relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-forest/20 to-transparent" />
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="mono-ui text-[9px] text-forest font-bold">MEDIA_PREVIEW</span>
@@ -188,7 +188,7 @@ const ModerationHubPage = () => {
       </div>
 
       {/* Stats Bar */}
-      <div className="h-12 narvo-border-t bg-black/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold shrink-0">
+      <div className="h-12 narvo-border-t bg-background-dark/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold shrink-0">
         <div className="flex items-center gap-6">
           <span>QUEUE_TOTAL: <span className="text-content">{stats?.queue_total || 0}</span></span>
           <span>DISPUTED: <span className="text-red-500">{stats?.disputed || 0}</span></span>

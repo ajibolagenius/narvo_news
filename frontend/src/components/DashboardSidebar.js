@@ -61,7 +61,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
     <>
       {/* Backdrop on mobile for expanded sidebar */}
       {open && (
-        <div className="md:hidden fixed inset-0 bg-black/50 z-20" onClick={onClose} />
+        <div className="md:hidden fixed inset-0 bg-background-dark/50 z-20" onClick={onClose} />
       )}
 
       <motion.aside

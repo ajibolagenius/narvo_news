@@ -90,7 +90,7 @@ const VoiceManagementPage = () => {
             </div>
           </div>
 
-          <div className="narvo-border overflow-hidden bg-black/20">
+          <div className="narvo-border overflow-hidden bg-background-dark/20">
             <table className="w-full text-left">
               <thead>
                 <tr className="narvo-border-b bg-forest/5 mono-ui text-[9px] text-forest font-bold">
@@ -156,7 +156,7 @@ const VoiceManagementPage = () => {
       </div>
 
       {/* Signal Analyzer Dock */}
-      <div className="h-48 narvo-border-t bg-black/40 p-8 flex flex-col gap-4 shrink-0">
+      <div className="h-48 narvo-border-t bg-background-dark/40 p-8 flex flex-col gap-4 shrink-0">
         <div className="flex justify-between items-center text-[9px] mono-ui font-bold text-forest">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-2 text-primary">

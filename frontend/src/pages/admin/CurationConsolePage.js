@@ -28,7 +28,7 @@ const CurationConsolePage = () => {
   return (
     <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="curation-console-page">
       {/* Breadcrumb Bar */}
-      <div className="h-14 narvo-border-b bg-black/20 flex items-center px-8 gap-4 shrink-0">
+      <div className="h-14 narvo-border-b bg-background-dark/20 flex items-center px-8 gap-4 shrink-0">
         <span className="mono-ui text-[9px] text-forest font-bold">DASHBOARD</span>
         <CaretRight className="w-3 h-3 text-forest" />
         <span className="mono-ui text-[9px] text-forest font-bold">WIRE_FEEDS</span>
@@ -75,7 +75,7 @@ const CurationConsolePage = () => {
             </div>
 
             {/* Synthesized Output */}
-            <div className="flex-1 flex flex-col min-w-[300px] bg-black/10">
+            <div className="flex-1 flex flex-col min-w-[300px] bg-background-dark/10">
               <div className="px-8 py-3 narvo-border-b bg-forest/5 flex justify-between items-center">
                 <span className="mono-ui text-[9px] text-primary font-bold tracking-widest uppercase">NARVO_SYNTHESIS // V2.4</span>
                 <Sparkle className="w-4 h-4 text-primary" />
@@ -97,7 +97,7 @@ const CurationConsolePage = () => {
           </div>
 
           {/* Legend */}
-          <div className="h-12 narvo-border-t bg-black/40 flex items-center px-8 gap-8 mono-ui text-[9px] text-forest font-bold shrink-0 uppercase">
+          <div className="h-12 narvo-border-t bg-background-dark/40 flex items-center px-8 gap-8 mono-ui text-[9px] text-forest font-bold shrink-0 uppercase">
             <span className="opacity-40 tracking-widest">Signal_Legend:</span>
             {legendItems.map((item, idx) => (
               <div key={idx} className="flex items-center gap-2">
@@ -109,7 +109,7 @@ const CurationConsolePage = () => {
         </div>
 
         {/* Adjustment Panel */}
-        <div className="w-80 narvo-border-l bg-black/20 flex flex-col overflow-hidden shrink-0">
+        <div className="w-80 narvo-border-l bg-background-dark/20 flex flex-col overflow-hidden shrink-0">
           <div className="p-6 narvo-border-b">
             <div className="flex items-center gap-3 mb-2">
               <Sliders className="w-5 h-5 text-primary" />

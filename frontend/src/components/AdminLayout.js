@@ -9,7 +9,7 @@ const AdminLayout = () => {
   return (
     <div className="h-screen overflow-hidden flex flex-col bg-background-dark" data-testid="admin-layout">
       {/* Admin Header */}
-      <header className="h-14 narvo-border-b bg-black/40 flex items-center justify-between px-6 shrink-0">
+      <header className="h-14 narvo-border-b bg-background-dark/40 flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-6">
           <button 
             onClick={() => navigate('/dashboard')}
@@ -46,7 +46,7 @@ const AdminLayout = () => {
       </div>
 
       {/* Admin Footer */}
-      <footer className="h-10 narvo-border-t bg-black/40 flex items-center justify-between px-6 mono-ui text-[8px] text-forest font-bold">
+      <footer className="h-10 narvo-border-t bg-background-dark/40 flex items-center justify-between px-6 mono-ui text-[8px] text-forest font-bold">
         <span>ADMIN_PROTOCOL: V2.4 // RESTRICTED_ACCESS</span>
         <span>ENCRYPTION: AES-256-GCM // SESSION_ACTIVE</span>
       </footer>

@@ -16,7 +16,7 @@ const AdminSidebar = () => {
   ];
 
   return (
-    <aside className="w-64 narvo-border-r bg-black/40 flex flex-col shrink-0" data-testid="admin-sidebar">
+    <aside className="w-64 narvo-border-r bg-background-dark/40 flex flex-col shrink-0" data-testid="admin-sidebar">
       <div className="p-6 narvo-border-b">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-red-500/20 narvo-border border-red-500/50 flex items-center justify-center">
@@ -61,7 +61,7 @@ const AdminSidebar = () => {
         })}
       </nav>
 
-      <div className="p-4 narvo-border-t bg-black/20">
+      <div className="p-4 narvo-border-t bg-background-dark/20">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="mono-ui text-[8px] text-forest font-bold">{t('dashboard.system_status')}</span>
