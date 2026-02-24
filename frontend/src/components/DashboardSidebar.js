@@ -30,7 +30,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
   if (mobile) {
     return (
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-[rgb(var(--color-bg))] border-t border-[rgb(var(--color-border))] flex items-center justify-around z-30" data-testid="mobile-bottom-nav">
-        {navItems.slice(0, 5).map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
           return (

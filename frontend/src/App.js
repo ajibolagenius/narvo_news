@@ -44,7 +44,7 @@ const ModerationHubPage = lazy(() => import('./pages/admin/ModerationHubPage'));
 const PageLoader = () => null;
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   if (isLoading) {
     return <LoadingScreen onComplete={() => setIsLoading(false)} duration={1500} />;
