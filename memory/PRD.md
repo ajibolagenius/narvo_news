@@ -198,6 +198,7 @@ Desktop-only admin panel with distinct sidebar (red accent, CONTROL_CENTER heade
 - [ ] Playlist/queue functionality
 - [x] User Profile Pages (Account, Voice Studio, System Settings, Accessibility) ✅ (Feb 23, 2026)
 - [x] Live Radio Integration on Discover Page ✅ (Feb 23, 2026)
+- [x] Admin & Curation Dashboard (4 pages) ✅ (Feb 24, 2026)
 
 ### P2 (Medium Priority)
 - [ ] Dubawa fact-checking / Truth Tags
@@ -207,6 +208,7 @@ Desktop-only admin panel with distinct sidebar (red accent, CONTROL_CENTER heade
 - [x] Collapsible sidebar ✅ (Feb 23, 2026)
 - [ ] Connect User Profile pages to backend for saving preferences
 - [ ] Historical Morning Briefings browser
+- [ ] Backend integration for Admin pages (real-time metrics, curation workflow)
 
 ### P3 (Future)
 - [ ] React Native mobile app
