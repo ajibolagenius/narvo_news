@@ -144,6 +144,7 @@ const DashboardPage = () => {
                         <div className="absolute inset-0 bg-gradient-to-r from-background-dark/80 to-transparent" />
                         <div className="absolute top-4 left-4 flex gap-2">
                           <span className="bg-primary text-background-dark font-mono text-[9px] md:text-[10px] font-bold px-2 py-0.5 uppercase">Feature</span>
+                          <TruthTag storyId={featured.id} compact />
                         </div>
                       </div>
                       <div className="flex-1 p-5 md:p-8 flex flex-col justify-between">
@@ -167,6 +168,14 @@ const DashboardPage = () => {
                           </button>
                           <button className="w-11 h-11 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary" title="Translate" onClick={(e) => e.stopPropagation()}>
                             <Languages className="w-5 h-5" />
+                          </button>
+                          <button
+                            className="w-11 h-11 md:w-12 md:h-12 narvo-border flex items-center justify-center text-forest hover:text-primary transition-colors"
+                            onClick={(e) => shareStory(e, featured)}
+                            title="Share"
+                            data-testid="featured-share-btn"
+                          >
+                            <Share2 className="w-5 h-5" />
                           </button>
                           <button
                             className={`w-11 h-11 md:w-12 md:h-12 narvo-border flex items-center justify-center transition-colors ${isBookmarked(featured.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary'}`}
