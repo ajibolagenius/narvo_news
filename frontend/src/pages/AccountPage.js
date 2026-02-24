@@ -58,12 +58,12 @@ const AccountPage = () => {
             
             <div className="flex flex-wrap gap-3 md:gap-6 mt-6">
               <button 
-                className="px-4 md:px-8 py-2 md:py-3 bg-transparent border border-white text-white mono-ui text-[10px] md:text-[11px] font-bold"
+                className="px-4 md:px-8 py-2 md:py-3 bg-transparent border border-white text-white mono-ui text-[10px] md:text-[11px] font-bold hover:bg-primary hover:border-primary hover:text-background-dark transition-all"
                 data-testid="manage-plan-btn"
               >
                 MANAGE_PLAN
               </button>
-              <button className="px-3 md:px-4 py-2 md:py-3 text-slate-400 mono-ui text-[10px] md:text-[11px] font-bold flex items-center gap-2">
+              <button className="px-3 md:px-4 py-2 md:py-3 text-slate-400 mono-ui text-[10px] md:text-[11px] font-bold hover:text-primary transition-colors flex items-center gap-2">
                 <FileText className="w-4 h-4" />
                 <span className="hidden sm:inline">VIEW_INVOICES</span>
               </button>
@@ -82,7 +82,7 @@ const AccountPage = () => {
             {alerts.map(alert => (
               <div 
                 key={alert.id}
-                className={`p-4 md:p-6 narvo-border relative ${
+                className={`p-4 md:p-6 narvo-border relative cursor-pointer hover:border-primary transition-colors ${
                   alert.priority ? 'bg-primary/5' : 'border-forest/30 bg-surface/5'
                 }`}
                 data-testid={`alert-${alert.id}`}
