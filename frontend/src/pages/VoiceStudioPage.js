@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, AudioWaveform, Radio, CircleOff, Check } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useHapticAlert } from '../components/HapticAlerts';
 import Skeleton from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -9,22 +11,58 @@ const VoiceStudioPage = () => {
   const [voices, setVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [previewTime] = useState('00:14');
   const [regionFilter, setRegionFilter] = useState('AFRICA');
   const [dialectFilter, setDialectFilter] = useState('ALL');
   const { playTrack } = useAudio();
+  const { user } = useAuth();
+  const { showAlert } = useHapticAlert();
 
   useEffect(() => {
-    fetch(`${API_URL}/api/voices`)
-      .then(res => res.json())
-      .then(data => {
-        setVoices(data);
-        if (data.length > 0) setSelectedVoice(data[0]);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+    const fetchData = async () => {
+      try {
+        const [voicesRes, settingsRes] = await Promise.all([
+          fetch(`${API_URL}/api/voices`),
+          user?.id ? fetch(`${API_URL}/api/settings/${user.id}/voice`) : Promise.resolve(null)
+        ]);
+        
+        const voicesData = await voicesRes.json();
+        setVoices(voicesData);
+        
+        if (settingsRes) {
+          const settingsData = await settingsRes.json();
+          const savedVoice = voicesData.find(v => v.id === settingsData.voice_model);
+          if (savedVoice) setSelectedVoice(savedVoice);
+          else if (voicesData.length > 0) setSelectedVoice(voicesData[0]);
+          if (settingsData.voice_region) setRegionFilter(settingsData.voice_region.toUpperCase());
+          if (settingsData.voice_dialect) setDialectFilter(settingsData.voice_dialect.toUpperCase());
+        } else if (voicesData.length > 0) {
+          setSelectedVoice(voicesData[0]);
+        }
+      } catch (err) {
+        console.error('Failed to load voices:', err);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [user?.id]);
+
+  const handleApplyModel = async () => {
+    if (!selectedVoice || !user?.id) return;
+    
+    setSaving(true);
+    try {
+      await fetch(`${API_URL}/api/settings/${user.id}/voice?voice_model=${selectedVoice.id}&voice_dialect=${dialectFilter.toLowerCase()}&voice_region=${regionFilter.toLowerCase()}`, {
+        method: 'POST'
+      });
+      showAlert('VOICE_CHANGED');
+    } catch (err) {
+      showAlert('NETWORK_ERROR');
+    }
+    setSaving(false);
+  };
 
   const handlePreview = () => {
     if (selectedVoice) {
