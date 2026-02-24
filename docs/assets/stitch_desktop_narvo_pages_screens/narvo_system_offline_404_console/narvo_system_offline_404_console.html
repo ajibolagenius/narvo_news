@@ -1,183 +1,237 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo System Offline 404 Console</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#ebd5ad", // Sand/Beige
-              "background-light": "#f8f7f6", // Not really used in this specific dark UI, but required by theme
-              "background-dark": "#1B211A", // Deep Matte Charcoal
-              "grid-line": "#628141", // Forest Green
-            },
-            fontFamily: {
-              "display": ["Space Grotesk", "sans-serif"],
-              "mono": ["JetBrains Mono", "monospace"],
-            },
-            borderRadius: {
-              "DEFAULT": "0.125rem", 
-              "lg": "0.25rem", 
-              "xl": "0.5rem", 
-              "full": "0.75rem"
-            },
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>NARVO | System Offline (404)</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+    rel="stylesheet" />
+  <!-- Phosphoricons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#EBD5AB",
+            "forest": "#628141",
+            "background-dark": "#1B211A",
+            "surface": "#242B23",
+            "border-green": "#628141",
+          },
+          fontFamily: {
+            "display": ["Space Grotesk", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          },
+          borderRadius: {
+            "none": "0",
+            "DEFAULT": "0",
+            "sm": "0",
+            "md": "0",
+            "lg": "0",
+            "xl": "0",
+            "full": "0",
           },
         },
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #1B211A;
+      color: #F2F2F2;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mono-ui {
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .narvo-border {
+      border: 1px solid #628141;
+    }
+
+    .narvo-border-b {
+      border-bottom: 1px solid #628141;
+    }
+
+    .narvo-border-r {
+      border-right: 1px solid #628141;
+    }
+
+    .narvo-border-l {
+      border-left: 1px solid #628141;
+    }
+
+    .narvo-border-t {
+      border-top: 1px solid #628141;
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #1B211A;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #628141;
+    }
+
+    .bg-grid-precision {
+      background-image: linear-gradient(to right, #62814122 1px, transparent 1px),
+        linear-gradient(to bottom, #62814122 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .scanline-effect {
+      background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.05) 50%);
+      background-size: 100% 4px;
+      pointer-events: none;
+    }
+
+    @keyframes pulse-border {
+
+      0%,
+      100% {
+        border-color: #628141;
       }
-    </script>
-<style>
-        /* Custom grid background pattern */
-        .bg-grid-pattern {
-            background-image: 
-                linear-gradient(to right, #628141 1px, transparent 1px),
-                linear-gradient(to bottom, #628141 1px, transparent 1px);
-            background-size: 80px 80px;
-        }
-        
-        /* Scanline effect overlay */
-        .scanlines {
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0,0,0,0.1) 50%,
-                rgba(0,0,0,0.1)
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-        }
-    </style>
+
+      50% {
+        border-color: #EBD5AB;
+      }
+    }
+
+    .pulse-border-primary {
+      animation: pulse-border 2s infinite;
+    }
+  </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display selection:bg-primary selection:text-background-dark overflow-hidden">
-<!-- Grid Background Layer -->
-<div class="fixed inset-0 bg-grid-pattern opacity-20 pointer-events-none z-0"></div>
-<!-- Scanline Overlay -->
-<div class="fixed inset-0 scanlines opacity-30 pointer-events-none z-50"></div>
-<!-- Main Container -->
-<div class="relative z-10 flex flex-col h-screen w-full">
-<!-- Header / Status Bar -->
-<header class="flex items-center justify-between border-b border-grid-line/50 px-6 py-4 bg-background-dark/90 backdrop-blur-sm">
-<div class="flex items-center gap-3">
-<span class="material-symbols-outlined text-primary text-xl">satellite_alt</span>
-<h2 class="text-primary font-bold tracking-widest text-sm uppercase">NARVO SYSTEM // DIAGNOSTICS</h2>
-</div>
-<div class="flex items-center gap-4">
-<div class="flex items-center gap-2 px-3 py-1 bg-red-900/20 border border-red-500/30 rounded text-red-400 text-xs font-mono font-bold">
-<span class="relative flex h-2 w-2">
-<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-<span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-</span>
-                    STATUS: OFFLINE
-                </div>
-<div class="text-slate-400 font-mono text-xs hidden sm:block">
-                    BUILD: v4.9.2_RC3
-                </div>
-</div>
-</header>
-<!-- Main Content Area -->
-<main class="flex-grow flex flex-col items-center justify-center p-6 relative">
-<!-- Central Error Block -->
-<div class="max-w-4xl w-full flex flex-col gap-8">
-<!-- Error Message -->
-<div class="text-center space-y-4">
-<h1 class="text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-slate-100">
-<span class="text-primary">[</span>SIGNAL LOST<span class="text-primary">]</span>
-</h1>
-<div class="flex items-center justify-center gap-3 text-red-400/80 font-mono text-xl md:text-2xl tracking-tight">
-<span class="material-symbols-outlined animate-pulse">warning</span>
-<span>ERROR_CODE: 404_NOT_FOUND</span>
-</div>
-<p class="text-slate-400 max-w-lg mx-auto text-sm md:text-base font-light border-l-2 border-primary/40 pl-4 py-1 text-left md:text-center md:border-l-0 md:pl-0">
-                        Broadcast upline interrupted. The requested vector could not be located on the current grid. System standby mode active.
-                    </p>
-</div>
-<!-- Technical Diagnostics Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-grid-line bg-background-dark/80 mt-8 backdrop-blur-md">
-<!-- Metric 1 -->
-<div class="p-4 border-b md:border-b-0 border-grid-line md:border-r flex flex-col gap-1 group hover:bg-white/5 transition-colors">
-<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Packet Loss</span>
-<div class="flex items-center gap-2 text-red-400 font-mono font-bold text-lg">
-<span class="material-symbols-outlined text-base">wifi_off</span>
-                            100%
-                        </div>
-</div>
-<!-- Metric 2 -->
-<div class="p-4 border-b md:border-b-0 border-grid-line lg:border-r flex flex-col gap-1 group hover:bg-white/5 transition-colors">
-<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Last Node</span>
-<div class="flex items-center gap-2 text-primary font-mono text-lg">
-<span class="material-symbols-outlined text-base">dns</span>
-                            West-Africa-01
-                        </div>
-</div>
-<!-- Metric 3 -->
-<div class="p-4 border-b md:border-b-0 border-grid-line md:border-r flex flex-col gap-1 group hover:bg-white/5 transition-colors">
-<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Latency</span>
-<div class="flex items-center gap-2 text-slate-200 font-mono text-lg">
-<span class="material-symbols-outlined text-base">timelapse</span>
-                            ∞ ms
-                        </div>
-</div>
-<!-- Metric 4 -->
-<div class="p-4 flex flex-col gap-1 group hover:bg-white/5 transition-colors">
-<span class="text-slate-500 text-xs uppercase font-mono tracking-wider">Timestamp (UTC)</span>
-<div class="flex items-center gap-2 text-slate-200 font-mono text-lg">
-<span class="material-symbols-outlined text-base">schedule</span>
-                            23:42:11
-                        </div>
-</div>
-</div>
-<!-- Action Area -->
-<div class="flex justify-center pt-8">
-<button class="relative group overflow-hidden bg-primary text-background-dark font-bold py-4 px-8 rounded flex items-center gap-3 hover:bg-[#dcc69e] transition-all duration-200 shadow-[0_0_20px_rgba(235,213,173,0.2)]">
-<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></span>
-<span class="material-symbols-outlined">refresh</span>
-<span class="font-mono tracking-tight uppercase">[Re-initialize Connection]</span>
-</button>
-</div>
-</div>
-<!-- Debug lines decoration -->
-<div class="absolute bottom-12 left-0 w-full h-px bg-grid-line/30 hidden md:block"></div>
-<div class="absolute top-1/2 left-12 w-px h-full bg-grid-line/30 hidden md:block -translate-y-1/2"></div>
-<div class="absolute top-1/2 right-12 w-px h-full bg-grid-line/30 hidden md:block -translate-y-1/2"></div>
-<!-- Crosshairs decorations -->
-<div class="absolute top-12 left-12 text-grid-line hidden md:block">
-<span class="material-symbols-outlined text-xl">add</span>
-</div>
-<div class="absolute top-12 right-12 text-grid-line hidden md:block">
-<span class="material-symbols-outlined text-xl">add</span>
-</div>
-<div class="absolute bottom-12 left-12 text-grid-line hidden md:block">
-<span class="material-symbols-outlined text-xl">add</span>
-</div>
-<div class="absolute bottom-12 right-12 text-grid-line hidden md:block">
-<span class="material-symbols-outlined text-xl">add</span>
-</div>
-</main>
-<!-- Footer -->
-<footer class="border-t border-grid-line/50 px-6 py-3 bg-background-dark/90 backdrop-blur-sm flex justify-between items-center text-xs text-slate-500 font-mono">
-<div class="flex gap-4">
-<span>MEM: 64MB OK</span>
-<span class="hidden sm:inline">GPU: RENDER_NULL</span>
-</div>
-<div class="uppercase tracking-widest opacity-50">
-                // Narvo Broadcast Corp © 2024
-             </div>
-</footer>
-</div>
-<!-- Tailwind Config for Animation -->
-<style>
-        @keyframes shimmer {
-            100% {
-                transform: translateX(100%);
-            }
-        }
-    </style>
-</body></html>
+
+<body
+  class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark font-body">
+  <!-- Grid & Scanline Overlays -->
+  <div class="fixed inset-0 bg-grid-precision pointer-events-none z-0"></div>
+  <div class="fixed inset-0 scanline-effect pointer-events-none z-50"></div>
+
+  <!-- Main Console Container -->
+  <div class="relative z-10 flex flex-col h-screen w-full">
+    <!-- Top Status Bar -->
+    <header
+      class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark/90 backdrop-blur-md shrink-0">
+      <div class="flex items-center gap-4">
+        <i class="ph ph-satellite-transmission text-primary text-2xl"></i>
+        <h2 class="font-display text-sm font-bold tracking-widest text-primary uppercase">NARVO_SYS // DIAGNOSTICS</h2>
+      </div>
+      <div class="flex items-center gap-6">
+        <div
+          class="px-4 py-1.5 narvo-border bg-red-900/10 text-red-400 mono-ui text-[10px] font-bold flex items-center gap-3">
+          <span class="relative flex size-2">
+            <span class="animate-ping absolute inline-flex h-full w-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex size-2 bg-red-500"></span>
+          </span>
+          STATUS: OFFLINE
+        </div>
+        <span class="mono-ui text-[9px] text-forest font-bold hidden sm:block tracking-widest">BUILD:
+          V2.6.4_STABLE</span>
+      </div>
+    </header>
+
+    <!-- Main Diagnostics Area -->
+    <main class="flex-grow flex flex-col items-center justify-center p-8 relative">
+      <div class="max-w-4xl w-full space-y-12">
+        <!-- Large Error Display -->
+        <div class="text-center space-y-6">
+          <h1 class="font-display text-7xl md:text-9xl font-bold tracking-tighter text-white">
+            <span class="text-primary">[</span>SIGNAL LOST<span class="text-primary">]</span>
+          </h1>
+          <div class="flex items-center justify-center gap-3 text-red-500 mono-ui text-xl md:text-2xl font-bold">
+            <i class="ph ph-warning-octagon animate-pulse"></i>
+            <span>ERROR_CODE: 404_NOT_FOUND</span>
+          </div>
+          <p class="text-forest max-w-lg mx-auto text-sm md:text-base font-medium mono-ui leading-relaxed lowercase">
+            Broadcast upline interrupted. The requested vector could not be located on the current grid. System standby
+            mode active.
+          </p>
+        </div>
+
+        <!-- Technical Metric Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 bg-forest narvo-border">
+          <div class="p-6 bg-background-dark/95 space-y-2 group hover:bg-forest/10 transition-colors">
+            <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">PACKET_LOSS</span>
+            <div class="flex items-center gap-3 text-red-400 font-display text-2xl font-bold">
+              <i class="ph ph-wifi-slash"></i>
+              <span>100%</span>
+            </div>
+          </div>
+          <div
+            class="p-6 bg-background-dark/95 space-y-2 border-l border-forest group hover:bg-forest/10 transition-colors">
+            <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">LAST_NODE</span>
+            <div class="flex items-center gap-3 text-primary font-display text-2xl font-bold">
+              <i class="ph ph-dns"></i>
+              <span>NGR_WEST_01</span>
+            </div>
+          </div>
+          <div
+            class="p-6 bg-background-dark/95 space-y-2 border-l border-forest group hover:bg-forest/10 transition-colors">
+            <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">LATENCY</span>
+            <div class="flex items-center gap-3 text-white font-display text-2xl font-bold">
+              <i class="ph ph-timer"></i>
+              <span>&infin; MS</span>
+            </div>
+          </div>
+          <div
+            class="p-6 bg-background-dark/95 space-y-2 border-l border-forest group hover:bg-forest/10 transition-colors">
+            <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">TIMESTAMP_UTC</span>
+            <div class="flex items-center gap-3 text-white font-display text-2xl font-bold text-nowrap">
+              <i class="ph ph-clock"></i>
+              <span>10:38:12</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Hub -->
+        <div class="flex justify-center pt-8">
+          <button
+            class="h-16 px-10 bg-primary text-background-dark font-bold mono-ui text-sm flex items-center gap-4 hover:bg-white transition-all shadow-xl group">
+            <i class="ph ph-arrow-clockwise text-2xl group-hover:rotate-180 transition-transform duration-500"></i>
+            <span>[RE-INITIALIZE CONNECTION]</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Visual Crosshairs Decor -->
+      <div class="absolute top-12 left-12 text-forest/40 hidden md:block"><i class="ph ph-plus text-2xl"></i></div>
+      <div class="absolute top-12 right-12 text-forest/40 hidden md:block"><i class="ph ph-plus text-2xl"></i></div>
+      <div class="absolute bottom-12 left-12 text-forest/40 hidden md:block"><i class="ph ph-plus text-2xl"></i></div>
+      <div class="absolute bottom-12 right-12 text-forest/40 hidden md:block"><i class="ph ph-plus text-2xl"></i></div>
+    </main>
+
+    <!-- Dynamic Console Footer -->
+    <footer
+      class="h-12 narvo-border-t bg-background-dark/90 backdrop-blur-md px-8 flex justify-between items-center shrink-0">
+      <div class="flex gap-8 mono-ui text-[9px] text-forest font-bold uppercase tracking-widest">
+        <span class="flex items-center gap-2">
+          <div class="size-1.5 bg-primary"></div> MEM: 512MB_OK
+        </span>
+        <span class="flex items-center gap-2">
+          <div class="size-1.5 bg-forest"></div> RENDER_ENGINE: STABLE
+        </span>
+      </div>
+      <div class="mono-ui text-[10px] text-forest font-bold tracking-[0.3em]">
+        // NARVO_BROADCAST_ENTITY_2026
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>
