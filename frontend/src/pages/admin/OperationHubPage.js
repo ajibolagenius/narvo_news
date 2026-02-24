@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { RadioTower, Activity, AlertOctagon, Database, Search, FileText, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const OperationHubPage = () => {
   const telemetryData = [
