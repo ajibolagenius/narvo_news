@@ -257,9 +257,7 @@ const DashboardPage = () => {
                               className="mono-ui text-[10px] md:text-xs text-primary flex items-center gap-2 hover:text-white transition-colors"
                               data-testid={`play-btn-${item.id}`}
                             >
-                              <svg className="w-4 h-4 text-forest" viewBox="0 0 256 256" fill="currentColor">
-                                <path d="M56,96v64a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0ZM88,24a8,8,0,0,0-8,8V224a8,8,0,0,0,16,0V32A8,8,0,0,0,88,24Zm40,32a8,8,0,0,0-8,8V192a8,8,0,0,0,16,0V64A8,8,0,0,0,128,56Z"/>
-                              </svg>
+                              <Activity weight="bold" className="w-4 h-4 text-forest" />
                               <span>GENERATE_AUDIO</span>
                             </button>
                             <div className="flex-1 h-[1px] bg-forest/10" />
@@ -269,7 +267,7 @@ const DashboardPage = () => {
                               title="Add to Queue"
                               data-testid={`queue-btn-${item.id}`}
                             >
-                              <ListPlus className="w-4 h-4" />
+                              <Queue weight="bold" className="w-4 h-4" />
                             </button>
                             <button
                               onClick={(e) => shareStory(e, item)}
@@ -277,14 +275,14 @@ const DashboardPage = () => {
                               title="Share"
                               data-testid={`share-btn-${item.id}`}
                             >
-                              <Share2 className="w-4 h-4" />
+                              <ShareNetwork weight="bold" className="w-4 h-4" />
                             </button>
                             <button
                               onClick={(e) => toggleBookmark(e, item)}
                               className={`transition-colors ${isBookmarked(item.id) ? 'text-primary' : 'text-forest hover:text-primary'}`}
                               data-testid={`bookmark-btn-${item.id}`}
                             >
-                              {isBookmarked(item.id) ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
+                              <BookmarkSimple weight={isBookmarked(item.id) ? 'fill' : 'regular'} className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
@@ -302,7 +300,7 @@ const DashboardPage = () => {
                     {loadingMore ? (
                       <div className="w-4 h-4 border-2 border-forest border-t-transparent animate-spin" />
                     ) : (
-                      <ArrowDown className="w-4 h-4" />
+                      <ArrowDown weight="bold" className="w-4 h-4" />
                     )}
                     <span>{loadingMore ? 'LOADING...' : `LOAD_MORE // ${Math.max(0, news.length - 1 - visibleCount)} REMAINING`}</span>
                   </button>
