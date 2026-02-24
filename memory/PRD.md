@@ -134,11 +134,11 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 
 ## Prioritized Backlog
 
-### P0 - In Progress
-- [ ] Complete Phosphor icon replacement across all pages
-- [ ] Apply CSS variable-based theming to all components (replace hardcoded bg-background-dark etc.)
-- [ ] Implement responsive columns-to-tabs for AccessibilityPage
-- [ ] Fetch actual news images from RSS feeds
+### P0 - Remaining
+- [ ] Complete Phosphor icon replacement on remaining pages (DashboardPage, LandingPage, NewsDetailPage, etc.)
+- [ ] Apply CSS variable theming to remaining components for full light mode support
+- [ ] Implement ResponsiveTabView on AccessibilityPage
+- [ ] Fetch actual news images from RSS (image_url field)
 
 ### P1
 - [ ] Real Dubawa API integration (replace mock fact-checking)
@@ -151,23 +151,27 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - [ ] React Native mobile app
 - [ ] Voice cloning for regional accents
 - [ ] WebSocket real-time updates
-- [ ] Scheduled 5 AM briefing generation
 
-### Completed This Session (Phase 9)
+### Completed This Session (Phase 9 Continued)
+- [x] Fixed mouse scrolling (disabled Lenis which was breaking nested scrolling)
+- [x] Fixed audio behavior: new tracks auto-queue when something is playing (instead of interrupting)
+- [x] Queue reordering function added (drag-and-drop ready, protects currently playing track)
+- [x] Removed loading delay between pages (instant navigation)
+- [x] Removed ⌘K shortcut indicator from search
+- [x] Sidebar icons left-aligned with uniform styling
+- [x] Simplified sidebar (removed expandable sub-nav)
+- [x] Added forcePlayTrack function for explicit play requests
+- [x] Auto-play queue with smooth fade transitions
+
+### Earlier Completed (Phase 9)
 - [x] Light mode CSS variables defined
-- [x] ThemeContext created with localStorage persistence
-- [x] ThemeToggle component with animated sun/moon icons
+- [x] ThemeContext with localStorage persistence
+- [x] ThemeToggle component with animated icons
 - [x] Theme toggle in sidebar and settings page
-- [x] Phosphor icons installed (@phosphor-icons/react)
-- [x] DashboardSidebar updated with Phosphor icons
-- [x] DashboardHeader with centered full-width search
-- [x] AudioPlayerBar with Phosphor icons and auto-play queue
-- [x] AudioContext with smooth broadcast-style transitions
-- [x] Lenis smooth scrolling provider
+- [x] Phosphor icons for DashboardSidebar, DashboardHeader, AudioPlayerBar, SettingsPage
+- [x] Centered full-width search in header
 - [x] Framer-motion and GSAP installed
-- [x] Lazy loading for all pages (code splitting)
-- [x] ResponsiveTabView component for mobile tabs
-- [x] SettingsPage updated with theme toggle and Phosphor icons
+- [x] Lazy loading for all pages
 
 ### Completed Refactoring
 - [x] Created modular backend structure (routes/, models/, services/) - ready for migration
