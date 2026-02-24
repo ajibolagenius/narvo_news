@@ -8,13 +8,13 @@ import { requestNotificationPermission, getNotificationStatus, subscribeToPush, 
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-// Supported broadcast languages
+// Supported broadcast languages with authentic native names
 const BROADCAST_LANGUAGES = [
-  { code: 'en', name: 'English', native: 'English', description: 'STANDARD_BROADCAST' },
-  { code: 'pcm', name: 'Nigerian Pidgin', native: 'Naija', description: 'PIDGIN_STYLE' },
-  { code: 'yo', name: 'Yoruba', native: 'Èdè Yorùbá', description: 'SOUTHWEST_NG' },
-  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'NORTHERN_NG' },
-  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'SOUTHEAST_NG' },
+  { code: 'en', name: 'English', native: 'English', description: 'INTERNATIONAL' },
+  { code: 'pcm', name: 'Naijá', native: 'Naijá Tok', description: 'PIDGIN_NAIJA' },
+  { code: 'yo', name: 'Yorùbá', native: 'Èdè Yorùbá', description: 'ÌLÚ_YORÙBÁ' },
+  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'AREWACIN_NAJERIYA' },
+  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'ALA_IGBO' },
 ];
 
 const DEFAULT_SETTINGS = {
