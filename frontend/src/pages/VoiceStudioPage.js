@@ -81,7 +81,7 @@ const VoiceStudioPage = () => {
   };
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="voice-studio-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="voice-studio-page">
       {/* Preview Panel */}
       <div className="p-6 md:p-8 narvo-border-b bg-background-dark flex flex-col gap-4 md:gap-6 shrink-0">
         <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
