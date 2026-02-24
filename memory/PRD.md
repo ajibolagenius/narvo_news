@@ -158,3 +158,6 @@ Service Worker: {active: 'activated'}
 2. Breaking news text - white for light mode
 3. CORS audio - Backend proxy
 4. pauseTrack error - Changed to togglePlay
+
+## Test Reports
+- `/app/test_reports/iteration_26.json` - Global Download Queue Indicator (7/7 tests passed)
