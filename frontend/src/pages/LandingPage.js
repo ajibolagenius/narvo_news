@@ -166,10 +166,10 @@ const LandingPage = () => {
           <div className="p-8 bg-primary/10 flex items-center justify-between">
             <div>
               <h5 className="mono-ui text-xs text-forest mb-1">INITIATE CONNECTION</h5>
-              <p className="font-display font-bold text-xl text-primary uppercase">Join the Broadcast Generation.</p>
+              <p className="font-display font-bold text-xl text-primary uppercase">{t('landing.join_broadcast')}</p>
             </div>
             <button onClick={() => navigate('/auth')} className="bg-primary text-background-dark font-display font-bold px-8 py-4 hover:bg-white transition-all" data-testid="start-listening-btn">
-              [Start Listening]
+              [{t('landing.start_listening')}]
             </button>
           </div>
         </div>
