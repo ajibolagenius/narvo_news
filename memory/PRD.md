@@ -121,6 +121,43 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
   - Volume control and LIVE indicator
   - Backend: `/api/radio/stations?country={code}&limit={n}` using Radio Browser API
 
+### Admin & Curation Dashboard (✅ NEW — Feb 24, 2026)
+Desktop-only admin panel with distinct sidebar (red accent, CONTROL_CENTER header)
+
+15. **Operation Hub** (`/admin/operations`) — Real-time monitoring with:
+    - Telemetry bar (NODE_LOAD, API_LATENCY, UPTIME, ACTIVE_TRAFFIC)
+    - Metrics grid (ACTIVE_STREAMS, AVG_BITRATE, ERROR_RATE, VOL_STORAGE)
+    - INGEST_VOLUME 24H chart with 1H/24H/7D toggle
+    - SYSTEM_ALERTS panel (3 alert types: warning, success, error)
+    - ACTIVE_SIGNAL_MATRIX table (streams with status, region, bitrate, uptime)
+
+16. **Curation Console** (`/admin/curation`) — AI summary review with:
+    - Breadcrumb navigation (DASHBOARD > WIRE_FEEDS > source)
+    - Side-by-side comparison: RAW_SOURCE (locked) vs NARVO_SYNTHESIS
+    - Adjustment panel with TONE_FORMALITY and OUTPUT_LENGTH sliders
+    - Keyword retention tags (auto-extracted key terms)
+    - BIAS_SCAN_RESULT percentage with safety indicator
+    - REGENERATE, REJECT, APPROVE action buttons
+    - Signal legend (OMITTED, SYNTHESIZED, REPHRASED)
+
+17. **Voice Management** (`/admin/voices`) — TTS monitoring with:
+    - KPI board (ACTIVE_VOICES, GLOBAL_LATENCY, TOTAL_REQS_24H, HEALTH_RANK)
+    - Active_Voice_Matrix table (5 voice models with language, latency, clarity score)
+    - LIVE/TRAINING status indicators
+    - Filter and New_Model action buttons
+    - Signal Analyzer Dock with waveform visualization (48KHZ, 24BIT, BUF:128)
+
+18. **Moderation Zone** (`/admin/moderation`) — Fact-checking hub with:
+    - Incoming_Matrix grid with LIVE_WATCH badge
+    - Grid/List view toggle
+    - Moderation cards: DISPUTED (red), VERIFIED (green), UNVERIFIED (gray)
+    - Card details: source, timestamp, title, description, tags, AI_CONF%
+    - Action buttons: FLAG, IGNORE, PUBLISH_CONFIRMATION, ASSIGN
+    - Stats bar (QUEUE_TOTAL, DISPUTED, VERIFIED, PENDING counts)
+    - DUBAWA_API connection status
+
+**Note:** Admin pages currently use MOCK DATA. Backend integration pending.
+
 ### Shared Components (DashboardLayout)
 - **DashboardHeader**: NARVO // DASHBOARD, search bar (CMD+K), signal stats, user avatar, **sidebar toggle button**
 - **DashboardSidebar**: **Collapsible** 6-item navigation (Feed, Briefing, Saved, Search, Discover, Offline) + **mobile bottom nav**
