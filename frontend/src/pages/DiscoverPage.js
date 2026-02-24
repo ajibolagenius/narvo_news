@@ -238,19 +238,42 @@ const DiscoverPage = () => {
           <div className="lg:col-span-2 lg:narvo-border-r h-full">
             <div className="flex items-center justify-between p-4 md:p-8 narvo-border-b bg-surface/10 sticky top-0 z-10 backdrop-blur-md">
               <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
-              <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
-                <button 
-                  onClick={() => setPodcastSort('latest')}
-                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
-                >
-                  {t('discover.latest')}
-                </button>
-                <button 
-                  onClick={() => setPodcastSort('popular')}
-                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
-                >
-                  {t('discover.popular')}
-                </button>
+              <div className="flex items-center gap-2 md:gap-4">
+                {/* Download All Button */}
+                {podcasts.some(p => p.audio_url && !cachedPodcasts[p.id]) && (
+                  <button
+                    onClick={handleDownloadAll}
+                    disabled={isDownloadingAll}
+                    className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold narvo-border ${isDownloadingAll ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
+                    data-testid="download-all-btn"
+                  >
+                    {isDownloadingAll ? (
+                      <>
+                        <CircleNotch className="w-3 h-3 animate-spin" />
+                        <span>{downloadAllProgress}%</span>
+                      </>
+                    ) : (
+                      <>
+                        <CloudArrowDown className="w-3 h-3" />
+                        <span>DOWNLOAD ALL</span>
+                      </>
+                    )}
+                  </button>
+                )}
+                <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
+                  <button 
+                    onClick={() => setPodcastSort('latest')}
+                    className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+                  >
+                    {t('discover.latest')}
+                  </button>
+                  <button 
+                    onClick={() => setPodcastSort('popular')}
+                    className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
+                  >
+                    {t('discover.popular')}
+                  </button>
+                </div>
               </div>
             </div>
 
