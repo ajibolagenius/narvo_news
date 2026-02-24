@@ -98,10 +98,10 @@ const LandingPage = () => {
 
       <section id="why" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-b border-forest">
         {[
-          { num: '01', title: 'NATIVE TRANSLATION', desc: 'Summarized and translated into your mother tongue.' },
-          { num: '02', title: 'AUDIO-FIRST', desc: 'Studio-quality regional voices tailored for your ride.' },
-          { num: '03', title: 'PRECISION GRID', desc: 'Swiss-engineered layout for high-density scanning.' },
-          { num: '04', title: 'TRUTH PROTOCOL', desc: 'Transparent AI synthesis and verification tags.' },
+          { num: '01', title: t('landing.pillar_1_title'), desc: t('landing.pillar_1_desc') },
+          { num: '02', title: t('landing.pillar_2_title'), desc: t('landing.pillar_2_desc') },
+          { num: '03', title: t('landing.pillar_3_title'), desc: t('landing.pillar_3_desc') },
+          { num: '04', title: t('landing.pillar_4_title'), desc: t('landing.pillar_4_desc') },
         ].map((pillar, idx) => (
           <div key={idx} className={`p-8 ${idx < 3 ? 'border-r border-forest' : ''} ${idx % 2 === 0 ? 'bg-forest/5' : 'bg-background-dark'} h-64 flex flex-col justify-between group hover:bg-forest/10 transition-all`}>
             <span className="mono-ui text-[10px] text-forest">{pillar.num}. {pillar.title}</span>
@@ -113,9 +113,9 @@ const LandingPage = () => {
 
       <section id="tech" className="grid grid-cols-1 md:grid-cols-3 border-b border-forest">
         {[
-          { id: '0x01', title: 'THE CONSOLE', desc: 'Your news dashboard is a precision workstation. Designed for commuters in Lagos, chefs in Owerri, and traders in Kano.', metric: '99.9%', label: 'UPTIME_PROTOCOL' },
-          { id: '0x02', title: 'NATIVE VOICES', desc: 'Regional accents (Yoruba, Hausa, Pidgin, Igbo, etc.) synthesized with zero fidelity loss and natural rhythmic flow.', metric: '1,420', label: 'VOICE_NODES' },
-          { id: '0x03', title: 'TRUTH TAG', desc: 'Total transparency. Drill into any broadcast to see the original source, translation logic, and verification score.', metric: '0.8s', label: 'FACT_LATENCY' },
+          { id: '0x01', title: t('landing.console_title'), desc: t('landing.console_desc'), metric: '99.9%', label: 'UPTIME_PROTOCOL' },
+          { id: '0x02', title: t('landing.voices_title'), desc: t('landing.voices_desc'), metric: '1,420', label: 'VOICE_NODES' },
+          { id: '0x03', title: t('landing.truth_title'), desc: t('landing.truth_desc'), metric: '0.8s', label: 'FACT_LATENCY' },
         ].map((mod, idx) => (
           <div key={idx} className={`p-8 ${idx < 2 ? 'border-r border-forest' : ''}`}>
             <div className="flex justify-between items-start mb-4"><p className="mono-ui text-[10px] text-forest">MOD_ID: {mod.id}</p></div>
@@ -131,7 +131,7 @@ const LandingPage = () => {
 
       <section className="grid grid-cols-1 lg:grid-cols-2 border-b border-forest">
         <div className="p-8 lg:p-16 border-r border-forest bg-forest/5 flex flex-col justify-center">
-          <h2 className="font-display text-4xl font-bold mb-8 text-white">SYSTEM_CORE // LINGUISTIC ACCESSIBILITY</h2>
+          <h2 className="font-display text-4xl font-bold mb-8 text-white">{t('landing.system_core')}</h2>
           <div className="space-y-4">
             {[
               { num: '01', title: 'RSS_SUMMARIZATION', desc: 'Multi-source ingestion filtered per user subscription.' },
