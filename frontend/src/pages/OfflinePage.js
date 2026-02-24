@@ -131,7 +131,7 @@ const OfflinePage = () => {
 
   const handlePlay = async (item) => {
     if (currentTrack?.id === item.id && isPlaying) {
-      pauseTrack();
+      togglePlay();
     } else if (item.type === 'article') {
       // For articles, play the narrative/summary as TTS
       playTrack({ 
