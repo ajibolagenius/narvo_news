@@ -223,5 +223,13 @@ Service Worker: {active: 'activated'}
 - `/app/test_reports/iteration_27.json` - Translation, Fact-Check, Language Settings (17/17 tests passed)
 
 ## MOCKED APIs
-- **Google Fact Check API** - Uses mock when `GOOGLE_FACT_CHECK_API_KEY` not set
+- **Google Fact Check API** - Uses mock when `GOOGLE_FACT_CHECK_API_KEY` not set in .env
 - Response includes `source: "MOCK_FACTCHECK"` to indicate mock usage
+- To enable real fact-checking: Get FREE API key from Google Cloud Console → Add to backend/.env
+
+## How to Get Google Fact Check API Key (FREE)
+1. Go to https://console.cloud.google.com/
+2. Create a project or select existing
+3. Enable "Fact Check Tools API"
+4. Go to Credentials → Create API Key
+5. Add to `/app/backend/.env`: `GOOGLE_FACT_CHECK_API_KEY=your_key_here`
