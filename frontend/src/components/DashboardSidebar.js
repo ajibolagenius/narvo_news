@@ -22,7 +22,7 @@ const settingsSubNav = [
   { icon: User, label: 'Account', path: '/account' },
   { icon: Microphone, label: 'Voices', path: '/voices' },
   { icon: Monitor, label: 'System', path: '/system' },
-  { icon: Accessibility, label: 'Access', path: '/accessibility' },
+  { icon: Wheelchair, label: 'Access', path: '/accessibility' },
 ];
 
 const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
