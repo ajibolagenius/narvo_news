@@ -295,7 +295,7 @@ const AccessibilityPage = () => {
   ];
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden bg-[rgb(var(--color-bg))]" data-testid="accessibility-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-[rgb(var(--color-bg))]" data-testid="accessibility-page">
       {/* Header */}
       <div className="h-12 flex items-center justify-between px-4 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/10 shrink-0">
         <span className="font-mono text-[10px] text-[rgb(var(--color-text-secondary))] font-bold uppercase">
