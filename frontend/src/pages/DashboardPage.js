@@ -155,7 +155,11 @@ const DashboardPage = () => {
               <>
                 {/* Featured Transmission */}
                 {featured && (
-                  <section>
+                  <motion.section
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="show"
+                  >
                     <span className="mono-ui text-[10px] md:text-xs text-primary block mb-4 font-bold tracking-[0.2em]">{'//'} {t('dashboard.featured_transmission')}</span>
                     <article
                       className="narvo-border bg-surface/50 group relative overflow-hidden flex flex-col md:flex-row min-h-[280px] md:min-h-[320px] cursor-pointer"
@@ -215,7 +219,7 @@ const DashboardPage = () => {
                         </div>
                       </div>
                     </article>
-                  </section>
+                  </motion.section>
                 )}
 
                 {/* Synthesized Streams */}
