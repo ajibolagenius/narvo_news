@@ -33,7 +33,7 @@ const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
             <path d="M128,16a112,112,0,1,0,112,112A112.13,112.13,0,0,0,128,16Zm0,208a96,96,0,1,1,96-96A96.11,96.11,0,0,1,128,224ZM168,128a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V88a8,8,0,0,1,16,0v32h24A8,8,0,0,1,168,128Z"/>
           </svg>
           <h1 className="font-display text-base md:text-xl tracking-tight font-bold text-white uppercase">
-            NARVO <span className="text-forest font-light mx-1 md:mx-2 hidden sm:inline">{'//'}</span> <span className="hidden sm:inline">DASHBOARD</span>
+            NARVO <span className="text-forest font-light mx-1 md:mx-2 hidden sm:inline">{'//'}</span> <span className="hidden sm:inline">{t('header.title').split('//')[1]?.trim() || 'DASHBOARD'}</span>
           </h1>
         </div>
 
@@ -44,7 +44,7 @@ const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-surface/30 narvo-border pl-12 pr-4 py-2.5 text-xs mono-ui text-white placeholder-forest focus:outline-none focus:border-primary focus:bg-surface/50 transition-all"
-            placeholder="SEARCH_TRANSMISSIONS..."
+            placeholder={t('header.search_placeholder')}
             data-testid="header-search-input"
           />
           <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 mono-ui text-[9px] text-forest border border-forest/30 px-1.5 py-0.5 pointer-events-none">
@@ -60,8 +60,8 @@ const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
 
       <div className="flex items-center gap-4 md:gap-6 shrink-0">
         <div className="hidden md:flex flex-col items-end mono-ui text-[10px] text-forest">
-          <span>SIGNAL: <span className="text-primary font-bold">100%</span></span>
-          <span>LATENCY: <span className="text-primary font-bold">12ms</span></span>
+          <span>{t('header.signal')}: <span className="text-primary font-bold">100%</span></span>
+          <span>{t('header.latency')}: <span className="text-primary font-bold">12ms</span></span>
         </div>
         <div
           className="h-9 w-9 md:h-10 md:w-10 narvo-border bg-surface flex items-center justify-center cursor-pointer hover:bg-forest transition-colors"
