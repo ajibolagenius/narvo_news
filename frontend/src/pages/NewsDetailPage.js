@@ -163,7 +163,7 @@ const NewsDetailPage = () => {
   const isCurrentlyPlaying = currentTrack?.id === news.id && isPlaying;
 
   return (
-    <>
+    <div className="flex-1 flex min-h-0">
       <Helmet>
         <title>{news.title} — NARVO</title>
         <meta property="og:title" content={news.title} />
