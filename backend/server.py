@@ -217,12 +217,12 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                     # Try extracting from HTML content
                     if not image_url:
                         content_html = entry.get('summary', '') or entry.get('description', '')
-                        # Also check content:encoded (feedparser stores as entry.content)
                         if hasattr(entry, 'content') and entry.content:
                             content_html = entry.content[0].get('value', '') + content_html
                         img_match = re.search(r'src="(https?://[^"]+)"', content_html)
                         if img_match:
                             image_url = img_match.group(1)
+                        print(f"[IMG_DEBUG_V2] title={title[:30]} content_len={len(content_html)} found={bool(img_match)} image_url={image_url}")
                     
                     category = extract_category(title, summary)
                     items.append({
