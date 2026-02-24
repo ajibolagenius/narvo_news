@@ -196,7 +196,7 @@ const DashboardPage = () => {
                 {/* Synthesized Streams */}
                 <section className="space-y-4 md:space-y-6">
                   <div className="flex items-center justify-between border-b border-forest/30 pb-2">
-                    <span className="mono-ui text-[10px] md:text-xs text-forest font-bold tracking-[0.2em]">{'//'} SYNTHESIZED_STREAMS</span>
+                    <span className="mono-ui text-[10px] md:text-xs text-forest font-bold tracking-[0.2em]">{'//'} {t('dashboard.synthesized_streams')}</span>
                     <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase">Nodes: {String(stream.length).padStart(2, '0')}</span>
                   </div>
 
@@ -204,11 +204,20 @@ const DashboardPage = () => {
                     {stream.map((item, idx) => (
                       <article
                         key={item.id}
-                        className="p-4 md:p-6 group hover:bg-surface/40 transition-colors cursor-pointer"
+                        className="p-4 md:p-6 group hover:bg-surface/40 transition-colors cursor-pointer flex gap-4"
                         onClick={() => navigate(`/news/${item.id}`)}
                         data-testid={`stream-card-${item.id}`}
                       >
-                        <div className="flex flex-col gap-2 md:gap-3">
+                        {/* Category thumbnail */}
+                        <div className="hidden sm:block w-20 h-20 md:w-24 md:h-24 shrink-0 narvo-border overflow-hidden relative">
+                          <img
+                            src={getCategoryImage(item.category || item.tags?.[0], item.id)}
+                            alt={item.category}
+                            className="w-full h-full object-cover opacity-50 group-hover:opacity-80 grayscale group-hover:grayscale-0 transition-all duration-500"
+                          />
+                          <div className={`absolute inset-0 bg-gradient-to-t ${getCategoryColor(item.category || item.tags?.[0])} mix-blend-multiply`} />
+                        </div>
+                        <div className="flex-1 flex flex-col gap-2 md:gap-3 min-w-0">
                           <div className="flex flex-wrap justify-between items-start gap-2">
                             <div className="flex items-center gap-2 md:gap-3">
                               <span className="bg-forest/20 text-primary mono-ui text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 border border-forest/30">SOURCE:{item.source?.toUpperCase().replace(/\s/g, '_').slice(0, 15)}</span>
