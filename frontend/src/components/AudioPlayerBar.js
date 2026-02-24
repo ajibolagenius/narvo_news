@@ -207,7 +207,45 @@ const AudioPlayerBar = () => {
 
         {/* Right Controls */}
         <div className="flex items-center gap-4 w-1/4 justify-end">
-          <Volume2 className="w-4 h-4 text-forest" />
+          {/* Volume Control */}
+          <div className="relative flex items-center gap-2" ref={volumeRef}>
+            <button
+              onClick={toggleMute}
+              onMouseEnter={() => setShowVolumeSlider(true)}
+              className="text-forest hover:text-white transition-colors p-1"
+              data-testid="volume-btn"
+            >
+              {isMuted || volume === 0 ? (
+                <VolumeX className="w-4 h-4" />
+              ) : (
+                <Volume2 className="w-4 h-4" />
+              )}
+            </button>
+            {showVolumeSlider && (
+              <div 
+                className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-background-dark narvo-border"
+                onMouseLeave={() => setShowVolumeSlider(false)}
+              >
+                <div 
+                  className="w-24 h-1.5 bg-forest/30 cursor-pointer relative group"
+                  onClick={handleVolumeChange}
+                  data-testid="volume-slider"
+                >
+                  <div
+                    className="h-full bg-primary transition-all"
+                    style={{ width: `${isMuted ? 0 : volume * 100}%` }}
+                  />
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary"
+                    style={{ left: `${isMuted ? 0 : volume * 100}%`, transform: 'translate(-50%, -50%)' }}
+                  />
+                </div>
+                <span className="mono-ui text-[8px] text-forest block text-center mt-1">
+                  {isMuted ? 'MUTED' : `${Math.round(volume * 100)}%`}
+                </span>
+              </div>
+            )}
+          </div>
           <button
             onClick={() => setShowQueue(!showQueue)}
             className={`p-2 transition-colors relative ${showQueue ? 'text-primary bg-primary/10' : 'text-forest hover:text-white'}`}
