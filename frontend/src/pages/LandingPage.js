@@ -39,7 +39,7 @@ const LandingPage = () => {
             </div>
             <div className="hidden md:flex items-center gap-4 border-l border-forest pl-6 h-10">
               <span className="mono-ui text-[10px] text-forest">SYSTEM_STATUS:</span>
-              <span className="mono-ui text-[10px] text-primary">BROADCAST_READY: 100%</span>
+              <span className="mono-ui text-[10px] text-primary">BROADCAST_READY: 100% // SOURCES: {metrics?.total_sources || 7}</span>
             </div>
           </div>
           <nav className="hidden lg:flex items-center gap-8">
