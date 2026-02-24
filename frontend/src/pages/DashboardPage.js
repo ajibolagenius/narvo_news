@@ -180,11 +180,11 @@ const DashboardPage = () => {
                             className="flex-1 h-11 md:h-12 bg-primary text-background-dark font-display font-bold text-sm md:text-base uppercase flex items-center justify-center gap-2 md:gap-3 hover:bg-white transition-all"
                             data-testid="featured-play-btn"
                           >
-                            <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
+                            <PlayCircle weight="fill" className="w-5 h-5 md:w-6 md:h-6" />
                             <span>{t('dashboard.listen_now')}</span>
                           </button>
                           <button className="w-11 h-11 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary" title="Translate" onClick={(e) => e.stopPropagation()}>
-                            <Languages className="w-5 h-5" />
+                            <Translate weight="bold" className="w-5 h-5" />
                           </button>
                           <button
                             className="w-11 h-11 md:w-12 md:h-12 narvo-border flex items-center justify-center text-forest hover:text-primary transition-colors"
@@ -192,14 +192,14 @@ const DashboardPage = () => {
                             title="Share"
                             data-testid="featured-share-btn"
                           >
-                            <Share2 className="w-5 h-5" />
+                            <ShareNetwork weight="bold" className="w-5 h-5" />
                           </button>
                           <button
                             className={`w-11 h-11 md:w-12 md:h-12 narvo-border flex items-center justify-center transition-colors ${isBookmarked(featured.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary'}`}
                             onClick={(e) => toggleBookmark(e, featured)}
                             data-testid="featured-bookmark-btn"
                           >
-                            {isBookmarked(featured.id) ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+                            <BookmarkSimple weight={isBookmarked(featured.id) ? 'fill' : 'regular'} className="w-5 h-5" />
                           </button>
                         </div>
                       </div>
