@@ -136,6 +136,26 @@ const DashboardPage = () => {
     }
   };
 
+  const handleSaveOffline = async (e, item) => {
+    e.stopPropagation();
+    const success = await saveForOffline(item);
+    if (success) {
+      showAlert({
+        type: 'success',
+        title: 'SAVED_OFFLINE',
+        message: `"${item.title?.slice(0, 30)}..." saved for offline reading.`,
+        code: 'OFFLINE_OK',
+      });
+    } else {
+      showAlert({
+        type: 'warning',
+        title: 'SAVE_FAILED',
+        message: 'Could not save article for offline.',
+        code: 'OFFLINE_ERR',
+      });
+    }
+  };
+
   const timeAgo = (idx) => {
     const times = ['1HR_AGO', '2HR_AGO', '3HR_AGO', '4HR_AGO', '6HR_AGO', '8HR_AGO', '12HR_AGO'];
     return times[idx % times.length];
