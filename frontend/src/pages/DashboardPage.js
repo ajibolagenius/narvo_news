@@ -342,6 +342,14 @@ const DashboardPage = () => {
                               <Queue weight="bold" className="w-4 h-4" />
                             </button>
                             <button
+                              onClick={(e) => handleSaveOffline(e, item)}
+                              className="text-forest hover:text-primary transition-colors"
+                              title="Save for Offline"
+                              data-testid={`offline-btn-${item.id}`}
+                            >
+                              <CloudArrowDown weight="bold" className="w-4 h-4" />
+                            </button>
+                            <button
                               onClick={(e) => shareStory(e, item)}
                               className="text-forest hover:text-primary transition-colors"
                               title="Share"
