@@ -210,6 +210,7 @@ const DashboardPage = () => {
                             <div className="flex items-center gap-2 md:gap-3">
                               <span className="bg-forest/20 text-primary mono-ui text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 border border-forest/30">SOURCE:{item.source?.toUpperCase().replace(/\s/g, '_').slice(0, 15)}</span>
                               <span className="mono-ui text-[9px] md:text-[10px] text-forest/50">{timeAgo(idx)}</span>
+                              <TruthTag storyId={item.id} compact />
                             </div>
                             <div className="flex gap-1.5 md:gap-2">
                               {!item.tags?.length && <span className="mono-ui text-[8px] md:text-[9px] text-forest border border-forest/20 px-1 md:px-1.5 font-bold">#{item.category?.toUpperCase()}</span>}
@@ -237,7 +238,15 @@ const DashboardPage = () => {
                             </button>
                             <div className="flex-1 h-[1px] bg-forest/10" />
                             <button
-                              onClick={(e) => toggleBookmark(e, item)}
+                              onClick={(e) => shareStory(e, item)}
+                              className="text-forest hover:text-primary transition-colors"
+                              title="Share"
+                              data-testid={`share-btn-${item.id}`}
+                            >
+                              <Share2 className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={(e) => toggleBookmark(e, item)}}
                               className={`transition-colors ${isBookmarked(item.id) ? 'text-primary' : 'text-forest hover:text-primary'}`}
                               data-testid={`bookmark-btn-${item.id}`}
                             >
