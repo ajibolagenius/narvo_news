@@ -134,6 +134,12 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 
 ## Prioritized Backlog
 
+### P0 - In Progress
+- [ ] Complete Phosphor icon replacement across all pages
+- [ ] Apply CSS variable-based theming to all components (replace hardcoded bg-background-dark etc.)
+- [ ] Implement responsive columns-to-tabs for AccessibilityPage
+- [ ] Fetch actual news images from RSS feeds
+
 ### P1
 - [ ] Real Dubawa API integration (replace mock fact-checking)
 
@@ -146,6 +152,22 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - [ ] Voice cloning for regional accents
 - [ ] WebSocket real-time updates
 - [ ] Scheduled 5 AM briefing generation
+
+### Completed This Session (Phase 9)
+- [x] Light mode CSS variables defined
+- [x] ThemeContext created with localStorage persistence
+- [x] ThemeToggle component with animated sun/moon icons
+- [x] Theme toggle in sidebar and settings page
+- [x] Phosphor icons installed (@phosphor-icons/react)
+- [x] DashboardSidebar updated with Phosphor icons
+- [x] DashboardHeader with centered full-width search
+- [x] AudioPlayerBar with Phosphor icons and auto-play queue
+- [x] AudioContext with smooth broadcast-style transitions
+- [x] Lenis smooth scrolling provider
+- [x] Framer-motion and GSAP installed
+- [x] Lazy loading for all pages (code splitting)
+- [x] ResponsiveTabView component for mobile tabs
+- [x] SettingsPage updated with theme toggle and Phosphor icons
 
 ### Completed Refactoring
 - [x] Created modular backend structure (routes/, models/, services/) - ready for migration
