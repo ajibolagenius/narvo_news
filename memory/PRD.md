@@ -223,8 +223,8 @@ Global pages for error states, empty content, and notifications.
 - Fact-check (NEW): `/api/factcheck/{story_id}` (GET), `/api/factcheck/analyze` (POST) - Mock Dubawa integration
 
 ## Testing
-- Backend: 100% (28/28 tests) — iteration_14.json
-- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX), iteration_10.json (Library pages), iteration_11.json (User Profile & Radio), iteration_12.json (Admin pages), iteration_13.json (System States), iteration_14.json (Admin API integration)
+- Backend: 100% (17/17 new tests) — iteration_15.json
+- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX), iteration_10.json (Library pages), iteration_11.json (User Profile & Radio), iteration_12.json (Admin pages), iteration_13.json (System States), iteration_14.json (Admin API), iteration_15.json (EmptyState, TruthTag, Share, Settings)
 
 ## Prioritized Backlog
 
