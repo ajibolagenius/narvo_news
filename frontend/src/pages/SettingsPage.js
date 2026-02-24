@@ -290,7 +290,7 @@ const SettingsPage = () => {
                 className="narvo-border bg-primary/10 p-4 hover:bg-primary/20 transition-colors text-left"
                 data-testid="test-sync-success"
               >
-                <Bell className="w-4 h-4 text-primary mb-2" />
+                <Bell weight="fill" className="w-4 h-4 text-primary mb-2" />
                 <span className="mono-ui text-[9px] text-primary font-bold block">SYNC_SUCCESS</span>
               </button>
               <button 
@@ -298,7 +298,7 @@ const SettingsPage = () => {
                 className="narvo-border bg-red-500/10 p-4 hover:bg-red-500/20 transition-colors text-left"
                 data-testid="test-breaking-news"
               >
-                <Zap className="w-4 h-4 text-red-500 mb-2" />
+                <Lightning weight="fill" className="w-4 h-4 text-red-500 mb-2" />
                 <span className="mono-ui text-[9px] text-red-500 font-bold block">BREAKING_NEWS</span>
               </button>
               <button 
@@ -306,7 +306,7 @@ const SettingsPage = () => {
                 className="narvo-border bg-forest/10 p-4 hover:bg-forest/20 transition-colors text-left"
                 data-testid="test-bookmark"
               >
-                <Bell className="w-4 h-4 text-forest mb-2" />
+                <Bell weight="fill" className="w-4 h-4 text-forest mb-2" />
                 <span className="mono-ui text-[9px] text-forest font-bold block">BOOKMARK_ADDED</span>
               </button>
               <button 
