@@ -162,10 +162,10 @@ const OnboardingPage = () => {
             <div className="mt-auto pt-8">
               <div className="flex justify-between items-center mb-4">
                 <span className="mono-ui text-[10px] text-forest">SYSTEM_STATUS: <span className="text-primary">INITIAL_LINK_READY</span></span>
-                <span className="mono-ui text-[10px] text-forest">CALIBRATION_PROGRESS: {Math.round((selectedInterests.length / interests.length) * 100)}%</span>
+                <span className="mono-ui text-[10px] text-forest">{t('onboarding.calibration_progress')}: {Math.round((selectedInterests.length / interests.length) * 100)}%</span>
               </div>
               <button onClick={handleComplete} className="w-full bg-primary text-background-dark font-display font-bold text-lg py-5 hover:bg-white active:bg-primary/80 transition-all flex items-center justify-center gap-3" data-testid="complete-onboarding-btn">
-                <span className="uppercase tracking-tighter">Initialize Narrative Feed</span>
+                <span className="uppercase tracking-tighter">{t('onboarding.initialize_feed')}</span>
                 <svg className="w-6 h-6" viewBox="0 0 256 256" fill="currentColor"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg>
               </button>
             </div>
