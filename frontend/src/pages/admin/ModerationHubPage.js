@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { LayoutGrid, List, AlertTriangle, CheckCircle, HelpCircle, MoreHorizontal, CheckSquare, Flag, RefreshCw } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const ModerationHubPage = () => {
+  const { t } = useTranslation();
   const [viewMode, setViewMode] = useState('grid');
   const [moderationItems, setModerationItems] = useState([]);
   const [stats, setStats] = useState(null);
