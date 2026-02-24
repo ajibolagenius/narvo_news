@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Satellite, RotateCcw, Settings, RadioTower, Unplug, AlertCircle, WifiOff, Filter } from 'lucide-react';
+import { Planet, ArrowCounterClockwise, GearSix, Broadcast, Plug, WarningCircle, WifiSlash, Funnel } from '@phosphor-icons/react';
 
 const EmptyState = ({ 
   title = 'TRANSMISSION HALTED',
