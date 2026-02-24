@@ -1,45 +1,107 @@
-import React from 'react';
-import { RadioTower, Activity, AlertOctagon, Database, Search, FileText, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { RadioTower, Activity, AlertOctagon, Database, Search, FileText, AlertTriangle, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const OperationHubPage = () => {
-  const telemetryData = [
-    { label: 'NODE_LOAD', value: '42%', status: 'NOMINAL' },
-    { label: 'API_LATENCY', value: '12ms', status: 'STABLE', highlight: true },
-    { label: 'UPTIME', value: '99.98%', status: 'SLA+' },
-    { label: 'ACTIVE_TRAFFIC', value: '4.8GBPS', status: '' },
-  ];
+  const [metrics, setMetrics] = useState(null);
+  const [alerts, setAlerts] = useState([]);
+  const [streams, setStreams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
-  const metricsData = [
-    { label: 'ACTIVE_STREAMS', value: '1,240', change: '+12%', icon: RadioTower },
-    { label: 'AVG_BITRATE', value: '4.8', unit: 'MBPS', icon: Activity },
-    { label: 'ERROR_RATE', value: '0.02', unit: '%', icon: AlertOctagon },
-    { label: 'VOL_STORAGE', value: '84', unit: '%', icon: Database, progress: 84 },
-  ];
+  const fetchData = async () => {
+    try {
+      const [metricsRes, alertsRes, streamsRes] = await Promise.all([
+        fetch(`${API_URL}/api/admin/metrics`),
+        fetch(`${API_URL}/api/admin/alerts`),
+        fetch(`${API_URL}/api/admin/streams`)
+      ]);
+      
+      const [metricsData, alertsData, streamsData] = await Promise.all([
+        metricsRes.json(),
+        alertsRes.json(),
+        streamsRes.json()
+      ]);
+      
+      setMetrics(metricsData);
+      setAlerts(alertsData);
+      setStreams(streamsData);
+      setLastUpdate(new Date().toISOString().slice(11, 19));
+      setLoading(false);
+    } catch (err) {
+      console.error('Failed to fetch admin data:', err);
+      setLoading(false);
+    }
+  };
 
-  const alerts = [
-    { type: 'warning', title: 'LATENCY_SPIKE: EU_WEST', desc: 'NODE_ID: 88219 // 14:02 UTC', icon: AlertTriangle },
-    { type: 'success', title: 'BACKUP_COMPLETE: LAG_S3', desc: 'SUCCESS_VERIFIED // 09:00 UTC', icon: CheckCircle, muted: true },
-    { type: 'error', title: 'STREAM_FAIL: #1102', desc: 'AUTH_ERROR: HANDSHAKE_FAIL', icon: XCircle },
-  ];
+  useEffect(() => {
+    fetchData();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const streams = [
-    { status: 'LIVE', id: '#8821-XJ', source: 'LAGOS_BROADCAST_1', region: 'NG_LAG_CENTRAL', bitrate: '4,500 KBPS', uptime: '02:14:00' },
-    { status: 'OFFLINE', id: '#9932-BL', source: 'ABUJA_MAIN_HUB', region: 'NG_ABJ_NORTH', bitrate: '--', uptime: '--' },
-    { status: 'LIVE', id: '#7710-AR', source: 'KANO_DATA_INGEST', region: 'NG_KAN_CORE', bitrate: '3,200 KBPS', uptime: '14:22:10' },
-  ];
+  const telemetryData = metrics ? [
+    { label: 'NODE_LOAD', value: metrics.node_load, status: 'NOMINAL' },
+    { label: 'API_LATENCY', value: metrics.api_latency, status: 'STABLE', highlight: true },
+    { label: 'UPTIME', value: metrics.uptime, status: 'SLA+' },
+    { label: 'ACTIVE_TRAFFIC', value: metrics.active_traffic, status: '' },
+  ] : [];
+
+  const metricsData = metrics ? [
+    { label: 'ACTIVE_STREAMS', value: metrics.active_streams?.toLocaleString() || '0', change: '+12%', icon: RadioTower },
+    { label: 'AVG_BITRATE', value: metrics.avg_bitrate?.toString() || '0', unit: 'MBPS', icon: Activity },
+    { label: 'ERROR_RATE', value: metrics.error_rate?.toFixed(2) || '0', unit: '%', icon: AlertOctagon },
+    { label: 'VOL_STORAGE', value: metrics.storage_used?.toString() || '0', unit: '%', icon: Database, progress: metrics.storage_used || 0 },
+  ] : [];
+
+  const getAlertIcon = (type) => {
+    switch (type) {
+      case 'warning': return AlertTriangle;
+      case 'success': return CheckCircle;
+      case 'error': return XCircle;
+      default: return AlertTriangle;
+    }
+  };
+
+  const getAlertColor = (type) => {
+    switch (type) {
+      case 'warning': return 'text-primary';
+      case 'success': return 'text-forest';
+      case 'error': return 'text-red-500';
+      default: return 'text-forest';
+    }
+  };
 
   return (
     <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="operation-hub-page">
       {/* Telemetry Bar */}
       <div className="px-8 py-4 narvo-border-b bg-black/20 flex gap-12 items-center overflow-x-auto shrink-0">
-        {telemetryData.map((item, idx) => (
-          <div key={idx} className="flex flex-col gap-0.5 min-w-max">
-            <span className="mono-ui text-[8px] text-forest font-bold">{item.label}</span>
-            <span className={`mono-ui text-[12px] font-bold ${item.highlight ? 'text-primary' : 'text-white'}`}>
-              {item.value} {item.status && <span className="text-[9px] text-forest font-normal">{item.status}</span>}
-            </span>
-          </div>
-        ))}
+        {loading ? (
+          <span className="mono-ui text-[10px] text-forest animate-pulse">LOADING_TELEMETRY...</span>
+        ) : (
+          telemetryData.map((item, idx) => (
+            <div key={idx} className="flex flex-col gap-0.5 min-w-max">
+              <span className="mono-ui text-[8px] text-forest font-bold">{item.label}</span>
+              <span className={`mono-ui text-[12px] font-bold ${item.highlight ? 'text-primary' : 'text-white'}`}>
+                {item.value} {item.status && <span className="text-[9px] text-forest font-normal">{item.status}</span>}
+              </span>
+            </div>
+          ))
+        )}
+        <div className="ml-auto flex items-center gap-2">
+          <button 
+            onClick={fetchData}
+            className="p-2 text-forest hover:text-primary transition-colors"
+            title="Refresh Data"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+          {lastUpdate && (
+            <span className="mono-ui text-[8px] text-forest">LAST_UPDATE: {lastUpdate}</span>
+          )}
+        </div>
       </div>
 
       {/* Main Content */}
@@ -76,7 +138,7 @@ const OperationHubPage = () => {
                   {metric.unit && <span className="mono-ui text-[12px] text-forest font-bold">{metric.unit}</span>}
                   {metric.change && <span className="mono-ui text-[9px] text-primary font-bold">{metric.change}</span>}
                 </div>
-                {metric.progress && (
+                {metric.progress !== undefined && (
                   <div className="h-1 bg-forest/20 relative">
                     <div className="absolute inset-0 bg-primary" style={{ width: `${metric.progress}%` }} />
                   </div>
@@ -118,25 +180,21 @@ const OperationHubPage = () => {
           <div className="narvo-border bg-black/40 p-8 flex flex-col gap-6">
             <div className="flex justify-between items-center">
               <h3 className="mono-ui text-[11px] text-white font-bold tracking-widest">SYSTEM_ALERTS</h3>
-              <span className="mono-ui text-[9px] bg-primary/10 text-primary border border-primary px-2 py-0.5">3_NEW</span>
+              <span className="mono-ui text-[9px] bg-primary/10 text-primary border border-primary px-2 py-0.5">{alerts.length}_NEW</span>
             </div>
             <div className="space-y-4 overflow-y-auto custom-scroll pr-2">
               {alerts.map((alert, idx) => {
-                const Icon = alert.icon;
-                const colors = {
-                  warning: 'text-primary',
-                  success: 'text-forest',
-                  error: 'text-red-500 bg-red-500/10 border-red-500/30',
-                };
+                const Icon = getAlertIcon(alert.type);
+                const colorClass = getAlertColor(alert.type);
                 return (
                   <div 
                     key={idx} 
-                    className={`p-4 narvo-border bg-forest/5 flex items-start gap-4 hover:bg-forest/10 transition-colors cursor-pointer ${alert.muted ? 'opacity-50' : ''} ${alert.type === 'error' ? 'bg-red-500/10 border-red-500/30' : ''}`}
+                    className={`p-4 narvo-border bg-forest/5 flex items-start gap-4 hover:bg-forest/10 transition-colors cursor-pointer ${alert.type === 'error' ? 'bg-red-500/10 border-red-500/30' : ''}`}
                   >
-                    <Icon className={`w-5 h-5 ${colors[alert.type]}`} />
+                    <Icon className={`w-5 h-5 ${colorClass}`} />
                     <div className="space-y-1">
                       <p className={`mono-ui text-[10px] font-bold ${alert.type === 'error' ? 'text-red-500' : 'text-white'}`}>{alert.title}</p>
-                      <p className={`text-[9px] font-bold ${alert.type === 'error' ? 'text-red-500/70' : 'text-forest'}`}>{alert.desc}</p>
+                      <p className={`text-[9px] font-bold ${alert.type === 'error' ? 'text-red-500/70' : 'text-forest'}`}>{alert.description}</p>
                     </div>
                   </div>
                 );

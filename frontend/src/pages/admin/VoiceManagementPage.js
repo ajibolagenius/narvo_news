@@ -1,20 +1,43 @@
-import React from 'react';
-import { RadioTower, Filter, PlusSquare, MoreVertical, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { RadioTower, Filter, PlusSquare, MoreVertical, Loader2, RefreshCw } from 'lucide-react';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const VoiceManagementPage = () => {
+  const [voices, setVoices] = useState([]);
+  const [metrics, setMetrics] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = async () => {
+    try {
+      const [voicesRes, metricsRes] = await Promise.all([
+        fetch(`${API_URL}/api/admin/voices`),
+        fetch(`${API_URL}/api/admin/metrics`)
+      ]);
+      
+      const [voicesData, metricsData] = await Promise.all([
+        voicesRes.json(),
+        metricsRes.json()
+      ]);
+      
+      setVoices(voicesData);
+      setMetrics(metricsData);
+      setLoading(false);
+    } catch (err) {
+      console.error('Failed to fetch voice data:', err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const kpiData = [
-    { label: 'ACTIVE_VOICES', value: '24', change: '+2%', progress: 70 },
+    { label: 'ACTIVE_VOICES', value: voices.filter(v => v.status === 'LIVE').length || 24, change: '+2%', progress: 70 },
     { label: 'GLOBAL_LATENCY', value: '12', unit: 'MS', status: 'STABLE // SLA_PASS' },
     { label: 'TOTAL_REQS_24H', value: '1.2', unit: 'MIL', bars: [100, 40, 60, 80] },
     { label: 'HEALTH_RANK', value: 'S+', status: 'ALL_NODES_UP' },
-  ];
-
-  const voiceMatrix = [
-    { name: 'ATLAS_NEWS_V3', id: '#8821-A', language: 'YORUBA (NG)', latency: '12MS', clarity: 99.8, status: 'LIVE' },
-    { name: 'ECHO_BRIEF_XP', id: '#9942-X', language: 'HAUSA (NG)', latency: '45MS', clarity: 94.2, status: 'TRAINING' },
-    { name: 'NOVA_ANCHOR', id: '#1102-B', language: 'IGBO (NG)', latency: '18MS', clarity: 98.5, status: 'LIVE' },
-    { name: 'ONYX_REPORT', id: '#4421-C', language: 'PIDGIN (NG)', latency: '22MS', clarity: 96.1, status: 'LIVE' },
-    { name: 'SHIMMER_CAST', id: '#7788-D', language: 'TWI (GH)', latency: '35MS', clarity: 91.3, status: 'TRAINING' },
   ];
 
   return (
@@ -57,6 +80,13 @@ const VoiceManagementPage = () => {
               Active_Voice_Matrix
             </h2>
             <div className="flex gap-4">
+              <button 
+                onClick={fetchData}
+                className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase"
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
               <button className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase">
                 <Filter className="w-4 h-4" />
                 Filter
@@ -81,7 +111,7 @@ const VoiceManagementPage = () => {
                 </tr>
               </thead>
               <tbody className="mono-ui text-[10px] text-forest font-bold">
-                {voiceMatrix.map((voice, idx) => (
+                {voices.map((voice, idx) => (
                   <tr key={idx} className="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer group">
                     <td className="px-8 py-5">
                       <div className="flex items-center gap-4">
