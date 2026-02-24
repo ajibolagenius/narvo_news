@@ -101,7 +101,7 @@ const OperationHubPage = () => {
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           {lastUpdate && (
-            <span className="mono-ui text-[8px] text-forest">LAST_UPDATE: {lastUpdate}</span>
+            <span className="mono-ui text-[8px] text-forest">{t('admin.last_update')}: {lastUpdate}</span>
           )}
         </div>
       </div>
@@ -181,7 +181,7 @@ const OperationHubPage = () => {
           {/* Alerts */}
           <div className="narvo-border bg-black/40 p-8 flex flex-col gap-6">
             <div className="flex justify-between items-center">
-              <h3 className="mono-ui text-[11px] text-white font-bold tracking-widest">SYSTEM_ALERTS</h3>
+              <h3 className="mono-ui text-[11px] text-white font-bold tracking-widest">{t('admin.system_alerts')}</h3>
               <span className="mono-ui text-[9px] bg-primary/10 text-primary border border-primary px-2 py-0.5">{alerts.length}_NEW</span>
             </div>
             <div className="space-y-4 overflow-y-auto custom-scroll pr-2">
