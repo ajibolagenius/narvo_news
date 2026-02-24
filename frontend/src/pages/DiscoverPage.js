@@ -136,6 +136,55 @@ const DiscoverPage = () => {
       return rest;
     });
   };
+
+  // Download all podcasts that aren't cached yet
+  const handleDownloadAll = async () => {
+    const podcastsToDownload = podcasts.filter(p => p.audio_url && !cachedPodcasts[p.id]);
+    if (podcastsToDownload.length === 0) return;
+    
+    setIsDownloadingAll(true);
+    setDownloadAllProgress(0);
+    
+    let completed = 0;
+    
+    for (const podcast of podcastsToDownload) {
+      const proxyUrl = `${API_URL}/api/podcasts/${podcast.id}/audio`;
+      
+      setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: 0 }));
+      
+      const success = await downloadAndCacheAudio(
+        podcast.id,
+        proxyUrl,
+        {
+          title: podcast.title,
+          source: podcast.episode,
+          duration: podcast.duration,
+          type: 'podcast'
+        },
+        (progress) => {
+          setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: progress }));
+          // Calculate overall progress
+          const overallProgress = Math.round(((completed + (progress / 100)) / podcastsToDownload.length) * 100);
+          setDownloadAllProgress(overallProgress);
+        }
+      );
+      
+      if (success) {
+        setCachedPodcasts(prev => ({ ...prev, [podcast.id]: true }));
+      }
+      
+      setDownloadingPodcasts(prev => {
+        const { [podcast.id]: _, ...rest } = prev;
+        return rest;
+      });
+      
+      completed++;
+      setDownloadAllProgress(Math.round((completed / podcastsToDownload.length) * 100));
+    }
+    
+    setIsDownloadingAll(false);
+    setDownloadAllProgress(0);
+  };
   
   const playRadio = (station) => {
     if (audioRef.current) {
