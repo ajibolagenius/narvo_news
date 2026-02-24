@@ -43,6 +43,7 @@ function App() {
   return (
     <AuthProvider>
       <AudioProvider>
+      <BreakingNewsProvider>
         <HapticAlertProvider>
           <Router>
             <Routes>
@@ -79,6 +80,7 @@ function App() {
             </Routes>
           </Router>
         </HapticAlertProvider>
+      </BreakingNewsProvider>
       </AudioProvider>
     </AuthProvider>
   );
