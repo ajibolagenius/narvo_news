@@ -239,30 +239,13 @@ export const AudioProvider = ({ children }) => {
     setError(null);
   }, []);
 
-  // Queue management
-  const addToQueue = useCallback((track) => {
-    setQueue(prev => {
-      if (prev.some(t => t.id === track.id)) return prev;
-      return [...prev, track];
-    });
-  }, []);
-
-  const removeFromQueue = useCallback((trackId) => {
-    setQueue(prev => prev.filter(t => t.id !== trackId));
-  }, []);
-
-  const clearQueue = useCallback(() => {
-    setQueue([]);
-    setQueueIndex(-1);
-  }, []);
-
   const playNext = useCallback(async () => {
     if (queue.length === 0) return;
     const nextIdx = queueIndex + 1;
     if (nextIdx < queue.length) {
       const next = queue[nextIdx];
       setQueueIndex(nextIdx);
-      await playTrack(next);
+      await playTrack(next, true); // Force play
     }
   }, [queue, queueIndex, playTrack]);
 
@@ -274,7 +257,7 @@ export const AudioProvider = ({ children }) => {
       fadeOut(async () => {
         const next = queue[nextIdx];
         setQueueIndex(nextIdx);
-        await playTrack(next);
+        await playTrack(next, true); // Force play
       });
     }
   }, [queue, queueIndex, playTrack, fadeOut]);
@@ -285,7 +268,7 @@ export const AudioProvider = ({ children }) => {
     if (prevIdx >= 0) {
       const prev = queue[prevIdx];
       setQueueIndex(prevIdx);
-      await playTrack(prev);
+      await playTrack(prev, true); // Force play
     }
   }, [queue, queueIndex, playTrack]);
 
