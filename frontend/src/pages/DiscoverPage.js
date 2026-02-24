@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash } from '@phosphor-icons/react';
+import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
+import { downloadAndCacheAudio, isAudioCached } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
@@ -15,6 +16,8 @@ const DiscoverPage = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [podcastLoading, setPodcastLoading] = useState(true);
   const [trendingTopics, setTrendingTopics] = useState([]);
+  const [downloadingPodcasts, setDownloadingPodcasts] = useState({});
+  const [cachedPodcasts, setCachedPodcasts] = useState({});
   const { playTrack } = useAudio();
   
   // Radio state
@@ -26,6 +29,15 @@ const DiscoverPage = () => {
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const [radioVolume, setRadioVolume] = useState(0.7);
   const audioRef = useRef(null);
+
+  // Check which podcasts are cached
+  const checkCachedPodcasts = async (podcastList) => {
+    const cached = {};
+    for (const podcast of podcastList) {
+      cached[podcast.id] = await isAudioCached(podcast.id);
+    }
+    setCachedPodcasts(cached);
+  };
 
   useEffect(() => {
     // Fetch featured news
