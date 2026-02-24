@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   SquaresFour, Waveform, BookmarkSimple, MagnifyingGlass, Compass, WifiSlash,
-  GearSix, User, Microphone, Monitor, Accessibility, CaretDown, ShieldCheck,
+  GearSix, User, Microphone, Monitor, Wheelchair, CaretDown, ShieldCheck,
   List
 } from '@phosphor-icons/react';
 import ThemeToggle from './ThemeToggle';
