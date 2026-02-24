@@ -34,7 +34,7 @@ const AccountPage = () => {
         {/* Subscription Panel */}
         <div className="flex-1 p-6 md:p-10 lg:narvo-border-r relative overflow-hidden">
           <div className="absolute -top-10 -right-10 opacity-5">
-            <RadioTower className="w-64 h-64 md:w-72 md:h-72 text-primary" />
+            <Broadcast className="w-64 h-64 md:w-72 md:h-72 text-primary" />
           </div>
           
           <div className="relative z-10 h-full flex flex-col justify-between">
@@ -137,7 +137,7 @@ const AccountPage = () => {
             <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
               {t('account.signals_processed')}
             </h3>
-            <AudioWaveform className="w-5 h-5 text-forest" />
+            <Waveform className="w-5 h-5 text-forest" />
           </div>
           
           <div className="space-y-2">

@@ -94,7 +94,7 @@ const SearchPage = () => {
 
           {/* Search Input Console */}
           <form onSubmit={handleSearch} className="relative group">
-            <Search className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 text-primary w-5 h-5 md:w-6 md:h-6 group-focus-within:scale-110 transition-transform" />
+            <MagnifyingGlass className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 text-primary w-5 h-5 md:w-6 md:h-6 group-focus-within:scale-110 transition-transform" />
             <input
               type="text"
               value={query}
@@ -135,7 +135,7 @@ const SearchPage = () => {
       <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-10 bg-surface/30 narvo-border-b shrink-0">
         <div className="flex items-center gap-2 md:gap-3">
           <span className="mono-ui text-[9px] md:text-[10px] text-forest">SCHEMA: <span className="text-primary">SEMANTIC_RESULTS</span></span>
-          <Layers className="w-4 h-4 text-forest hidden sm:block" />
+          <Stack className="w-4 h-4 text-forest hidden sm:block" />
         </div>
         <div className="flex items-center gap-3 md:gap-6">
           <div className="flex items-center gap-1 md:gap-2 border border-forest/30 p-1">
@@ -155,7 +155,7 @@ const SearchPage = () => {
             </button>
           </div>
           <button className="text-forest hover:text-primary transition-colors flex items-center gap-1 md:gap-2 mono-ui text-[9px] md:text-[10px]">
-            <Filter className="w-4 h-4" />
+            <Funnel className="w-4 h-4" />
             <span className="hidden sm:inline">FILTERS</span>
           </button>
         </div>
@@ -227,7 +227,7 @@ const SearchPage = () => {
             />
             <div className="relative z-10 space-y-6">
               <div className="w-16 h-16 mx-auto narvo-border border-dashed flex items-center justify-center">
-                <Search className="w-8 h-8 text-forest" />
+                <MagnifyingGlass className="w-8 h-8 text-forest" />
               </div>
               <div className="space-y-2">
                 <h3 className="font-display text-2xl font-bold text-white uppercase">NO_RESULTS_FOUND</h3>
