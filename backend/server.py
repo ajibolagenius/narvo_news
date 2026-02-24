@@ -589,6 +589,71 @@ async def get_admin_stats():
     }
 
 # ===========================================
+# USER SETTINGS API
+# ===========================================
+
+class UserSettings(BaseModel):
+    voice_model: str = "nova"
+    voice_dialect: str = "standard"
+    voice_region: str = "africa"
+    high_contrast: bool = False
+    interface_scale: str = "100%"
+    haptic_sync: bool = True
+    alert_volume: int = 70
+    data_limit: float = 2.5
+    bandwidth_priority: str = "streaming"
+    display_density: str = "standard"
+    font_scale: int = 100
+    gestural_swipe: bool = True
+    gestural_pinch: bool = False
+    voice_commands: bool = False
+
+@app.get("/api/settings/{user_id}")
+async def get_user_settings(user_id: str):
+    """Get user settings"""
+    settings = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
+    if settings:
+        return settings.get("settings", UserSettings().dict())
+    return UserSettings().dict()
+
+@app.post("/api/settings/{user_id}")
+async def save_user_settings(user_id: str, settings: UserSettings):
+    """Save user settings"""
+    preferences_col.update_one(
+        {"user_id": user_id},
+        {"$set": {"settings": settings.dict(), "updated_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True
+    )
+    return {"status": "success", "message": "Settings saved"}
+
+@app.get("/api/settings/{user_id}/voice")
+async def get_voice_settings(user_id: str):
+    """Get voice-specific settings"""
+    settings = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
+    if settings and "settings" in settings:
+        return {
+            "voice_model": settings["settings"].get("voice_model", "nova"),
+            "voice_dialect": settings["settings"].get("voice_dialect", "standard"),
+            "voice_region": settings["settings"].get("voice_region", "africa"),
+        }
+    return {"voice_model": "nova", "voice_dialect": "standard", "voice_region": "africa"}
+
+@app.post("/api/settings/{user_id}/voice")
+async def save_voice_settings(user_id: str, voice_model: str = "nova", voice_dialect: str = "standard", voice_region: str = "africa"):
+    """Save voice settings"""
+    preferences_col.update_one(
+        {"user_id": user_id},
+        {"$set": {
+            "settings.voice_model": voice_model,
+            "settings.voice_dialect": voice_dialect,
+            "settings.voice_region": voice_region,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+    return {"status": "success", "message": "Voice settings saved"}
+
+# ===========================================
 # FACT-CHECKING API (Mock Dubawa Integration)
 # ===========================================
 
