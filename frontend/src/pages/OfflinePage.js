@@ -149,7 +149,7 @@ const OfflinePage = () => {
 
   // Combine cached audio and saved articles
   const allItems = [...cachedItems, ...savedArticles];
-  const usagePercent = (totalSize / (50 * 1024 * 1024 * 1024)) * 100; // 50GB limit
+  const usagePercent = (cacheStats.totalSize / (50 * 1024 * 1024 * 1024)) * 100; // 50GB limit
   const filteredItems = filterType === 'all' 
     ? allItems 
     : filterType === 'audio' 
@@ -174,11 +174,17 @@ const OfflinePage = () => {
             <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight text-content leading-none">
               Cached <span className="text-primary">Archives.</span>
             </h2>
+            {cacheStats.offlineReady > 0 && (
+              <div className="flex items-center gap-2 text-forest mono-ui text-[9px]">
+                <CheckCircle weight="fill" className="w-3 h-3 text-green-500" />
+                <span>{cacheStats.offlineReady} items ready for offline</span>
+              </div>
+            )}
           </div>
           <div className="flex flex-col items-start md:items-end mono-ui text-[9px] md:text-[10px]">
             <span className="text-forest tracking-wider mb-1 md:mb-2 font-bold">CAPACITY_LIMIT</span>
             <div className="text-content text-base md:text-lg">
-              {formatSize(totalSize)} <span className="text-forest">/ 50.0 GB</span>
+              {cacheStats.formattedSize} <span className="text-forest">/ 50.0 GB</span>
             </div>
           </div>
         </div>
