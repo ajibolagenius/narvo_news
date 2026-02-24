@@ -7,6 +7,7 @@ import { LogOut, User, Mic, Monitor, Accessibility, ChevronRight, Shield, Zap, D
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { showAlert } = useHapticAlert();
 
   const handleLogout = async () => {
     try {
