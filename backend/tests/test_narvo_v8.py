@@ -7,7 +7,7 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://audio-first-portal.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://trustnews-africa.preview.emergentagent.com')
 
 class TestHealthAndCore:
     """Health and core endpoint tests"""

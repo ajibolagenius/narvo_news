@@ -9,7 +9,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://audio-first-portal.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://trustnews-africa.preview.emergentagent.com')
 
 class TestBreakingNewsAPI:
     """Tests for GET /api/news/breaking endpoint"""
