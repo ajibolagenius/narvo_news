@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
-import { downloadAndCacheAudio, isAudioCached } from '../lib/audioCache';
+import { useDownloadQueue } from '../contexts/DownloadQueueContext';
+import { isAudioCached } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
 
@@ -16,9 +17,9 @@ const DiscoverPage = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [podcastLoading, setPodcastLoading] = useState(true);
   const [trendingTopics, setTrendingTopics] = useState([]);
-  const [downloadingPodcasts, setDownloadingPodcasts] = useState({});
   const [cachedPodcasts, setCachedPodcasts] = useState({});
   const { playTrack } = useAudio();
+  const { addToQueue, addSingleToQueue, queue, isProcessing } = useDownloadQueue();
   
   // Radio state
   const [radioStations, setRadioStations] = useState([]);
@@ -100,40 +101,64 @@ const DiscoverPage = () => {
     playTrack({ id: podcast.id, title: podcast.title, summary: podcast.description });
   };
 
+  // Check if a podcast is currently in the download queue
+  const isInQueue = (podcastId) => {
+    return queue.some(item => item.id === podcastId && item.status !== 'complete' && item.status !== 'failed');
+  };
+
+  // Get download progress for a podcast in queue
+  const getQueueProgress = (podcastId) => {
+    const item = queue.find(item => item.id === podcastId);
+    return item?.progress || 0;
+  };
+
   const handleDownloadPodcast = async (podcast) => {
     if (!podcast.audio_url) {
       alert('This podcast does not have a downloadable audio file yet.');
       return;
     }
     
-    setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: 0 }));
-    
     // Use the backend proxy endpoint to avoid CORS issues
     const proxyUrl = `${API_URL}/api/podcasts/${podcast.id}/audio`;
     
-    const success = await downloadAndCacheAudio(
-      podcast.id,
-      proxyUrl,
-      {
-        title: podcast.title,
-        source: podcast.episode,
-        duration: podcast.duration,
-        type: 'podcast'
-      },
-      (progress) => {
-        setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: progress }));
-      }
-    );
-    
-    if (success) {
-      setCachedPodcasts(prev => ({ ...prev, [podcast.id]: true }));
-    }
-    
-    setDownloadingPodcasts(prev => {
-      const { [podcast.id]: _, ...rest } = prev;
-      return rest;
+    addSingleToQueue({
+      id: podcast.id,
+      audioUrl: proxyUrl,
+      title: podcast.title,
+      source: podcast.episode,
+      duration: podcast.duration,
+      type: 'podcast'
     });
   };
+
+  // Download all podcasts that aren't cached yet
+  const handleDownloadAll = async () => {
+    const podcastsToDownload = podcasts.filter(p => p.audio_url && !cachedPodcasts[p.id] && !isInQueue(p.id));
+    if (podcastsToDownload.length === 0) return;
+    
+    const items = podcastsToDownload.map(podcast => ({
+      id: podcast.id,
+      audioUrl: `${API_URL}/api/podcasts/${podcast.id}/audio`,
+      title: podcast.title,
+      source: podcast.episode,
+      duration: podcast.duration,
+      type: 'podcast'
+    }));
+    
+    addToQueue(items);
+  };
+
+  // Update cached status when queue items complete
+  useEffect(() => {
+    const completedIds = queue.filter(item => item.status === 'complete').map(item => item.id);
+    if (completedIds.length > 0) {
+      setCachedPodcasts(prev => {
+        const updated = { ...prev };
+        completedIds.forEach(id => { updated[id] = true; });
+        return updated;
+      });
+    }
+  }, [queue]);
   
   const playRadio = (station) => {
     if (audioRef.current) {
@@ -238,19 +263,33 @@ const DiscoverPage = () => {
           <div className="lg:col-span-2 lg:narvo-border-r h-full">
             <div className="flex items-center justify-between p-4 md:p-8 narvo-border-b bg-surface/10 sticky top-0 z-10 backdrop-blur-md">
               <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
-              <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
-                <button 
-                  onClick={() => setPodcastSort('latest')}
-                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
-                >
-                  {t('discover.latest')}
-                </button>
-                <button 
-                  onClick={() => setPodcastSort('popular')}
-                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
-                >
-                  {t('discover.popular')}
-                </button>
+              <div className="flex items-center gap-2 md:gap-4">
+                {/* Download All Button */}
+                {podcasts.some(p => p.audio_url && !cachedPodcasts[p.id] && !isInQueue(p.id)) && (
+                  <button
+                    onClick={handleDownloadAll}
+                    disabled={isProcessing}
+                    className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold narvo-border ${isProcessing ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
+                    data-testid="download-all-btn"
+                  >
+                    <CloudArrowDown className="w-3 h-3" />
+                    <span>DOWNLOAD ALL</span>
+                  </button>
+                )}
+                <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
+                  <button 
+                    onClick={() => setPodcastSort('latest')}
+                    className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+                  >
+                    {t('discover.latest')}
+                  </button>
+                  <button 
+                    onClick={() => setPodcastSort('popular')}
+                    className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
+                  >
+                    {t('discover.popular')}
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -276,9 +315,9 @@ const DiscoverPage = () => {
                 </div>
               ) : (
                 podcasts.map((podcast) => {
-                  const isDownloading = downloadingPodcasts[podcast.id] !== undefined;
+                  const inQueue = isInQueue(podcast.id);
                   const isCached = cachedPodcasts[podcast.id];
-                  const downloadProgress = downloadingPodcasts[podcast.id] || 0;
+                  const downloadProgress = getQueueProgress(podcast.id);
                   
                   return (
                     <article 
@@ -323,12 +362,12 @@ const DiscoverPage = () => {
                         {podcast.audio_url && !isCached && (
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDownloadPodcast(podcast); }}
-                            disabled={isDownloading}
-                            className={`flex items-center gap-1.5 mono-ui text-[8px] md:text-[9px] ${isDownloading ? 'text-forest cursor-wait' : 'text-forest hover:text-primary'} transition-colors`}
+                            disabled={inQueue}
+                            className={`flex items-center gap-1.5 mono-ui text-[8px] md:text-[9px] ${inQueue ? 'text-primary cursor-wait' : 'text-forest hover:text-primary'} transition-colors`}
                             data-testid={`download-podcast-${podcast.id}`}
                             title="Download for offline"
                           >
-                            {isDownloading ? (
+                            {inQueue ? (
                               <>
                                 <CircleNotch className="w-4 h-4 animate-spin" />
                                 <span>{downloadProgress}%</span>
