@@ -69,6 +69,7 @@ const DiscoverPage = () => {
       .then(res => res.json())
       .then(data => {
         setPodcasts(data);
+        checkCachedPodcasts(data);
         setPodcastLoading(false);
       })
       .catch(() => setPodcastLoading(false));
@@ -97,6 +98,39 @@ const DiscoverPage = () => {
 
   const handlePlayPodcast = (podcast) => {
     playTrack({ id: podcast.id, title: podcast.title, summary: podcast.description });
+  };
+
+  const handleDownloadPodcast = async (podcast) => {
+    if (!podcast.audio_url) {
+      // If no audio URL, we can't download - show a message
+      alert('This podcast does not have a downloadable audio file yet.');
+      return;
+    }
+    
+    setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: 0 }));
+    
+    const success = await downloadAndCacheAudio(
+      podcast.id,
+      podcast.audio_url,
+      {
+        title: podcast.title,
+        source: podcast.episode,
+        duration: podcast.duration,
+        type: 'podcast'
+      },
+      (progress) => {
+        setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: progress }));
+      }
+    );
+    
+    if (success) {
+      setCachedPodcasts(prev => ({ ...prev, [podcast.id]: true }));
+    }
+    
+    setDownloadingPodcasts(prev => {
+      const { [podcast.id]: _, ...rest } = prev;
+      return rest;
+    });
   };
   
   const playRadio = (station) => {
