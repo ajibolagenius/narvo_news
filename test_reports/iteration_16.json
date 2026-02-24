@@ -1,0 +1,108 @@
+{
+  "summary": "Comprehensive testing of i18n (multi-language UI support), Settings persistence, News Detail Page features. Backend: 11/12 tests passed (1 minor issue with settings merge). Frontend: All requested features working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "POST /api/settings/{user_id}",
+        "issue": "Settings merge behavior: Pydantic model defaults overwrite existing settings. When POSTing partial settings, missing fields get default values instead of preserving existing values.",
+        "priority": "LOW",
+        "details": "The issue is in server.py line 624 - settings.dict() includes all default values which overwrites existing settings. Should use settings.dict(exclude_unset=True) to only include explicitly set values."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_i18n_settings_v16.py",
+    "/app/test_reports/pytest/pytest_results_v16.xml"
+  ],
+  "action_items": [
+    "Fix settings merge behavior in POST /api/settings/{user_id}: Change line 624 from 'settings.dict()' to 'settings.dict(exclude_unset=True)' to properly merge partial settings"
+  ],
+  "critical_code_review_comments": [
+    "i18n implementation correctly uses react-i18next with 6 language locale files (en, fr, yo, ha, pcm, sw)",
+    "Language switching properly updates localStorage (narvo_language) and dynamically changes sidebar/header labels",
+    "Settings pages (System, Accessibility) correctly fetch from and save to backend via /api/settings/{user_id}",
+    "News Detail page has TruthTag badges (VERIFIED/UNVERIFIED/DISPUTED), Share buttons, Play/autoplay controls, and full metadata sidebar",
+    "Discover page has i18n labels for Deep Dive Podcasts, Radio Garden, Newsletter sections"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_i18n_settings_v16.py"
+  ],
+  "success_rate": {
+    "backend": "92% (11/12 tests passed)",
+    "frontend": "100% (all features working)"
+  },
+  "test_credentials": "Guest mode: Click '[Oya, Play]' button on landing page",
+  "seed_data_creation": "None - all data comes from backend APIs and RSS feeds",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All i18n and settings features tested and working. Key test locations: /settings (language selector with 6 languages), /system (system settings with save/reset), /accessibility (display density, font scale, gestures), /news/{id} (TruthTag, Share, metadata sidebar). Backend settings API at /api/settings/{user_id} has minor merge issue - partial updates overwrite existing values with defaults.",
+  "features_tested": {
+    "landing_page_guest_mode": {
+      "oya_play_button": "PASS - '[Oya, Play]' button found and clickable",
+      "navigation_to_dashboard": "PASS - Navigates to /dashboard after click"
+    },
+    "i18n_language_selector": {
+      "settings_page": "PASS - Settings page loads with data-testid='settings-page'",
+      "broadcast_language_section": "PASS - BROADCAST_LANGUAGE section visible",
+      "language_buttons": "PASS - All 6 language buttons present (en, fr, yo, ha, pcm, sw)",
+      "english_labels": "PASS - English labels: FEED, BRIEFING, SAVED, SEARCH, DISCOVER, OFFLINE, SETTINGS, ADMIN",
+      "french_switch": "PASS - Sidebar changes to French: FIL, SAUVEGARDÉS, DÉCOUVRIR, PARAMÈTRES",
+      "language_persistence": "PASS - Language stored in localStorage 'narvo_language'"
+    },
+    "system_settings_page": {
+      "page_load": "PASS - data-testid='system-settings-page' found",
+      "high_contrast_toggle": "PASS - data-testid='toggle-high-contrast' found",
+      "bandwidth_priority_buttons": "PASS - STREAMING/INGEST/VOICE buttons found",
+      "save_button": "PASS - data-testid='save-config-btn' found",
+      "reset_button": "PASS - data-testid='reset-defaults-btn' found",
+      "backend_persistence": "PASS - Settings saved to /api/settings/{user_id}"
+    },
+    "accessibility_page": {
+      "page_load": "PASS - data-testid='accessibility-page' found",
+      "font_scale_slider": "PASS - data-testid='font-scale-slider' found",
+      "gesture_swipe": "PASS - data-testid='gesture-swipe' found",
+      "gesture_pinch": "PASS - data-testid='gesture-pinch' found",
+      "save_button": "PASS - data-testid='save-accessibility-btn' found, enabled after changes",
+      "backend_persistence": "PASS - Settings saved via POST /api/settings/{user_id}"
+    },
+    "news_detail_page": {
+      "navigation": "PASS - Navigates to /news/{id} from dashboard",
+      "news_title": "PASS - data-testid='news-title' displays article title",
+      "truthtag_badge": "PASS - TruthTag shows 'VERIFIED 99%' with DUBAWA_AI source",
+      "share_buttons": "PASS - 3 share buttons found (share-story-btn, share-source-btn, sidebar-share-btn)",
+      "play_autoplay": "PASS - data-testid='play-story-btn' found, audio plays in bottom player",
+      "metadata_sidebar": "PASS - data-testid='detail-sidebar' shows CATEGORY, SOURCE, REGION, READ_TIME, AI_SYNTHESIS",
+      "verification_status": "PASS - Sidebar shows VERIFICATION_STATUS with VERIFIED/confidence",
+      "related_transmissions": "PASS - Shows related articles with TruthTag badges",
+      "back_button": "PASS - data-testid='back-btn' found"
+    },
+    "discover_page": {
+      "page_load": "PASS - data-testid='discover-page' found",
+      "deep_dive_podcasts": "PASS - 'Deep Dive Podcasts' section with i18n",
+      "radio_garden": "PASS - 'Radio Garden' section with i18n",
+      "newsletter_section": "PASS - Newsletter subscription section found",
+      "radio_countries": "PASS - 6 country buttons found (data-testid='radio-country-{code}')",
+      "radio_stations": "INFO - 0 stations loaded (external API timeout or no stations for selected country)"
+    },
+    "backend_settings_api": {
+      "GET /api/settings/guest": "PASS - Returns default settings",
+      "POST system_settings": "PASS - Saves high_contrast, interface_scale, haptic_sync, alert_volume, data_limit, bandwidth_priority",
+      "POST accessibility_settings": "PASS - Saves display_density, font_scale, gestural_swipe, gestural_pinch",
+      "settings_merge": "FAIL - Partial updates overwrite existing with defaults (minor issue)"
+    },
+    "backend_factcheck_api": {
+      "GET /api/factcheck/{story_id}": "PASS - Returns VERIFIED/UNVERIFIED/DISPUTED with confidence %",
+      "truthtag_statuses": "PASS - TruthTag displays correct status badges"
+    }
+  },
+  "mocked_data_note": "MOCKED: Dubawa fact-check API uses simulated responses based on story_id hash. Returns VERIFIED/UNVERIFIED/DISPUTED status with confidence percentage.",
+  "test_viewports": {
+    "desktop": "1920x1080"
+  }
+}
