@@ -22,23 +22,28 @@ export const AudioProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [broadcastLanguage, setBroadcastLanguage] = useState('en');
 
-  // Fetch user's language preference on mount
-  useEffect(() => {
-    const fetchLanguagePreference = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/settings/guest`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.broadcast_language) {
-            setBroadcastLanguage(data.broadcast_language);
-          }
+  // Fetch user's language preference on mount and when triggered
+  const fetchLanguagePreference = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/settings/guest`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.broadcast_language) {
+          console.log('[AudioContext] Fetched language:', data.broadcast_language);
+          setBroadcastLanguage(data.broadcast_language);
+          return data.broadcast_language;
         }
-      } catch (err) {
-        console.log('Using default language: en');
       }
-    };
-    fetchLanguagePreference();
+    } catch (err) {
+      console.log('[AudioContext] Using default language: en');
+    }
+    return 'en';
   }, []);
+
+  // Fetch on mount
+  useEffect(() => {
+    fetchLanguagePreference();
+  }, [fetchLanguagePreference]);
 
   // Update Media Session metadata for lock screen/background playback
   const updateMediaSession = useCallback((track) => {
