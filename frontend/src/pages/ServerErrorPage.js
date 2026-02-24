@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, Server, Cpu, HardDrive, Clock, RotateCcw, Plus, Zap } from 'lucide-react';
+import { Warning, Desktop, Cpu, HardDrive, Clock, ArrowCounterClockwise, Plus, Lightning } from '@phosphor-icons/react';
 
 const ServerErrorPage = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const ServerErrorPage = () => {
   }, []);
 
   const metrics = [
-    { label: 'SERVER_STATUS', value: 'CRITICAL', icon: Server, color: 'text-red-500' },
+    { label: 'SERVER_STATUS', value: 'CRITICAL', icon: Desktop, color: 'text-red-500' },
     { label: 'CPU_LOAD', value: '99.9%', icon: Cpu, color: 'text-red-400' },
     { label: 'MEMORY', value: 'OVERFLOW', icon: HardDrive, color: 'text-red-400' },
     { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-white' },
@@ -51,7 +51,7 @@ const ServerErrorPage = () => {
               <span className="text-red-500">[</span>SYSTEM HALT<span className="text-red-500">]</span>
             </h1>
             <div className="flex items-center justify-center gap-3 text-red-500 mono-ui text-xl md:text-2xl font-bold">
-              <AlertTriangle className="w-6 h-6 md:w-8 md:h-8 animate-pulse" />
+              <Warning className="w-6 h-6 md:w-8 md:h-8 animate-pulse" />
               <span>ERROR_CODE: 500_INTERNAL_FAILURE</span>
             </div>
             <p className="text-forest max-w-lg mx-auto text-sm md:text-base font-medium mono-ui leading-relaxed lowercase">
@@ -85,7 +85,7 @@ const ServerErrorPage = () => {
               className="h-14 md:h-16 px-8 md:px-10 bg-primary text-background-dark font-bold mono-ui text-sm flex items-center justify-center gap-4 hover:bg-white transition-all shadow-xl group"
               data-testid="retry-btn"
             >
-              <RotateCcw className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
+              <ArrowCounterClockwise className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
               <span>[RETRY CONNECTION]</span>
             </button>
             <button 
@@ -93,7 +93,7 @@ const ServerErrorPage = () => {
               className="h-14 md:h-16 px-8 md:px-10 narvo-border border-red-500/50 text-red-400 font-bold mono-ui text-sm flex items-center justify-center gap-4 hover:bg-red-500/20 transition-all"
               data-testid="home-btn"
             >
-              <Zap className="w-5 h-5 md:w-6 md:h-6" />
+              <Lightning className="w-5 h-5 md:w-6 md:h-6" />
               <span>[RETURN TO BASE]</span>
             </button>
           </div>
