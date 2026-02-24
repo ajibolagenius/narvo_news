@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash } from '@phosphor-icons/react';
+import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash, Translate } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { requestNotificationPermission, getNotificationStatus, subscribeToPush, unsubscribeFromPush, getSubscription, isPushSupported } from '../lib/notificationService';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+// Supported broadcast languages
+const BROADCAST_LANGUAGES = [
+  { code: 'en', name: 'English', native: 'English', description: 'STANDARD_BROADCAST' },
+  { code: 'pcm', name: 'Nigerian Pidgin', native: 'Naija', description: 'PIDGIN_STYLE' },
+  { code: 'yo', name: 'Yoruba', native: 'Èdè Yorùbá', description: 'SOUTHWEST_NG' },
+  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'NORTHERN_NG' },
+  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'SOUTHEAST_NG' },
+];
 
 const DEFAULT_SETTINGS = {
   highContrast: true,
@@ -15,6 +24,7 @@ const DEFAULT_SETTINGS = {
   dataLimit: 2400,
   bandwidthPriority: 'STREAMING',
   pushNotifications: false,
+  broadcastLanguage: 'en',
 };
 
 const SystemGearSixPage = () => {
@@ -54,6 +64,7 @@ const SystemGearSixPage = () => {
             alertVolume: data.alert_volume ?? DEFAULT_SETTINGS.alertVolume,
             dataLimit: Math.round((data.data_limit ?? 2.4) * 1000),
             bandwidthPriority: (data.bandwidth_priority || 'streaming').toUpperCase(),
+            broadcastLanguage: data.broadcast_language ?? DEFAULT_SETTINGS.broadcastLanguage,
           });
         }
       } catch (err) {
@@ -83,6 +94,7 @@ const SystemGearSixPage = () => {
           alert_volume: settings.alertVolume,
           data_limit: settings.dataLimit / 1000,
           bandwidth_priority: settings.bandwidthPriority.toLowerCase(),
+          broadcast_language: settings.broadcastLanguage,
         }),
       });
       if (res.ok) {
@@ -206,7 +218,70 @@ const SystemGearSixPage = () => {
           </div>
         </section>
 
-        {/* 02: Notification Engine */}
+        {/* 02: Broadcast Language */}
+        <section className="space-y-6 md:space-y-8">
+          <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
+              BROADCAST_LANGUAGE
+            </h2>
+            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+              AUDIO_TRANSLATION_ENGINE
+            </span>
+          </div>
+
+          <div className="narvo-border divide-y divide-forest/30">
+            {/* Language Selection */}
+            <div className="p-4 md:p-8 flex flex-col gap-4 md:gap-6">
+              <div className="flex items-center gap-4 md:gap-6">
+                <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
+                  <Translate className="w-5 h-5 md:w-6 md:h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">NEWS_TRANSLATION</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">SELECT_YOUR_PREFERRED_BROADCAST_LANGUAGE</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 pl-0 md:pl-[72px]">
+                {BROADCAST_LANGUAGES.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => updateSetting('broadcastLanguage', lang.code)}
+                    className={`p-3 md:p-4 narvo-border text-left transition-all ${
+                      settings.broadcastLanguage === lang.code 
+                        ? 'bg-primary text-background-dark border-primary' 
+                        : 'hover:bg-surface/10 hover:border-forest'
+                    }`}
+                    data-testid={`lang-${lang.code}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="mono-ui text-[10px] md:text-[11px] font-bold">{lang.name}</span>
+                      {settings.broadcastLanguage === lang.code && (
+                        <span className="text-[8px] font-bold px-1.5 py-0.5 bg-background-dark text-primary">ACTIVE</span>
+                      )}
+                    </div>
+                    <span className={`mono-ui text-[9px] md:text-[10px] ${
+                      settings.broadcastLanguage === lang.code ? 'text-background-dark/70' : 'text-forest'
+                    }`}>
+                      {lang.native}
+                    </span>
+                    <div className={`mt-1 mono-ui text-[7px] md:text-[8px] ${
+                      settings.broadcastLanguage === lang.code ? 'text-background-dark/50' : 'text-forest/60'
+                    }`}>
+                      {lang.description}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              
+              <p className="pl-0 md:pl-[72px] mono-ui text-[8px] md:text-[9px] text-forest/70">
+                NEWS_WILL_BE_TRANSLATED_AND_NARRATED_IN_SELECTED_LANGUAGE
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 03: Notification Engine */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
@@ -306,7 +381,7 @@ const SystemGearSixPage = () => {
           </div>
         </section>
 
-        {/* 03: Data & Throughput */}
+        {/* 04: Data & Throughput */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
