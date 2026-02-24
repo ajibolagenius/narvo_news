@@ -76,13 +76,13 @@ RSS_FEEDS = [
     {"name": "Al Jazeera Africa", "url": "https://www.aljazeera.com/xml/rss/all.xml", "region": "Continental"},
 ]
 
-# Voice configurations for regional accents (mapped to OpenAI voices)
+# Voice configurations with authentic Nigerian names (mapped to OpenAI voices)
 VOICE_PROFILES = [
-    {"id": "nova", "name": "Nova", "accent": "Standard", "description": "Energetic, upbeat broadcast voice"},
-    {"id": "onyx", "name": "Onyx", "accent": "Pidgin", "description": "Deep, authoritative Pidgin-style voice"},
-    {"id": "echo", "name": "Echo", "accent": "Yoruba", "description": "Smooth, calm Yoruba-style delivery"},
-    {"id": "alloy", "name": "Alloy", "accent": "Hausa", "description": "Neutral, balanced Hausa-style voice"},
-    {"id": "shimmer", "name": "Shimmer", "accent": "Igbo", "description": "Bright, cheerful Igbo-style voice"},
+    {"id": "nova", "name": "Adaeze", "accent": "English", "language": "en", "description": "Clear, professional international voice"},
+    {"id": "onyx", "name": "Chukwuemeka", "accent": "Naijá", "language": "pcm", "description": "Strong, authoritative Naijá voice"},
+    {"id": "echo", "name": "Olúwásẹ̀un", "accent": "Yorùbá", "language": "yo", "description": "Warm, melodic Yorùbá voice"},
+    {"id": "alloy", "name": "Abubakar", "accent": "Hausa", "language": "ha", "description": "Calm, dignified Hausa voice"},
+    {"id": "shimmer", "name": "Chinyere", "accent": "Igbo", "language": "ig", "description": "Bright, expressive Igbo voice"},
 ]
 
 # Pydantic Models
