@@ -30,10 +30,10 @@ const EmptyState = ({
   };
 
   const slots = [
-    { id: 'SLOT_01', icon: RadioTower, opacity: 'opacity-40' },
-    { id: 'SLOT_02', icon: Unplug, opacity: 'opacity-30' },
-    { id: 'SLOT_03', icon: AlertCircle, opacity: 'opacity-20' },
-    { id: 'SLOT_04', icon: WifiOff, opacity: 'opacity-10' },
+    { id: 'SLOT_01', icon: Broadcast, opacity: 'opacity-40' },
+    { id: 'SLOT_02', icon: Plug, opacity: 'opacity-30' },
+    { id: 'SLOT_03', icon: WarningCircle, opacity: 'opacity-20' },
+    { id: 'SLOT_04', icon: WifiSlash, opacity: 'opacity-10' },
   ];
 
   const variantConfig = {
@@ -88,14 +88,14 @@ const EmptyState = ({
         </div>
         <div className="flex gap-4">
           <button className="px-4 md:px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase">
-            <Filter className="w-4 h-4" />
+            <Funnel className="w-4 h-4" />
             <span className="hidden sm:inline">FILTER</span>
           </button>
           <button 
             onClick={handleRefresh}
             className="px-4 md:px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all flex items-center gap-2 uppercase"
           >
-            <RotateCcw className="w-4 h-4" />
+            <ArrowCounterClockwise className="w-4 h-4" />
             <span className="hidden sm:inline">RECONNECT</span>
           </button>
         </div>
@@ -131,7 +131,7 @@ const EmptyState = ({
           <div className="mb-6 md:mb-8 flex justify-center">
             <div className="w-20 h-20 md:w-24 md:h-24 bg-surface narvo-border border-dashed flex items-center justify-center relative">
               <div className="absolute inset-0 border border-primary/20 animate-ping" />
-              <Satellite className="w-10 h-10 md:w-12 md:h-12 text-primary" />
+              <Planet className="w-10 h-10 md:w-12 md:h-12 text-primary" />
             </div>
           </div>
 
@@ -150,7 +150,7 @@ const EmptyState = ({
               className="h-12 md:h-14 px-6 md:px-8 bg-primary text-background-dark font-bold mono-ui text-[10px] md:text-[11px] hover:bg-white transition-all flex items-center justify-center gap-3"
               data-testid="empty-state-refresh-btn"
             >
-              <RotateCcw className="w-4 h-4 md:w-5 md:h-5" />
+              <ArrowCounterClockwise className="w-4 h-4 md:w-5 md:h-5" />
               {config.primaryAction}
             </button>
             <button 
