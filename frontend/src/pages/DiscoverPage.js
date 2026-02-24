@@ -20,7 +20,6 @@ const DiscoverPage = () => {
   const [featuredNews, setFeaturedNews] = useState(null);
   const [loading, setLoading] = useState(true);
   const [podcastSort, setPodcastSort] = useState('latest');
-  const [email, setEmail] = useState('');
   const { playTrack } = useAudio();
   
   // Radio state
