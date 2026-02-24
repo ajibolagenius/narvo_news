@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RadioTower, Activity, AlertOctagon, Database, Search, FileText, AlertTriangle, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const OperationHubPage = () => {
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState(null);
   const [alerts, setAlerts] = useState([]);
   const [streams, setStreams] = useState([]);
