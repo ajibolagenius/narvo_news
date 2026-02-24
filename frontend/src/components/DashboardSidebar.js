@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { LayoutGrid, Activity, Bookmark, Search, Compass, WifiOff, Settings, User, Mic, Monitor, Accessibility, ChevronDown, Shield } from 'lucide-react';
 
-const navItems = [
-  { icon: LayoutGrid, label: 'Feed', path: '/dashboard' },
-  { icon: Activity, label: 'Briefing', path: '/briefing' },
-  { icon: Bookmark, label: 'Saved', path: '/saved' },
-  { icon: Search, label: 'Search', path: '/search' },
-  { icon: Compass, label: 'Discover', path: '/discover' },
-  { icon: WifiOff, label: 'Offline', path: '/offline' },
+const getNavItems = (t) => [
+  { icon: LayoutGrid, label: t('nav.feed'), path: '/dashboard' },
+  { icon: Activity, label: t('nav.briefing'), path: '/briefing' },
+  { icon: Bookmark, label: t('nav.saved'), path: '/saved' },
+  { icon: Search, label: t('nav.search'), path: '/search' },
+  { icon: Compass, label: t('nav.discover'), path: '/discover' },
+  { icon: WifiOff, label: t('nav.offline'), path: '/offline' },
 ];
 
 const settingsSubNav = [
