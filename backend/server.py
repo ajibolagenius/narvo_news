@@ -78,8 +78,8 @@ RSS_FEEDS = [
 
 # Voice configurations with authentic Nigerian names (mapped to OpenAI voices)
 VOICE_PROFILES = [
-    {"id": "nova", "name": "Adaeze", "accent": "English", "language": "en", "description": "Clear, professional international voice"},
-    {"id": "onyx", "name": "Chukwuemeka", "accent": "Naijá", "language": "pcm", "description": "Strong, authoritative Naijá voice"},
+    {"id": "nova", "name": "Nova", "accent": "English", "language": "en", "description": "Clear, professional international voice"},
+    {"id": "onyx", "name": "Onyx", "accent": "Naijá", "language": "pcm", "description": "Strong, authoritative Naijá voice"},
     {"id": "echo", "name": "Olúwásẹ̀un", "accent": "Yorùbá", "language": "yo", "description": "Warm, melodic Yorùbá voice"},
     {"id": "alloy", "name": "Abubakar", "accent": "Hausa", "language": "ha", "description": "Calm, dignified Hausa voice"},
     {"id": "shimmer", "name": "Chinyere", "accent": "Igbo", "language": "ig", "description": "Bright, expressive Igbo voice"},

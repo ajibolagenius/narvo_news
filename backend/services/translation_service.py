@@ -11,14 +11,14 @@ SUPPORTED_LANGUAGES = {
         "name": "English",
         "native_name": "English",
         "voice_id": "nova",
-        "voice_name": "Adaeze",
+        "voice_name": "Nova",
         "description": "International English broadcast"
     },
     "pcm": {
         "name": "Naijá",
         "native_name": "Naijá Tok",
         "voice_id": "onyx",
-        "voice_name": "Chukwuemeka",
+        "voice_name": "Onyx",
         "description": "Naijá Pidgin - di language wey everybody sabi for Naija"
     },
     "yo": {
