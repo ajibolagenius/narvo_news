@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Zap, ArrowRight, X } from 'lucide-react';
+import { Lightning, ArrowRight, X } from '@phosphor-icons/react';
 import Clock from '../components/Clock';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
