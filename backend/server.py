@@ -85,6 +85,7 @@ class NewsItem(BaseModel):
     audio_url: Optional[str] = None
     listen_count: int = 0
     tags: List[str] = []
+    image_url: Optional[str] = None
 
 class BriefingStory(BaseModel):
     id: str
