@@ -1,0 +1,117 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Narvo",
+      "aesthetic": "Swiss Grid x Military Broadcast",
+      "theme": "dark",
+      "core_values": ["Precision", "Clarity", "Speed", "Audio-First"]
+    },
+    "colors": {
+      "palette": {
+        "primary": "#D4FF00",
+        "primary_dim": "rgba(212, 255, 0, 0.1)",
+        "secondary": "#628141",
+        "background": "#0a0a0a",
+        "surface": "#111111",
+        "surface_highlight": "#1A1A1A",
+        "text_primary": "#F2F2F2",
+        "text_secondary": "#8BAE66",
+        "text_muted": "#525252",
+        "border": "#333333",
+        "border_active": "#628141",
+        "error": "#FF3B30",
+        "success": "#D4FF00"
+      },
+      "usage": {
+        "background": "bg-[#0a0a0a]",
+        "surface": "bg-[#111111]",
+        "primary_text": "text-[#F2F2F2]",
+        "accent_text": "text-[#D4FF00]",
+        "border_default": "border-[#333333]",
+        "border_highlight": "border-[#628141]"
+      }
+    },
+    "typography": {
+      "font_family": {
+        "display": "Space Grotesk, sans-serif",
+        "body": "Inter, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "styles": {
+        "h1": "font-display text-5xl md:text-7xl font-bold tracking-tighter uppercase leading-none",
+        "h2": "font-display text-3xl md:text-4xl font-medium tracking-tight uppercase",
+        "h3": "font-display text-xl md:text-2xl font-medium tracking-tight",
+        "body": "font-body text-base leading-relaxed text-[#F2F2F2]",
+        "label": "font-mono text-xs tracking-widest uppercase text-[#8BAE66]",
+        "data": "font-mono text-sm text-[#D4FF00]"
+      }
+    },
+    "layout": {
+      "grid_system": "Swiss Grid",
+      "container": "max-w-[1920px] mx-auto p-4 md:p-8",
+      "spacing": {
+        "section_gap": "gap-8",
+        "component_gap": "gap-4",
+        "internal_padding": "p-6"
+      },
+      "borders": "border border-[#333333] relative"
+    },
+    "effects": {
+      "glass": "backdrop-blur-md bg-black/40 border border-white/10",
+      "scanline": "bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))]",
+      "glow": "shadow-[0_0_20px_rgba(212,255,0,0.15)]"
+    }
+  },
+  "components": {
+    "BriefingPage": {
+      "structure": "Grid Layout (12 columns)",
+      "sections": {
+        "Header": "Full width, contains Date, Weather, User Status. Style: Military HUD.",
+        "Sidebar_History": "Col-span-3. Vertical list of past briefings. Style: Data Log.",
+        "Main_Player": "Col-span-6. Large visualization, Play controls, Current Story text. Style: Command Center.",
+        "Sidebar_Stories": "Col-span-3. List of 5 stories in current briefing. Style: Checklist."
+      }
+    },
+    "AudioPlayer": {
+      "style": "Fixed bottom or integrated in Main_Player. Must have large waveform visualization.",
+      "controls": "Oversized Play/Pause button (Lime Green). Mono-spaced time counters."
+    },
+    "VoiceSelector": {
+      "style": "Grid of 'Agent' cards. Each card has an avatar and voice characteristics (e.g., 'Deep', 'Fast')."
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "category": "background_texture",
+        "url": "https://images.unsplash.com/photo-1765410845144-91fa68bfc09b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njl8MHwxfHNlYXJjaHw0fHxhYnN0cmFjdCUyMGF1ZGlvJTIwc291bmR3YXZlJTIwZGFyayUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzcxOTQ3OTY2fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract cyan soundwave, use with CSS filter to tint Lime Green for 'Active Audio' background."
+      },
+      {
+        "category": "context_hero",
+        "url": "https://images.unsplash.com/photo-1741991109902-98bf764fb35d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHwzfHxhZnJpY2FuJTIwY2l0eXNjYXBlJTIwbW9kZXJuJTIwbmlnaHR8ZW58MHx8fHwxNzcxOTQ3OTY4fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Nairobi Skyline Night. Use as subtle background for the 'Morning Briefing' header area."
+      }
+    ],
+    "icons": "Lucide React (already installed). Use: Play, Pause, Calendar, Radio, Mic, Globe, BarChart3."
+  },
+  "instructions_to_main_agent": [
+    "OVERRIDE the existing 'primary' color in tailwind.config.js to #D4FF00 (Lime Green). The current #EBD5AB is deprecated for this redesign.",
+    "Use 'Space Grotesk' for all Headings. Use 'JetBrains Mono' for all metadata (dates, times, labels).",
+    "Implement the 'Swiss Grid' strictly. Every component should feel like it is inside a grid cell with a visible border.",
+    "The 'Briefing Page' is the main dashboard. It should feel like a tactical operations screen.",
+    "Use the 'scanline' effect overlay on the main player area to give it a broadcast feel.",
+    "For the 'Historical Briefings', use a virtualized list if possible, or a clean scrollable area with sticky headers for months.",
+    "Ensure the Audio Player is persistent or very prominent. This is an AUDIO-FIRST app.",
+    "Use the provided image URLs for backgrounds. Apply 'mix-blend-mode: overlay' or 'opacity-20' to blend them into the dark theme."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts. Use asymmetry.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur) sparingly, mostly for overlays.",
+    "Every interaction needs micro-animations - hover states, transitions.",
+    "Use 2-3x more spacing than feels comfortable.",
+    "All interactive elements MUST include data-testid attribute."
+  ]
+}

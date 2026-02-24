@@ -1,0 +1,90 @@
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        'primary': 'rgb(var(--color-primary) / <alpha-value>)',
+        'forest': 'rgb(var(--color-border) / <alpha-value>)',
+        'background-dark': 'rgb(var(--color-bg) / <alpha-value>)',
+        'surface': 'rgb(var(--color-surface) / <alpha-value>)',
+        'content': 'rgb(var(--color-text-primary) / <alpha-value>)',
+        'content-secondary': 'rgb(var(--color-text-secondary) / <alpha-value>)',
+        'content-dim': 'rgb(var(--color-text-dim) / <alpha-value>)',
+        // Aliases for backward compatibility
+        'narvo-bg': 'rgb(var(--color-bg) / <alpha-value>)',
+        'narvo-surface': 'rgb(var(--color-surface) / <alpha-value>)',
+        'narvo-border': 'rgb(var(--color-border) / <alpha-value>)',
+        'narvo-primary': 'rgb(var(--color-primary) / <alpha-value>)',
+        'narvo-text': 'rgb(var(--color-text-primary) / <alpha-value>)',
+        'narvo-text-secondary': 'rgb(var(--color-text-secondary) / <alpha-value>)',
+        'narvo-text-dim': 'rgb(var(--color-text-dim) / <alpha-value>)',
+        // Semantic Label Palette
+        'label-finance': '#EBD5AB',
+        'label-environ': '#93C5FD',
+        'label-tech': '#D8B4FE',
+        'label-urgent': '#FCA5A5',
+        'label-politics': '#FDBA74',
+        'label-science': '#5EEAD4',
+        'label-culture': '#F472B6',
+        'label-sports': '#FB923C',
+        'label-health': '#4ADE80',
+        'label-security': '#94A3B8',
+        'label-opinion': '#A8A29E',
+        'label-legal': '#818CF8',
+      },
+      fontFamily: {
+        'display': ['Space Grotesk', 'sans-serif'],
+        'body': ['Inter', 'sans-serif'],
+        'mono': ['JetBrains Mono', 'monospace'],
+        // Aliases
+        'header': ['Space Grotesk', 'sans-serif'],
+      },
+      borderRadius: {
+        'none': '0',
+        'DEFAULT': '0',
+        'sm': '0',
+        'md': '0',
+        'lg': '0',
+        'xl': '0',
+        '2xl': '0',
+        '3xl': '0',
+        'full': '0',
+      },
+      spacing: {
+        '1': '4px',
+        '2': '8px',
+        '3': '12px',
+        '4': '16px',
+        '5': '20px',
+        '6': '24px',
+        '8': '32px',
+        '10': '40px',
+        '12': '48px',
+        '16': '64px',
+      },
+      animation: {
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'breathe': 'breathe 3s ease-in-out infinite',
+        'scan': 'scan 4s linear infinite',
+        'blink': 'blink 1s step-end infinite',
+      },
+      keyframes: {
+        breathe: {
+          '0%, 100%': { opacity: '0.15' },
+          '50%': { opacity: '0.4' },
+        },
+        scan: {
+          '0%': { top: '0%' },
+          '100%': { top: '100%' },
+        },
+        blink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
+        },
+      },
+    },
+  },
+  plugins: [],
+}
