@@ -39,21 +39,14 @@ const CurationConsolePage = lazy(() => import('./pages/admin/CurationConsolePage
 const VoiceManagementPage = lazy(() => import('./pages/admin/VoiceManagementPage'));
 const ModerationHubPage = lazy(() => import('./pages/admin/ModerationHubPage'));
 
-// Page loading fallback
-const PageLoader = () => (
-  <div className="flex-1 flex items-center justify-center bg-[var(--color-bg)]">
-    <div className="text-center space-y-4">
-      <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent animate-spin mx-auto" />
-      <p className="font-mono text-[10px] text-[var(--color-text-secondary)]">LOADING_MODULE...</p>
-    </div>
-  </div>
-);
+// Minimal loading fallback - instant feel
+const PageLoader = () => null;
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   if (isLoading) {
-    return <LoadingScreen onComplete={() => setIsLoading(false)} duration={2500} />;
+    return <LoadingScreen onComplete={() => setIsLoading(false)} duration={1500} />;
   }
 
   return (
