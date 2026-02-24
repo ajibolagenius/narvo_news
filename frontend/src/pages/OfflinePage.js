@@ -83,23 +83,9 @@ const OfflinePage = () => {
       })));
       
       setCacheStats(stats);
-            title: cached.title || `Audio_${id.slice(0, 8)}.wav`,
-            metadata: cached.metadata || 'CACHED_AUDIO // LOCAL_STORAGE',
-            duration: cached.duration || '--:--',
-            size: itemSize,
-            type: 'audio',
-            timestamp: cached.timestamp || Date.now(),
-            status: 'complete'
-          });
-        }
-      }
-      
-      setCachedItems(items);
-      setTotalSize(size);
     } catch (e) {
       console.error('Error loading cached items:', e);
     }
-    setLoading(false);
   };
 
   const formatSize = (bytes) => {
