@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { CheckCircle, AlertTriangle, XCircle, Zap, Radio, Bell, X } from 'lucide-react';
+import { CheckCircle, Warning, XCircle, Lightning, Radio, Bell, X } from '@phosphor-icons/react';
 
 // Alert types with their configurations
 const ALERT_TYPES = {
@@ -11,7 +11,7 @@ const ALERT_TYPES = {
     hapticPattern: [100, 50, 100], // vibration pattern in ms
   },
   warning: {
-    icon: AlertTriangle,
+    icon: Warning,
     bgColor: 'bg-yellow-500/10',
     borderColor: 'border-yellow-500',
     textColor: 'text-yellow-500',
@@ -25,7 +25,7 @@ const ALERT_TYPES = {
     hapticPattern: [300, 100, 300, 100, 300, 100, 300],
   },
   breaking: {
-    icon: Zap,
+    icon: Lightning,
     bgColor: 'bg-red-500/20',
     borderColor: 'border-red-500',
     textColor: 'text-red-500',
