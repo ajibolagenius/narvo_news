@@ -21,6 +21,66 @@ export const AudioProvider = ({ children }) => {
   const [autoPlay, setAutoPlay] = useState(true);
   const [error, setError] = useState(null);
 
+  // Update Media Session metadata for lock screen/background playback
+  const updateMediaSession = useCallback((track) => {
+    if (!('mediaSession' in navigator) || !track) return;
+    
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: track.title || 'Narvo News',
+      artist: track.source || 'Narvo',
+      album: 'Narvo Broadcast',
+      artwork: [
+        { src: track.image_url || '/logo192.png', sizes: '192x192', type: 'image/png' },
+        { src: track.image_url || '/logo512.png', sizes: '512x512', type: 'image/png' }
+      ]
+    });
+  }, []);
+
+  // Setup Media Session action handlers for background control
+  const setupMediaSessionHandlers = useCallback(() => {
+    if (!('mediaSession' in navigator)) return;
+    
+    navigator.mediaSession.setActionHandler('play', () => {
+      audioRef.current?.play().catch(() => {});
+    });
+    
+    navigator.mediaSession.setActionHandler('pause', () => {
+      audioRef.current?.pause();
+    });
+    
+    navigator.mediaSession.setActionHandler('stop', () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    });
+    
+    navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+      const skipTime = details.seekOffset || 10;
+      if (audioRef.current) {
+        audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - skipTime);
+      }
+    });
+    
+    navigator.mediaSession.setActionHandler('seekforward', (details) => {
+      const skipTime = details.seekOffset || 10;
+      if (audioRef.current) {
+        audioRef.current.currentTime = Math.min(
+          audioRef.current.duration || 0,
+          audioRef.current.currentTime + skipTime
+        );
+      }
+    });
+    
+    navigator.mediaSession.setActionHandler('previoustrack', () => {
+      // Will be connected to playPrev
+    });
+    
+    navigator.mediaSession.setActionHandler('nexttrack', () => {
+      // Will be connected to playNext
+    });
+  }, []);
+
   // Smooth fade out for broadcast transitions
   const fadeOut = useCallback((callback) => {
     const audio = audioRef.current;
@@ -50,9 +110,24 @@ export const AudioProvider = ({ children }) => {
   useEffect(() => {
     const audio = new Audio();
     audio.volume = volume;
+    // Enable background playback
+    audio.preload = 'auto';
     audioRef.current = audio;
     
-    audio.addEventListener('timeupdate', () => setCurrentTime(audio.currentTime));
+    // Setup Media Session handlers for background control
+    setupMediaSessionHandlers();
+    
+    audio.addEventListener('timeupdate', () => {
+      setCurrentTime(audio.currentTime);
+      // Update Media Session position state
+      if ('mediaSession' in navigator && audio.duration) {
+        navigator.mediaSession.setPositionState({
+          duration: audio.duration,
+          playbackRate: audio.playbackRate,
+          position: audio.currentTime
+        });
+      }
+    });
     audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
@@ -61,8 +136,20 @@ export const AudioProvider = ({ children }) => {
         playNextSmooth();
       }
     });
-    audio.addEventListener('play', () => setIsPlaying(true));
-    audio.addEventListener('pause', () => setIsPlaying(false));
+    audio.addEventListener('play', () => {
+      setIsPlaying(true);
+      // Update Media Session playback state
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+      }
+    });
+    audio.addEventListener('pause', () => {
+      setIsPlaying(false);
+      // Update Media Session playback state
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'paused';
+      }
+    });
     audio.addEventListener('error', (e) => {
       console.error('Audio error:', e);
       setError('Failed to play audio');
@@ -206,11 +293,15 @@ export const AudioProvider = ({ children }) => {
       setError('Failed to play audio');
     });
     
-    setCurrentTrack({ ...track, url: trackUrl });
+    const finalTrack = { ...track, url: trackUrl };
+    setCurrentTrack(finalTrack);
     setDuration(0);
     setCurrentTime(0);
     setIsLoading(false);
-  }, [currentTrack, isPlaying, generateTTS, addToQueue]);
+    
+    // Update Media Session for background/lock screen controls
+    updateMediaSession(finalTrack);
+  }, [currentTrack, isPlaying, generateTTS, addToQueue, updateMediaSession]);
 
   // Force play - always plays immediately
   const forcePlayTrack = useCallback(async (track) => {
@@ -271,6 +362,21 @@ export const AudioProvider = ({ children }) => {
       await playTrack(prev, true); // Force play
     }
   }, [queue, queueIndex, playTrack]);
+
+  // Update Media Session handlers when queue changes
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    
+    navigator.mediaSession.setActionHandler('previoustrack', queue.length > 0 && queueIndex > 0 
+      ? () => playPrev() 
+      : null
+    );
+    
+    navigator.mediaSession.setActionHandler('nexttrack', queue.length > 0 && queueIndex < queue.length - 1 
+      ? () => playNext() 
+      : null
+    );
+  }, [queue, queueIndex, playNext, playPrev]);
 
   const playFromQueue = useCallback(async (index) => {
     if (index >= 0 && index < queue.length) {
