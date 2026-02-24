@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
 
