@@ -35,10 +35,10 @@ const TruthTag = ({ storyId, compact = false }) => {
 
   if (loading) {
     return compact ? (
-      <Loader2 className="w-3 h-3 text-forest animate-spin" />
+      <CircleNotch className="w-3 h-3 text-forest animate-spin" />
     ) : (
       <div className="flex items-center gap-1 mono-ui text-[8px] text-forest">
-        <Loader2 className="w-3 h-3 animate-spin" />
+        <CircleNotch className="w-3 h-3 animate-spin" />
         <span>VERIFYING...</span>
       </div>
     );
@@ -55,14 +55,14 @@ const TruthTag = ({ storyId, compact = false }) => {
       label: 'VERIFIED',
     },
     UNVERIFIED: {
-      icon: HelpCircle,
+      icon: Question,
       color: 'text-forest',
       bgColor: 'bg-forest/10',
       borderColor: 'border-forest/30',
       label: 'UNVERIFIED',
     },
     DISPUTED: {
-      icon: AlertTriangle,
+      icon: Warning,
       color: 'text-yellow-500',
       bgColor: 'bg-yellow-500/10',
       borderColor: 'border-yellow-500/30',
