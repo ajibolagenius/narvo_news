@@ -1,416 +1,406 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Moderation &amp; Fact-Check Hub</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Moderation & Fact-Check Hub</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#2bee4b",
-                        "primary-dark": "#1e8a31", 
-                        "background-dark": "#1B211A", 
-                        "background-light": "#f6f8f6",
-                        "forest-border": "#3b543f",
-                        "sand-alert": "#EBD5AB",
-                        "dark-surface": "#232A24",
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
+                        "border-green": "#628141",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
-                    borderRadius: {"DEFAULT": "2px", "sm": "2px", "lg": "4px", "xl": "6px", "full": "9999px"},
+                    borderRadius: {
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
+                    },
                 },
             },
         }
     </script>
-<style>
-        /* Custom scrollbar for the terminal feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        ::-webkit-scrollbar-track {
+
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .narvo-border {
+            border: 1px solid #628141;
+        }
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
+        }
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
+        }
+
+        .narvo-border-l {
+            border-left: 1px solid #628141;
+        }
+
+        .narvo-border-t {
+            border-top: 1px solid #628141;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
             background: #1B211A;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #3b543f;
-            border-radius: 2px;
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #2bee4b;
+
+        .status-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 6px;
+            text-transform: uppercase;
+            border: 1px solid currentColor;
         }
     </style>
 </head>
-<body class="bg-background-dark text-white font-display min-h-screen flex flex-col overflow-hidden">
-<!-- Top Navigation Bar -->
-<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-forest-border bg-[#111812] px-6 py-3 shrink-0 z-20">
-<div class="flex items-center gap-4 text-white">
-<div class="size-6 text-primary flex items-center justify-center">
-<span class="material-symbols-outlined text-2xl">radar</span>
-</div>
-<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] font-mono">NARVO // MODERATION HUB [v2.4]</h2>
-</div>
-<div class="hidden md:flex flex-1 justify-center px-12">
-<!-- Global Search Bar -->
-<label class="flex flex-col w-full max-w-[600px] h-10">
-<div class="flex w-full flex-1 items-stretch rounded-sm h-full group">
-<div class="text-[#9db9a1] group-focus-within:text-primary flex border-none bg-[#232A24] items-center justify-center pl-4 rounded-l-sm border-r-0 transition-colors">
-<span class="material-symbols-outlined text-[20px]">search</span>
-</div>
-<input class="form-input font-mono flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-sm text-white focus:outline-0 focus:ring-0 border-none bg-[#232A24] focus:border-none h-full placeholder:text-[#5a705e] px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal transition-all" placeholder="SEARCH HASH // KEYWORD // SOURCE_ID..." value=""/>
-</div>
-</label>
-</div>
-<div class="flex flex-1 justify-end gap-6 items-center">
-<!-- Status Indicators -->
-<div class="hidden lg:flex gap-4 font-mono text-xs border-r border-forest-border pr-6 mr-2">
-<div class="flex flex-col items-end">
-<span class="text-[#5a705e]">API LATENCY</span>
-<span class="text-primary">12ms</span>
-</div>
-<div class="flex flex-col items-end">
-<span class="text-[#5a705e]">DUBAWA FEED</span>
-<span class="text-primary">ONLINE</span>
-</div>
-</div>
-<div class="flex gap-2">
-<button class="flex size-10 cursor-pointer items-center justify-center rounded-sm bg-[#232A24] hover:bg-[#2bee4b]/20 text-white hover:text-primary transition-colors">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<button class="flex size-10 cursor-pointer items-center justify-center rounded-sm bg-[#232A24] hover:bg-[#2bee4b]/20 text-white hover:text-primary transition-colors">
-<span class="material-symbols-outlined">settings</span>
-</button>
-</div>
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-forest-border" data-alt="Profile picture of a male user with glasses" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC9eur910ymtCeYCaDljfoVbTO_ubiUxAUXriHgJDIKOear_TiNwDJ3tt7uWt9wJjKSmPaA31sMTS69OqjGFuvd3pSCm0R0G75N_iJmyQhiq5Qh5kl8okxXv9Qzai9ba0F1JTRpM9BHe_ipIkHbDoZwNlftDq41HZYvdBBJxj9_jsTi_eBbIaPgG6U7LWCYvLQBK1hrsV2hFd_O7ryG7flBVgB9FTpBYBUiLu-kb85T93rvGDDqxcBN3VsfwdOIOdbX_S5ka7p2SN0");'></div>
-</div>
-</header>
-<!-- Main Layout Grid -->
-<div class="flex flex-1 overflow-hidden">
-<!-- Left Sidebar: Filters & Stats -->
-<aside class="w-64 bg-[#151a16] border-r border-forest-border flex-col hidden lg:flex shrink-0">
-<div class="p-4 border-b border-forest-border">
-<div class="flex flex-col gap-2 rounded-sm p-4 border border-[#2bee4b]/30 bg-[#2bee4b]/5">
-<p class="text-[#9db9a1] text-xs font-mono mb-1">SYSTEM STATUS</p>
-<div class="flex items-center gap-2">
-<div class="size-2 rounded-full bg-primary animate-pulse"></div>
-<p class="text-primary tracking-tight text-xl font-bold leading-tight font-display">OPTIMAL</p>
-</div>
-</div>
-</div>
-<nav class="flex-1 overflow-y-auto p-4 space-y-6">
-<!-- Filter Group -->
-<div>
-<h3 class="text-[#5a705e] text-xs font-mono uppercase tracking-wider mb-3 px-2">Feed Sources</h3>
-<ul class="space-y-1">
-<li>
-<button class="w-full flex items-center justify-between text-sm px-2 py-2 rounded-sm bg-[#2bee4b]/10 text-primary border-l-2 border-primary">
-<span class="font-medium">All Sources</span>
-<span class="text-xs font-mono opacity-70">84</span>
-</button>
-</li>
-<li>
-<button class="w-full flex items-center justify-between text-sm px-2 py-2 rounded-sm text-[#9db9a1] hover:bg-[#232A24] hover:text-white transition-colors border-l-2 border-transparent">
-<span>Twitter API</span>
-<span class="text-xs font-mono opacity-50">12</span>
-</button>
-</li>
-<li>
-<button class="w-full flex items-center justify-between text-sm px-2 py-2 rounded-sm text-[#9db9a1] hover:bg-[#232A24] hover:text-white transition-colors border-l-2 border-transparent">
-<span>Dubawa Direct</span>
-<span class="text-xs font-mono opacity-50">45</span>
-</button>
-</li>
-<li>
-<button class="w-full flex items-center justify-between text-sm px-2 py-2 rounded-sm text-[#9db9a1] hover:bg-[#232A24] hover:text-white transition-colors border-l-2 border-transparent">
-<span>Facebook Watch</span>
-<span class="text-xs font-mono opacity-50">27</span>
-</button>
-</li>
-</ul>
-</div>
-<!-- Risk Filter -->
-<div>
-<h3 class="text-[#5a705e] text-xs font-mono uppercase tracking-wider mb-3 px-2">Risk Level</h3>
-<div class="space-y-2">
-<label class="flex items-center gap-3 px-2 cursor-pointer group">
-<input checked="" class="form-checkbox h-4 w-4 rounded-sm border-forest-border bg-[#232A24] text-sand-alert focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-sm text-sand-alert font-mono group-hover:text-white transition-colors">CRITICAL [HIGH]</span>
-</label>
-<label class="flex items-center gap-3 px-2 cursor-pointer group">
-<input checked="" class="form-checkbox h-4 w-4 rounded-sm border-forest-border bg-[#232A24] text-[#EBD5AB] focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-sm text-[#EBD5AB]/80 font-mono group-hover:text-white transition-colors">DISPUTED [MED]</span>
-</label>
-<label class="flex items-center gap-3 px-2 cursor-pointer group">
-<input class="form-checkbox h-4 w-4 rounded-sm border-forest-border bg-[#232A24] text-primary focus:ring-0 focus:ring-offset-0" type="checkbox"/>
-<span class="text-sm text-primary/80 font-mono group-hover:text-white transition-colors">VERIFIED [LOW]</span>
-</label>
-</div>
-</div>
-</nav>
-<div class="p-4 border-t border-forest-border">
-<button class="flex w-full items-center justify-center gap-2 rounded-sm bg-[#232A24] border border-forest-border p-2 text-xs font-mono text-[#9db9a1] hover:bg-[#2bee4b]/10 hover:text-primary hover:border-primary transition-all uppercase tracking-wider">
-<span class="material-symbols-outlined text-[16px]">terminal</span>
-                    Launch Console
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-shield-check text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> MOD_HUB
+                </h1>
+            </div>
+
+            <div class="hidden md:flex relative">
+                <input type="text"
+                    class="bg-black/20 narvo-border mono-ui text-[9px] text-primary px-10 py-2 w-80 focus:outline-none focus:border-white transition-all"
+                    placeholder="SEARCH_HASH // KEYWORD // SOURCE_ID...">
+                <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-forest text-sm"></i>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="hidden lg:flex items-center gap-6 border-r border-forest/30 pr-6">
+                <div class="flex flex-col items-end">
+                    <span class="mono-ui text-[8px] text-forest font-bold">NODE_LAG</span>
+                    <span class="mono-ui text-[10px] text-primary font-bold">12ms</span>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="mono-ui text-[8px] text-forest font-bold">FEED_STATUS</span>
+                    <span class="mono-ui text-[10px] text-primary font-bold">OPTIMAL</span>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button
+                    class="size-10 narvo-border bg-surface flex items-center justify-center text-primary hover:bg-forest hover:text-white transition-all">
+                    <i class="ph ph-bell text-xl"></i>
                 </button>
-</div>
-</aside>
-<!-- Main Feed Area -->
-<main class="flex-1 overflow-y-auto bg-background-dark relative">
-<!-- Grid Header / Filter Bar -->
-<div class="sticky top-0 z-10 bg-[#1B211A]/95 backdrop-blur-sm border-b border-forest-border px-6 py-4 flex justify-between items-center">
-<div class="flex items-center gap-4">
-<h1 class="text-xl font-bold tracking-tight text-white">INCOMING FEED</h1>
-<span class="px-2 py-0.5 rounded-sm bg-[#232A24] text-[#5a705e] text-xs font-mono">LIVE MONITORING</span>
-</div>
-<div class="flex gap-2">
-<button class="p-1.5 rounded-sm bg-[#2bee4b]/10 text-primary hover:bg-[#2bee4b]/20 transition-colors">
-<span class="material-symbols-outlined text-[20px]">grid_view</span>
-</button>
-<button class="p-1.5 rounded-sm bg-transparent text-[#5a705e] hover:text-white hover:bg-[#232A24] transition-colors">
-<span class="material-symbols-outlined text-[20px]">view_list</span>
-</button>
-</div>
-</div>
-<!-- Card Grid -->
-<div class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-<!-- Card 1: Disputed (Critical) -->
-<article class="group relative flex flex-col bg-[#161b17] border border-forest-border hover:border-sand-alert hover:shadow-[0_0_15px_-3px_rgba(235,213,171,0.1)] transition-all duration-300 rounded-sm overflow-hidden h-full">
-<div class="absolute top-0 left-0 w-1 h-full bg-sand-alert"></div>
-<div class="p-5 flex flex-col h-full">
-<div class="flex justify-between items-start mb-3 border-b border-[#232A24] pb-3">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-[10px] text-sand-alert uppercase tracking-wider">⚠ ALERT: DISPUTED</span>
-<span class="font-mono text-xs text-[#5a705e]">ID: #8821X // TWITTER_API</span>
-</div>
-<span class="font-mono text-xs text-[#5a705e]">14:02:45 UTC</span>
-</div>
-<div class="flex-1">
-<h3 class="text-lg font-bold text-white leading-snug mb-2 font-display group-hover:text-sand-alert transition-colors">Election results contested in District 9 due to "irregularities"</h3>
-<p class="text-[#9db9a1] text-sm leading-relaxed mb-4 line-clamp-3">Reports emerging from multiple accounts regarding polling station closures. Official electoral commission has not issued a statement. High velocity of sharing.</p>
-<!-- Tags -->
-<div class="flex flex-wrap gap-2 mb-4">
-<span class="px-2 py-1 bg-[#232A24] border border-forest-border text-[#9db9a1] text-[10px] font-mono rounded-sm">#ELECTION2024</span>
-<span class="px-2 py-1 bg-[#232A24] border border-forest-border text-[#9db9a1] text-[10px] font-mono rounded-sm">#VOTING</span>
-<span class="px-2 py-1 bg-sand-alert/10 border border-sand-alert/30 text-sand-alert text-[10px] font-mono rounded-sm">CONFIDENCE: 98%</span>
-</div>
-</div>
-<!-- Action Row -->
-<div class="flex gap-2 mt-auto pt-3 border-t border-[#232A24]">
-<button class="flex-1 bg-[#232A24] hover:bg-sand-alert hover:text-black text-white text-xs font-mono font-bold py-2 px-3 rounded-sm uppercase tracking-wide transition-colors border border-forest-border hover:border-sand-alert">
-                                FLAG
+                <div class="h-10 w-10 narvo-border bg-surface flex items-center justify-center">
+                    <i class="ph ph-user text-primary text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Sidebar Filters -->
+        <aside class="w-64 narvo-border-r bg-background-dark flex flex-col hidden lg:flex">
+            <div class="p-6 narvo-border-b">
+                <div class="p-4 narvo-border bg-primary/5 flex flex-col gap-1">
+                    <span class="mono-ui text-[8px] text-forest font-bold">SYSTEM_MODE</span>
+                    <span class="font-display text-2xl font-bold text-primary italic uppercase">Active</span>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll p-6 space-y-8">
+                <div class="space-y-4">
+                    <h3 class="mono-ui text-[10px] text-forest font-bold tracking-widest">FEED_SOURCES</h3>
+                    <div class="flex flex-col gap-1">
+                        <button
+                            class="flex justify-between items-center py-2 px-3 bg-primary text-background-dark mono-ui text-[10px] font-bold">
+                            <span>ALL_SOURCES</span>
+                            <span>84</span>
+                        </button>
+                        <button
+                            class="flex justify-between items-center py-2 px-3 text-forest hover:text-white mono-ui text-[10px] font-bold transition-all">
+                            <span>TWITTER_X</span>
+                            <span>12</span>
+                        </button>
+                        <button
+                            class="flex justify-between items-center py-2 px-3 text-forest hover:text-white mono-ui text-[10px] font-bold transition-all">
+                            <span>DIRECT_FOSSIL</span>
+                            <span>45</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="mono-ui text-[10px] text-forest font-bold tracking-widest">RISK_PARAM</h3>
+                    <div class="flex flex-col gap-3">
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <div class="size-4 narvo-border bg-surface flex items-center justify-center">
+                                <i class="ph ph-check text-[10px] text-primary"></i>
+                            </div>
+                            <span class="mono-ui text-[9px] text-white font-bold tracking-wide">CRITICAL_HIGH</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <div class="size-4 narvo-border bg-surface flex items-center justify-center">
+                                <i class="ph ph-check text-[10px] text-primary"></i>
+                            </div>
+                            <span class="mono-ui text-[9px] text-forest font-bold hover:text-white">DISPUTED_MED</span>
+                        </label>
+                        <label class="flex items-center gap-3 cursor-pointer group">
+                            <div class="size-4 narvo-border bg-surface"></div>
+                            <span class="mono-ui text-[9px] text-forest font-bold hover:text-white">VERIFIED_LOW</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 narvo-border-t bg-black/20">
+                <button
+                    class="w-full py-4 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white hover:bg-forest transition-all flex items-center justify-center gap-3">
+                    <i class="ph ph-terminal-window"></i>
+                    <span>LAUNCH_CONSOLE</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Feed Grid -->
+        <main class="flex-1 flex flex-col overflow-hidden bg-background-dark">
+            <div class="px-8 py-6 narvo-border-b flex justify-between items-center bg-black/20">
+                <div class="flex items-baseline gap-4">
+                    <h2 class="font-display text-2xl font-bold text-white uppercase tracking-tight">Incoming_Matrix</h2>
+                    <span class="mono-ui text-[9px] text-forest font-bold border border-forest px-2">LIVE_WATCH</span>
+                </div>
+                <div class="flex gap-2">
+                    <button class="size-10 narvo-border flex items-center justify-center text-primary bg-forest/20"><i
+                            class="ph ph-squares-four text-xl"></i></button>
+                    <button
+                        class="size-10 narvo-border flex items-center justify-center text-forest hover:text-white transition-all"><i
+                            class="ph ph-list text-xl"></i></button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <!-- Mod Card 1 -->
+                    <article
+                        class="narvo-border bg-surface/30 p-6 flex flex-col gap-6 relative group hover:border-primary transition-all">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+                        <div class="flex justify-between items-start border-b border-forest/20 pb-4">
+                            <div class="space-y-1">
+                                <span class="mono-ui text-[9px] text-red-500 font-bold">⚠ ALERT: DISPUTED</span>
+                                <p class="mono-ui text-[8px] text-forest font-bold">ID: #8821X // TW_X</p>
+                            </div>
+                            <span class="mono-ui text-[9px] text-forest font-bold">14:02 UTC</span>
+                        </div>
+                        <div class="flex-1 space-y-3">
+                            <h3
+                                class="font-display text-xl font-bold text-white uppercase leading-tight group-hover:text-primary transition-colors">
+                                Contested results in District 9 due to "irregularities"</h3>
+                            <p class="text-[11px] text-forest font-medium leading-relaxed line-clamp-3">Reports emerging
+                                from multiple accounts regarding polling station closures. Official commission silent.
+                                High velocity signal detected.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="status-badge text-forest border-forest/30">#ELECTION2024</span>
+                                <span class="status-badge text-primary border-primary/30">AI_CONF: 98%</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 pt-4 narvo-border-t">
+                            <button
+                                class="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-red-500 hover:border-red-500 transition-all uppercase">FLAG</button>
+                            <button
+                                class="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-forest transition-all uppercase">IGNORE</button>
+                        </div>
+                    </article>
+
+                    <!-- Mod Card 2 -->
+                    <article
+                        class="narvo-border bg-surface/30 p-6 flex flex-col gap-6 relative group hover:border-primary transition-all">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                        <div class="flex justify-between items-start border-b border-forest/20 pb-4">
+                            <div class="space-y-1">
+                                <span class="mono-ui text-[9px] text-primary font-bold">✔ VERIFIED</span>
+                                <p class="mono-ui text-[8px] text-forest font-bold">ID: #9942A // DIRECT</p>
+                            </div>
+                            <span class="mono-ui text-[9px] text-forest font-bold">13:58 UTC</span>
+                        </div>
+                        <div class="flex-1 space-y-4">
+                            <h3
+                                class="font-display text-xl font-bold text-white uppercase leading-tight group-hover:text-primary transition-colors">
+                                Dam levels stabilize after weekend rainfall cycle</h3>
+                            <div class="aspect-video narvo-border bg-black/40 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?q=80&w=2692&auto=format&fit=crop"
+                                    class="w-full h-full object-cover opacity-60">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <i class="ph ph-image text-3xl text-forest opacity-30"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 narvo-border-t">
+                            <button
+                                class="w-full py-4 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all uppercase flex items-center justify-center gap-3">
+                                <i class="ph ph-check-square-offset text-lg"></i>
+                                <span>PUBLISH_CONFIRMATION</span>
                             </button>
-<button class="flex-1 bg-[#232A24] hover:bg-white hover:text-black text-white text-xs font-mono font-bold py-2 px-3 rounded-sm uppercase tracking-wide transition-colors border border-forest-border">
-                                IGNORE
-                            </button>
-<button class="flex-none bg-transparent hover:bg-[#232A24] text-primary p-2 rounded-sm border border-transparent hover:border-primary/30 transition-colors">
-<span class="material-symbols-outlined text-[18px]">open_in_new</span>
-</button>
-</div>
-</div>
-</article>
-<!-- Card 2: Verified (Good) -->
-<article class="group relative flex flex-col bg-[#161b17] border border-forest-border hover:border-primary hover:shadow-[0_0_15px_-3px_rgba(43,238,75,0.1)] transition-all duration-300 rounded-sm overflow-hidden h-full">
-<div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
-<div class="p-5 flex flex-col h-full">
-<div class="flex justify-between items-start mb-3 border-b border-[#232A24] pb-3">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-[10px] text-primary uppercase tracking-wider">✔ VERIFIED</span>
-<span class="font-mono text-xs text-[#5a705e]">ID: #9942A // DUBAWA_FEED</span>
-</div>
-<span class="font-mono text-xs text-[#5a705e]">13:58:12 UTC</span>
-</div>
-<div class="flex-1">
-<h3 class="text-lg font-bold text-white leading-snug mb-2 font-display group-hover:text-primary transition-colors">Local dam levels stabilize after heavy rainfall weekend</h3>
-<p class="text-[#9db9a1] text-sm leading-relaxed mb-4 line-clamp-3">Water management authorities confirm levels are within safety margins. Previous reports of structural failure debunked by on-site engineers.</p>
-<!-- Media Preview -->
-<div class="mb-4 rounded-sm overflow-hidden border border-forest-border bg-[#232A24] h-32 relative">
-<img alt="Aerial view of a dam with water flowing" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Aerial view of a dam structure with water" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr6bUPzFKA3ssoLSP99Wd8B5fszrU-u4cai1JlRkhDC1Ig2mWZS8XDlUaHd-kFlgGEJ_rpVDbt3F5Mc6uAnZwHuGZ6-wYlEoGNfAS4SAJ0UwqHJAf6lkLQ__Pun33VIUNw2z6yaJFpy5beHfZx8ugUUxBpHxG7YoK4EziAkquxX6IqTjZXe-S1Tr6LN4xM222yeW1SrccNzwUkJP_Uecr0CwRI9e70F9J4TjM7NgXqMTzFH9y-dOmPUh47EV0gCMiBTl1teT610EY"/>
-<div class="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/70 text-white text-[10px] font-mono rounded-sm backdrop-blur-sm">IMG_SRC: REUTERS</div>
-</div>
-</div>
-<!-- Action Row -->
-<div class="flex gap-2 mt-auto pt-3 border-t border-[#232A24]">
-<button class="w-full bg-[#232A24] hover:bg-primary hover:text-black text-primary text-xs font-mono font-bold py-2 px-3 rounded-sm uppercase tracking-wide transition-colors border border-forest-border hover:border-primary flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-[16px]">check_circle</span>
-                                PUBLISH CONFIRMATION
-                            </button>
-</div>
-</div>
-</article>
-<!-- Card 3: Unverified (Pending) -->
-<article class="group relative flex flex-col bg-[#161b17] border border-forest-border hover:border-white/50 transition-all duration-300 rounded-sm overflow-hidden h-full opacity-80 hover:opacity-100">
-<div class="absolute top-0 left-0 w-1 h-full bg-[#5a705e]"></div>
-<div class="p-5 flex flex-col h-full">
-<div class="flex justify-between items-start mb-3 border-b border-[#232A24] pb-3">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-[10px] text-[#9db9a1] uppercase tracking-wider">? UNVERIFIED</span>
-<span class="font-mono text-xs text-[#5a705e]">ID: #1102Z // FACEBOOK_WATCH</span>
-</div>
-<span class="font-mono text-xs text-[#5a705e]">13:45:00 UTC</span>
-</div>
-<div class="flex-1">
-<h3 class="text-lg font-bold text-white leading-snug mb-2 font-display">Viral image of downtown protest confirmed deepfake</h3>
-<p class="text-[#9db9a1] text-sm leading-relaxed mb-4 line-clamp-3">Image analysis tools flag inconsistencies in background signage and lighting. Requires manual review by image forensics team.</p>
-<div class="flex flex-wrap gap-2 mb-4">
-<span class="px-2 py-1 bg-[#232A24] border border-forest-border text-[#9db9a1] text-[10px] font-mono rounded-sm">#DEEPFAKE</span>
-<span class="px-2 py-1 bg-[#232A24] border border-forest-border text-[#9db9a1] text-[10px] font-mono rounded-sm">#AI_GEN</span>
-</div>
-</div>
-<!-- Action Row -->
-<div class="flex gap-2 mt-auto pt-3 border-t border-[#232A24]">
-<button class="flex-1 bg-[#232A24] hover:bg-white hover:text-black text-white text-xs font-mono font-bold py-2 px-3 rounded-sm uppercase tracking-wide transition-colors border border-forest-border">
-                                ASSIGN
-                            </button>
-<button class="flex-none bg-transparent hover:bg-[#232A24] text-[#9db9a1] p-2 rounded-sm border border-transparent hover:border-white/30 transition-colors">
-<span class="material-symbols-outlined text-[18px]">more_horiz</span>
-</button>
-</div>
-</div>
-</article>
-<!-- Card 4: Normal text post -->
-<article class="group relative flex flex-col bg-[#161b17] border border-forest-border hover:border-[#2bee4b] hover:shadow-[0_0_15px_-3px_rgba(43,238,75,0.1)] transition-all duration-300 rounded-sm overflow-hidden h-full">
-<div class="absolute top-0 left-0 w-1 h-full bg-[#3b543f] group-hover:bg-[#2bee4b]"></div>
-<div class="p-5 flex flex-col h-full">
-<div class="flex justify-between items-start mb-3 border-b border-[#232A24] pb-3">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-[10px] text-[#9db9a1] uppercase tracking-wider group-hover:text-[#2bee4b]">SCANNING...</span>
-<span class="font-mono text-xs text-[#5a705e]">ID: #4492B // RSS_FEED</span>
-</div>
-<span class="font-mono text-xs text-[#5a705e]">13:30:11 UTC</span>
-</div>
-<div class="flex-1">
-<h3 class="text-lg font-bold text-white leading-snug mb-2 font-display">Crypto market volatility linked to unverified rumors of regulation</h3>
-<p class="text-[#9db9a1] text-sm leading-relaxed mb-4 line-clamp-3">Sharp drop in BTC and ETH following a tweet from an anonymous source claiming new EU regulations. No official documentation found.</p>
-</div>
-<div class="flex gap-2 mt-auto pt-3 border-t border-[#232A24]">
-<button class="w-full bg-[#232A24] hover:bg-[#2bee4b] hover:text-black text-[#9db9a1] group-hover:text-white text-xs font-mono font-bold py-2 px-3 rounded-sm uppercase tracking-wide transition-colors border border-forest-border hover:border-[#2bee4b]">
-                                INVESTIGATE
-                            </button>
-</div>
-</div>
-</article>
-<!-- Card 5: With Map -->
-<article class="group relative flex flex-col bg-[#161b17] border border-forest-border hover:border-sand-alert hover:shadow-[0_0_15px_-3px_rgba(235,213,171,0.1)] transition-all duration-300 rounded-sm overflow-hidden h-full">
-<div class="absolute top-0 left-0 w-1 h-full bg-sand-alert"></div>
-<div class="p-5 flex flex-col h-full">
-<div class="flex justify-between items-start mb-3 border-b border-[#232A24] pb-3">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-[10px] text-sand-alert uppercase tracking-wider">⚠ ALERT: DISPUTED</span>
-<span class="font-mono text-xs text-[#5a705e]">ID: #7731M // GEOLOCATE</span>
-</div>
-<span class="font-mono text-xs text-[#5a705e]">13:15:22 UTC</span>
-</div>
-<div class="flex-1">
-<h3 class="text-lg font-bold text-white leading-snug mb-2 font-display">Location mismatch in "Live" broadcast</h3>
-<p class="text-[#9db9a1] text-sm leading-relaxed mb-4 line-clamp-3">Metadata suggests footage was filmed in Lagos, not Abuja as claimed. Weather patterns in video do not match current radar.</p>
-<div class="mb-4 rounded-sm overflow-hidden border border-forest-border bg-[#232A24] h-32 relative group-hover:border-sand-alert/50 transition-colors">
-<div class="w-full h-full bg-[#232A24] flex items-center justify-center relative overflow-hidden">
-<!-- Abstract Map Representation -->
-<div class="absolute inset-0 opacity-40 bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-cover bg-center invert filter grayscale" data-alt="Map showing geolocation mismatch" data-location="Lagos, Nigeria" style=""></div>
-<div class="size-3 bg-sand-alert rounded-full animate-ping absolute top-1/2 left-1/2"></div>
-<div class="size-2 bg-sand-alert rounded-full absolute top-1/2 left-1/2"></div>
-</div>
-<div class="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/70 text-sand-alert text-[10px] font-mono rounded-sm backdrop-blur-sm">ERR: GEO_MISMATCH</div>
-</div>
-</div>
-<div class="flex gap-2 mt-auto pt-3 border-t border-[#232A24]">
-<button class="w-full bg-[#232A24] hover:bg-sand-alert hover:text-black text-sand-alert text-xs font-mono font-bold py-2 px-3 rounded-sm uppercase tracking-wide transition-colors border border-forest-border hover:border-sand-alert flex items-center justify-center gap-2">
-<span class="material-symbols-outlined text-[16px]">warning</span>
-                                ESCALATE
-                            </button>
-</div>
-</div>
-</article>
-</div>
-<!-- Empty State Placeholder (hidden for now to show cards, but part of design) -->
-<!-- 
-            <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-0">
-                <span class="material-symbols-outlined text-6xl text-[#232A24] mb-4">dns</span>
-                <p class="text-[#5a705e] font-mono text-sm tracking-widest">NO PENDING ITEMS. SYSTEM LISTENING...</p>
-            </div> 
-            -->
-</main>
-<!-- Right Inspector Panel -->
-<aside class="w-96 bg-[#111812] border-l border-forest-border flex flex-col shrink-0 transform transition-transform duration-300 translate-x-full fixed right-0 top-[65px] bottom-0 lg:static lg:translate-x-0 z-10 shadow-2xl lg:shadow-none">
-<div class="flex items-center justify-between p-4 border-b border-forest-border bg-[#151a16]">
-<h3 class="font-mono text-xs text-white uppercase tracking-wider flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-[16px]">data_object</span>
-                    INSPECTOR MODE
-                </h3>
-<span class="text-[10px] text-[#5a705e] font-mono">ID: #8821X</span>
-</div>
-<div class="flex-1 overflow-y-auto p-4 font-mono text-xs">
-<!-- Metadata Grid -->
-<div class="grid grid-cols-2 gap-px bg-forest-border mb-6 border border-forest-border">
-<div class="bg-[#1B211A] p-2">
-<span class="block text-[#5a705e] mb-1 text-[10px]">AUTHOR_ID</span>
-<span class="text-white">@politic_watch</span>
-</div>
-<div class="bg-[#1B211A] p-2">
-<span class="block text-[#5a705e] mb-1 text-[10px]">FOLLOWERS</span>
-<span class="text-white">124,592</span>
-</div>
-<div class="bg-[#1B211A] p-2">
-<span class="block text-[#5a705e] mb-1 text-[10px]">ACCOUNT_AGE</span>
-<span class="text-white">4y 2m</span>
-</div>
-<div class="bg-[#1B211A] p-2">
-<span class="block text-[#5a705e] mb-1 text-[10px]">PREV_FLAGS</span>
-<span class="text-sand-alert">3 [HIGH]</span>
-</div>
-</div>
-<!-- Raw JSON View -->
-<div class="bg-[#161b17] p-3 rounded-sm border border-forest-border overflow-x-auto">
-<div class="flex justify-between items-center mb-2">
-<span class="text-[#5a705e] text-[10px] uppercase">PAYLOAD.JSON</span>
-<button class="text-primary hover:text-white text-[10px]">COPY</button>
-</div>
-<pre class="text-[#9db9a1] leading-relaxed">{
-  <span class="text-[#5a705e]">"id":</span> <span class="text-primary">"8821X"</span>,
-  <span class="text-[#5a705e]">"source":</span> "twitter_api_v2",
-  <span class="text-[#5a705e]">"timestamp":</span> 1715432912,
-  <span class="text-[#5a705e]">"content":</span> {
-    <span class="text-[#5a705e]">"text_hash":</span> "a1b2...",
-    <span class="text-[#5a705e]">"media":</span> <span class="text-sand-alert">null</span>,
-    <span class="text-[#5a705e]">"sentiment":</span> -0.84
-  },
-  <span class="text-[#5a705e]">"analysis":</span> {
-    <span class="text-[#5a705e]">"confidence":</span> 0.98,
-    <span class="text-[#5a705e]">"flag_reason":</span> "disputed_claim"
-  }
-}
-</pre>
-</div>
-<!-- AI Analysis Section -->
-<div class="mt-6">
-<h4 class="text-white text-xs font-bold mb-3 border-b border-forest-border pb-1">AI CONTEXT ANALYSIS</h4>
-<p class="text-[#9db9a1] leading-5 mb-3">
-                        The claim regarding "polling station closures" contradicts the live data feed from the Electoral Commission API, which shows 99.4% uptime for polling stations in District 9.
+                        </div>
+                    </article>
+
+                    <!-- Mod Card 3 -->
+                    <article
+                        class="narvo-border bg-surface/30 p-6 flex flex-col gap-6 relative group hover:border-primary transition-all opacity-70 hover:opacity-100">
+                        <div class="absolute top-0 left-0 w-1 h-full bg-forest"></div>
+                        <div class="flex justify-between items-start border-b border-forest/20 pb-4">
+                            <div class="space-y-1">
+                                <span class="mono-ui text-[9px] text-forest font-bold">? UNVERIFIED</span>
+                                <p class="mono-ui text-[8px] text-forest font-bold">ID: #1102Z // FB_WATCH</p>
+                            </div>
+                            <span class="mono-ui text-[9px] text-forest font-bold">13:45 UTC</span>
+                        </div>
+                        <div class="flex-1 space-y-3">
+                            <h3 class="font-display text-xl font-bold text-white uppercase leading-tight">Protest
+                                footage confirmed potential deepfake scan</h3>
+                            <p class="text-[11px] text-forest font-medium leading-relaxed line-clamp-3">Inconsistencies
+                                detected in background lighting and shadow vectors. Forensics team reassignment
+                                recommended.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="status-badge text-forest border-forest/30">#DEEP_GEN</span>
+                                <span class="status-badge text-forest border-forest/30">#AI_SCAN</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 pt-4 narvo-border-t">
+                            <button
+                                class="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-forest transition-all uppercase">ASSIGN</button>
+                            <button
+                                class="size-12 narvo-border flex items-center justify-center hover:bg-forest text-white transition-all"><i
+                                    class="ph ph-dots-three text-xl"></i></button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </main>
+
+        <!-- Inspector Panel -->
+        <aside class="w-96 narvo-border-l bg-background-dark flex flex-col hidden xl:flex">
+            <div class="p-8 narvo-border-b bg-forest/5 flex justify-between items-center">
+                <div class="space-y-1">
+                    <h3 class="mono-ui text-[11px] text-white font-bold tracking-widest flex items-center gap-2">
+                        <i class="ph ph-terminal text-primary"></i>
+                        INSPECTOR_MODE
+                    </h3>
+                    <p class="mono-ui text-[8px] text-forest font-bold tracking-tight">ENTITY_ID: #8821X</p>
+                </div>
+            </div>
+
+            <div class="flex-1 p-8 overflow-y-auto custom-scroll space-y-10">
+                <div class="grid grid-cols-2 gap-[1px] bg-forest narvo-border">
+                    <div class="bg-background-dark p-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold block mb-1">AUTHOR_TAG</span>
+                        <span class="mono-ui text-[10px] text-white font-bold">@POLITIC_HQ</span>
+                    </div>
+                    <div class="bg-background-dark p-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold block mb-1">REACH_VOL</span>
+                        <span class="mono-ui text-[10px] text-white font-bold">124K</span>
+                    </div>
+                    <div class="bg-background-dark p-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold block mb-1">AGE_NOD</span>
+                        <span class="mono-ui text-[10px] text-white font-bold">4.2Y</span>
+                    </div>
+                    <div class="bg-background-dark p-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold block mb-1">PREV_FLAGS</span>
+                        <span class="mono-ui text-[10px] text-red-500 font-bold">03_CRIT</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="mono-ui text-[9px] text-forest font-bold">PAYLOAD.RAW</span>
+                        <button class="mono-ui text-[8px] text-primary underline">COPY_JSON</button>
+                    </div>
+                    <div class="narvo-border bg-black/40 p-4 font-mono text-[10px] leading-relaxed">
+                        <p class="text-forest">"id": <span class="text-primary">"8821X"</span>,</p>
+                        <p class="text-forest">"source": <span class="text-primary">"X_STREAM_2"</span>,</p>
+                        <p class="text-forest">"timestamp": <span class="text-primary">1715432</span>,</p>
+                        <p class="text-forest">"sentiment": <span class="text-red-500">-0.84</span>,</p>
+                        <p class="text-forest">"trust_rank": <span class="text-primary">0.98</span></p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="mono-ui text-[9px] text-white font-bold border-b border-forest/30 pb-2">
+                        AI_CONTEXT_ANALYSIS</h4>
+                    <p class="text-[11px] text-forest font-bold italic leading-relaxed">
+                        Claim regarding "closures" contradicts live telemetry from INEC_LAGOS_API. 99.4% nodal uptime
+                        confirmed at District 9.
                     </p>
-<p class="text-[#9db9a1] leading-5">
-<span class="text-primary">Recommendation:</span> Flag as disputed and attach official EC statement link.
-                    </p>
-</div>
-</div>
-<!-- Inspector Actions -->
-<div class="p-4 bg-[#151a16] border-t border-forest-border space-y-2">
-<button class="w-full bg-[#232A24] hover:bg-white hover:text-black text-white py-2 rounded-sm border border-forest-border text-xs font-bold transition-colors">
-                    GENERATE REPORT
-                </button>
-<button class="w-full bg-[#232A24] hover:bg-sand-alert hover:text-black text-sand-alert py-2 rounded-sm border border-forest-border hover:border-sand-alert text-xs font-bold transition-colors">
-                    BAN SOURCE ID
-                </button>
-</div>
-</aside>
-</div>
-</body></html>
+                    <div class="p-3 narvo-border border-primary/20 bg-primary/5">
+                        <p class="mono-ui text-[9px] text-primary font-bold">REC: FLAG_AS_DISPUTED</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8 narvo-border-t bg-black/20 space-y-3">
+                <button
+                    class="w-full py-4 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-forest transition-all uppercase">GENERATE_REPORT</button>
+                <button
+                    class="w-full py-4 narvo-border border-red-500/50 mono-ui text-[10px] font-bold text-red-500 hover:bg-red-500 hover:text-white transition-all uppercase">BAN_SOURCE_ID</button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Global Footer -->
+    <footer class="h-10 border-t border-forest/30 bg-background-dark flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-8 mono-ui text-[9px] text-forest font-bold">
+            <div class="flex items-center gap-2">
+                <div class="size-2 bg-primary"></div>
+                <span>OPS_ACTIVE: ELECTION_MONITOR</span>
+            </div>
+            <span>PLATFORM_V_2.6.4</span>
+        </div>
+        <div class="mono-ui text-[9px] text-forest font-bold">
+            SESSION_ID: LAG_MOD_9921
+        </div>
+    </footer>
+</body>
+
+</html>

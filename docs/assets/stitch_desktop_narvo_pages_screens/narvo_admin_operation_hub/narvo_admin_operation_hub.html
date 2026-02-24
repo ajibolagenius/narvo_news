@@ -1,423 +1,384 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Admin Operation Hub</title>
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Tailwind Config -->
-<script id="tailwind-config">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Admin Operation Hub</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#628141", // Forest Green
-                        "secondary": "#EBD5AB", // Sand/Beige
-                        "background-light": "#f7f7f6", 
-                        "background-dark": "#1B211A", // Deep Matte Charcoal
-                        "text-main": "#F2F2F2", // 90% White
-                        "text-muted": "#8BAE66", // Sage Green
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
                         "border-green": "#628141",
                     },
                     fontFamily: {
-                        "display": ["Inter", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
                     borderRadius: {
-                        "DEFAULT": "0.125rem", 
-                        "lg": "0.25rem", 
-                        "xl": "0.5rem", 
-                        "full": "0.75rem"
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
                     },
                 },
             },
         }
     </script>
-<style>
-        /* Custom scrollbar for a cleaner look */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1B211A; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #628141; 
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4a6330; 
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Grid lines helper */
-        .swiss-grid-border {
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .narvo-border {
             border: 1px solid #628141;
         }
-        .swiss-grid-border-b {
+
+        .narvo-border-b {
             border-bottom: 1px solid #628141;
         }
-        .swiss-grid-border-r {
+
+        .narvo-border-r {
             border-right: 1px solid #628141;
         }
-        .swiss-grid-border-t {
+
+        .narvo-border-t {
             border-top: 1px solid #628141;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+
+        .swiss-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1px;
+            background-color: #628141;
+            border: 1px solid #628141;
+        }
+
+        .swiss-cell {
+            background-color: #1B211A;
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-text-main font-display antialiased overflow-hidden h-screen w-screen flex flex-col">
-<!-- Top Status Bar -->
-<header class="h-12 w-full flex items-center justify-between px-4 swiss-grid-border-b bg-background-dark z-20 shrink-0">
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary" style="font-size: 20px;">grid_view</span>
-<span class="font-bold tracking-tight text-text-main">NARVO <span class="text-text-muted font-normal text-sm">/ OPS</span></span>
-</div>
-<!-- Scrolling Ticker Simulation -->
-<div class="h-6 w-px bg-primary/40 mx-2"></div>
-<div class="flex items-center gap-6 text-xs font-mono text-text-muted overflow-hidden whitespace-nowrap">
-<div class="flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-<span>SYSTEM_STATUS: ONLINE</span>
-</div>
-<span class="text-primary/40">|</span>
-<div>UPTIME: <span class="text-text-main">99.98%</span></div>
-<span class="text-primary/40">|</span>
-<div>LATENCY: <span class="text-secondary">12ms</span></div>
-<span class="text-primary/40">|</span>
-<div>CPU_LOAD: <span class="text-text-main">42%</span></div>
-<span class="text-primary/40">|</span>
-<div>ACTIVE_NODES: <span class="text-text-main">14/15</span></div>
-</div>
-</div>
-<div class="flex items-center gap-4">
-<div class="font-mono text-xs text-text-muted" id="clock">14:02:45 UTC</div>
-<div class="h-8 w-8 rounded flex items-center justify-center bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer">
-<span class="material-symbols-outlined" style="font-size: 18px;">notifications</span>
-</div>
-<div class="h-8 w-8 rounded flex items-center justify-center bg-primary/10 border border-primary text-primary hover:bg-primary hover:text-white transition-colors cursor-pointer">
-<span class="material-symbols-outlined" style="font-size: 18px;">person</span>
-</div>
-</div>
-</header>
-<div class="flex flex-1 overflow-hidden">
-<!-- Sidebar Navigation -->
-<nav class="w-64 flex flex-col swiss-grid-border-r bg-background-dark shrink-0">
-<div class="flex flex-col py-4 gap-1">
-<div class="px-4 py-2 text-xs font-mono text-text-muted uppercase tracking-wider mb-2">Main Module</div>
-<a class="flex items-center gap-3 px-4 py-2 border-l-2 border-primary bg-primary/10 text-text-main" href="#">
-<span class="material-symbols-outlined text-primary" style="font-size: 20px;">dashboard</span>
-<span class="text-sm font-medium">Dashboard</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 border-l-2 border-transparent hover:border-primary/50 text-text-muted hover:text-text-main hover:bg-primary/5 transition-all group" href="#">
-<span class="material-symbols-outlined group-hover:text-primary transition-colors" style="font-size: 20px;">stream</span>
-<span class="text-sm font-medium">Live Broadcasts</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 border-l-2 border-transparent hover:border-primary/50 text-text-muted hover:text-text-main hover:bg-primary/5 transition-all group" href="#">
-<span class="material-symbols-outlined group-hover:text-primary transition-colors" style="font-size: 20px;">folder_open</span>
-<span class="text-sm font-medium">Content Ingest</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 border-l-2 border-transparent hover:border-primary/50 text-text-muted hover:text-text-main hover:bg-primary/5 transition-all group" href="#">
-<span class="material-symbols-outlined group-hover:text-primary transition-colors" style="font-size: 20px;">group</span>
-<span class="text-sm font-medium">User Management</span>
-</a>
-</div>
-<div class="mt-auto mb-6 flex flex-col gap-1">
-<div class="px-4 py-2 text-xs font-mono text-text-muted uppercase tracking-wider mb-2">System</div>
-<a class="flex items-center gap-3 px-4 py-2 border-l-2 border-transparent hover:border-primary/50 text-text-muted hover:text-text-main hover:bg-primary/5 transition-all group" href="#">
-<span class="material-symbols-outlined group-hover:text-primary transition-colors" style="font-size: 20px;">bar_chart</span>
-<span class="text-sm font-medium">Analytics</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-2 border-l-2 border-transparent hover:border-primary/50 text-text-muted hover:text-text-main hover:bg-primary/5 transition-all group" href="#">
-<span class="material-symbols-outlined group-hover:text-primary transition-colors" style="font-size: 20px;">settings</span>
-<span class="text-sm font-medium">Settings</span>
-</a>
-</div>
-<div class="p-4 swiss-grid-border-t">
-<button class="w-full py-2 px-4 rounded border border-primary/50 text-text-muted hover:text-text-main hover:border-primary hover:bg-primary/10 transition-colors text-xs font-mono uppercase tracking-widest flex items-center justify-center gap-2">
-<span class="material-symbols-outlined" style="font-size: 16px;">logout</span>
-                    Logout
-                </button>
-</div>
-</nav>
-<!-- Main Content Area -->
-<main class="flex-1 flex flex-col overflow-y-auto bg-background-dark relative">
-<!-- Swiss Grid Background Pattern (Subtle) -->
-<div class="absolute inset-0 pointer-events-none opacity-[0.03]" style="background-image: linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px); background-size: 40px 40px;">
-</div>
-<div class="p-8 flex flex-col gap-6 relative z-10">
-<div class="flex items-end justify-between mb-2">
-<div>
-<h1 class="text-2xl font-bold text-text-main tracking-tight mb-1">Overview</h1>
-<p class="text-sm text-text-muted">Real-time monitoring of content distribution nodes.</p>
-</div>
-<div class="flex gap-2">
-<button class="px-3 py-1.5 text-xs font-mono border border-primary bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors uppercase">
-                            Export Report
-                        </button>
-<button class="px-3 py-1.5 text-xs font-mono border border-primary bg-primary text-white hover:bg-primary/90 transition-colors uppercase">
-                            + New Ingest
-                        </button>
-</div>
-</div>
-<!-- Top Metrics Row -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-<!-- Metric Card 1 -->
-<div class="bg-background-dark border border-primary p-5 flex flex-col justify-between h-32 relative group hover:bg-primary/5 transition-colors">
-<div class="flex justify-between items-start">
-<span class="text-xs font-mono text-text-muted uppercase">Total Active Streams</span>
-<span class="material-symbols-outlined text-primary" style="font-size: 20px;">cast_connected</span>
-</div>
-<div>
-<div class="text-3xl font-mono font-bold text-text-main">1,240</div>
-<div class="text-xs text-secondary mt-1 flex items-center gap-1">
-<span class="material-symbols-outlined" style="font-size: 14px;">trending_up</span>
-                                +12% from last hour
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-shield-checkered text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> ADMIN_OPS
+                </h1>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 h-full">
+                <a href="#"
+                    class="text-primary text-[10px] mono-ui font-bold border-b-2 border-primary py-5">OVERVIEW</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">LIVE_STREAMS</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">INGEST_MAP</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">USERS</a>
+            </nav>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="hidden lg:flex items-center gap-3 px-3 py-1 narvo-border bg-forest/5">
+                <span class="w-2 h-2 bg-green-500 animate-pulse"></span>
+                <span class="mono-ui text-[9px] text-forest font-bold uppercase tracking-widest">SYSTEM_OPTIMAL</span>
+            </div>
+            <div class="h-10 w-10 narvo-border bg-surface flex items-center justify-center">
+                <i class="ph ph-user-gear text-primary text-xl"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-hidden bg-background-dark">
+            <!-- Telemetry Bar -->
+            <div
+                class="px-8 py-4 narvo-border-b bg-black/20 flex gap-12 items-center overflow-x-auto no-scrollbar shrink-0">
+                <div class="flex flex-col gap-0.5 min-w-max">
+                    <span class="mono-ui text-[8px] text-forest font-bold">NODE_LOAD</span>
+                    <span class="mono-ui text-[12px] text-white font-bold">42% <span
+                            class="text-[9px] text-forest font-normal">NOMINAL</span></span>
+                </div>
+                <div class="flex flex-col gap-0.5 min-w-max">
+                    <span class="mono-ui text-[8px] text-forest font-bold">API_LATENCY</span>
+                    <span class="mono-ui text-[12px] text-primary font-bold">12ms <span
+                            class="text-[9px] text-forest font-normal">STABLE</span></span>
+                </div>
+                <div class="flex flex-col gap-0.5 min-w-max">
+                    <span class="mono-ui text-[8px] text-forest font-bold">UPTIME</span>
+                    <span class="mono-ui text-[12px] text-white font-bold">99.98% <span
+                            class="text-[9px] text-forest font-normal">SLA+</span></span>
+                </div>
+                <div class="flex flex-col gap-0.5 min-w-max">
+                    <span class="mono-ui text-[8px] text-forest font-bold">ACTIVE_TRAFFIC</span>
+                    <span class="mono-ui text-[12px] text-white font-bold">4.8GBPS</span>
+                </div>
+            </div>
+
+            <!-- View Scroll Container -->
+            <div class="flex-1 overflow-y-auto custom-scroll p-8 space-y-8">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h2 class="font-display text-3xl font-bold text-white uppercase tracking-tight">
+                            Operation_Overlook</h2>
+                        <p class="mono-ui text-[10px] text-forest font-bold tracking-widest mt-1">
+                            REAL_TIME_NODE_MONITORING</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <button
+                            class="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:bg-forest hover:text-white transition-all">GEN_REPORT</button>
+                        <button
+                            class="px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all">+
+                            NEW_INGEST</button>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 bg-forest narvo-border">
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="mono-ui text-[9px] text-forest font-bold">ACTIVE_STREAMS</span>
+                            <i class="ph ph-broadcast text-primary"></i>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-display text-4xl font-bold text-white">1,240</span>
+                            <span class="mono-ui text-[9px] text-primary font-bold">+12%</span>
+                        </div>
+                    </div>
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="mono-ui text-[9px] text-forest font-bold">AVG_BITRATE</span>
+                            <i class="ph ph-activity text-primary"></i>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-display text-4xl font-bold text-white">4.8</span>
+                            <span class="mono-ui text-[12px] text-forest font-bold">MBPS</span>
+                        </div>
+                    </div>
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="mono-ui text-[9px] text-forest font-bold">ERROR_RATE</span>
+                            <i class="ph ph-warning-octagon text-primary"></i>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-display text-4xl font-bold text-white">0.02</span>
+                            <span class="mono-ui text-[12px] text-forest font-bold">%</span>
+                        </div>
+                    </div>
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="mono-ui text-[9px] text-forest font-bold">VOL_STORAGE</span>
+                            <i class="ph ph-database text-primary"></i>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <span class="font-display text-4xl font-bold text-white">84%</span>
+                            <div class="h-1 bg-forest/20 relative">
+                                <div class="absolute inset-0 bg-primary w-[84%]"></div>
                             </div>
-</div>
-</div>
-<!-- Metric Card 2 -->
-<div class="bg-background-dark border border-primary p-5 flex flex-col justify-between h-32 relative group hover:bg-primary/5 transition-colors">
-<div class="flex justify-between items-start">
-<span class="text-xs font-mono text-text-muted uppercase">Avg Bitrate</span>
-<span class="material-symbols-outlined text-primary" style="font-size: 20px;">speed</span>
-</div>
-<div>
-<div class="text-3xl font-mono font-bold text-text-main">4.8 <span class="text-lg text-text-muted font-normal">Mbps</span></div>
-<div class="text-xs text-text-muted mt-1">Stable connection</div>
-</div>
-</div>
-<!-- Metric Card 3 -->
-<div class="bg-background-dark border border-primary p-5 flex flex-col justify-between h-32 relative group hover:bg-primary/5 transition-colors">
-<div class="flex justify-between items-start">
-<span class="text-xs font-mono text-text-muted uppercase">Error Rate</span>
-<span class="material-symbols-outlined text-primary" style="font-size: 20px;">warning</span>
-</div>
-<div>
-<div class="text-3xl font-mono font-bold text-text-main">0.02%</div>
-<div class="text-xs text-emerald-500 mt-1 flex items-center gap-1">
-<span class="material-symbols-outlined" style="font-size: 14px;">check_circle</span>
-                                Within normal range
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts & Alerts -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 narvo-border bg-black/40 p-8 flex flex-col gap-6">
+                        <div class="flex justify-between items-center">
+                            <h3 class="mono-ui text-[11px] text-white font-bold tracking-widest">INGEST_VOLUME //
+                                24H_CYCLE</h3>
+                            <div class="flex gap-4 mono-ui text-[9px] font-bold text-forest">
+                                <span class="hover:text-white cursor-pointer">1H</span>
+                                <span class="text-primary underline underline-offset-4">24H</span>
+                                <span class="hover:text-white cursor-pointer">7D</span>
                             </div>
-</div>
-</div>
-<!-- Metric Card 4 -->
-<div class="bg-background-dark border border-primary p-5 flex flex-col justify-between h-32 relative group hover:bg-primary/5 transition-colors">
-<div class="flex justify-between items-start">
-<span class="text-xs font-mono text-text-muted uppercase">Storage Used</span>
-<span class="material-symbols-outlined text-primary" style="font-size: 20px;">database</span>
-</div>
-<div>
-<div class="text-3xl font-mono font-bold text-text-main">84%</div>
-<div class="w-full bg-primary/20 h-1 mt-2 rounded-full overflow-hidden">
-<div class="bg-secondary h-full w-[84%]"></div>
-</div>
-</div>
-</div>
-</div>
-<!-- Main Chart Section -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-96">
-<!-- Large Chart -->
-<div class="lg:col-span-2 bg-background-dark border border-primary p-6 flex flex-col">
-<div class="flex justify-between items-center mb-6">
-<div>
-<h3 class="text-lg font-medium text-text-main">Content Ingest Volume (24h)</h3>
-<p class="text-xs text-text-muted font-mono mt-1">DATA_SOURCE: GLOBAL_CDN_V4</p>
-</div>
-<div class="flex gap-2">
-<span class="text-xs font-mono text-text-muted cursor-pointer hover:text-white">1H</span>
-<span class="text-xs font-mono text-text-main border-b border-primary cursor-pointer">24H</span>
-<span class="text-xs font-mono text-text-muted cursor-pointer hover:text-white">7D</span>
-</div>
-</div>
-<!-- Chart Area -->
-<div class="flex-1 w-full relative">
-<!-- Y Axis Grid -->
-<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
-<div class="w-full border-b border-primary/20 border-dashed h-0"></div>
-<div class="w-full border-b border-primary/20 border-dashed h-0"></div>
-<div class="w-full border-b border-primary/20 border-dashed h-0"></div>
-<div class="w-full border-b border-primary/20 border-dashed h-0"></div>
-<div class="w-full border-b border-primary/20 border-dashed h-0"></div>
-</div>
-<!-- SVG Chart Line -->
-<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 100">
-<!-- Gradient Fill -->
-<defs>
-<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-<stop offset="0%" stop-color="#EBD5AB" stop-opacity="0.1"></stop>
-<stop offset="100%" stop-color="#EBD5AB" stop-opacity="0"></stop>
-</lineargradient>
-</defs>
-<path d="M0,80 Q10,75 20,60 T40,50 T60,65 T80,30 T100,40 V100 H0 Z" fill="url(#chartGradient)" stroke="none"></path>
-<!-- Main Line -->
-<path d="M0,80 Q10,75 20,60 T40,50 T60,65 T80,30 T100,40" fill="none" stroke="#EBD5AB" stroke-width="0.5" vector-effect="non-scaling-stroke"></path>
-<!-- Data Points -->
-<circle cx="20" cy="60" fill="#1B211A" r="1.5" stroke="#EBD5AB" stroke-width="0.5" vector-effect="non-scaling-stroke"></circle>
-<circle cx="40" cy="50" fill="#1B211A" r="1.5" stroke="#EBD5AB" stroke-width="0.5" vector-effect="non-scaling-stroke"></circle>
-<circle cx="60" cy="65" fill="#1B211A" r="1.5" stroke="#EBD5AB" stroke-width="0.5" vector-effect="non-scaling-stroke"></circle>
-<circle cx="80" cy="30" fill="#1B211A" r="1.5" stroke="#EBD5AB" stroke-width="0.5" vector-effect="non-scaling-stroke"></circle>
-<circle cx="100" cy="40" fill="#1B211A" r="1.5" stroke="#EBD5AB" stroke-width="0.5" vector-effect="non-scaling-stroke"></circle>
-</svg>
-</div>
-<!-- X Axis Labels -->
-<div class="flex justify-between mt-2 text-[10px] font-mono text-text-muted uppercase">
-<span>00:00</span>
-<span>04:00</span>
-<span>08:00</span>
-<span>12:00</span>
-<span>16:00</span>
-<span>20:00</span>
-<span>Now</span>
-</div>
-</div>
-<!-- System Alerts Panel -->
-<div class="lg:col-span-1 bg-background-dark border border-primary p-6 flex flex-col">
-<div class="flex justify-between items-center mb-6">
-<h3 class="text-lg font-medium text-text-main">System Alerts</h3>
-<span class="px-2 py-0.5 bg-secondary/10 text-secondary text-xs font-mono rounded-full border border-secondary/20">3 NEW</span>
-</div>
-<div class="flex-1 overflow-y-auto pr-2 space-y-4">
-<div class="flex gap-3 items-start p-3 border border-primary/30 bg-primary/5">
-<span class="material-symbols-outlined text-secondary mt-0.5" style="font-size: 18px;">warning</span>
-<div>
-<h4 class="text-sm font-medium text-text-main leading-none mb-1">High Latency: Node EU-West</h4>
-<p class="text-xs text-text-muted mb-2">Response time &gt; 200ms detected.</p>
-<span class="text-[10px] font-mono text-primary uppercase">10:42 AM</span>
-</div>
-</div>
-<div class="flex gap-3 items-start p-3 border border-primary/30 bg-primary/5">
-<span class="material-symbols-outlined text-text-muted mt-0.5" style="font-size: 18px;">info</span>
-<div>
-<h4 class="text-sm font-medium text-text-main leading-none mb-1">Backup Complete</h4>
-<p class="text-xs text-text-muted mb-2">Daily snapshot saved successfully.</p>
-<span class="text-[10px] font-mono text-primary uppercase">09:00 AM</span>
-</div>
-</div>
-<div class="flex gap-3 items-start p-3 border border-primary/30 bg-primary/5">
-<span class="material-symbols-outlined text-red-400 mt-0.5" style="font-size: 18px;">error</span>
-<div>
-<h4 class="text-sm font-medium text-text-main leading-none mb-1">Stream #8821 Failed</h4>
-<p class="text-xs text-text-muted mb-2">Connection reset by peer.</p>
-<span class="text-[10px] font-mono text-primary uppercase">08:15 AM</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-<!-- Bottom Data Table -->
-<div class="flex flex-col border border-primary bg-background-dark">
-<div class="flex items-center justify-between p-4 border-b border-primary">
-<h3 class="text-lg font-medium text-text-main">Active Streams</h3>
-<div class="flex gap-4">
-<div class="relative">
-<input class="bg-background-dark border border-primary text-text-main text-xs px-3 py-1.5 w-48 focus:outline-none focus:border-secondary placeholder-text-muted/50 font-mono" placeholder="Search Stream ID..." type="text"/>
-<span class="material-symbols-outlined absolute right-2 top-1.5 text-text-muted pointer-events-none" style="font-size: 16px;">search</span>
-</div>
-<div class="flex items-center gap-2 text-xs font-mono text-text-muted">
-<span>SORT BY:</span>
-<select class="bg-background-dark border-none text-text-main focus:ring-0 p-0 text-xs font-mono cursor-pointer">
-<option>STATUS</option>
-<option>BITRATE</option>
-<option>ID</option>
-</select>
-</div>
-</div>
-</div>
-<div class="overflow-x-auto">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="border-b border-primary/50 text-xs font-mono text-text-muted bg-primary/5 uppercase">
-<th class="px-6 py-3 font-medium">Status</th>
-<th class="px-6 py-3 font-medium">Stream ID</th>
-<th class="px-6 py-3 font-medium">Source</th>
-<th class="px-6 py-3 font-medium">Region</th>
-<th class="px-6 py-3 font-medium text-right">Bitrate</th>
-<th class="px-6 py-3 font-medium text-right">Uptime</th>
-<th class="px-6 py-3 font-medium text-center">Actions</th>
-</tr>
-</thead>
-<tbody class="text-sm">
-<tr class="border-b border-primary/20 hover:bg-primary/5 group transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></span>
-<span class="text-text-main">Live</span>
-</div>
-</td>
-<td class="px-6 py-4 font-mono text-secondary">#8821-XJ</td>
-<td class="px-6 py-4 text-text-muted">Zurich HQ Cam 1</td>
-<td class="px-6 py-4 text-text-muted">EU-Central</td>
-<td class="px-6 py-4 text-right font-mono text-text-main">4,500 kbps</td>
-<td class="px-6 py-4 text-right font-mono text-text-muted">02:14:00</td>
-<td class="px-6 py-4 text-center">
-<span class="material-symbols-outlined text-text-muted hover:text-white cursor-pointer" style="font-size: 18px;">more_horiz</span>
-</td>
-</tr>
-<tr class="border-b border-primary/20 hover:bg-primary/5 group transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></span>
-<span class="text-text-main">Live</span>
-</div>
-</td>
-<td class="px-6 py-4 font-mono text-secondary">#9932-BL</td>
-<td class="px-6 py-4 text-text-muted">London Bureau Main</td>
-<td class="px-6 py-4 text-text-muted">UK-South</td>
-<td class="px-6 py-4 text-right font-mono text-text-main">4,200 kbps</td>
-<td class="px-6 py-4 text-right font-mono text-text-muted">05:42:12</td>
-<td class="px-6 py-4 text-center">
-<span class="material-symbols-outlined text-text-muted hover:text-white cursor-pointer" style="font-size: 18px;">more_horiz</span>
-</td>
-</tr>
-<tr class="border-b border-primary/20 hover:bg-primary/5 group transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-<span class="text-text-main">Buffering</span>
-</div>
-</td>
-<td class="px-6 py-4 font-mono text-secondary">#7710-AR</td>
-<td class="px-6 py-4 text-text-muted">Archive Node A</td>
-<td class="px-6 py-4 text-text-muted">US-East</td>
-<td class="px-6 py-4 text-right font-mono text-text-main text-secondary">1,100 kbps</td>
-<td class="px-6 py-4 text-right font-mono text-text-muted">00:04:30</td>
-<td class="px-6 py-4 text-center">
-<span class="material-symbols-outlined text-text-muted hover:text-white cursor-pointer" style="font-size: 18px;">more_horiz</span>
-</td>
-</tr>
-<tr class="border-b border-primary/20 hover:bg-primary/5 group transition-colors">
-<td class="px-6 py-4">
-<div class="flex items-center gap-2">
-<span class="w-2 h-2 rounded-full bg-red-500"></span>
-<span class="text-text-main">Offline</span>
-</div>
-</td>
-<td class="px-6 py-4 font-mono text-secondary">#1102-EX</td>
-<td class="px-6 py-4 text-text-muted">Ext Feed R</td>
-<td class="px-6 py-4 text-text-muted">Asia-Pac</td>
-<td class="px-6 py-4 text-right font-mono text-text-main">0 kbps</td>
-<td class="px-6 py-4 text-right font-mono text-text-muted">--</td>
-<td class="px-6 py-4 text-center">
-<span class="material-symbols-outlined text-text-muted hover:text-white cursor-pointer" style="font-size: 18px;">more_horiz</span>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</main>
-</div>
-<!-- Image descriptions required by prompt -->
-<!-- Note: SVG charts are used instead of images, but if images were used: -->
-<!-- data-alt="Line graph showing network traffic spikes" for chart areas -->
-</body></html>
+                        </div>
+                        <div class="flex-1 h-64 relative narvo-border bg-background-dark/60 overflow-hidden">
+                            <div class="absolute inset-0 opacity-5"
+                                style="background-image: linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px); background-size: 40px 40px;">
+                            </div>
+                            <!-- SVG Chart Placeholder -->
+                            <svg class="w-full h-full p-4 overflow-visible" viewBox="0 0 100 40"
+                                preserveAspectRatio="none">
+                                <path d="M0 35 Q 10 32, 20 25 T 40 28 T 60 15 T 80 20 T 100 10 L 100 40 L 0 40 Z"
+                                    fill="rgba(235, 213, 171, 0.05)" />
+                                <path d="M0 35 Q 10 32, 20 25 T 40 28 T 60 15 T 80 20 T 100 10" stroke="#EBD5AB"
+                                    stroke-width="0.5" fill="none" vector-effect="non-scaling-stroke" />
+                                <circle cx="20" cy="25" r="0.5" fill="#EBD5AB" />
+                                <circle cx="40" cy="28" r="0.5" fill="#EBD5AB" />
+                                <circle cx="60" cy="15" r="0.5" fill="#EBD5AB" />
+                                <circle cx="80" cy="20" r="0.5" fill="#EBD5AB" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="narvo-border bg-black/40 p-8 flex flex-col gap-6">
+                        <div class="flex justify-between items-center">
+                            <h3 class="mono-ui text-[11px] text-white font-bold tracking-widest">SYSTEM_ALERTS</h3>
+                            <span
+                                class="mono-ui text-[9px] bg-primary/10 text-primary border border-primary px-2 py-0.5">3_NEW</span>
+                        </div>
+                        <div class="space-y-4 overflow-y-auto custom-scroll pr-2">
+                            <div
+                                class="p-4 narvo-border bg-forest/5 flex items-start gap-4 hover:bg-forest/10 transition-colors cursor-pointer">
+                                <i class="ph ph-warning text-primary text-xl"></i>
+                                <div class="space-y-1">
+                                    <p class="mono-ui text-[10px] text-white font-bold">LATENCY_SPIKE: EU_WEST</p>
+                                    <p class="text-[9px] text-forest font-bold">NODE_ID: 88219 // 14:02 UTC</p>
+                                </div>
+                            </div>
+                            <div
+                                class="p-4 narvo-border bg-forest/5 flex items-start gap-4 hover:bg-forest/10 transition-colors cursor-pointer opacity-50">
+                                <i class="ph ph-check-circle text-forest text-xl"></i>
+                                <div class="space-y-1">
+                                    <p class="mono-ui text-[10px] text-white font-bold">BACKUP_COMPLETE: LAG_S3</p>
+                                    <p class="text-[9px] text-forest font-bold">SUCCESS_VERIFIED // 09:00 UTC</p>
+                                </div>
+                            </div>
+                            <div
+                                class="p-4 narvo-border bg-red-500/10 border-red-500/30 flex items-start gap-4 hover:bg-red-500/20 transition-colors cursor-pointer">
+                                <i class="ph ph-x-circle text-red-500 text-xl"></i>
+                                <div class="space-y-1">
+                                    <p class="mono-ui text-[10px] text-red-500 font-bold">STREAM_FAIL: #1102</p>
+                                    <p class="text-[9px] text-red-500/70 font-bold">AUTH_ERROR: HANDSHAKE_FAIL</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Streams Table -->
+                <div class="narvo-border overflow-hidden bg-black/20">
+                    <div class="px-8 py-6 narvo-border-b flex justify-between items-center bg-background-dark">
+                        <h3 class="mono-ui text-[11px] text-white font-bold tracking-widest">ACTIVE_SIGNAL_MATRIX</h3>
+                        <div class="flex gap-4">
+                            <div class="relative">
+                                <input type="text"
+                                    class="bg-transparent narvo-border mono-ui text-[9px] text-primary px-8 py-2 w-48 focus:outline-none focus:border-white"
+                                    placeholder="SEARCH_ID...">
+                                <i
+                                    class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-forest text-sm"></i>
+                            </div>
+                            <button
+                                class="px-4 py-2 narvo-border mono-ui text-[9px] text-forest font-bold hover:text-white transition-colors uppercase">Sort:
+                                Status</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto overflow-y-hidden">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="narvo-border-b bg-forest/5 mono-ui text-[9px] text-forest font-bold">
+                                    <th class="px-8 py-4">SIGNAL</th>
+                                    <th class="px-8 py-4">ENTITY_ID</th>
+                                    <th class="px-8 py-4">SOURCE_NODE</th>
+                                    <th class="px-8 py-4">REGION_LOC</th>
+                                    <th class="px-8 py-4 text-right">BITRATE</th>
+                                    <th class="px-8 py-4 text-right">UPTIME</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mono-ui text-[10px] text-forest font-bold">
+                                <tr class="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-1.5 h-1.5 bg-primary animate-pulse"></span>
+                                            <span class="text-white">LIVE</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-primary">#8821-XJ</td>
+                                    <td class="px-8 py-5">LAGOS_BROADCAST_1</td>
+                                    <td class="px-8 py-5 uppercase">NG_LAG_CENTRAL</td>
+                                    <td class="px-8 py-5 text-right text-white">4,500 KBPS</td>
+                                    <td class="px-8 py-5 text-right font-normal">02:14:00</td>
+                                </tr>
+                                <tr class="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-3 text-forest opacity-50">
+                                            <span class="w-1.5 h-1.5 bg-forest"></span>
+                                            <span>OFFLINE</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">#9932-BL</td>
+                                    <td class="px-8 py-5">ABUJA_MAIN_HUB</td>
+                                    <td class="px-8 py-5 uppercase">NG_ABJ_NORTH</td>
+                                    <td class="px-8 py-5 text-right text-white opacity-50">--</td>
+                                    <td class="px-8 py-5 text-right font-normal">--</td>
+                                </tr>
+                                <tr class="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-3">
+                                            <span class="w-1.5 h-1.5 bg-primary animate-pulse"></span>
+                                            <span class="text-white">LIVE</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-primary">#7710-AR</td>
+                                    <td class="px-8 py-5">KANO_DATA_INGEST</td>
+                                    <td class="px-8 py-5 uppercase">NG_KAN_CORE</td>
+                                    <td class="px-8 py-5 text-right text-white">3,200 KBPS</td>
+                                    <td class="px-8 py-5 text-right font-normal">14:22:10</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Global Footer -->
+    <footer class="h-10 border-t border-forest/30 bg-background-dark flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-8 mono-ui text-[9px] text-forest font-bold">
+            <div class="flex items-center gap-2">
+                <div class="size-2 bg-primary"></div>
+                <span>NODE_HEALTH: OPTIMAL</span>
+            </div>
+            <span>PLATFORM_V_2.6.4</span>
+        </div>
+        <div class="mono-ui text-[9px] text-forest font-bold uppercase">
+            LAGOS_OPS_HQ // 2026.02.24
+        </div>
+    </footer>
+</body>
+
+</html>
