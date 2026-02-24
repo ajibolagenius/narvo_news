@@ -223,6 +223,8 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                         img_match = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', content_html)
                         if img_match:
                             image_url = img_match.group(1)
+                        else:
+                            print(f"[IMG_DEBUG] No img found in content for: {title[:40]}. Content len: {len(content_html)}, has_content: {hasattr(entry, 'content') and bool(entry.content)}")
                     
                     category = extract_category(title, summary)
                     items.append({
