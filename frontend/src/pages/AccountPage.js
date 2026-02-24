@@ -137,8 +137,9 @@ const AccountPage = () => {
             ),
           },
           {
+            id: 'signals-processed',
             label: t('account.signals_processed'),
-            icon: Waveform,
+            icon: <Waveform className="w-4 h-4" />,
             content: (
               <div className="p-6 md:p-10 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
                 <div className="flex justify-between items-start">
