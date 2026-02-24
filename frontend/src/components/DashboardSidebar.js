@@ -5,10 +5,10 @@ import { LayoutGrid, Activity, Bookmark, Search, Compass, WifiOff, Settings, Use
 
 const getNavItems = (t) => [
   { icon: LayoutGrid, label: t('nav.feed'), path: '/dashboard' },
-  { icon: Activity, label: t('nav.briefing'), path: '/briefing' },
-  { icon: Bookmark, label: t('nav.saved'), path: '/saved' },
-  { icon: Search, label: t('nav.search'), path: '/search' },
   { icon: Compass, label: t('nav.discover'), path: '/discover' },
+  { icon: Search, label: t('nav.search'), path: '/search' },
+  { icon: Bookmark, label: t('nav.saved'), path: '/saved' },
+  { icon: Activity, label: t('nav.briefing'), path: '/briefing' },
   { icon: WifiOff, label: t('nav.offline'), path: '/offline' },
 ];
 
