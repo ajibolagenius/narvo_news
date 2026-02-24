@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertOctagon, WifiHighOff, Server, Timer, Clock, RotateCcw, Plus } from 'lucide-react';
+import { WarningOctagon, WifiSlash, Desktop, Timer, Clock, ArrowCounterClockwise, Plus } from '@phosphor-icons/react';
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -14,8 +14,8 @@ const NotFoundPage = () => {
   }, []);
 
   const metrics = [
-    { label: 'PACKET_LOSS', value: '100%', icon: WifiHighOff, color: 'text-red-400' },
-    { label: 'LAST_NODE', value: 'NGR_WEST_01', icon: Server, color: 'text-primary' },
+    { label: 'PACKET_LOSS', value: '100%', icon: WifiSlash, color: 'text-red-400' },
+    { label: 'LAST_NODE', value: 'NGR_WEST_01', icon: Desktop, color: 'text-primary' },
     { label: 'LATENCY', value: '∞ MS', icon: Timer, color: 'text-white' },
     { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-white' },
   ];
@@ -48,7 +48,7 @@ const NotFoundPage = () => {
               <span className="text-primary">[</span>SIGNAL LOST<span className="text-primary">]</span>
             </h1>
             <div className="flex items-center justify-center gap-3 text-red-500 mono-ui text-xl md:text-2xl font-bold">
-              <AlertOctagon className="w-6 h-6 md:w-8 md:h-8 animate-pulse" />
+              <WarningOctagon className="w-6 h-6 md:w-8 md:h-8 animate-pulse" />
               <span>ERROR_CODE: 404_NOT_FOUND</span>
             </div>
             <p className="text-forest max-w-lg mx-auto text-sm md:text-base font-medium mono-ui leading-relaxed lowercase">
@@ -82,7 +82,7 @@ const NotFoundPage = () => {
               className="h-14 md:h-16 px-8 md:px-10 bg-primary text-background-dark font-bold mono-ui text-sm flex items-center gap-4 hover:bg-white transition-all shadow-xl group"
               data-testid="reinitialize-btn"
             >
-              <RotateCcw className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
+              <ArrowCounterClockwise className="w-5 h-5 md:w-6 md:h-6 group-hover:rotate-180 transition-transform duration-500" />
               <span>[RE-INITIALIZE CONNECTION]</span>
             </button>
           </div>
