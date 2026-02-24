@@ -93,7 +93,9 @@ const AudioPlayerBar = () => {
           {currentTrack ? (
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-10 h-10 bg-primary/20 narvo-border shrink-0 flex items-center justify-center">
-                {isPlaying ? (
+                {isLoading ? (
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin rounded-full" />
+                ) : isPlaying ? (
                   <div className="flex items-center gap-0.5">
                     {[1, 2, 3].map(i => <div key={i} className="w-1 bg-primary animate-pulse" style={{ height: `${8 + i * 4}px`, animationDelay: `${i * 0.15}s` }} />)}
                   </div>
