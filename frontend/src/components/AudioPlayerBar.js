@@ -10,18 +10,6 @@ const AudioPlayerBar = () => {
 
   return (
     <footer className="hidden md:flex flex-col bg-background-dark border-t-2 border-primary z-20 shrink-0" data-testid="audio-player-bar">
-      {/* News Ticker */}
-      <div className="h-7 bg-primary text-background-dark flex items-center overflow-hidden marquee-container">
-        <div className="marquee-content flex items-center gap-12 font-mono text-[10px] font-bold uppercase tracking-wider">
-          <span>{'//'} Narvo Intelligence Update: Regional Manufacturing Hubs report 12% growth.</span>
-          <span>{'//'} Signal Quality maintained at 100% across all sub-nodes.</span>
-          <span>{'//'} Breaking: New localized dialect synthesis node active in Ghana.</span>
-          <span>{'//'} Narvo Intelligence Update: Regional Manufacturing Hubs report 12% growth.</span>
-          <span>{'//'} Signal Quality maintained at 100% across all sub-nodes.</span>
-          <span>{'//'} Breaking: New localized dialect synthesis node active in Ghana.</span>
-        </div>
-      </div>
-
       {/* Controls Console */}
       <div className="h-[72px] flex items-center justify-between px-6 bg-background-dark narvo-border-t">
         {/* Track Info */}
