@@ -98,11 +98,12 @@ export const AudioProvider = ({ children }) => {
     if (nextIdx < queue.length) {
       const next = queue[nextIdx];
       setQueueIndex(nextIdx);
-      if (next.url) {
+      const nextUrl = next.url || next.audio_url;
+      if (nextUrl) {
         const audio = audioRef.current;
-        audio.src = next.url;
+        audio.src = nextUrl;
         audio.play().catch(() => {});
-        setCurrentTrack(next);
+        setCurrentTrack({ ...next, url: nextUrl });
         setDuration(0);
         setCurrentTime(0);
       }
@@ -115,11 +116,12 @@ export const AudioProvider = ({ children }) => {
     if (prevIdx >= 0) {
       const prev = queue[prevIdx];
       setQueueIndex(prevIdx);
-      if (prev.url) {
+      const prevUrl = prev.url || prev.audio_url;
+      if (prevUrl) {
         const audio = audioRef.current;
-        audio.src = prev.url;
+        audio.src = prevUrl;
         audio.play().catch(() => {});
-        setCurrentTrack(prev);
+        setCurrentTrack({ ...prev, url: prevUrl });
         setDuration(0);
         setCurrentTime(0);
       }
@@ -130,11 +132,12 @@ export const AudioProvider = ({ children }) => {
     if (index >= 0 && index < queue.length) {
       const track = queue[index];
       setQueueIndex(index);
-      if (track.url) {
+      const trackUrl = track.url || track.audio_url;
+      if (trackUrl) {
         const audio = audioRef.current;
-        audio.src = track.url;
+        audio.src = trackUrl;
         audio.play().catch(() => {});
-        setCurrentTrack(track);
+        setCurrentTrack({ ...track, url: trackUrl });
         setDuration(0);
         setCurrentTime(0);
       }
