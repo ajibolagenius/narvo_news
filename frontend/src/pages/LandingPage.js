@@ -47,21 +47,20 @@ const LandingPage = () => {
         <div className="lg:col-span-9 flex flex-col justify-center p-8 lg:p-16 border-r border-forest">
           <div className="mono-ui text-[12px] text-forest mb-6 flex items-center gap-2">
             <span className="w-2 h-2 bg-forest block"></span>
-            BROADCAST_INITIATED // VOICE-FIRST NEWS PLATFORM
+            {t('landing.tagline')}
           </div>
           <h1 className="font-display text-5xl lg:text-7xl font-bold leading-[0.9] tracking-tighter text-white mb-8">
-            NARVO:<br />THE LOCAL PULSE, REFINED.
+            {t('landing.headline').split('\n').map((line, i) => <React.Fragment key={i}>{i > 0 && <br />}{line}</React.Fragment>)}
           </h1>
           <p className="text-lg lg:text-xl text-slate-400 max-w-xl mb-12">
-            Engineered for total accessibility. Subscribed news, summarized and translated into your
-            native tongue, delivered through an audio-first broadcast instrument.
+            {t('landing.description')}
           </p>
           <div className="flex flex-wrap gap-4">
             <button onClick={() => navigate('/auth')} className="bg-primary text-background-dark font-display font-bold px-8 py-4 text-lg hover:bg-white transition-all" data-testid="start-broadcast-btn">
-              [Start Broadcast]
+              [{t('landing.start_broadcast')}]
             </button>
             <button onClick={() => { localStorage.setItem('narvo_guest', 'true'); navigate('/dashboard'); }} className="border border-forest text-forest font-display font-bold px-8 py-4 text-lg hover:bg-forest hover:text-white transition-all" data-testid="demo-btn">
-              [Oya, Play]
+              [{t('landing.guest_play')}]
             </button>
           </div>
           <div className="mt-8 w-full border border-forest py-2 px-4 bg-forest/5 overflow-hidden">
