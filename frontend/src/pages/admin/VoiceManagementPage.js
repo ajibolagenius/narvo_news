@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { RadioTower, Filter, PlusSquare, MoreVertical, Loader2, RefreshCw } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const VoiceManagementPage = () => {
+  const { t } = useTranslation();
   const [voices, setVoices] = useState([]);
   const [loading, setLoading] = useState(true);
 
