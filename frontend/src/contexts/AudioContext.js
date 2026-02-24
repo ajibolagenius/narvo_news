@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
 
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const AudioContext = createContext({});
 
 export const useAudio = () => useContext(AudioContext);
@@ -8,10 +9,12 @@ export const AudioProvider = ({ children }) => {
   const audioRef = useRef(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [queue, setQueue] = useState([]);
   const [queueIndex, setQueueIndex] = useState(-1);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const audio = new Audio();
@@ -25,6 +28,12 @@ export const AudioProvider = ({ children }) => {
     });
     audio.addEventListener('play', () => setIsPlaying(true));
     audio.addEventListener('pause', () => setIsPlaying(false));
+    audio.addEventListener('error', (e) => {
+      console.error('Audio error:', e);
+      setError('Failed to play audio');
+      setIsPlaying(false);
+      setIsLoading(false);
+    });
 
     return () => {
       audio.pause();
@@ -33,26 +42,76 @@ export const AudioProvider = ({ children }) => {
     // eslint-disable-next-line
   }, []);
 
-  const playTrack = useCallback((track) => {
-    // Support both 'url' and 'audio_url' properties
-    const trackUrl = track?.url || track?.audio_url;
-    if (!trackUrl) return;
+  // Generate TTS audio for a track
+  const generateTTS = useCallback(async (track) => {
+    const textToSpeak = track.narrative || track.summary || track.title;
+    if (!textToSpeak) return null;
     
+    try {
+      const response = await fetch(`${API_URL}/api/tts/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: textToSpeak.slice(0, 4000),
+          voice_id: 'nova'
+        })
+      });
+      
+      if (!response.ok) throw new Error('TTS generation failed');
+      
+      const data = await response.json();
+      return data.audio_url;
+    } catch (err) {
+      console.error('TTS error:', err);
+      return null;
+    }
+  }, []);
+
+  const playTrack = useCallback(async (track) => {
+    if (!track) return;
+    
+    setError(null);
     const audio = audioRef.current;
-    const currentUrl = currentTrack?.url || currentTrack?.audio_url;
     
-    if (currentUrl === trackUrl) {
-      if (audio.paused) audio.play().catch(() => {});
-      else audio.pause();
+    // Get existing URL or generate TTS
+    let trackUrl = track.url || track.audio_url;
+    
+    // If same track, toggle play/pause
+    if (currentTrack?.id === track.id && trackUrl) {
+      if (audio.paused) {
+        audio.play().catch(() => {});
+      } else {
+        audio.pause();
+      }
       return;
     }
     
+    // If no audio URL, generate TTS
+    if (!trackUrl) {
+      setIsLoading(true);
+      setCurrentTrack({ ...track, title: track.title, source: track.source });
+      
+      trackUrl = await generateTTS(track);
+      
+      if (!trackUrl) {
+        setError('Failed to generate audio');
+        setIsLoading(false);
+        return;
+      }
+    }
+    
+    // Play the audio
     audio.src = trackUrl;
-    audio.play().catch(() => {});
+    audio.play().catch((err) => {
+      console.error('Play error:', err);
+      setError('Failed to play audio');
+    });
+    
     setCurrentTrack({ ...track, url: trackUrl });
     setDuration(0);
     setCurrentTime(0);
-  }, [currentTrack]);
+    setIsLoading(false);
+  }, [currentTrack, generateTTS]);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
@@ -73,6 +132,7 @@ export const AudioProvider = ({ children }) => {
     setIsPlaying(false);
     setCurrentTime(0);
     setDuration(0);
+    setError(null);
   }, []);
 
   // Queue management
@@ -92,57 +152,33 @@ export const AudioProvider = ({ children }) => {
     setQueueIndex(-1);
   }, []);
 
-  const playNext = useCallback(() => {
+  const playNext = useCallback(async () => {
     if (queue.length === 0) return;
     const nextIdx = queueIndex + 1;
     if (nextIdx < queue.length) {
       const next = queue[nextIdx];
       setQueueIndex(nextIdx);
-      const nextUrl = next.url || next.audio_url;
-      if (nextUrl) {
-        const audio = audioRef.current;
-        audio.src = nextUrl;
-        audio.play().catch(() => {});
-        setCurrentTrack({ ...next, url: nextUrl });
-        setDuration(0);
-        setCurrentTime(0);
-      }
+      await playTrack(next);
     }
-  }, [queue, queueIndex]);
+  }, [queue, queueIndex, playTrack]);
 
-  const playPrev = useCallback(() => {
+  const playPrev = useCallback(async () => {
     if (queue.length === 0) return;
     const prevIdx = queueIndex - 1;
     if (prevIdx >= 0) {
       const prev = queue[prevIdx];
       setQueueIndex(prevIdx);
-      const prevUrl = prev.url || prev.audio_url;
-      if (prevUrl) {
-        const audio = audioRef.current;
-        audio.src = prevUrl;
-        audio.play().catch(() => {});
-        setCurrentTrack({ ...prev, url: prevUrl });
-        setDuration(0);
-        setCurrentTime(0);
-      }
+      await playTrack(prev);
     }
-  }, [queue, queueIndex]);
+  }, [queue, queueIndex, playTrack]);
 
-  const playFromQueue = useCallback((index) => {
+  const playFromQueue = useCallback(async (index) => {
     if (index >= 0 && index < queue.length) {
       const track = queue[index];
       setQueueIndex(index);
-      const trackUrl = track.url || track.audio_url;
-      if (trackUrl) {
-        const audio = audioRef.current;
-        audio.src = trackUrl;
-        audio.play().catch(() => {});
-        setCurrentTrack({ ...track, url: trackUrl });
-        setDuration(0);
-        setCurrentTime(0);
-      }
+      await playTrack(track);
     }
-  }, [queue]);
+  }, [queue, playTrack]);
 
   const reorderQueue = useCallback((fromIndex, toIndex) => {
     setQueue(prev => {
@@ -154,21 +190,23 @@ export const AudioProvider = ({ children }) => {
   }, []);
 
   // Play a track and set it as the current in queue context
-  const playTrackAndQueue = useCallback((track, trackList) => {
+  const playTrackAndQueue = useCallback(async (track, trackList) => {
     if (trackList && trackList.length > 0) {
       setQueue(trackList);
       const idx = trackList.findIndex(t => t.id === track.id);
       setQueueIndex(idx >= 0 ? idx : 0);
     }
-    playTrack(track);
+    await playTrack(track);
   }, [playTrack]);
 
   return (
     <AudioContext.Provider value={{
       currentTrack,
       isPlaying,
+      isLoading,
       currentTime,
       duration,
+      error,
       playTrack,
       playTrackAndQueue,
       togglePlay,
