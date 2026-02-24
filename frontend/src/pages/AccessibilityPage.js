@@ -1,27 +1,111 @@
-import React, { useState } from 'react';
-import { Rows, Type, Hand, Pointer, Mic, Info } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Rows, Type, Hand, Pointer, Mic, Info, Loader2, Save } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useHapticAlert } from '../components/HapticAlerts';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+const DEFAULT_SETTINGS = {
+  displayDensity: 'standard',
+  fontScale: 100,
+  lateralSwipe: true,
+  pinchZoom: false,
+  voiceCommands: false,
+};
 
 const AccessibilityPage = () => {
-  const [displayDensity, setDisplayDensity] = useState('compact');
-  const [fontScale, setFontScale] = useState(110);
-  const [gestures, setGestures] = useState({
-    lateralSwipe: true,
-    pinchZoom: false,
-  });
-  const [voiceCommands] = useState([
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const { showAlert } = useHapticAlert();
+  const [displayDensity, setDisplayDensity] = useState('standard');
+  const [fontScale, setFontScale] = useState(100);
+  const [gestures, setGestures] = useState({ lateralSwipe: true, pinchZoom: false });
+  const [voiceCommandsList] = useState([
     { id: 1, command: '"NARVO, OPEN NEWSFEED"', active: true },
     { id: 2, command: '"NARVO, BRIGHTNESS UP"', active: true },
   ]);
+  const [hasChanges, setHasChanges] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [loadingSettings, setLoadingSettings] = useState(true);
 
-  const densityOptions = [
-    { id: 'compact', label: 'Compact', desc: 'MAX_DENSITY_MODE // MIN_PADDING', bars: 4 },
-    { id: 'standard', label: 'Standard', desc: 'BALANCED_FLOW // OPTIMAL_READ', bars: 2 },
-    { id: 'expanded', label: 'Expanded', desc: 'MAX_WHITESPACE // FOCUS_DOCK', bars: 1 },
-  ];
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const userId = user?.id || 'guest';
+      try {
+        const res = await fetch(`${API_URL}/api/settings/${userId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setDisplayDensity(data.display_density || DEFAULT_SETTINGS.displayDensity);
+          setFontScale(data.font_scale ?? DEFAULT_SETTINGS.fontScale);
+          setGestures({
+            lateralSwipe: data.gestural_swipe ?? DEFAULT_SETTINGS.lateralSwipe,
+            pinchZoom: data.gestural_pinch ?? DEFAULT_SETTINGS.pinchZoom,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load accessibility settings:', err);
+      }
+      setLoadingSettings(false);
+    };
+    fetchSettings();
+  }, [user?.id]);
+
+  const handleDensityChange = (id) => {
+    setDisplayDensity(id);
+    setHasChanges(true);
+  };
+
+  const handleFontScaleChange = (val) => {
+    setFontScale(val);
+    setHasChanges(true);
+  };
 
   const toggleGesture = (key) => {
     setGestures(prev => ({ ...prev, [key]: !prev[key] }));
+    setHasChanges(true);
   };
+
+  const handleSave = async () => {
+    setSaving(true);
+    const userId = user?.id || 'guest';
+    try {
+      const res = await fetch(`${API_URL}/api/settings/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          display_density: displayDensity,
+          font_scale: fontScale,
+          gestural_swipe: gestures.lateralSwipe,
+          gestural_pinch: gestures.pinchZoom,
+        }),
+      });
+      if (res.ok) {
+        setHasChanges(false);
+        showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
+      }
+    } catch (err) {
+      showAlert({ type: 'error', title: 'SAVE_FAILED', message: 'Could not save accessibility settings.', code: 'ERR_SAVE' });
+    }
+    setSaving(false);
+  };
+
+  const densityOptions = [
+    { id: 'compact', label: t('accessibility.compact'), desc: 'MAX_DENSITY_MODE // MIN_PADDING', bars: 4 },
+    { id: 'standard', label: t('accessibility.standard'), desc: 'BALANCED_FLOW // OPTIMAL_READ', bars: 2 },
+    { id: 'expanded', label: t('accessibility.expanded'), desc: 'MAX_WHITESPACE // FOCUS_DOCK', bars: 1 },
+  ];
+
+  if (loadingSettings) {
+    return (
+      <main className="flex-1 flex items-center justify-center bg-background-dark" data-testid="accessibility-page">
+        <div className="flex items-center gap-3 mono-ui text-xs text-forest">
+          <Loader2 className="w-5 h-5 animate-spin text-primary" />
+          {t('common.loading')}
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-forest/30 overflow-hidden bg-background-dark" data-testid="accessibility-page">
@@ -30,7 +114,7 @@ const AccessibilityPage = () => {
         <div className="p-6 md:p-8 narvo-border-b flex justify-between items-center shrink-0">
           <div className="space-y-1">
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-widest">LAYER_01</span>
-            <h3 className="text-primary font-bold text-lg md:text-xl tracking-tight uppercase">DISPLAY_DENSITY</h3>
+            <h3 className="text-primary font-bold text-lg md:text-xl tracking-tight uppercase">{t('accessibility.display_density')}</h3>
           </div>
           <Rows className="w-5 h-5 md:w-6 md:h-6 text-forest" />
         </div>
@@ -47,7 +131,7 @@ const AccessibilityPage = () => {
                   type="radio" 
                   name="density" 
                   checked={displayDensity === option.id}
-                  onChange={() => setDisplayDensity(option.id)}
+                  onChange={() => handleDensityChange(option.id)}
                   className="peer sr-only" 
                 />
                 <div className={`p-4 md:p-6 narvo-border bg-surface/10 transition-all relative ${
@@ -75,7 +159,7 @@ const AccessibilityPage = () => {
         <div className="p-6 md:p-8 narvo-border-b flex justify-between items-center shrink-0">
           <div className="space-y-1">
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-widest">LAYER_02</span>
-            <h3 className="text-primary font-bold text-lg md:text-xl tracking-tight uppercase">FONT_SCALING</h3>
+            <h3 className="text-primary font-bold text-lg md:text-xl tracking-tight uppercase">{t('accessibility.font_scaling')}</h3>
           </div>
           <Type className="w-5 h-5 md:w-6 md:h-6 text-forest" />
         </div>
@@ -93,7 +177,7 @@ const AccessibilityPage = () => {
                 min="75" 
                 max="150" 
                 value={fontScale}
-                onChange={(e) => setFontScale(parseInt(e.target.value))}
+                onChange={(e) => handleFontScaleChange(parseInt(e.target.value))}
                 data-testid="font-scale-slider"
               />
               <div className="flex justify-between mt-3 md:mt-4 mono-ui text-[8px] md:text-[9px] text-forest font-bold">
@@ -148,7 +232,7 @@ const AccessibilityPage = () => {
         <div className="p-6 md:p-8 narvo-border-b flex justify-between items-center shrink-0">
           <div className="space-y-1">
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-widest">LAYER_03</span>
-            <h3 className="text-primary font-bold text-lg md:text-xl tracking-tight uppercase">UI_INTERACTION</h3>
+            <h3 className="text-primary font-bold text-lg md:text-xl tracking-tight uppercase">{t('accessibility.ui_interaction')}</h3>
           </div>
           <Pointer className="w-5 h-5 md:w-6 md:h-6 text-forest" />
         </div>
@@ -156,7 +240,7 @@ const AccessibilityPage = () => {
         <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 space-y-8 md:space-y-10">
           <div className="space-y-4 md:space-y-6">
             <h4 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold border-b border-forest/30 pb-2">
-              GESTURAL_CONTROL
+              {t('accessibility.gestural_control')}
             </h4>
 
             <div className="space-y-2 md:space-y-3">
@@ -167,7 +251,7 @@ const AccessibilityPage = () => {
                     <Hand className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-0.5">
-                    <h5 className="mono-ui text-[10px] md:text-[11px] text-white font-bold">Lateral Swipe</h5>
+                    <h5 className="mono-ui text-[10px] md:text-[11px] text-white font-bold">{t('accessibility.lateral_swipe')}</h5>
                     <p className="mono-ui text-[8px] md:text-[9px] text-forest">NAV_DATA_STREAMS</p>
                   </div>
                 </div>
@@ -187,7 +271,7 @@ const AccessibilityPage = () => {
                     <Hand className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-0.5">
-                    <h5 className="mono-ui text-[10px] md:text-[11px] text-white font-bold">Pinch Zoom</h5>
+                    <h5 className="mono-ui text-[10px] md:text-[11px] text-white font-bold">{t('accessibility.pinch_zoom')}</h5>
                     <p className="mono-ui text-[8px] md:text-[9px] text-forest">EXPAND_MAP_DOCK</p>
                   </div>
                 </div>
@@ -204,8 +288,8 @@ const AccessibilityPage = () => {
 
           <div className="space-y-4 md:space-y-6">
             <div className="flex justify-between items-end border-b border-forest/30 pb-2">
-              <h4 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold">VOICE_COMMANDS</h4>
-              <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold animate-pulse">● LISTENING_V2</span>
+              <h4 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold">{t('accessibility.voice_commands')}</h4>
+              <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold animate-pulse">LISTENING_V2</span>
             </div>
 
             {/* Voice Waveform */}
@@ -220,7 +304,7 @@ const AccessibilityPage = () => {
             </div>
 
             <div className="space-y-2">
-              {voiceCommands.map(cmd => (
+              {voiceCommandsList.map(cmd => (
                 <button 
                   key={cmd.id}
                   className="w-full p-3 md:p-4 narvo-border bg-surface/5 flex items-center gap-3 md:gap-4 hover:bg-forest/10 transition-all group"
@@ -233,9 +317,24 @@ const AccessibilityPage = () => {
             </div>
 
             <button className="w-full py-3 md:py-4 narvo-border border-dashed border-forest/50 mono-ui text-[9px] md:text-[10px] text-forest font-bold hover:text-primary hover:border-primary transition-all">
-              + CALIBRATE_NEW_COMMAND
+              + {t('accessibility.calibrate')}
             </button>
           </div>
+
+          {/* Save Button */}
+          <button 
+            onClick={handleSave}
+            disabled={!hasChanges || saving}
+            className={`w-full py-3 md:py-4 mono-ui text-[10px] md:text-[11px] font-bold transition-all flex items-center justify-center gap-2 ${
+              hasChanges && !saving
+                ? 'bg-primary text-background-dark hover:bg-white' 
+                : 'bg-forest/30 text-forest cursor-not-allowed'
+            }`}
+            data-testid="save-accessibility-btn"
+          >
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {saving ? t('system_settings.saving') : t('system_settings.save_config')}
+          </button>
         </div>
       </section>
     </main>

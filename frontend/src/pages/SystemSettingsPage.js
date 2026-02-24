@@ -1,40 +1,100 @@
-import React, { useState } from 'react';
-import { Sun, Monitor, Bell, Vibrate, Gauge, Zap, RotateCcw, Save } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Sun, Monitor, Bell, Vibrate, Gauge, Zap, RotateCcw, Save, Loader2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useHapticAlert } from '../components/HapticAlerts';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+const DEFAULT_SETTINGS = {
+  highContrast: true,
+  interfaceScale: 'DEFAULT',
+  hapticSync: false,
+  alertVolume: 65,
+  dataLimit: 2400,
+  bandwidthPriority: 'STREAMING',
+};
 
 const SystemSettingsPage = () => {
-  const [settings, setSettings] = useState({
-    highContrast: true,
-    interfaceScale: 'DEFAULT',
-    hapticSync: false,
-    alertVolume: 65,
-    dataLimit: 2400,
-    bandwidthPriority: 'STREAMING',
-  });
-  
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const { showAlert } = useHapticAlert();
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [hasChanges, setHasChanges] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [loadingSettings, setLoadingSettings] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const userId = user?.id || 'guest';
+      try {
+        const res = await fetch(`${API_URL}/api/settings/${userId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSettings({
+            highContrast: data.high_contrast ?? DEFAULT_SETTINGS.highContrast,
+            interfaceScale: (data.interface_scale || 'DEFAULT').toUpperCase().replace('%', '').replace('100', 'DEFAULT'),
+            hapticSync: data.haptic_sync ?? DEFAULT_SETTINGS.hapticSync,
+            alertVolume: data.alert_volume ?? DEFAULT_SETTINGS.alertVolume,
+            dataLimit: Math.round((data.data_limit ?? 2.4) * 1000),
+            bandwidthPriority: (data.bandwidth_priority || 'streaming').toUpperCase(),
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load settings:', err);
+      }
+      setLoadingSettings(false);
+    };
+    fetchSettings();
+  }, [user?.id]);
 
   const updateSetting = (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
     setHasChanges(true);
   };
 
-  const handleSave = () => {
-    // Save to localStorage for persistence
-    localStorage.setItem('narvo_system_settings', JSON.stringify(settings));
-    setHasChanges(false);
+  const handleSave = async () => {
+    setSaving(true);
+    const userId = user?.id || 'guest';
+    try {
+      const res = await fetch(`${API_URL}/api/settings/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          high_contrast: settings.highContrast,
+          interface_scale: settings.interfaceScale === 'DEFAULT' ? '100%' : settings.interfaceScale.toLowerCase(),
+          haptic_sync: settings.hapticSync,
+          alert_volume: settings.alertVolume,
+          data_limit: settings.dataLimit / 1000,
+          bandwidth_priority: settings.bandwidthPriority.toLowerCase(),
+        }),
+      });
+      if (res.ok) {
+        setHasChanges(false);
+        showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
+      }
+    } catch (err) {
+      showAlert({ type: 'error', title: 'SAVE_FAILED', message: 'Could not save settings.', code: 'ERR_SAVE' });
+    }
+    setSaving(false);
   };
 
   const handleReset = () => {
-    setSettings({
-      highContrast: true,
-      interfaceScale: 'DEFAULT',
-      hapticSync: false,
-      alertVolume: 65,
-      dataLimit: 2400,
-      bandwidthPriority: 'STREAMING',
-    });
+    setSettings(DEFAULT_SETTINGS);
     setHasChanges(true);
+    showAlert({ type: 'sync', title: t('alerts.settings_reset'), message: t('alerts.settings_reset_msg'), code: 'RESET_OK' });
   };
+
+  if (loadingSettings) {
+    return (
+      <main className="flex-1 overflow-y-auto custom-scroll flex items-center justify-center bg-background-dark" data-testid="system-settings-page">
+        <div className="flex items-center gap-3 mono-ui text-xs text-forest">
+          <Loader2 className="w-5 h-5 animate-spin text-primary" />
+          {t('system_settings.loading')}
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 overflow-y-auto custom-scroll flex flex-col items-center bg-background-dark" data-testid="system-settings-page">
@@ -43,7 +103,7 @@ const SystemSettingsPage = () => {
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
-              DISPLAY_ENTITY
+              {t('system_settings.display_entity')}
             </h2>
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
               VISUAL_OUTPUT_LAYER
@@ -58,8 +118,8 @@ const SystemSettingsPage = () => {
                   <Sun className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">High_Contrast_Mode</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">OPTIMIZE_FOR_STUDIO_ENVIRONMENTS</p>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.high_contrast')}</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.high_contrast_desc')}</p>
                 </div>
               </div>
               <button 
@@ -82,8 +142,8 @@ const SystemSettingsPage = () => {
                   <Monitor className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">Interface_Scaling</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">ADJUST_UI_ELEMENT_DENSITY</p>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.interface_scaling')}</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.interface_scaling_desc')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 md:gap-4 font-mono text-[10px] md:text-[11px] font-bold text-primary">
@@ -107,7 +167,7 @@ const SystemSettingsPage = () => {
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
-              NOTIFICATION_SYNTAX
+              {t('system_settings.notification_syntax')}
             </h2>
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
               ALERT_SYSTEM_MANAGEMENT
@@ -122,8 +182,8 @@ const SystemSettingsPage = () => {
                   <Vibrate className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">Haptic_Sync</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">PHYSICAL_RESPONSE_ON_CRITICAL_ALERTS</p>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.haptic_sync')}</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.haptic_sync_desc')}</p>
                 </div>
               </div>
               <button 
@@ -147,8 +207,8 @@ const SystemSettingsPage = () => {
                     <Bell className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">Alert_Amplitude</h3>
-                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">SYSTEM_WIDE_AUDIO_VOLUME</p>
+                    <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.alert_amplitude')}</h3>
+                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.alert_amplitude_desc')}</p>
                   </div>
                 </div>
                 <span className="mono-ui text-[10px] md:text-[11px] text-primary font-bold border border-primary px-2 py-1">
@@ -174,7 +234,7 @@ const SystemSettingsPage = () => {
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
-              DATA_THROUGHPUT
+              {t('system_settings.data_throughput')}
             </h2>
             <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
               BANDWIDTH_SYNC_CONTROL
@@ -190,8 +250,8 @@ const SystemSettingsPage = () => {
                     <Gauge className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">Data_Limit_Threshold</h3>
-                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">MONTHLY_QUOTA_FOR_BONDED_UPLINK</p>
+                    <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.data_limit')}</h3>
+                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.data_limit_desc')}</p>
                   </div>
                 </div>
                 <span className="mono-ui text-[10px] md:text-[11px] text-primary font-bold border border-primary px-2 py-1">
@@ -220,8 +280,8 @@ const SystemSettingsPage = () => {
                   <Zap className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">Bandwidth_Priority</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">RESOURCE_ALLOCATION_FOR_LIVE_SIGNALS</p>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-white font-bold">{t('system_settings.bandwidth_priority')}</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.bandwidth_priority_desc')}</p>
                 </div>
               </div>
               <div className="flex narvo-border divide-x divide-forest/50">
@@ -252,20 +312,20 @@ const SystemSettingsPage = () => {
             data-testid="reset-defaults-btn"
           >
             <RotateCcw className="w-4 h-4" />
-            RESET_DEFAULTS
+            {t('system_settings.reset_defaults')}
           </button>
           <button 
             onClick={handleSave}
-            disabled={!hasChanges}
+            disabled={!hasChanges || saving}
             className={`px-6 md:px-10 py-3 md:py-4 mono-ui text-[10px] md:text-[11px] font-bold transition-all flex items-center justify-center gap-2 ${
-              hasChanges 
+              hasChanges && !saving
                 ? 'bg-primary text-background-dark hover:bg-white' 
                 : 'bg-forest/30 text-forest cursor-not-allowed'
             }`}
             data-testid="save-config-btn"
           >
-            <Save className="w-4 h-4" />
-            SAVE_SYSTEM_CONFIG
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {saving ? t('system_settings.saving') : t('system_settings.save_config')}
           </button>
         </div>
       </div>
