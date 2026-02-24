@@ -137,74 +137,22 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
             <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
             {open && <span className="font-mono text-[11px] font-bold uppercase tracking-wider">{t('nav.settings')}</span>}
           </button>
-              className={`flex items-center gap-3 transition-all flex-1 ${
-                isSettingsActive 
-                  ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/5 border border-[var(--color-border)]' 
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]/30'
-              } ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
-              title="Settings Hub"
-            >
-              <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
-              {open && <span className="font-mono text-xs uppercase tracking-wider">{t('nav.settings')}</span>}
-            </button>
-            {open && (
-              <button
-                onClick={() => setSettingsExpanded(!settingsExpanded)}
-                className="p-3 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
-                title={settingsExpanded ? "Collapse" : "Expand"}
-              >
-                <CaretDown weight="bold" className={`w-4 h-4 transition-transform ${settingsExpanded ? 'rotate-180' : ''}`} />
-              </button>
-            )}
-          </div>
-          
-          {/* Settings Sub-nav (only when expanded) */}
-          <AnimatePresence>
-            {open && settingsExpanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="ml-4 space-y-1 mt-1 overflow-hidden"
-              >
-                {settingsSubNav.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = location.pathname === item.path;
-                  return (
-                    <button
-                      key={item.path}
-                      onClick={() => navigate(item.path)}
-                      className={`
-                        flex items-center gap-3 px-4 py-2 mx-2 transition-all w-full text-left
-                        ${isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-dim)] hover:text-[var(--color-primary)]'}
-                      `}
-                      data-testid={`sidebar-${item.label.toLowerCase()}`}
-                    >
-                      <Icon weight={isActive ? 'fill' : 'regular'} className="w-4 h-4 shrink-0" />
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider truncate">{item.label}</span>
-                    </button>
-                  );
-                })}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* Admin Section */}
-        <div className="border-t border-[var(--color-border)] py-3">
+        <div className="border-t border-[var(--color-border)] py-2">
           <button
             onClick={() => navigate('/admin/operations')}
-            className={`flex items-center gap-3 transition-all mx-2 ${
-              location.pathname.startsWith('/admin') 
-                ? 'text-red-500 bg-red-500/10 border border-red-500/50' 
-                : 'text-[var(--color-text-secondary)] hover:text-red-500 hover:bg-red-500/5'
-            } ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
+            className={`flex items-center gap-3 transition-all h-11 w-full
+              ${open ? 'px-4' : 'px-4 justify-start'}
+              ${location.pathname.startsWith('/admin') 
+                ? 'text-red-500 bg-red-500/10 border-l-2 border-l-red-500' 
+                : 'text-[var(--color-text-secondary)] hover:text-red-500 hover:bg-red-500/5'}`}
             title="Admin Console"
             data-testid="sidebar-admin"
           >
             <ShieldCheck weight={location.pathname.startsWith('/admin') ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
-            {open && <span className="font-mono text-xs uppercase tracking-wider">{t('nav.admin')}</span>}
+            {open && <span className="font-mono text-[11px] font-bold uppercase tracking-wider">{t('nav.admin')}</span>}
           </button>
         </div>
       </motion.aside>
