@@ -621,8 +621,7 @@ async def save_user_settings(user_id: str, settings: UserSettings):
     """Save user settings (merges with existing)"""
     existing = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
     existing_settings = existing.get("settings", {}) if existing else {}
-    # Merge: incoming settings override existing, but keep fields not in the incoming payload
-    merged = {**existing_settings, **{k: v for k, v in settings.dict().items() if v != UserSettings.__fields__[k].default or k in settings.__fields_set__}}
+    merged = {**existing_settings, **settings.dict()}
     preferences_col.update_one(
         {"user_id": user_id},
         {"$set": {"settings": merged, "updated_at": datetime.now(timezone.utc).isoformat()}},
