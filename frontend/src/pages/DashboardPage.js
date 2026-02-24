@@ -34,8 +34,55 @@ const DashboardPage = () => {
 
   const toggleBookmark = (e, item) => {
     e.stopPropagation();
-    if (isBookmarked(item.id)) removeBookmark(item.id);
-    else addBookmark(item);
+    if (isBookmarked(item.id)) {
+      removeBookmark(item.id);
+      showAlert('BOOKMARK_REMOVED');
+    } else {
+      addBookmark(item);
+      showAlert('BOOKMARK_ADDED');
+    }
+  };
+
+  const shareStory = async (e, item) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}/news/${item.id}`;
+    const shareText = `${item.title} - Listen on NARVO`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: item.title,
+          text: shareText,
+          url: shareUrl,
+        });
+        showAlert({
+          type: 'success',
+          title: 'SHARED_SUCCESS',
+          message: 'Story shared successfully.',
+          code: 'SHARE_OK',
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          // Fallback to clipboard
+          await navigator.clipboard.writeText(shareUrl);
+          showAlert({
+            type: 'sync',
+            title: 'LINK_COPIED',
+            message: 'Story link copied to clipboard.',
+            code: 'CLIP_OK',
+          });
+        }
+      }
+    } else {
+      // Fallback for browsers without Web Share API
+      await navigator.clipboard.writeText(shareUrl);
+      showAlert({
+        type: 'sync',
+        title: 'LINK_COPIED',
+        message: 'Story link copied to clipboard.',
+        code: 'CLIP_OK',
+      });
+    }
   };
 
   const timeAgo = (idx) => {
