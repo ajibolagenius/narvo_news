@@ -293,11 +293,15 @@ export const AudioProvider = ({ children }) => {
       setError('Failed to play audio');
     });
     
-    setCurrentTrack({ ...track, url: trackUrl });
+    const finalTrack = { ...track, url: trackUrl };
+    setCurrentTrack(finalTrack);
     setDuration(0);
     setCurrentTime(0);
     setIsLoading(false);
-  }, [currentTrack, isPlaying, generateTTS, addToQueue]);
+    
+    // Update Media Session for background/lock screen controls
+    updateMediaSession(finalTrack);
+  }, [currentTrack, isPlaying, generateTTS, addToQueue, updateMediaSession]);
 
   // Force play - always plays immediately
   const forcePlayTrack = useCallback(async (track) => {
