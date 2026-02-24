@@ -441,6 +441,7 @@ export const AudioProvider = ({ children }) => {
       toggleMute,
       setAutoPlay,
       setBroadcastLanguage,
+      refreshLanguagePreference: fetchLanguagePreference,
       playTrack,
       forcePlayTrack,
       playTrackAndQueue,
