@@ -30,6 +30,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include modular routers
+from routes.discover import router as discover_router
+from routes.offline import router as offline_router
+from routes.admin import router as admin_router
+from routes.user import router as user_router
+
+app.include_router(discover_router)
+app.include_router(offline_router)
+app.include_router(admin_router)
+app.include_router(user_router)
+
 # Initialize clients
 supabase: Client = create_client(
     os.environ.get("SUPABASE_URL"),
