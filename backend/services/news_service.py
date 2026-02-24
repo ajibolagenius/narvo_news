@@ -34,7 +34,7 @@ async def fetch_rss_feed(feed_config: Dict, timeout: int = 10) -> List[Dict]:
                         if hasattr(entry, 'published_parsed') and entry.published_parsed:
                             try:
                                 published = datetime(*entry.published_parsed[:6]).isoformat()
-                            except:
+                            except (TypeError, ValueError):
                                 pass
                         
                         image_url = None
