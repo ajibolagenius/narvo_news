@@ -52,18 +52,18 @@ const OperationHubPage = () => {
   ] : [];
 
   const metricsData = metrics ? [
-    { label: 'ACTIVE_STREAMS', value: metrics.active_streams?.toLocaleString() || '0', change: '+12%', icon: RadioTower },
-    { label: 'AVG_BITRATE', value: metrics.avg_bitrate?.toString() || '0', unit: 'MBPS', icon: Activity },
-    { label: 'ERROR_RATE', value: metrics.error_rate?.toFixed(2) || '0', unit: '%', icon: AlertOctagon },
+    { label: 'ACTIVE_STREAMS', value: metrics.active_streams?.toLocaleString() || '0', change: '+12%', icon: Broadcast },
+    { label: 'AVG_BITRATE', value: metrics.avg_bitrate?.toString() || '0', unit: 'MBPS', icon: Pulse },
+    { label: 'ERROR_RATE', value: metrics.error_rate?.toFixed(2) || '0', unit: '%', icon: WarningOctagon },
     { label: 'VOL_STORAGE', value: metrics.storage_used?.toString() || '0', unit: '%', icon: Database, progress: metrics.storage_used || 0 },
   ] : [];
 
   const getAlertIcon = (type) => {
     switch (type) {
-      case 'warning': return AlertTriangle;
+      case 'warning': return Warning;
       case 'success': return CheckCircle;
       case 'error': return XCircle;
-      default: return AlertTriangle;
+      default: return Warning;
     }
   };
 
@@ -98,7 +98,7 @@ const OperationHubPage = () => {
             className="p-2 text-forest hover:text-primary transition-colors"
             title="Refresh Data"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <ArrowClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           {lastUpdate && (
             <span className="mono-ui text-[8px] text-forest">{t('admin.last_update')}: {lastUpdate}</span>
@@ -216,7 +216,7 @@ const OperationHubPage = () => {
                   className="bg-transparent narvo-border mono-ui text-[9px] text-primary px-8 py-2 w-48 focus:outline-none focus:border-white" 
                   placeholder="SEARCH_ID..."
                 />
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-forest w-4 h-4" />
+                <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 text-forest w-4 h-4" />
               </div>
               <button className="px-4 py-2 narvo-border mono-ui text-[9px] text-forest font-bold hover:text-white transition-colors uppercase">
                 Sort: Status

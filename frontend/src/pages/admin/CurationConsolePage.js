@@ -30,9 +30,9 @@ const CurationConsolePage = () => {
       {/* Breadcrumb Bar */}
       <div className="h-14 narvo-border-b bg-black/20 flex items-center px-8 gap-4 shrink-0">
         <span className="mono-ui text-[9px] text-forest font-bold">DASHBOARD</span>
-        <ChevronRight className="w-3 h-3 text-forest" />
+        <CaretRight className="w-3 h-3 text-forest" />
         <span className="mono-ui text-[9px] text-forest font-bold">WIRE_FEEDS</span>
-        <ChevronRight className="w-3 h-3 text-forest" />
+        <CaretRight className="w-3 h-3 text-forest" />
         <span className="mono-ui text-[9px] text-primary font-bold">REUTERS_V2 // ID:8829</span>
       </div>
 
@@ -78,7 +78,7 @@ const CurationConsolePage = () => {
             <div className="flex-1 flex flex-col min-w-[300px] bg-black/10">
               <div className="px-8 py-3 narvo-border-b bg-forest/5 flex justify-between items-center">
                 <span className="mono-ui text-[9px] text-primary font-bold tracking-widest uppercase">NARVO_SYNTHESIS // V2.4</span>
-                <Sparkles className="w-4 h-4 text-primary" />
+                <Sparkle className="w-4 h-4 text-primary" />
               </div>
               <div className="p-8 overflow-y-auto custom-scroll space-y-6 text-sm text-white font-medium leading-relaxed">
                 {synthesizedContent.map((item, idx) => (
@@ -190,7 +190,7 @@ const CurationConsolePage = () => {
           {/* Action Buttons */}
           <div className="p-6 narvo-border-t space-y-3">
             <button className="w-full py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:bg-forest hover:text-white transition-all flex items-center justify-center gap-2">
-              <RotateCcw className="w-4 h-4" />
+              <ArrowCounterClockwise className="w-4 h-4" />
               REGENERATE
             </button>
             <div className="flex gap-3">

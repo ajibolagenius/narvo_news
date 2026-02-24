@@ -41,10 +41,10 @@ const ModerationHubPage = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'DISPUTED': return AlertTriangle;
+      case 'DISPUTED': return Warning;
       case 'VERIFIED': return CheckCircle;
-      case 'UNVERIFIED': return HelpCircle;
-      default: return HelpCircle;
+      case 'UNVERIFIED': return Question;
+      default: return Question;
     }
   };
 
@@ -74,13 +74,13 @@ const ModerationHubPage = () => {
             className="w-10 h-10 narvo-border flex items-center justify-center text-forest hover:text-white transition-all"
             title="Refresh"
           >
-            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+            <ArrowClockwise className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <button 
             onClick={() => setViewMode('grid')}
             className={`w-10 h-10 narvo-border flex items-center justify-center transition-all ${viewMode === 'grid' ? 'text-primary bg-forest/20' : 'text-forest hover:text-white'}`}
           >
-            <LayoutGrid className="w-5 h-5" />
+            <SquaresFour className="w-5 h-5" />
           </button>
           <button 
             onClick={() => setViewMode('list')}
@@ -176,7 +176,7 @@ const ModerationHubPage = () => {
                         ASSIGN
                       </button>
                       <button className="w-12 narvo-border flex items-center justify-center hover:bg-forest text-white transition-all">
-                        <MoreHorizontal className="w-5 h-5" />
+                        <DotsThree className="w-5 h-5" />
                       </button>
                     </>
                   )}
