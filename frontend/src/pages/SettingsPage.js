@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useHapticAlert } from '../components/HapticAlerts';
-import { SignOut, User, Microphonerophone, Monitor, Wheelchair, CaretRight, ShieldCheckCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon } from '@phosphor-icons/react';
+import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon } from '@phosphor-icons/react';
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 
