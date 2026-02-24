@@ -13,6 +13,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState(null);
