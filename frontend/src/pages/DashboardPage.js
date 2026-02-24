@@ -285,7 +285,7 @@ const DashboardPage = () => {
       <aside className="w-72 xl:w-80 hidden xl:flex flex-col narvo-border-l bg-background-dark shrink-0" data-testid="telemetry-sidebar">
         <div className="h-16 flex items-center px-5 narvo-border-b bg-surface/10">
           <span className="mono-ui text-xs font-bold text-forest tracking-widest uppercase flex items-center gap-3">
-            <Activity className="text-primary w-4 h-4" /> Telemetry_Center
+            <Activity className="text-primary w-4 h-4" /> {t('dashboard.telemetry')}
           </span>
         </div>
         <div className="flex-1 overflow-y-auto p-5 space-y-6 custom-scroll">
@@ -307,7 +307,7 @@ const DashboardPage = () => {
 
           {/* Trending Tags */}
           <div>
-            <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">TRENDING</span>
+            <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">{t('dashboard.trending')}</span>
             <div className="flex flex-wrap gap-1.5">
               {['#ECONOMY', '#SOLAR_GRID', '#AI_SYNTH', '#ENERGY', '#TECH'].map(tag => (
                 <span key={tag} className="narvo-border px-2 py-1 mono-ui text-[9px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">
