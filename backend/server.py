@@ -296,23 +296,24 @@ async def get_news(
 
 @app.get("/api/news/breaking")
 async def get_breaking_news():
-    """Get breaking/urgent news stories. Returns the most recent stories marked as breaking."""
+    """Get breaking/urgent news stories from RSS feeds."""
     try:
-        all_news = news_col.find(
-            {},
-            {"_id": 0}
-        ).sort("published", -1).limit(30)
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+        results = await asyncio.gather(*tasks)
+        for items in results:
+            all_news.extend(items)
         
-        stories = list(all_news)
+        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
         breaking = []
         
-        for story in stories:
+        for story in all_news[:30]:
             title_lower = (story.get("title", "") or "").lower()
             if any(kw in title_lower for kw in ["breaking", "urgent", "flash", "just in", "developing"]):
                 breaking.append(story)
         
-        if not breaking and stories:
-            latest = stories[0]
+        if not breaking and all_news:
+            latest = all_news[0]
             latest["is_developing"] = True
             breaking = [latest]
         
