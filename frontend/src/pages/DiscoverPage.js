@@ -359,44 +359,6 @@ const DiscoverPage = () => {
             </div>
           </div>
         </div>
-
-        {/* Footer Stats & Tools */}
-        <div className="narvo-border-t grid grid-cols-2 lg:grid-cols-4 bg-background-dark shrink-0">
-          <div className="p-4 md:p-6 narvo-border-r space-y-3 md:space-y-4">
-            <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">{t('discover.signal_analysis')}</span>
-            <div className="flex items-end gap-1 h-16 md:h-20">
-              <div className="bg-forest/30 w-full h-[40%]" />
-              <div className="bg-forest/50 w-full h-[70%]" />
-              <div className="bg-primary/70 w-full h-[90%]" />
-              <div className="bg-primary w-full h-[60%]" />
-              <div className="bg-forest/50 w-full h-[30%]" />
-            </div>
-          </div>
-          <div className="p-4 md:p-6 narvo-border-r flex flex-col justify-between">
-            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('discover.system_log')}</span>
-            <div className="mono-ui text-[8px] md:text-[9px] text-white/70 space-y-1 md:space-y-2">
-              <p className="text-primary">&gt; BROADCAST_STABLE</p>
-              <p>&gt; BITRATE: 320 KBPS</p>
-              <p>&gt; BUFFER: 100%</p>
-            </div>
-          </div>
-          <div className="p-4 md:p-6 col-span-2 flex flex-col gap-3 md:gap-4">
-            <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">{t('discover.newsletter')}</span>
-            <div className="flex gap-2 h-9 md:h-10">
-              <input 
-                type="email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-surface/30 narvo-border px-3 md:px-4 mono-ui text-[9px] md:text-[10px] text-white placeholder-forest focus:outline-none focus:border-primary"
-                placeholder="ENTER_SIGNAL_IDENTIFIER..."
-                data-testid="newsletter-input"
-              />
-              <button className="bg-primary text-background-dark px-4 md:px-6 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-colors">
-                {t('discover.submit')}
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
   );
