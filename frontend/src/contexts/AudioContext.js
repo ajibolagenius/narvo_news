@@ -276,18 +276,9 @@ export const AudioProvider = ({ children }) => {
     if (index >= 0 && index < queue.length) {
       const track = queue[index];
       setQueueIndex(index);
-      await playTrack(track);
+      await playTrack(track, true); // Force play
     }
   }, [queue, playTrack]);
-
-  const reorderQueue = useCallback((fromIndex, toIndex) => {
-    setQueue(prev => {
-      const updated = [...prev];
-      const [moved] = updated.splice(fromIndex, 1);
-      updated.splice(toIndex, 0, moved);
-      return updated;
-    });
-  }, []);
 
   // Play a track and set it as the current in queue context
   const playTrackAndQueue = useCallback(async (track, trackList) => {
@@ -296,7 +287,7 @@ export const AudioProvider = ({ children }) => {
       const idx = trackList.findIndex(t => t.id === track.id);
       setQueueIndex(idx >= 0 ? idx : 0);
     }
-    await playTrack(track);
+    await playTrack(track, true); // Force play
   }, [playTrack]);
 
   return (
@@ -315,6 +306,7 @@ export const AudioProvider = ({ children }) => {
       toggleMute,
       setAutoPlay,
       playTrack,
+      forcePlayTrack,
       playTrackAndQueue,
       togglePlay,
       seek,
