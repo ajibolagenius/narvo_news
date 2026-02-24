@@ -225,6 +225,7 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                         print(f"[IMG_DEBUG_V2] title={title[:30]} content_len={len(content_html)} found={bool(img_match)} image_url={image_url}")
                     
                     category = extract_category(title, summary)
+                    print(f"[APPEND_DEBUG] {title[:30]} image_url={image_url}")
                     items.append({
                         "id": generate_news_id(title, feed_info["name"]),
                         "title": title,
