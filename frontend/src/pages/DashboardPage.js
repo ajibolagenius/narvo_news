@@ -284,10 +284,21 @@ const DashboardPage = () => {
                     ))}
                   </div>
 
-                  <button className="w-full h-11 md:h-12 narvo-border bg-surface/10 mono-ui text-[10px] md:text-xs text-forest hover:bg-surface hover:text-primary transition-all flex items-center justify-center gap-3" data-testid="load-more-btn">
-                    <ArrowDown className="w-4 h-4" />
-                    <span>LOAD_MORE</span>
+                  {!allLoaded && (
+                  <button
+                    onClick={loadMore}
+                    disabled={loadingMore}
+                    className="w-full h-11 md:h-12 narvo-border bg-surface/10 mono-ui text-[10px] md:text-xs text-forest hover:bg-surface hover:text-primary transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                    data-testid="load-more-btn"
+                  >
+                    {loadingMore ? (
+                      <div className="w-4 h-4 border-2 border-forest border-t-transparent animate-spin" />
+                    ) : (
+                      <ArrowDown className="w-4 h-4" />
+                    )}
+                    <span>{loadingMore ? 'LOADING...' : `LOAD_MORE // ${Math.max(0, news.length - 1 - visibleCount)} REMAINING`}</span>
                   </button>
+                  )}
                 </section>
               </>
             )}
