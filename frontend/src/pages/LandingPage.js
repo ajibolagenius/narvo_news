@@ -79,7 +79,7 @@ const LandingPage = () => {
           {!breakingDismissed && breaking.length > 0 && (
             <div className="mt-8 w-full bg-red-950/90 border border-red-500/50 px-4 py-3 flex items-center gap-3 animate-pulse-subtle" data-testid="landing-breaking-banner">
               <div className="flex items-center gap-2 shrink-0">
-                <Zap className="w-3.5 h-3.5 text-red-400" />
+                <Lightning weight="fill" className="w-3.5 h-3.5 text-red-400" />
                 <span className="mono-ui text-[9px] md:text-[10px] text-red-400 font-bold tracking-widest">
                   {t('notifications.breaking_news')}
                 </span>
@@ -98,10 +98,10 @@ const LandingPage = () => {
                   className="mono-ui text-[8px] text-red-400 font-bold hover:text-white transition-colors hidden sm:flex items-center gap-1"
                 >
                   {t('notifications.read_now')}
-                  <ArrowRight className="w-3 h-3" />
+                  <ArrowRight weight="bold" className="w-3 h-3" />
                 </button>
                 <button onClick={() => setBreakingDismissed(true)} className="p-1 hover:bg-red-500/20 transition-colors">
-                  <X className="w-3 h-3 text-red-400" />
+                  <X weight="bold" className="w-3 h-3 text-red-400" />
                 </button>
               </div>
             </div>
