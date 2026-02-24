@@ -59,17 +59,17 @@
 }
 
 /* ===========================================
-   LIGHT MODE
+   LIGHT MODE - Clean Lab Design
    =========================================== */
 [data-theme='light'] {
-  --color-primary: 27 33 26;
-  --color-bg: 235 213 171;
-  --color-surface: 217 197 160;
-  --color-border: 98 129 65;
-  --color-text-primary: 27 33 26;
-  --color-text-secondary: 98 129 65;
-  --color-text-dim: 102 102 102;
-  --color-accent: 98 129 65;
+  --color-primary: 98 129 65;         /* Forest Green - Signal color for action/hierarchy */
+  --color-bg: 255 255 255;            /* Pure White - Clean base surface */
+  --color-surface: 239 243 237;       /* Soft Sage Tint - Secondary surface */
+  --color-border: 27 33 26;           /* Dark Charcoal - Technical focus borders */
+  --color-text-primary: 27 33 26;     /* Dark Charcoal - Primary text */
+  --color-text-secondary: 98 129 65;  /* Forest Green - Labels, metadata */
+  --color-text-dim: 128 128 128;      /* 50% Grey - Utility text */
+  --color-accent: 98 129 65;          /* Forest Green - Highlights */
 }
 
 /* Theme transition */

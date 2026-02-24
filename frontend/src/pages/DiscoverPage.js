@@ -7,19 +7,14 @@ import EmptyState from '../components/EmptyState';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
-// Podcast episodes - would come from API in production
-const PODCAST_EPISODES = [
-  { id: 'ep402', episode: 'EP. 402', title: 'The Geopolitical Shift: Arctic Routes', duration: '45:00', description: 'UNDERSTANDING_THE_OPENING_TRADE_ROUTES_INCIDENT_NORTH_POLE_ENVIRONMENTAL_IMPACT_REPORT_v4.' },
-  { id: 'ep089', episode: 'EP. 089', title: 'Tech Horizons: Quantum Synthesis', duration: '22:15', description: 'EXCLUSIVE_BREAKTHROUGH_ZURICH_LABS_NEURAL_INTERFACE_READY_FOR_HUMAN_TRIALS_PHASE_1.' },
-  { id: 'ep012', episode: 'EP. 012', title: 'Urban Architecture: Megacities', duration: '60:00', description: 'REIMAGINING_DENSE_METROPOLITAN_SPACES_NIGERIA_2050_INFRASTRUCTURE_PLANNING_DATA.' },
-  { id: 'ep201', episode: 'EP. 201', title: 'Soundscapes: Amazon Rainforest', duration: '33:45', description: 'BINAURAL_FIELD_RECORDINGS_BIODIVERSITY_METRICS_AUDIO_SAMPLE_SET_A.' },
-];
-
 const DiscoverPage = () => {
   const { t } = useTranslation();
   const [featuredNews, setFeaturedNews] = useState(null);
   const [loading, setLoading] = useState(true);
   const [podcastSort, setPodcastSort] = useState('latest');
+  const [podcasts, setPodcasts] = useState([]);
+  const [podcastLoading, setPodcastLoading] = useState(true);
+  const [trendingTopics, setTrendingTopics] = useState([]);
   const { playTrack } = useAudio();
   
   // Radio state
@@ -33,6 +28,7 @@ const DiscoverPage = () => {
   const audioRef = useRef(null);
 
   useEffect(() => {
+    // Fetch featured news
     fetch(`${API_URL}/api/news?limit=1`)
       .then(res => res.json())
       .then(data => {
@@ -46,7 +42,25 @@ const DiscoverPage = () => {
       .then(res => res.json())
       .then(setCountries)
       .catch(console.error);
+      
+    // Fetch trending topics
+    fetch(`${API_URL}/api/discover/trending`)
+      .then(res => res.json())
+      .then(setTrendingTopics)
+      .catch(console.error);
   }, []);
+  
+  // Fetch podcasts when sort changes
+  useEffect(() => {
+    setPodcastLoading(true);
+    fetch(`${API_URL}/api/podcasts?sort=${podcastSort}&limit=8`)
+      .then(res => res.json())
+      .then(data => {
+        setPodcasts(data);
+        setPodcastLoading(false);
+      })
+      .catch(() => setPodcastLoading(false));
+  }, [podcastSort]);
   
   // Fetch radio stations when country changes
   useEffect(() => {
@@ -193,34 +207,58 @@ const DiscoverPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[1px] bg-forest/20">
-              {PODCAST_EPISODES.map((podcast) => (
-                <article 
-                  key={podcast.id}
-                  className="bg-background-dark p-4 md:p-8 flex flex-col gap-4 md:gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50"
-                  data-testid={`podcast-${podcast.id}`}
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="mono-ui text-[8px] md:text-[9px] text-primary border border-primary/30 px-1.5 md:px-2 py-0.5 bg-primary/10 font-bold">
-                      {podcast.episode}
-                    </span>
-                    <span className="mono-ui text-[8px] md:text-[9px] text-forest">{podcast.duration}</span>
+              {podcastLoading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="bg-background-dark p-4 md:p-8 flex flex-col gap-4">
+                    <div className="flex justify-between items-start">
+                      <Skeleton className="w-16 h-5" />
+                      <Skeleton className="w-12 h-4" />
+                    </div>
+                    <Skeleton variant="text" className="w-full h-6" />
+                    <Skeleton variant="text" className="w-3/4 h-4" />
+                    <Skeleton variant="text" className="w-1/2 h-4" />
                   </div>
-                  <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors">
-                    {podcast.title}
-                  </h4>
-                  <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
-                    {podcast.description}
-                  </p>
-                  <button 
-                    onClick={() => handlePlayPodcast(podcast)}
-                    className="mt-auto pt-4 md:pt-6 flex items-center gap-2 md:gap-3 text-primary mono-ui text-[9px] md:text-[10px] font-bold hover:text-content transition-colors"
-                    data-testid={`play-podcast-${podcast.id}`}
+                ))
+              ) : podcasts.length === 0 ? (
+                <div className="col-span-2 p-8 text-center">
+                  <EmptyState 
+                    title="NO PODCASTS AVAILABLE"
+                    description="Check back later for new content"
+                  />
+                </div>
+              ) : (
+                podcasts.map((podcast) => (
+                  <article 
+                    key={podcast.id}
+                    className="bg-background-dark p-4 md:p-8 flex flex-col gap-4 md:gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50"
+                    data-testid={`podcast-${podcast.id}`}
                   >
-                    <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
-                    <span>[ LISTEN_CMD ]</span>
-                  </button>
-                </article>
-              ))}
+                    <div className="flex justify-between items-start">
+                      <span className="mono-ui text-[8px] md:text-[9px] text-primary border border-primary/30 px-1.5 md:px-2 py-0.5 bg-primary/10 font-bold">
+                        {podcast.episode}
+                      </span>
+                      <span className="mono-ui text-[8px] md:text-[9px] text-forest">{podcast.duration}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="mono-ui text-[7px] text-forest bg-surface/50 px-1.5 py-0.5 uppercase">{podcast.category}</span>
+                    </div>
+                    <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors">
+                      {podcast.title}
+                    </h4>
+                    <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
+                      {podcast.description}
+                    </p>
+                    <button 
+                      onClick={() => handlePlayPodcast(podcast)}
+                      className="mt-auto pt-4 md:pt-6 flex items-center gap-2 md:gap-3 text-primary mono-ui text-[9px] md:text-[10px] font-bold hover:text-content transition-colors"
+                      data-testid={`play-podcast-${podcast.id}`}
+                    >
+                      <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
+                      <span>[ LISTEN_CMD ]</span>
+                    </button>
+                  </article>
+                ))
+              )}
             </div>
           </div>
 
