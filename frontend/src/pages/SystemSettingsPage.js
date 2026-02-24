@@ -381,7 +381,7 @@ const SystemGearSixPage = () => {
           </div>
         </section>
 
-        {/* 03: Data & Throughput */}
+        {/* 04: Data & Throughput */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
