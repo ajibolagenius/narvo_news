@@ -412,6 +412,14 @@ const NewsDetailPage = () => {
           {/* Quick Actions */}
           <div className="flex gap-2">
             <button
+              onClick={() => { addToQueue(news); showAlert({ type: 'sync', title: 'QUEUE_UPDATED', message: 'Added to playlist queue', code: 'Q_ADD', duration: 2000 }); }}
+              className="flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              data-testid="sidebar-queue-btn"
+            >
+              <ListPlus className="w-3 h-3" />
+              QUEUE
+            </button>
+            <button
               onClick={shareStory}
               className="flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
               data-testid="sidebar-share-btn"
