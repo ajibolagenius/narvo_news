@@ -24,7 +24,7 @@ const BookmarksPage = () => {
   const isCached = (storyId) => cachedIds.includes(storyId);
 
   return (
-    <main className="flex-1 flex flex-col bg-background-dark min-w-0" data-testid="bookmarks-page">
+    <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0" data-testid="bookmarks-page">
       <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
         <span className="mono-ui text-[10px] md:text-xs text-forest">MODULE: <span className="text-primary">SAVED_TRANSMISSIONS</span></span>
         <span className="mono-ui text-[10px] md:text-xs text-forest">{bookmarks.length} ITEMS</span>
