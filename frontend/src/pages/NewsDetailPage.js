@@ -187,7 +187,7 @@ const NewsDetailPage = () => {
               className="mono-ui text-[10px] md:text-xs text-forest hover:text-primary flex items-center gap-2 transition-colors" 
               data-testid="back-btn"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft weight="bold" className="w-4 h-4" />
               <span>{t('news_detail.back_to_feed')}</span>
             </button>
             <div className="flex items-center gap-3">
@@ -210,11 +210,11 @@ const NewsDetailPage = () => {
               </div>
               <div className="flex items-center gap-4 mono-ui text-[9px] md:text-[10px] text-forest">
                 <span className="flex items-center gap-1.5">
-                  <Clock className="w-3 h-3" />
+                  <Clock weight="bold" className="w-3 h-3" />
                   {readTime} MIN READ
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Eye className="w-3 h-3" />
+                  <Eye weight="bold" className="w-3 h-3" />
                   {formatPublishedDate(news.published)}
                 </span>
               </div>
@@ -246,7 +246,7 @@ const NewsDetailPage = () => {
             {/* Now Playing Indicator */}
             {isCurrentlyPlaying && (
               <div className="absolute top-4 left-4 flex items-center gap-2 bg-primary px-3 py-1.5">
-                <Radio className="w-4 h-4 text-background-dark animate-pulse" />
+                <Broadcast weight="fill" className="w-4 h-4 text-background-dark animate-pulse" />
                 <span className="mono-ui text-[9px] text-background-dark font-bold">NOW_PLAYING</span>
               </div>
             )}
@@ -259,7 +259,7 @@ const NewsDetailPage = () => {
               className={`${isCurrentlyPlaying ? 'bg-white' : 'bg-primary hover:bg-white'} text-background-dark w-10 h-10 md:w-12 md:h-12 flex items-center justify-center transition-all shrink-0`}
               data-testid="play-story-btn"
             >
-              {isCurrentlyPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+              {isCurrentlyPlaying ? <Pause weight="fill" className="w-5 h-5" /> : <Play weight="fill" className="w-5 h-5 ml-0.5" />}
             </button>
             <div className="flex flex-col justify-center flex-1 min-w-0">
               <span className="text-[9px] md:text-[10px] text-forest font-mono uppercase tracking-widest mb-1">
@@ -271,11 +271,11 @@ const NewsDetailPage = () => {
             </div>
             <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto sm:ml-auto">
               <button className="hidden md:flex narvo-border px-3 py-1.5 items-center gap-2 hover:bg-forest hover:text-white transition-colors">
-                <Languages className="w-4 h-4 text-primary" />
+                <Translate weight="bold" className="w-4 h-4 text-primary" />
                 <span className="text-[10px] text-primary font-mono font-bold uppercase tracking-wider">West African English</span>
               </button>
               <button className="md:hidden narvo-border p-2 text-primary">
-                <Languages className="w-4 h-4" />
+                <Translate weight="bold" className="w-4 h-4" />
               </button>
               <button
                 onClick={shareStory}
@@ -283,7 +283,7 @@ const NewsDetailPage = () => {
                 title="Share Story"
                 data-testid="share-story-btn"
               >
-                <Share2 className="w-5 h-5" />
+                <ShareNetwork weight="bold" className="w-5 h-5" />
               </button>
               <button
                 onClick={toggleBookmark}
@@ -300,7 +300,7 @@ const NewsDetailPage = () => {
             <div className="narvo-border bg-transparent p-4 md:p-6 mb-8 md:mb-12 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-1 h-full bg-forest" />
               <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4 flex items-center gap-2 font-display uppercase tracking-tight">
-                <Lightbulb className="text-primary w-4 h-4 md:w-5 md:h-5" />
+                <Lightbulb weight="fill" className="text-primary w-4 h-4 md:w-5 md:h-5" />
                 {t('news_detail.key_takeaways')}
               </h3>
               <ul className="space-y-2 md:space-y-3">
@@ -349,7 +349,7 @@ const NewsDetailPage = () => {
                   className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
                   data-testid="share-source-btn"
                 >
-                  <Share2 className="w-3 h-3" />
+                  <ShareNetwork weight="bold" className="w-3 h-3" />
                   <span>{t('dashboard.share')}</span>
                 </button>
                 {news.source_url && (
@@ -359,7 +359,7 @@ const NewsDetailPage = () => {
                     rel="noopener noreferrer" 
                     className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
                   >
-                    <ExternalLink className="w-3 h-3" />
+                    <ArrowSquareOut weight="bold" className="w-3 h-3" />
                     <span>{t('news_detail.original_source')}</span>
                   </a>
                 )}
@@ -418,7 +418,7 @@ const NewsDetailPage = () => {
               className="flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
               data-testid="sidebar-queue-btn"
             >
-              <ListPlus className="w-3 h-3" />
+              <Queue weight="bold" className="w-3 h-3" />
               QUEUE
             </button>
             <button
@@ -426,7 +426,7 @@ const NewsDetailPage = () => {
               className="flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
               data-testid="sidebar-share-btn"
             >
-              <Share2 className="w-3 h-3" />
+              <ShareNetwork weight="bold" className="w-3 h-3" />
               SHARE
             </button>
             <button
