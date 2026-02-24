@@ -363,6 +363,21 @@ export const AudioProvider = ({ children }) => {
     }
   }, [queue, queueIndex, playTrack]);
 
+  // Update Media Session handlers when queue changes
+  useEffect(() => {
+    if (!('mediaSession' in navigator)) return;
+    
+    navigator.mediaSession.setActionHandler('previoustrack', queue.length > 0 && queueIndex > 0 
+      ? () => playPrev() 
+      : null
+    );
+    
+    navigator.mediaSession.setActionHandler('nexttrack', queue.length > 0 && queueIndex < queue.length - 1 
+      ? () => playNext() 
+      : null
+    );
+  }, [queue, queueIndex, playNext, playPrev]);
+
   const playFromQueue = useCallback(async (index) => {
     if (index >= 0 && index < queue.length) {
       const track = queue[index];
