@@ -1,22 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { RadioTower, Filter, PlusSquare, MoreVertical, Loader2 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const VoiceManagementPage = () => {
-  const [voices, setVoices] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${API_URL}/api/voices`)
-      .then(res => res.json())
-      .then(data => {
-        setVoices(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
   const kpiData = [
     { label: 'ACTIVE_VOICES', value: '24', change: '+2%', progress: 70 },
     { label: 'GLOBAL_LATENCY', value: '12', unit: 'MS', status: 'STABLE // SLA_PASS' },

@@ -1,22 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { RadioTower, Activity, AlertOctagon, Database, Search, FileText, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const OperationHubPage = () => {
-  const [metrics, setMetrics] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch(`${API_URL}/api/metrics`)
-      .then(res => res.json())
-      .then(data => {
-        setMetrics(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
   const telemetryData = [
     { label: 'NODE_LOAD', value: '42%', status: 'NOMINAL' },
     { label: 'API_LATENCY', value: '12ms', status: 'STABLE', highlight: true },
