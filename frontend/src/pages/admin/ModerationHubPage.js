@@ -128,7 +128,7 @@ const ModerationHubPage = () => {
                       {item.status === 'UNVERIFIED' && '? '}
                       {item.status}
                     </span>
-                    <p className="mono-ui text-[8px] text-forest font-bold">ID: {item.id} // {item.source}</p>
+                    <p className="mono-ui text-[8px] text-forest font-bold">ID: {item.id} {'//'} {item.source}</p>
                   </div>
                   <span className="mono-ui text-[9px] text-forest font-bold">{item.time}</span>
                 </div>
@@ -206,7 +206,7 @@ const ModerationHubPage = () => {
           <span>VERIFIED: <span className="text-primary">28</span></span>
           <span>PENDING: <span className="text-forest">7</span></span>
         </div>
-        <span>DUBAWA_API: <span className="text-primary">CONNECTED</span> // LAST_SYNC: 2MIN_AGO</span>
+        <span>DUBAWA_API: <span className="text-primary">CONNECTED</span> {'//'} LAST_SYNC: 2MIN_AGO</span>
       </div>
     </main>
   );
