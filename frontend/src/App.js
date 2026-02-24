@@ -5,8 +5,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import { AudioProvider } from './contexts/AudioContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LenisProvider } from './contexts/LenisProvider';
+import { DownloadQueueProvider } from './contexts/DownloadQueueContext';
 import { HapticAlertProvider } from './components/HapticAlerts';
 import { BreakingNewsProvider } from './components/BreakingNews';
+import DownloadQueueIndicator from './components/DownloadQueueIndicator';
 import LoadingScreen from './components/LoadingScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
@@ -56,9 +58,11 @@ function App() {
     <LenisProvider>
     <AuthProvider>
       <AudioProvider>
+      <DownloadQueueProvider>
       <BreakingNewsProvider>
         <HapticAlertProvider>
           <Router>
+            <DownloadQueueIndicator />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<LandingPage />} />
@@ -97,6 +101,7 @@ function App() {
           </Router>
         </HapticAlertProvider>
       </BreakingNewsProvider>
+      </DownloadQueueProvider>
       </AudioProvider>
     </AuthProvider>
     </LenisProvider>

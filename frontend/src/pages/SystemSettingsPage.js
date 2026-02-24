@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch } from '@phosphor-icons/react';
+import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
+import { requestNotificationPermission, getNotificationStatus, subscribeToPush, unsubscribeFromPush, getSubscription, isPushSupported } from '../lib/notificationService';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -13,6 +14,7 @@ const DEFAULT_SETTINGS = {
   alertVolume: 65,
   dataLimit: 2400,
   bandwidthPriority: 'STREAMING',
+  pushNotifications: false,
 };
 
 const SystemGearSixPage = () => {
@@ -23,6 +25,20 @@ const SystemGearSixPage = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingGearSix, setLoadingGearSix] = useState(true);
+  const [notificationStatus, setNotificationStatus] = useState('default');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Check notification status on mount
+  useEffect(() => {
+    const checkNotifications = async () => {
+      setNotificationStatus(getNotificationStatus());
+      if (isPushSupported()) {
+        const sub = await getSubscription();
+        setIsSubscribed(!!sub);
+      }
+    };
+    checkNotifications();
+  }, []);
 
   useEffect(() => {
     const fetchGearSix = async () => {
@@ -77,6 +93,33 @@ const SystemGearSixPage = () => {
       showAlert({ type: 'error', title: 'SAVE_FAILED', message: 'Could not save settings.', code: 'ERR_SAVE' });
     }
     setSaving(false);
+  };
+
+  const handleToggleNotifications = async () => {
+    if (!isPushSupported()) {
+      showAlert({ type: 'warning', title: 'NOT_SUPPORTED', message: 'Push notifications are not supported in this browser.', code: 'PUSH_NS' });
+      return;
+    }
+    
+    try {
+      if (isSubscribed) {
+        await unsubscribeFromPush();
+        setIsSubscribed(false);
+        showAlert({ type: 'sync', title: 'NOTIFICATIONS_OFF', message: 'Breaking news notifications disabled.', code: 'PUSH_OFF' });
+      } else {
+        const permission = await requestNotificationPermission();
+        if (permission) {
+          await subscribeToPush();
+          setIsSubscribed(true);
+          showAlert({ type: 'success', title: 'NOTIFICATIONS_ON', message: 'You will receive breaking news alerts.', code: 'PUSH_ON' });
+        } else {
+          showAlert({ type: 'error', title: 'PERMISSION_DENIED', message: 'Please enable notifications in browser settings.', code: 'PUSH_DENY' });
+        }
+      }
+      setNotificationStatus(getNotificationStatus());
+    } catch (err) {
+      showAlert({ type: 'error', title: 'NOTIFICATION_ERROR', message: err.message, code: 'PUSH_ERR' });
+    }
   };
 
   const handleReset = () => {
@@ -175,6 +218,39 @@ const SystemGearSixPage = () => {
           </div>
 
           <div className="narvo-border divide-y divide-forest/30">
+            {/* Push Notifications for Breaking News */}
+            <div className="p-4 md:p-8 flex items-center justify-between hover:bg-surface/5 transition-colors group">
+              <div className="flex items-center gap-4 md:gap-6">
+                <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
+                  {isSubscribed ? <BellRinging className="w-5 h-5 md:w-6 md:h-6" /> : <BellSlash className="w-5 h-5 md:w-6 md:h-6" />}
+                </div>
+                <div className="space-y-1">
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">BREAKING_NEWS_ALERTS</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">
+                    {notificationStatus === 'denied' 
+                      ? 'PERMISSION_BLOCKED_IN_BROWSER' 
+                      : 'RECEIVE_PUSH_NOTIFICATIONS_FOR_URGENT_NEWS'
+                    }
+                  </p>
+                  {!isPushSupported() && (
+                    <p className="mono-ui text-[7px] text-red-400">NOT_SUPPORTED_IN_THIS_BROWSER</p>
+                  )}
+                </div>
+              </div>
+              <button 
+                onClick={handleToggleNotifications}
+                disabled={notificationStatus === 'denied' || !isPushSupported()}
+                className={`w-12 h-6 md:w-14 md:h-7 narvo-border transition-all relative ${
+                  isSubscribed ? 'bg-primary' : 'bg-surface/30'
+                } ${(notificationStatus === 'denied' || !isPushSupported()) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                data-testid="toggle-push-notifications"
+              >
+                <div className={`absolute top-0.5 w-5 h-5 md:w-6 md:h-6 bg-white transition-all ${
+                  isSubscribed ? 'right-0.5' : 'left-0.5'
+                }`} />
+              </button>
+            </div>
+            
             {/* Haptic Sync */}
             <div className="p-4 md:p-8 flex items-center justify-between hover:bg-surface/5 transition-colors group">
               <div className="flex items-center gap-4 md:gap-6">
