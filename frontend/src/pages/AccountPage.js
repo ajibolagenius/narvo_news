@@ -173,8 +173,9 @@ const AccountPage = () => {
             ),
           },
           {
+            id: 'primary-region',
             label: t('account.primary_region'),
-            icon: MapPin,
+            icon: <MapPin className="w-4 h-4" />,
             content: (
               <div className="p-6 md:p-10 relative bg-background-dark overflow-hidden min-h-[200px] md:min-h-[250px]">
                 <div 
