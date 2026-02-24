@@ -13,7 +13,7 @@ const formatTime = (s) => {
 const AudioPlayerBar = () => {
   const { t } = useTranslation();
   const {
-    currentTrack, isPlaying, currentTime, duration,
+    currentTrack, isPlaying, isLoading, currentTime, duration,
     togglePlay, seek, playNext, playPrev,
     queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
   } = useAudio();
