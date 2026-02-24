@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { PlayCircle, Translate, BookmarkSimple, ArrowDown, Pulse, CloudSun, ShareNetwork, Queue } from '@phosphor-icons/react';
+import { PlayCircle, Translate, BookmarkSimple, ArrowDown, Pulse, CloudSun, ShareNetwork, Queue, CloudArrowDown } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { FeaturedSkeleton, StreamCardSkeleton } from '../components/Skeleton';
@@ -11,6 +11,29 @@ import { useHapticAlert } from '../components/HapticAlerts';
 import { getCategoryImage, getCategoryColor } from '../lib/categoryImages';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+// Save article for offline
+const saveForOffline = async (item) => {
+  try {
+    await fetch(`${API_URL}/api/offline/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        story_id: item.id,
+        title: item.title,
+        summary: item.summary || '',
+        narrative: item.narrative || '',
+        source: item.source || '',
+        category: item.category || 'General',
+        image_url: item.image_url || null
+      })
+    });
+    return true;
+  } catch (e) {
+    console.error('Error saving for offline:', e);
+    return false;
+  }
+};
 
 const containerVariants = {
   hidden: {},
