@@ -150,8 +150,8 @@ const LandingPage = () => {
 
       <section id="tech" className="grid grid-cols-1 md:grid-cols-3 border-b border-forest">
         {[
-          { id: '0x01', title: t('landing.console_title'), desc: t('landing.console_desc'), metric: '99.9%', label: 'UPTIME_PROTOCOL' },
-          { id: '0x02', title: t('landing.voices_title'), desc: t('landing.voices_desc'), metric: '1,420', label: 'VOICE_NODES' },
+          { id: '0x01', title: t('landing.console_title'), desc: t('landing.console_desc'), metric: metrics?.total_stories ? `${metrics.total_stories}+` : '99.9%', label: 'STORIES_INDEXED' },
+          { id: '0x02', title: t('landing.voices_title'), desc: t('landing.voices_desc'), metric: metrics?.active_listeners ? metrics.active_listeners.toLocaleString() : '1,420', label: 'ACTIVE_LISTENERS' },
           { id: '0x03', title: t('landing.truth_title'), desc: t('landing.truth_desc'), metric: '0.8s', label: 'FACT_LATENCY' },
         ].map((mod, idx) => (
           <div key={idx} className={`p-8 ${idx < 2 ? 'border-r border-forest' : ''}`}>
