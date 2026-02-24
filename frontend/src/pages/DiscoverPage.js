@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, PlayCircle, Pause, Radio, Volume2, VolumeX } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
 import Skeleton from '../components/Skeleton';
+import EmptyState from '../components/EmptyState';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
