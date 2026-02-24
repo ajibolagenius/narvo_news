@@ -265,24 +265,15 @@ const DiscoverPage = () => {
               <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
               <div className="flex items-center gap-2 md:gap-4">
                 {/* Download All Button */}
-                {podcasts.some(p => p.audio_url && !cachedPodcasts[p.id]) && (
+                {podcasts.some(p => p.audio_url && !cachedPodcasts[p.id] && !isInQueue(p.id)) && (
                   <button
                     onClick={handleDownloadAll}
-                    disabled={isDownloadingAll}
-                    className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold narvo-border ${isDownloadingAll ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
+                    disabled={isProcessing}
+                    className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold narvo-border ${isProcessing ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
                     data-testid="download-all-btn"
                   >
-                    {isDownloadingAll ? (
-                      <>
-                        <CircleNotch className="w-3 h-3 animate-spin" />
-                        <span>{downloadAllProgress}%</span>
-                      </>
-                    ) : (
-                      <>
-                        <CloudArrowDown className="w-3 h-3" />
-                        <span>DOWNLOAD ALL</span>
-                      </>
-                    )}
+                    <CloudArrowDown className="w-3 h-3" />
+                    <span>DOWNLOAD ALL</span>
                   </button>
                 )}
                 <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
