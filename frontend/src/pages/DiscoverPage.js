@@ -343,12 +343,6 @@ const DiscoverPage = () => {
                     </article>
                   );
                 })
-                    >
-                      <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
-                      <span>[ LISTEN_CMD ]</span>
-                    </button>
-                  </article>
-                ))
               )}
             </div>
           </div>
