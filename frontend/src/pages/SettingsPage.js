@@ -314,7 +314,7 @@ const SettingsPage = () => {
                 className="narvo-border bg-red-500/10 p-4 hover:bg-red-500/20 transition-colors text-left"
                 data-testid="test-network-error"
               >
-                <Bell className="w-4 h-4 text-red-400 mb-2" />
+                <Bell weight="fill" className="w-4 h-4 text-red-400 mb-2" />
                 <span className="mono-ui text-[9px] text-red-400 font-bold block">NETWORK_ERROR</span>
               </button>
             </div>
@@ -330,7 +330,7 @@ const SettingsPage = () => {
               className="w-full narvo-border bg-surface/5 text-forest font-display font-bold py-4 md:py-5 text-sm md:text-base hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 transition-all flex items-center justify-center gap-3 uppercase group" 
               data-testid="logout-btn"
             >
-              <LogOut className="w-5 h-5 group-hover:translate-x-[-4px] transition-transform" />
+              <SignOut weight="bold" className="w-5 h-5 group-hover:translate-x-[-4px] transition-transform" />
               <span>[{t('settings.logout')}]</span>
             </button>
           </div>
