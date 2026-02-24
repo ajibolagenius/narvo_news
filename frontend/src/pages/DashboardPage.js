@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { PlayCircle, Languages, Bookmark, BookmarkCheck, ArrowDown, Activity, CloudSun, Share2 } from 'lucide-react';
+import { PlayCircle, Languages, Bookmark, BookmarkCheck, ArrowDown, Activity, CloudSun, Share2, ListPlus } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { FeaturedSkeleton, StreamCardSkeleton } from '../components/Skeleton';
