@@ -232,7 +232,7 @@ const SettingsPage = () => {
                         <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-background-dark flex items-center justify-center group-hover:border-primary transition-colors">
                           <Icon className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                         </div>
-                        <ChevronRight className="w-5 h-5 text-forest group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                        <CaretRight weight="bold" className="w-5 h-5 text-forest group-hover:text-primary group-hover:translate-x-1 transition-all" />
                       </div>
                       <h3 className="font-display text-lg md:text-xl font-bold text-white uppercase mb-1 group-hover:text-primary transition-colors">
                         {item.label}
