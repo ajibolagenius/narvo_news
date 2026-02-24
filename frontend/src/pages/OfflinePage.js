@@ -1,22 +1,68 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderOpen, Play, Pause, Trash, WarningOctagon, ArrowCounterClockwise, Funnel, Waves, Microphone, SpeakerHigh, WifiSlash } from '@phosphor-icons/react';
+import { FolderOpen, Play, Pause, Trash, WarningOctagon, ArrowCounterClockwise, Funnel, Waves, Microphone, SpeakerHigh, WifiSlash, CloudArrowDown, Article } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { getAllCachedIds, getCachedAudio, removeCachedAudio } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
 const OfflinePage = () => {
   const navigate = useNavigate();
   const [cachedItems, setCachedItems] = useState([]);
+  const [savedArticles, setSavedArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
   const [totalSize, setTotalSize] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [offlineStats, setOfflineStats] = useState({ article_count: 0 });
   const { playTrack, currentTrack, isPlaying, pauseTrack } = useAudio();
 
   useEffect(() => {
-    loadCachedItems();
+    loadAllOfflineContent();
   }, []);
+
+  const loadAllOfflineContent = async () => {
+    setLoading(true);
+    await Promise.all([loadCachedItems(), loadSavedArticles(), loadOfflineStats()]);
+    setLoading(false);
+  };
+  
+  const loadOfflineStats = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/offline/stats`);
+      if (res.ok) {
+        const data = await res.json();
+        setOfflineStats(data);
+      }
+    } catch (e) {
+      console.error('Error loading offline stats:', e);
+    }
+  };
+  
+  const loadSavedArticles = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/offline/articles`);
+      if (res.ok) {
+        const articles = await res.json();
+        setSavedArticles(articles.map(a => ({
+          id: a.story_id,
+          title: a.title || `Article_${a.story_id.slice(0, 8)}`,
+          metadata: `${a.source || 'SAVED'} // ${a.category || 'GENERAL'}`,
+          duration: '--:--',
+          size: 0,
+          type: 'article',
+          timestamp: a.saved_at || Date.now(),
+          status: 'complete',
+          narrative: a.narrative,
+          summary: a.summary,
+          image_url: a.image_url
+        })));
+      }
+    } catch (e) {
+      console.error('Error loading saved articles:', e);
+    }
+  };
 
   const loadCachedItems = async () => {
     setLoading(true);
@@ -65,21 +111,45 @@ const OfflinePage = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleRemove = async (id) => {
-    await removeCachedAudio(id);
-    await loadCachedItems();
+  const handleRemove = async (id, type) => {
+    if (type === 'article') {
+      try {
+        await fetch(`${API_URL}/api/offline/articles/${id}`, { method: 'DELETE' });
+        await loadSavedArticles();
+        await loadOfflineStats();
+      } catch (e) {
+        console.error('Error removing saved article:', e);
+      }
+    } else {
+      await removeCachedAudio(id);
+      await loadCachedItems();
+    }
   };
 
   const handleClearAll = async () => {
+    // Clear audio cache
     for (const item of cachedItems) {
       await removeCachedAudio(item.id);
     }
-    await loadCachedItems();
+    // Clear saved articles from backend
+    try {
+      await fetch(`${API_URL}/api/offline/articles`, { method: 'DELETE' });
+    } catch (e) {
+      console.error('Error clearing articles:', e);
+    }
+    await loadAllOfflineContent();
   };
 
   const handlePlay = async (item) => {
     if (currentTrack?.id === item.id && isPlaying) {
       pauseTrack();
+    } else if (item.type === 'article') {
+      // For articles, play the narrative/summary as TTS
+      playTrack({ 
+        id: item.id, 
+        title: item.title, 
+        summary: item.narrative || item.summary || item.title 
+      });
     } else {
       const cached = await getCachedAudio(item.id);
       if (cached?.audioBlob) {
@@ -89,8 +159,16 @@ const OfflinePage = () => {
     }
   };
 
+  // Combine cached audio and saved articles
+  const allItems = [...cachedItems, ...savedArticles];
   const usagePercent = (totalSize / (50 * 1024 * 1024 * 1024)) * 100; // 50GB limit
-  const filteredItems = filterType === 'all' ? cachedItems : cachedItems.filter(i => i.type === filterType);
+  const filteredItems = filterType === 'all' 
+    ? allItems 
+    : filterType === 'audio' 
+      ? cachedItems 
+      : filterType === 'article' 
+        ? savedArticles
+        : allItems.filter(i => i.type === filterType);
   const itemsPerPage = 6;
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
   const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -142,21 +220,21 @@ const OfflinePage = () => {
               className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'all' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-all"
             >
-              ALL
+              ALL ({allItems.length})
             </button>
             <button 
               onClick={() => setFilterType('audio')}
               className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'audio' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-audio"
             >
-              AUDIO
+              AUDIO ({cachedItems.length})
             </button>
             <button 
-              onClick={() => setFilterType('text')}
-              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'text' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
-              data-testid="filter-text"
+              onClick={() => setFilterType('article')}
+              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'article' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
+              data-testid="filter-article"
             >
-              TEXT
+              ARTICLES ({savedArticles.length})
             </button>
           </div>
         </div>
@@ -265,6 +343,8 @@ const OfflinePage = () => {
                       <WarningOctagon className="w-4 h-4 md:w-5 md:h-5" />
                     ) : isActive ? (
                       <SpeakerHigh className="w-4 h-4 md:w-5 md:h-5" />
+                    ) : item.type === 'article' ? (
+                      <Article className="w-4 h-4 md:w-5 md:h-5" />
                     ) : item.type === 'audio' ? (
                       <Waves className="w-4 h-4 md:w-5 md:h-5" />
                     ) : (
@@ -304,7 +384,7 @@ const OfflinePage = () => {
                       </button>
                     )}
                     <button 
-                      onClick={() => handleRemove(item.id)}
+                      onClick={() => handleRemove(item.id, item.type)}
                       className={`${isActive ? 'text-primary/50' : 'text-content'} hover:text-primary`}
                       data-testid={`remove-cached-${item.id}`}
                     >
