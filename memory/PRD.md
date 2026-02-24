@@ -101,16 +101,23 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 - Fact-check (MOCK): /api/factcheck/{story_id}, /api/factcheck/analyze
 - Settings: GET/POST /api/settings/{user_id}, GET/POST /api/settings/{user_id}/voice
 
+### Phase 6: Enhanced UX & Social Features (Feb 24)
+- Playlist/Queue functionality with full controls (add, remove, clear, play from queue)
+- Dynamic Open Graph images for social sharing (/api/og/{news_id})
+- "Load More" pagination for news streams
+- Real breaking news banner (replaced static ticker on landing page)
+- Backend metrics integration on landing page
+- Reorganized dashboard sidebar navigation
+- Audio player bar cleaned up (removed news scroll, added queue controls)
+
 ## Testing
-- 17 test iterations, all 100% pass rate
-- Test reports: /app/test_reports/iteration_1.json through iteration_17.json
+- 18 test iterations, all 100% pass rate
+- Test reports: /app/test_reports/iteration_1.json through iteration_18.json
 
 ## Prioritized Backlog
 
 ### P1
 - [ ] Real Dubawa API integration (replace mock fact-checking)
-- [ ] Playlist/queue functionality for news stories
-- [ ] Dynamic Open Graph Images for sharing
 
 ### P2
 - [ ] Historical Morning Briefings browser
@@ -125,3 +132,4 @@ Narvo is a precision-engineered news broadcast platform that transforms fragment
 
 ### Refactoring
 - [ ] Break monolithic server.py into structured routes/models/services
+- [ ] Refactor AudioContext.js (large file with complex queue logic)
