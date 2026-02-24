@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch } from '@phosphor-icons/react';
+import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
+import { requestNotificationPermission, getNotificationStatus, subscribeToPush, unsubscribeFromPush, getSubscription, isPushSupported } from '../lib/notificationService';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -13,6 +14,7 @@ const DEFAULT_SETTINGS = {
   alertVolume: 65,
   dataLimit: 2400,
   bandwidthPriority: 'STREAMING',
+  pushNotifications: false,
 };
 
 const SystemGearSixPage = () => {
@@ -23,6 +25,20 @@ const SystemGearSixPage = () => {
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingGearSix, setLoadingGearSix] = useState(true);
+  const [notificationStatus, setNotificationStatus] = useState('default');
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Check notification status on mount
+  useEffect(() => {
+    const checkNotifications = async () => {
+      setNotificationStatus(getNotificationStatus());
+      if (isPushSupported()) {
+        const sub = await getSubscription();
+        setIsSubscribed(!!sub);
+      }
+    };
+    checkNotifications();
+  }, []);
 
   useEffect(() => {
     const fetchGearSix = async () => {
