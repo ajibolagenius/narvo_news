@@ -1,39 +1,11 @@
-import React, { useEffect, useRef, createContext, useContext } from 'react';
-import Lenis from '@studio-freight/lenis';
+import React from 'react';
 
-const LenisContext = createContext(null);
-
-export const useLenis = () => useContext(LenisContext);
-
+// Lenis smooth scrolling is disabled because the app uses a nested scroll architecture
+// (h-screen overflow-hidden layout with per-page scroll containers).
+// Lenis targets window by default, which conflicts with this pattern.
+// CSS scroll-behavior: smooth is used instead for anchor navigation.
 export const LenisProvider = ({ children }) => {
-  const lenisRef = useRef(null);
-
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: 'vertical',
-      smoothWheel: true,
-      smoothTouch: false,
-    });
-
-    lenisRef.current = lenis;
-
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-      lenisRef.current = null;
-    };
-  }, []);
-
-  return (
-    <LenisContext.Provider value={lenisRef}>
-      {children}
-    </LenisContext.Provider>
-  );
+  return <>{children}</>;
 };
+
+export const useLenis = () => null;
