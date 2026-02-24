@@ -124,11 +124,14 @@ class TTSRequest(BaseModel):
     voice_id: str = "nova"
     stability: float = 0.5
     similarity_boost: float = 0.75
+    language: str = "en"  # Target language for translation (en, pcm, yo, ha, ig)
 
 class TTSResponse(BaseModel):
     audio_url: str
     text: str
+    translated_text: Optional[str] = None
     voice_id: str
+    language: str = "en"
 
 class ParaphraseRequest(BaseModel):
     text: str
