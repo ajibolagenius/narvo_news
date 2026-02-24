@@ -142,7 +142,7 @@ const AuthPage = () => {
               <div className="group relative">
                 <div className="flex justify-between mb-2">
                   <label className="mono-ui text-[10px] text-forest font-bold">Access Code</label>
-                  {!isSignUp && <span className="mono-ui text-[9px] text-primary cursor-pointer hover:underline">[Recover_Key]</span>}
+                  {!isSignUp && <Link to="/forgot-password" className="mono-ui text-[9px] text-primary cursor-pointer hover:underline" data-testid="forgot-password-link">[Recover_Key]</Link>}
                 </div>
                 <div className="flex items-center border border-forest bg-background-dark h-12 px-4 focus-within:border-primary transition-all">
                   <svg className="w-5 h-5 text-forest mr-3" viewBox="0 0 256 256" fill="currentColor">
