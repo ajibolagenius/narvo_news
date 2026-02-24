@@ -75,12 +75,37 @@ const LandingPage = () => {
               [{t('landing.guest_play')}]
             </button>
           </div>
-          <div className="mt-8 w-full border border-forest py-2 px-4 bg-forest/5 overflow-hidden">
-            <div className="animate-marquee font-mono text-[14px] text-primary font-bold whitespace-nowrap">
-              YORUBA: IROYÌN AYÉ - OJO AJÉ /// HAUSA: LABARAN DUNIYA - LITININ /// IGBO: AKUKO N'UWA - MANDA ///
-              BREAKING: NAIROBI MARKET INDEX UP 2.4% /// LAGOS TECH SUMMIT ANNOUNCES NEW PARTNERSHIP ///
+          {/* Breaking News Banner */}
+          {!breakingDismissed && breaking.length > 0 && (
+            <div className="mt-8 w-full bg-red-950/90 border border-red-500/50 px-4 py-3 flex items-center gap-3 animate-pulse-subtle" data-testid="landing-breaking-banner">
+              <div className="flex items-center gap-2 shrink-0">
+                <Zap className="w-3.5 h-3.5 text-red-400" />
+                <span className="mono-ui text-[9px] md:text-[10px] text-red-400 font-bold tracking-widest">
+                  {t('notifications.breaking_news')}
+                </span>
+              </div>
+              <button
+                onClick={() => navigate(`/news/${breaking[0].id}`)}
+                className="flex-1 min-w-0 text-left group"
+              >
+                <span className="mono-ui text-[10px] md:text-[11px] text-white font-bold truncate block group-hover:text-red-300 transition-colors">
+                  {breaking[0].title}
+                </span>
+              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => navigate(`/news/${breaking[0].id}`)}
+                  className="mono-ui text-[8px] text-red-400 font-bold hover:text-white transition-colors hidden sm:flex items-center gap-1"
+                >
+                  {t('notifications.read_now')}
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+                <button onClick={() => setBreakingDismissed(true)} className="p-1 hover:bg-red-500/20 transition-colors">
+                  <X className="w-3 h-3 text-red-400" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="lg:col-span-3 bg-background-dark flex flex-col">
