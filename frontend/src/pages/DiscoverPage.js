@@ -136,7 +136,7 @@ const DiscoverPage = () => {
           <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent p-6 md:p-12">
             <div className="max-w-4xl space-y-4 md:space-y-6">
               <div className="flex items-center gap-2 md:gap-3">
-                <span className="bg-primary text-background-dark px-2 md:px-3 py-1 mono-ui text-[9px] md:text-[10px] font-bold">LIVE_BROADCAST</span>
+                <span className="bg-primary text-background-dark px-2 md:px-3 py-1 mono-ui text-[9px] md:text-[10px] font-bold">{t('discover.live_broadcast')}</span>
                 <span className="mono-ui text-[9px] md:text-[10px] text-primary">SIGNAL_STRONG // ARC_NODE_01</span>
               </div>
               {loading ? (
@@ -161,7 +161,7 @@ const DiscoverPage = () => {
                   data-testid="start-transmission-btn"
                 >
                   <Play className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" />
-                  <span>[ START_TRANSMISSION ]</span>
+                  <span>[ {t('discover.start_transmission')} ]</span>
                 </button>
                 <div className="hidden sm:flex gap-2 md:gap-4">
                   <div className="text-primary mono-ui text-[9px] md:text-[10px] bg-background-dark narvo-border px-2 md:px-3 py-1">CAM_01</div>
@@ -176,19 +176,19 @@ const DiscoverPage = () => {
           {/* Podcast Matrix */}
           <div className="lg:col-span-2 lg:narvo-border-r h-full">
             <div className="flex items-center justify-between p-4 md:p-8 narvo-border-b bg-surface/10 sticky top-0 z-10 backdrop-blur-md">
-              <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-white tracking-tight">Deep Dive Podcasts</h3>
+              <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-white tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
               <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
                 <button 
                   onClick={() => setPodcastSort('latest')}
                   className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white'}`}
                 >
-                  LATEST
+                  {t('discover.latest')}
                 </button>
                 <button 
                   onClick={() => setPodcastSort('popular')}
                   className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-white'}`}
                 >
-                  POPULAR
+                  {t('discover.popular')}
                 </button>
               </div>
             </div>
@@ -232,7 +232,7 @@ const DiscoverPage = () => {
             
             <div className="p-4 md:p-8 narvo-border-b bg-background-dark sticky top-0 z-10">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-white tracking-tight">Radio Garden</h3>
+                <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-white tracking-tight">{t('discover.radio_garden')}</h3>
                 <div className="flex items-center gap-1.5 text-[8px] md:text-[9px] mono-ui text-primary font-bold bg-primary/10 px-1.5 md:px-2 py-0.5 narvo-border">
                   <span className={`w-1.5 h-1.5 ${isRadioPlaying ? 'bg-primary animate-pulse' : 'bg-forest'}`} />
                   {isRadioPlaying ? 'LIVE' : 'STANDBY'}
@@ -307,9 +307,9 @@ const DiscoverPage = () => {
             <div className="p-4 md:p-6 bg-background-dark/90 backdrop-blur-md narvo-border-t">
               <div className="flex items-center justify-between mb-3">
                 <div className="space-y-1 min-w-0 flex-1">
-                  <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold block">NOW_PLAYING</span>
+                  <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold block">{t('discover.now_playing')}</span>
                   <p className="mono-ui text-[10px] md:text-xs text-white font-bold uppercase truncate">
-                    {currentStation?.name || 'SELECT_STATION'}
+                    {currentStation?.name || t('discover.select_station')}
                   </p>
                   <p className="mono-ui text-[8px] text-forest">
                     {currentStation?.country || '--'} {currentStation?.bitrate ? `// ${currentStation.bitrate}kbps` : ''}
