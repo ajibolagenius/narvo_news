@@ -12,6 +12,16 @@ import { getCategoryImage, getCategoryColor } from '../lib/categoryImages';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
+const containerVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.08 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } },
+};
+
 const DashboardPage = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
