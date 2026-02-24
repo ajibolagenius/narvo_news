@@ -168,6 +168,14 @@ const SettingsPage = () => {
             </div>
           </div>
 
+          {/* Notifications */}
+          <div className="space-y-4">
+            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+              PUSH_NOTIFICATIONS
+            </h2>
+            <NotificationToggle />
+          </div>
+
           {/* Settings Sections */}
           {settingsSections.map((section, sectionIdx) => (
             <div key={sectionIdx} className="space-y-4">
