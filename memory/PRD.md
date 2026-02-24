@@ -1,7 +1,7 @@
 # Narvo - Product Requirements Document
 
 ## Overview
-Narvo is a precision-engineered, audio-first news broadcast platform with full PWA support for offline functionality.
+Narvo is a precision-engineered, audio-first news broadcast platform with full PWA support for offline functionality and multi-language translation.
 
 ## Tech Stack
 - **Frontend**: React, Tailwind CSS, @phosphor-icons/react, framer-motion
@@ -9,7 +9,9 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Database**: MongoDB
 - **Auth**: Supabase
 - **AI/TTS**: Google Gemini & OpenAI TTS (via Emergent LLM Key)
-- **PWA**: Service Worker + IndexedDB + Push Notifications
+- **Translation**: Gemini AI for 5 African languages
+- **Fact-Checking**: Google Fact Check API (with mock fallback)
+- **PWA**: Service Worker + IndexedDB + Push Notifications + Media Session API
 
 ## Architecture
 ```
@@ -21,13 +23,15 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 │   │   ├── offline.py      # Offline article storage
 │   │   ├── admin.py        # Admin dashboard metrics & alerts
 │   │   ├── user.py         # User preferences, bookmarks, settings
-│   │   └── factcheck.py    # Fact-checking API (mocked Dubawa)
+│   │   ├── factcheck.py    # Google Fact Check API + mock fallback
+│   │   └── translation.py  # Multi-language translation endpoints
 │   └── services/           # Business logic layer
 │       ├── news_service.py      # RSS feed fetching, news aggregation
 │       ├── podcast_service.py   # Podcast episode management
 │       ├── radio_service.py     # Radio Browser API integration
 │       ├── admin_service.py     # System metrics, alerts, moderation
-│       ├── factcheck_service.py # Fact-checking logic (mocked)
+│       ├── factcheck_service.py # Google Fact Check API integration
+│       ├── translation_service.py # Gemini AI translation (5 languages)
 │       ├── narrative_service.py # AI narrative generation
 │       ├── offline_service.py   # Offline article management
 │       ├── user_service.py      # User data management
@@ -40,7 +44,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 │   │   └── index.html      # SW registration
 │   └── src/
 │       ├── contexts/
-│       │   ├── AudioContext.js
+│       │   ├── AudioContext.js       # Media Session API for background audio
 │       │   └── DownloadQueueContext.js  # Global download state
 │       ├── components/
 │       │   └── DownloadQueueIndicator.js # Floating download UI
@@ -50,7 +54,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 │       └── pages/
 │           ├── DiscoverPage.js     # "Download All" batch feature
 │           ├── OfflinePage.js      # Cached content management
-│           └── SystemSettingsPage.js # Push notification toggle
+│           └── SystemSettingsPage.js # Language selection + notifications
 └── memory/
     └── PRD.md
 ```
@@ -72,7 +76,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 
 ### P2 Features (Complete)
 - ✅ **Service Worker PWA** - Network-first caching
-- ✅ **Backend modularization** - 4 route modules
+- ✅ **Backend modularization** - 6 route modules, 11 services
 
 ### P3 Features (Complete)
 - ✅ **Background sync** - IndexedDB queue + sync event
