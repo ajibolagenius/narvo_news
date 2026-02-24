@@ -18,7 +18,7 @@ const NewsDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [relatedNews, setRelatedNews] = useState([]);
   const [readTime, setReadTime] = useState(0);
-  const { playTrack, currentTrack, isPlaying } = useAudio();
+  const { playTrack, addToQueue, currentTrack, isPlaying } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
   const { t } = useTranslation();
