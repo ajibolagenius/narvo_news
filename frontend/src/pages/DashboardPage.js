@@ -246,7 +246,7 @@ const DashboardPage = () => {
                               <Share2 className="w-4 h-4" />
                             </button>
                             <button
-                              onClick={(e) => toggleBookmark(e, item)}}
+                              onClick={(e) => toggleBookmark(e, item)}
                               className={`transition-colors ${isBookmarked(item.id) ? 'text-primary' : 'text-forest hover:text-primary'}`}
                               data-testid={`bookmark-btn-${item.id}`}
                             >
