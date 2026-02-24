@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { motion } from 'framer-motion';
 import { PlayCircle, Translate, BookmarkSimple, ArrowDown, Pulse, CloudSun, ShareNetwork, Queue } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
