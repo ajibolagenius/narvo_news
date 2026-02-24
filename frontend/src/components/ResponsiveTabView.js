@@ -13,15 +13,15 @@ export const ResponsiveTabView = ({ tabs, className = '' }) => {
     <div className={className}>
       {/* Mobile: Tab Navigation */}
       <div className="lg:hidden">
-        <div className="flex border-b border-[var(--color-border)] bg-[var(--color-surface)] overflow-x-auto">
+        <div className="flex border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))] overflow-x-auto">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 min-w-[100px] px-4 py-3 font-mono text-[10px] uppercase tracking-wider transition-all whitespace-nowrap
                 ${activeTab === tab.id 
-                  ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] bg-[var(--color-bg)]' 
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+                  ? 'text-[rgb(var(--color-primary))] border-b-2 border-[rgb(var(--color-primary))] bg-[rgb(var(--color-bg))]' 
+                  : 'text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]'
                 }`}
               data-testid={`tab-${tab.id}`}
             >
@@ -53,9 +53,9 @@ export const ResponsiveTabView = ({ tabs, className = '' }) => {
       {/* Desktop: Columns */}
       <div className="hidden lg:grid lg:grid-cols-3 lg:gap-4">
         {tabs.map((tab) => (
-          <div key={tab.id} className="border border-[var(--color-border)]">
-            <div className="px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-surface)]">
-              <h3 className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-text-secondary)]">
+          <div key={tab.id} className="border border-[rgb(var(--color-border))]">
+            <div className="px-4 py-3 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
+              <h3 className="font-mono text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-secondary))]">
                 {tab.icon && <span className="mr-2">{tab.icon}</span>}
                 {tab.label}
               </h3>
@@ -78,15 +78,15 @@ export const Tabs = ({ tabs, defaultTab, className = '' }) => {
 
   return (
     <div className={className}>
-      <div className="flex border-b border-[var(--color-border)] overflow-x-auto">
+      <div className="flex border-b border-[rgb(var(--color-border))] overflow-x-auto">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-3 font-mono text-[10px] uppercase tracking-wider transition-all whitespace-nowrap
               ${activeTab === tab.id 
-                ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]' 
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+                ? 'text-[rgb(var(--color-primary))] border-b-2 border-[rgb(var(--color-primary))]' 
+                : 'text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]'
               }`}
           >
             {tab.icon && <span className="mr-2">{tab.icon}</span>}

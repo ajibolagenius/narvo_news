@@ -29,7 +29,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
   // Mobile bottom tab bar
   if (mobile) {
     return (
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-[var(--color-bg)] border-t border-[var(--color-border)] flex items-center justify-around z-30" data-testid="mobile-bottom-nav">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-[rgb(var(--color-bg))] border-t border-[rgb(var(--color-border))] flex items-center justify-around z-30" data-testid="mobile-bottom-nav">
         {navItems.slice(0, 5).map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
@@ -37,7 +37,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center gap-0.5 transition-colors ${isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-secondary)]'}`}
+              className={`flex flex-col items-center gap-0.5 transition-colors ${isActive ? 'text-[rgb(var(--color-primary))]' : 'text-[rgb(var(--color-text-secondary))]'}`}
               data-testid={`mobile-nav-${item.label.toLowerCase()}`}
             >
               <Icon weight={isActive ? 'fill' : 'regular'} className="w-5 h-5" />
@@ -47,7 +47,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
         })}
         <button 
           onClick={() => navigate('/settings')} 
-          className={`flex flex-col items-center gap-0.5 ${isSettingsActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-text-secondary)]'}`}
+          className={`flex flex-col items-center gap-0.5 ${isSettingsActive ? 'text-[rgb(var(--color-primary))]' : 'text-[rgb(var(--color-text-secondary))]'}`}
         >
           <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5" />
           <span className="font-mono text-[8px] uppercase">More</span>
@@ -68,14 +68,14 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
         initial={false}
         animate={{ width: open ? 208 : 64 }}
         transition={{ duration: 0.2, ease: 'easeOut' }}
-        className="hidden md:flex flex-col border-r border-[var(--color-border)] bg-[var(--color-bg)] z-10 shrink-0"
+        className="hidden md:flex flex-col border-r border-[rgb(var(--color-border))] bg-[rgb(var(--color-bg))] z-10 shrink-0"
         data-testid="dashboard-sidebar"
       >
         {/* Toggle Button */}
-        <div className="h-12 flex items-center px-4 border-b border-[var(--color-border)]">
+        <div className="h-12 flex items-center px-4 border-b border-[rgb(var(--color-border))]">
           <button
             onClick={onToggle}
-            className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
+            className="p-2 text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-primary))] transition-colors"
             title={open ? 'Collapse sidebar' : 'Expand sidebar'}
             data-testid="sidebar-toggle"
           >
@@ -95,8 +95,8 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
                   flex items-center gap-3 transition-all h-11
                   ${open ? 'px-4' : 'px-4 justify-start'}
                   ${isActive 
-                    ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/10 border-l-2 border-l-[var(--color-primary)]' 
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]/20'}
+                    ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10 border-l-2 border-l-[rgb(var(--color-primary))]' 
+                    : 'text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-surface))]/20'}
                 `}
                 title={item.label}
                 data-testid={`sidebar-${item.label.toLowerCase()}`}
@@ -109,19 +109,19 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
         </div>
 
         {/* Theme Toggle */}
-        <div className="border-t border-[var(--color-border)] py-2 px-4">
+        <div className="border-t border-[rgb(var(--color-border))] py-2 px-4">
           <ThemeToggle showLabel={open} className="justify-start" />
         </div>
 
         {/* Settings Section */}
-        <div className="border-t border-[var(--color-border)] py-2">
+        <div className="border-t border-[rgb(var(--color-border))] py-2">
           <button
             onClick={() => navigate('/settings')}
             className={`flex items-center gap-3 transition-all h-11 w-full
               ${open ? 'px-4' : 'px-4 justify-start'}
               ${isSettingsActive 
-                ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/10 border-l-2 border-l-[var(--color-primary)]' 
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]/20'}`}
+                ? 'text-[rgb(var(--color-primary))] bg-[rgb(var(--color-primary))]/10 border-l-2 border-l-[rgb(var(--color-primary))]' 
+                : 'text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-surface))]/20'}`}
             title="Settings Hub"
           >
             <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
@@ -130,14 +130,14 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
         </div>
 
         {/* Admin Section */}
-        <div className="border-t border-[var(--color-border)] py-2">
+        <div className="border-t border-[rgb(var(--color-border))] py-2">
           <button
             onClick={() => navigate('/admin/operations')}
             className={`flex items-center gap-3 transition-all h-11 w-full
               ${open ? 'px-4' : 'px-4 justify-start'}
               ${location.pathname.startsWith('/admin') 
                 ? 'text-red-500 bg-red-500/10 border-l-2 border-l-red-500' 
-                : 'text-[var(--color-text-secondary)] hover:text-red-500 hover:bg-red-500/5'}`}
+                : 'text-[rgb(var(--color-text-secondary))] hover:text-red-500 hover:bg-red-500/5'}`}
             title="Admin Console"
             data-testid="sidebar-admin"
           >
