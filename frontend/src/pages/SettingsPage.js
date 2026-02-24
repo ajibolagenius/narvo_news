@@ -38,7 +38,7 @@ const GearSixPage = () => {
           status: 'PREMIUM_ACTIVE'
         },
         { 
-          icon: Microphonerophone, 
+          icon: Microphone, 
           label: t('settings.voice_studio'), 
           desc: 'BROADCAST_VOICE_MODEL // DIALECT_CONFIG', 
           path: '/voices',
@@ -68,7 +68,7 @@ const GearSixPage = () => {
   ];
 
   const systemStats = [
-    { icon: ShieldCheckCheck, label: 'ENCRYPTION', value: 'AES-256-GCM' },
+    { icon: ShieldCheck, label: 'ENCRYPTION', value: 'AES-256-GCM' },
     { icon: Lightning, label: 'AUTH_PROVIDER', value: 'SUPABASE' },
     { icon: Database, label: 'STORAGE_USED', value: '2.4 GB' },
     { icon: Clock, label: 'SESSION_TIME', value: '04:32:18' },
