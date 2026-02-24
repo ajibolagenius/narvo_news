@@ -102,16 +102,18 @@ const DiscoverPage = () => {
 
   const handleDownloadPodcast = async (podcast) => {
     if (!podcast.audio_url) {
-      // If no audio URL, we can't download - show a message
       alert('This podcast does not have a downloadable audio file yet.');
       return;
     }
     
     setDownloadingPodcasts(prev => ({ ...prev, [podcast.id]: 0 }));
     
+    // Use the backend proxy endpoint to avoid CORS issues
+    const proxyUrl = `${API_URL}/api/podcasts/${podcast.id}/audio`;
+    
     const success = await downloadAndCacheAudio(
       podcast.id,
-      podcast.audio_url,
+      proxyUrl,
       {
         title: podcast.title,
         source: podcast.episode,
