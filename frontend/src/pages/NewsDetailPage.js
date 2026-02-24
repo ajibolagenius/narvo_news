@@ -290,7 +290,7 @@ const NewsDetailPage = () => {
                 className={`narvo-border w-10 h-10 flex items-center justify-center transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary'}`}
                 data-testid="bookmark-detail-btn"
               >
-                {isBookmarked(news.id) ? <BookmarkCheck className="w-5 h-5" /> : <Bookmark className="w-5 h-5" />}
+                {<BookmarkSimple weight={isBookmarked(news.id) ? "fill" : "regular"} className="w-5 h-5" /> className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -434,7 +434,7 @@ const NewsDetailPage = () => {
               className={`flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] flex items-center justify-center gap-2 transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary hover:border-primary'}`}
               data-testid="sidebar-bookmark-btn"
             >
-              {isBookmarked(news.id) ? <BookmarkCheck className="w-3 h-3" /> : <Bookmark className="w-3 h-3" />}
+              {<BookmarkSimple weight={isBookmarked(news.id) ? "fill" : "regular"} className="w-3 h-3" /> className="w-3 h-3" />}
               {isBookmarked(news.id) ? t('dashboard.saved') : t('dashboard.save')}
             </button>
           </div>
