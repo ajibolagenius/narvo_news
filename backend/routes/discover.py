@@ -106,6 +106,37 @@ async def get_podcast_detail(podcast_id: str):
     raise HTTPException(status_code=404, detail="Podcast not found")
 
 
+from fastapi.responses import StreamingResponse
+import asyncio
+
+@router.get("/podcasts/{podcast_id}/audio")
+async def stream_podcast_audio(podcast_id: str):
+    """Stream podcast audio file (proxy to avoid CORS issues)"""
+    podcast = None
+    for ep in PODCAST_EPISODES:
+        if ep["id"] == podcast_id:
+            podcast = ep
+            break
+    
+    if not podcast or not podcast.get("audio_url"):
+        raise HTTPException(status_code=404, detail="Podcast audio not found")
+    
+    async def audio_stream():
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            async with client.stream("GET", podcast["audio_url"]) as response:
+                async for chunk in response.aiter_bytes(chunk_size=8192):
+                    yield chunk
+    
+    return StreamingResponse(
+        audio_stream(),
+        media_type="audio/mpeg",
+        headers={
+            "Content-Disposition": f'attachment; filename="{podcast_id}.mp3"',
+            "Cache-Control": "public, max-age=86400"
+        }
+    )
+
+
 @router.get("/discover/trending")
 async def get_trending_topics():
     """Get trending topics from news analysis"""
