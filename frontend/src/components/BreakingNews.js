@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Bell, BellRing, X, ArrowRight, Zap } from 'lucide-react';
+import { Bell, BellRinging, X, ArrowRight, Lightning } from '@phosphor-icons/react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -116,7 +116,7 @@ export const BreakingNewsBanner = () => {
       data-testid="breaking-news-banner"
     >
       <div className="flex items-center gap-2 shrink-0">
-        <Zap className="w-3.5 h-3.5 text-red-400" />
+        <Lightning className="w-3.5 h-3.5 text-red-400" />
         <span className="mono-ui text-[9px] md:text-[10px] text-red-400 font-bold tracking-widest">
           {t('notifications.breaking_news')}
         </span>
@@ -176,7 +176,7 @@ export const NotificationToggle = () => {
       }`}
       data-testid="notification-toggle"
     >
-      {notificationsEnabled ? <BellRing className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
+      {notificationsEnabled ? <BellRinging className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
       <span className="mono-ui text-[10px] font-bold">
         {notificationsEnabled ? t('notifications.notifications_enabled') : t('notifications.enable_notifications')}
       </span>
