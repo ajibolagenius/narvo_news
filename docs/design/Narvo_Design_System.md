@@ -16,12 +16,13 @@ Narvo is not a traditional news aggregator; it is a **Broadcast-Grade News Platf
 ## 3. Color System (The 10% Rule)
 To maintain extreme minimalism, colors are used sparingly as technical indicators rather than decorative elements.
 
-- **Primary (Signal):** `#EBD5AB` (Sand/Beige) - Used for active states, cursors, critical alerts, and "On" switches. Strictly limited to **10%** of screen real estate.
-- **Background (The Anti-light):** `#1B211A` (Deep Matte Charcoal/Green) - The base surface for all views.
-- **Surface (Secondary):** `#242B23` (Muted Green/Grey) - Used for alternating row backgrounds, container surfaces, or depthless cards.
+- **Dark Mode (The Anti-light):** `#1B211A` (Deep Matte Charcoal/Green) - The base surface for all views.
+- **Light Mode (Standard-Light):** `#EBD5AB` (Sand/Beige) - The base surface for light mode concepts.
+- **Primary (Signal):** `#EBD5AB` (Sand/Beige) - Used for active states and critical alerts in dark mode; switched to `#1B211A` or `#628141` in light mode to maintain contrast. Strictly limited to **10%** of screen real estate.
+- **Surface (Secondary):** `#242B23` (Muted Green/Grey) - Used for alternating row backgrounds or depthless cards. (Light mode equivalent: `#D9C5A0`).
 - **Structural (Border):** `#628141` (Forest Green) - 1px structural grid lines that define the layout.
-- **Text Primary:** `#F2F2F2` (90% White) - High-fidelity content, headers, and primary values.
-- **Text Secondarys/Labels:** `#8BAE66` (Sage Green) or `#808080` (50% Grey) - Metadata, units, timestamps, and utility labels.
+- **Text Primary:** `#F2F2F2` (90% White) - High-fidelity content in dark mode. (Light mode equivalent: `#1B211A`).
+- **Text Secondarys/Labels:** `#8BAE66` (Sage Green) or `#808080` (50% Grey) - Metadata, units, and utility labels.
 
 ### Semantic Label Palette
 Used for metadata categorization and tag-based filtering. These colors are paired with a 10% opacity background of the same hue for subtle classification.
@@ -83,6 +84,16 @@ Precision is reinforced through **Absolute Sharpness**.
   --font-header: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+}
+
+[data-theme='light'] {
+  --color-primary: #1B211A;
+  --color-bg: #EBD5AB;
+  --color-surface: #D9C5A0;
+  --color-border: #628141;
+  --color-text-primary: #1B211A;
+  --color-text-secondary: #628141;
+  --color-text-dim: #808080;
 }
 ```
 
