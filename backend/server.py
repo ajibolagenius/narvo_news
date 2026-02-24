@@ -294,6 +294,33 @@ async def get_news(
     all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
     return all_news[:limit]
 
+@app.get("/api/news/breaking")
+async def get_breaking_news():
+    """Get breaking/urgent news stories. Returns the most recent stories marked as breaking."""
+    try:
+        all_news = news_col.find(
+            {},
+            {"_id": 0}
+        ).sort("published", -1).limit(30)
+        
+        stories = list(all_news)
+        breaking = []
+        
+        for story in stories:
+            title_lower = (story.get("title", "") or "").lower()
+            if any(kw in title_lower for kw in ["breaking", "urgent", "flash", "just in", "developing"]):
+                breaking.append(story)
+        
+        if not breaking and stories:
+            latest = stories[0]
+            latest["is_developing"] = True
+            breaking = [latest]
+        
+        return breaking[:3]
+    except Exception:
+        return []
+
+
 @app.get("/api/news/{news_id}")
 async def get_news_detail(news_id: str):
     """Get detailed news item with narrative"""
