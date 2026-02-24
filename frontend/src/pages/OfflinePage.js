@@ -16,7 +16,7 @@ const OfflinePage = () => {
   const [cacheStats, setCacheStats] = useState({ totalSize: 0, formattedSize: '0 KB', offlineReady: 0 });
   const [currentPage, setCurrentPage] = useState(1);
   const [offlineStats, setOfflineStats] = useState({ article_count: 0 });
-  const { playTrack, currentTrack, isPlaying, pauseTrack } = useAudio();
+  const { playTrack, currentTrack, isPlaying, togglePlay } = useAudio();
 
   useEffect(() => {
     loadAllOfflineContent();
