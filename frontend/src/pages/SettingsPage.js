@@ -8,7 +8,7 @@ import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 
-const GearSixPage = () => {
+const SettingsPage = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, signOut } = useAuth();
@@ -212,7 +212,7 @@ const GearSixPage = () => {
             <NotificationToggle />
           </div>
 
-          {/* GearSix Sections */}
+          {/* Settings Sections */}
           {settingsSections.map((section, sectionIdx) => (
             <div key={sectionIdx} className="space-y-4">
               <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
@@ -341,4 +341,4 @@ const GearSixPage = () => {
   );
 };
 
-export default GearSixPage;
+export default SettingsPage;
