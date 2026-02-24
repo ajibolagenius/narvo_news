@@ -107,7 +107,7 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
               title="Settings Hub"
             >
               <Settings className="w-5 h-5 shrink-0" />
-              {open && <span className="mono-ui text-xs uppercase tracking-wider">Settings</span>}
+              {open && <span className="mono-ui text-xs uppercase tracking-wider">{t('nav.settings')}</span>}
             </button>
             {open && (
               <button
@@ -154,7 +154,7 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
             data-testid="sidebar-admin"
           >
             <Shield className="w-5 h-5 shrink-0" />
-            {open && <span className="mono-ui text-xs uppercase tracking-wider">Admin</span>}
+            {open && <span className="mono-ui text-xs uppercase tracking-wider">{t('nav.admin')}</span>}
           </button>
         </div>
       </aside>
