@@ -1,0 +1,254 @@
+# Translation Service - Multi-language translation using Gemini
+import os
+from typing import Dict, Optional
+from datetime import datetime
+
+EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+
+# Supported languages with their codes and TTS voice recommendations
+SUPPORTED_LANGUAGES = {
+    "en": {
+        "name": "English",
+        "native_name": "English",
+        "voice_id": "nova",
+        "description": "Standard English broadcast"
+    },
+    "pcm": {
+        "name": "Nigerian Pidgin",
+        "native_name": "Naija Pidgin",
+        "voice_id": "onyx",
+        "description": "Nigerian Pidgin English - widely spoken across Nigeria"
+    },
+    "yo": {
+        "name": "Yoruba",
+        "native_name": "Èdè Yorùbá",
+        "voice_id": "echo",
+        "description": "Yoruba language - spoken in Southwest Nigeria"
+    },
+    "ha": {
+        "name": "Hausa",
+        "native_name": "Harshen Hausa",
+        "voice_id": "alloy",
+        "description": "Hausa language - spoken in Northern Nigeria and West Africa"
+    },
+    "ig": {
+        "name": "Igbo",
+        "native_name": "Asụsụ Igbo",
+        "voice_id": "shimmer",
+        "description": "Igbo language - spoken in Southeast Nigeria"
+    }
+}
+
+def get_supported_languages():
+    """Get list of supported languages"""
+    return [
+        {"code": code, **info}
+        for code, info in SUPPORTED_LANGUAGES.items()
+    ]
+
+
+def get_language_info(language_code: str) -> Optional[Dict]:
+    """Get information about a specific language"""
+    return SUPPORTED_LANGUAGES.get(language_code)
+
+
+async def translate_text(
+    text: str,
+    target_language: str,
+    source_language: str = "en",
+    style: str = "broadcast"
+) -> Dict:
+    """
+    Translate text into target language using Gemini.
+    Also transforms into broadcast narrative style.
+    
+    Args:
+        text: The text to translate
+        target_language: Target language code (en, pcm, yo, ha, ig)
+        source_language: Source language code (default: en)
+        style: Writing style (broadcast, formal, casual)
+    
+    Returns:
+        Dict with translated text and metadata
+    """
+    if target_language not in SUPPORTED_LANGUAGES:
+        return {
+            "success": False,
+            "error": f"Unsupported language: {target_language}",
+            "original": text,
+            "translated": text
+        }
+    
+    # If same language, just return original
+    if target_language == source_language:
+        return {
+            "success": True,
+            "original": text,
+            "translated": text,
+            "language": target_language,
+            "language_name": SUPPORTED_LANGUAGES[target_language]["name"]
+        }
+    
+    lang_info = SUPPORTED_LANGUAGES[target_language]
+    
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        
+        # Build system prompt based on target language
+        system_prompts = {
+            "pcm": """You are a professional Nigerian broadcast journalist fluent in Nigerian Pidgin (Naija).
+Translate the news into natural, authentic Nigerian Pidgin while maintaining journalistic accuracy.
+Use common Pidgin expressions and idioms. Keep the broadcast tone professional but relatable.
+Example style: "Di goment don tok say..." instead of "The government has announced..."
+Write ONLY the translated text, no explanations.""",
+            
+            "yo": """You are a professional Yoruba broadcast journalist.
+Translate the news into fluent, natural Yoruba (Èdè Yorùbá) while maintaining journalistic accuracy.
+Use proper Yoruba grammar, tones, and expressions. Keep the broadcast tone dignified and clear.
+Write ONLY the translated text in Yoruba, no explanations or English.""",
+            
+            "ha": """You are a professional Hausa broadcast journalist.
+Translate the news into fluent, natural Hausa (Harshen Hausa) while maintaining journalistic accuracy.
+Use proper Hausa grammar and expressions common in Northern Nigeria. Keep the broadcast tone professional.
+Write ONLY the translated text in Hausa, no explanations or English.""",
+            
+            "ig": """You are a professional Igbo broadcast journalist.
+Translate the news into fluent, natural Igbo (Asụsụ Igbo) while maintaining journalistic accuracy.
+Use proper Igbo grammar, dialect (Central Igbo preferred), and expressions. Keep the broadcast tone clear and authoritative.
+Write ONLY the translated text in Igbo, no explanations or English.""",
+            
+            "en": """You are a professional broadcast journalist.
+Rewrite this news in clear, engaging broadcast English.
+Use an authoritative but accessible tone suitable for radio/audio news.
+Write ONLY the rewritten text, no explanations."""
+        }
+        
+        system_message = system_prompts.get(target_language, system_prompts["en"])
+        
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"translate-{datetime.now().timestamp()}",
+            system_message=system_message
+        ).with_model("gemini", "gemini-2.0-flash")
+        
+        user_message = UserMessage(text=f"Translate this news:\n\n{text}")
+        response = await chat.send_message(user_message)
+        
+        translated_text = response.strip()
+        
+        return {
+            "success": True,
+            "original": text,
+            "translated": translated_text,
+            "language": target_language,
+            "language_name": lang_info["name"],
+            "voice_id": lang_info["voice_id"]
+        }
+        
+    except Exception as e:
+        print(f"Translation error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "original": text,
+            "translated": text,
+            "language": target_language
+        }
+
+
+async def translate_and_narrate(
+    title: str,
+    summary: str,
+    target_language: str
+) -> Dict:
+    """
+    Combined function to translate news content and generate broadcast narrative.
+    
+    Args:
+        title: News headline
+        summary: News summary/content
+        target_language: Target language code
+    
+    Returns:
+        Dict with translated narrative and key takeaways
+    """
+    if target_language not in SUPPORTED_LANGUAGES:
+        return {
+            "success": False,
+            "error": f"Unsupported language: {target_language}",
+            "narrative": summary,
+            "key_takeaways": []
+        }
+    
+    lang_info = SUPPORTED_LANGUAGES[target_language]
+    
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        import json
+        
+        # Language-specific instructions
+        lang_instructions = {
+            "pcm": "Write in Nigerian Pidgin (Naija). Make am sound natural like how person wey dey do radio go yarn am.",
+            "yo": "Kọ ní èdè Yorùbá. Jẹ́ kí ó dún bíi ìròyìn rédíò.",
+            "ha": "Rubuta a Hausa. Ka yi shi kamar labarin rediyo.",
+            "ig": "Dee n'asụsụ Igbo. Mee ka ọ dị ka akụkọ redio.",
+            "en": "Write in clear broadcast English suitable for radio."
+        }
+        
+        instruction = lang_instructions.get(target_language, lang_instructions["en"])
+        
+        system_message = f"""You are a professional broadcast journalist for Narvo, an African news platform.
+Transform news into engaging broadcast narratives in the specified language.
+
+Language: {lang_info['name']} ({lang_info['native_name']})
+Style: {instruction}
+
+Requirements:
+- Write a 2-3 paragraph broadcast narrative
+- Extract 2-3 key takeaways (in the same language)
+- Maintain journalistic accuracy
+- Use natural expressions for the target language
+
+Respond in JSON format:
+{{
+  "narrative": "The broadcast narrative in {lang_info['name']}...",
+  "key_takeaways": ["Point 1 in {lang_info['name']}", "Point 2", "Point 3"]
+}}"""
+        
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"narrate-{datetime.now().timestamp()}",
+            system_message=system_message
+        ).with_model("gemini", "gemini-2.0-flash")
+        
+        user_message = UserMessage(text=f"Transform this news:\n\nTitle: {title}\n\nContent: {summary}")
+        response = await chat.send_message(user_message)
+        
+        # Parse JSON response
+        cleaned = response.strip()
+        if cleaned.startswith("```"):
+            cleaned = cleaned.split("```")[1]
+            if cleaned.startswith("json"):
+                cleaned = cleaned[4:]
+        cleaned = cleaned.strip()
+        
+        result = json.loads(cleaned)
+        
+        return {
+            "success": True,
+            "narrative": result.get("narrative", summary),
+            "key_takeaways": result.get("key_takeaways", []),
+            "language": target_language,
+            "language_name": lang_info["name"],
+            "voice_id": lang_info["voice_id"]
+        }
+        
+    except Exception as e:
+        print(f"Translation/narration error: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "narrative": summary,
+            "key_takeaways": ["Story details available in full article"],
+            "language": target_language
+        }
