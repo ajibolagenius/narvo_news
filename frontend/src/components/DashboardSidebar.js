@@ -82,7 +82,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
         data-testid="dashboard-sidebar"
       >
         {/* Toggle Button */}
-        <div className="h-12 flex items-center justify-center border-b border-[var(--color-border)]">
+        <div className="h-12 flex items-center px-4 border-b border-[var(--color-border)]">
           <button
             onClick={onToggle}
             className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
@@ -93,7 +93,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
           </button>
         </div>
 
-        <div className="flex-1 flex flex-col py-4 gap-1 overflow-y-auto custom-scroll">
+        <div className="flex-1 flex flex-col py-2 gap-0.5 overflow-y-auto custom-scroll">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -102,32 +102,41 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
                 key={item.path}
                 onClick={() => navigate(item.path)}
                 className={`
-                  flex items-center gap-3 transition-all mx-2 group
-                  ${open ? 'px-4 py-3' : 'px-0 py-3 justify-center'}
+                  flex items-center gap-3 transition-all h-11
+                  ${open ? 'px-4' : 'px-4 justify-start'}
                   ${isActive 
-                    ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/5 border border-[var(--color-border)]' 
-                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]/30'}
+                    ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/10 border-l-2 border-l-[var(--color-primary)]' 
+                    : 'text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]/20'}
                 `}
                 title={item.label}
                 data-testid={`sidebar-${item.label.toLowerCase()}`}
               >
                 <Icon weight={isActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
-                {open && <span className="font-mono text-xs font-bold uppercase tracking-wider truncate">{item.label}</span>}
+                {open && <span className="font-mono text-[11px] font-bold uppercase tracking-wider truncate">{item.label}</span>}
               </button>
             );
           })}
         </div>
 
         {/* Theme Toggle */}
-        <div className="border-t border-[var(--color-border)] py-2 flex justify-center">
-          <ThemeToggle showLabel={open} />
+        <div className="border-t border-[var(--color-border)] py-2 px-4">
+          <ThemeToggle showLabel={open} className="justify-start" />
         </div>
 
         {/* Settings Section */}
-        <div className="border-t border-[var(--color-border)] py-3 flex flex-col gap-1">
-          <div className="flex items-center mx-2">
-            <button
-              onClick={() => navigate('/settings')}
+        <div className="border-t border-[var(--color-border)] py-2">
+          <button
+            onClick={() => navigate('/settings')}
+            className={`flex items-center gap-3 transition-all h-11 w-full
+              ${open ? 'px-4' : 'px-4 justify-start'}
+              ${isSettingsActive 
+                ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/10 border-l-2 border-l-[var(--color-primary)]' 
+                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-surface)]/20'}`}
+            title="Settings Hub"
+          >
+            <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
+            {open && <span className="font-mono text-[11px] font-bold uppercase tracking-wider">{t('nav.settings')}</span>}
+          </button>
               className={`flex items-center gap-3 transition-all flex-1 ${
                 isSettingsActive 
                   ? 'text-[var(--color-primary)] bg-[var(--color-primary)]/5 border border-[var(--color-border)]' 
