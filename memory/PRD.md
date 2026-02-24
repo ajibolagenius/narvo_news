@@ -231,6 +231,7 @@ Global pages for error states, empty content, and notifications.
 - [x] Loading skeletons for API-dependent components ✅ (Feb 23, 2026)
 - [ ] Push notifications for breaking news
 - [ ] Playlist/queue functionality
+- [ ] Dynamic Open Graph Images for the app
 - [x] User Profile Pages (Account, Voice Studio, System Settings, Accessibility) ✅ (Feb 23, 2026)
 - [x] Live Radio Integration on Discover Page ✅ (Feb 23, 2026)
 - [x] Admin & Curation Dashboard (4 pages) ✅ (Feb 24, 2026)
