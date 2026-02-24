@@ -7,9 +7,9 @@ import AudioPlayerBar from './AudioPlayerBar';
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     const saved = localStorage.getItem('narvo_sidebar');
-    // Default to collapsed (false) on smaller screens, expanded on large screens
+    // Default to open (true) - user preference takes priority if saved
     if (saved !== null) return saved === 'true';
-    return window.innerWidth >= 1280; // xl breakpoint
+    return true; // Default open
   });
 
   useEffect(() => {
