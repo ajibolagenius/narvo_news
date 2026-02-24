@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import AudioPlayerBar from './AudioPlayerBar';
+import { BreakingNewsBanner } from './BreakingNews';
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(() => {
@@ -21,6 +22,7 @@ const DashboardLayout = () => {
   return (
     <div className="h-screen overflow-hidden flex flex-col bg-background-dark" data-testid="dashboard-layout">
       <DashboardHeader onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+      <BreakingNewsBanner />
       <div className="flex-1 flex overflow-hidden relative">
         <DashboardSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <Outlet />
