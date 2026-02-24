@@ -1,11 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
-import { LogOut, User, Mic, Monitor, Accessibility, ChevronRight, Shield, Zap, Database, Clock, Bell } from 'lucide-react';
+import { LogOut, User, Mic, Monitor, Accessibility, ChevronRight, Shield, Zap, Database, Clock, Bell, Globe } from 'lucide-react';
+import { LANGUAGES } from '../i18n';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { user, signOut } = useAuth();
   const { showAlert } = useHapticAlert();
 
@@ -18,20 +21,22 @@ const SettingsPage = () => {
     navigate('/');
   };
 
+  const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
+
   const settingsSections = [
     {
-      title: 'PROFILE_MANAGEMENT',
+      title: t('settings.profile_management'),
       items: [
         { 
           icon: User, 
-          label: 'Account', 
+          label: t('settings.account'), 
           desc: 'SUBSCRIPTION_PLAN // METRICS // REGION', 
           path: '/account',
           status: 'PREMIUM_ACTIVE'
         },
         { 
           icon: Mic, 
-          label: 'Voice Studio', 
+          label: t('settings.voice_studio'), 
           desc: 'BROADCAST_VOICE_MODEL // DIALECT_CONFIG', 
           path: '/voices',
           status: 'NOVA_SELECTED'
@@ -39,18 +44,18 @@ const SettingsPage = () => {
       ]
     },
     {
-      title: 'SYSTEM_CONFIGURATION',
+      title: t('settings.system_configuration'),
       items: [
         { 
           icon: Monitor, 
-          label: 'System Settings', 
+          label: t('settings.system_settings'), 
           desc: 'DISPLAY // NOTIFICATIONS // THROUGHPUT', 
           path: '/system',
           status: 'CONFIGURED'
         },
         { 
           icon: Accessibility, 
-          label: 'Accessibility', 
+          label: t('settings.accessibility'), 
           desc: 'DENSITY // FONTS // GESTURES // VOICE_CMD', 
           path: '/accessibility',
           status: 'OPTIMIZED'
@@ -75,7 +80,7 @@ const SettingsPage = () => {
           <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold">CONTROL_CENTER_ACTIVE</span>
         </div>
         <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white uppercase tracking-tight">
-          Settings_Hub
+          {t('settings.title')}
         </h1>
         <p className="mono-ui text-[10px] md:text-[11px] text-forest mt-2">
           CONFIGURE_BROADCAST_PARAMETERS // MANAGE_SYSTEM_PROTOCOLS
@@ -120,6 +125,48 @@ const SettingsPage = () => {
             </div>
           )}
 
+          {/* Language Selector */}
+          <div className="space-y-4">
+            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+              BROADCAST_LANGUAGE
+            </h2>
+            <div className="narvo-border bg-surface/5 p-5 md:p-6">
+              <div className="flex items-center gap-4 md:gap-6 mb-5">
+                <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-background-dark flex items-center justify-center">
+                  <Globe className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-display text-lg md:text-xl font-bold text-white uppercase">{t('settings.language')}</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">{t('settings.language_desc')}</p>
+                </div>
+                <div className="ml-auto flex items-center gap-2">
+                  <span className="mono-ui text-[8px] text-forest">ACTIVE:</span>
+                  <span className="mono-ui text-[10px] text-primary font-bold bg-primary/10 px-2 py-1 narvo-border">{currentLang.label}</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                {LANGUAGES.map(lang => (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      i18n.changeLanguage(lang.code);
+                      showAlert({ type: 'sync', title: 'LANGUAGE_CHANGED', message: `Interface set to ${lang.label}`, code: 'LANG_OK', duration: 3000 });
+                    }}
+                    className={`p-3 narvo-border text-center transition-all ${
+                      i18n.language === lang.code
+                        ? 'bg-primary/10 border-primary'
+                        : 'bg-surface/10 hover:border-forest hover:bg-surface/20'
+                    }`}
+                    data-testid={`lang-${lang.code}`}
+                  >
+                    <span className="block font-display text-sm font-bold text-white mb-1">{lang.label}</span>
+                    <span className="mono-ui text-[7px] text-forest font-bold">{lang.region}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
           {/* Settings Sections */}
           {settingsSections.map((section, sectionIdx) => (
             <div key={sectionIdx} className="space-y-4">
@@ -134,7 +181,7 @@ const SettingsPage = () => {
                       key={idx}
                       onClick={() => navigate(item.path)}
                       className="narvo-border bg-surface/5 p-5 md:p-6 text-left group hover:bg-primary/5 hover:border-primary transition-all"
-                      data-testid={`settings-nav-${item.label.toLowerCase().replace(' ', '-')}`}
+                      data-testid={`settings-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-background-dark flex items-center justify-center group-hover:border-primary transition-colors">
@@ -228,19 +275,19 @@ const SettingsPage = () => {
             </div>
           </div>
 
-          {/* Logout Section */}
+          {/* Version + Logout */}
           <div className="pt-6 md:pt-8 border-t border-forest/20">
+            <p className="mono-ui text-[8px] text-forest/50 text-center mb-4">
+              {t('settings.version')}
+            </p>
             <button 
               onClick={handleLogout} 
               className="w-full narvo-border bg-surface/5 text-forest font-display font-bold py-4 md:py-5 text-sm md:text-base hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-400 transition-all flex items-center justify-center gap-3 uppercase group" 
               data-testid="logout-btn"
             >
               <LogOut className="w-5 h-5 group-hover:translate-x-[-4px] transition-transform" />
-              <span>[TERMINATE_SESSION // LOG_OUT]</span>
+              <span>[{t('settings.logout')}]</span>
             </button>
-            <p className="mono-ui text-[8px] text-forest/50 text-center mt-3">
-              ALL_LOCAL_DATA_WILL_BE_CLEARED // SESSION_ENCRYPTION_TERMINATED
-            </p>
           </div>
 
         </div>
