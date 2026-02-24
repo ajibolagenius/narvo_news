@@ -20,11 +20,15 @@ const DashboardLayout = () => {
   const toggleSidebar = () => setSidebarOpen(p => !p);
 
   return (
-    <div className="h-screen overflow-hidden flex flex-col bg-background-dark" data-testid="dashboard-layout">
+    <div className="h-screen overflow-hidden flex flex-col bg-[var(--color-bg)]" data-testid="dashboard-layout">
       <DashboardHeader onToggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
       <BreakingNewsBanner />
       <div className="flex-1 flex overflow-hidden relative">
-        <DashboardSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <DashboardSidebar 
+          open={sidebarOpen} 
+          onClose={() => setSidebarOpen(false)} 
+          onToggle={toggleSidebar}
+        />
         <Outlet />
       </div>
       <AudioPlayerBar />
