@@ -114,7 +114,7 @@ const VoiceStudioPage = () => {
         </div>
 
         {/* Waveform Visualization */}
-        <div className="h-14 md:h-16 narvo-border bg-black/40 flex items-center gap-1 px-4 relative overflow-hidden">
+        <div className="h-14 md:h-16 narvo-border bg-background-dark/40 flex items-center gap-1 px-4 relative overflow-hidden">
           <div 
             className="absolute inset-0 opacity-5" 
             style={{ backgroundImage: 'radial-gradient(#628141 1px, transparent 1px)', backgroundSize: '10px 10px' }}
@@ -166,7 +166,7 @@ const VoiceStudioPage = () => {
               <div key={i} className="narvo-border p-6 md:p-8 flex flex-col gap-4">
                 <Skeleton variant="text" className="w-24 h-4" />
                 <Skeleton variant="text" className="w-32 h-8" />
-                <div className="h-20 md:h-24 narvo-border bg-black/20" />
+                <div className="h-20 md:h-24 narvo-border bg-background-dark/20" />
                 <Skeleton variant="text" className="w-full h-4" />
               </div>
             ))}
@@ -206,7 +206,7 @@ const VoiceStudioPage = () => {
                     )}
                   </div>
                   
-                  <div className="h-20 md:h-24 narvo-border bg-black/20 flex items-center justify-center mb-4 md:mb-6 overflow-hidden relative">
+                  <div className="h-20 md:h-24 narvo-border bg-background-dark/20 flex items-center justify-center mb-4 md:mb-6 overflow-hidden relative">
                     <div 
                       className="absolute inset-0 opacity-10" 
                       style={{ backgroundImage: 'linear-gradient(45deg, #628141 25%, transparent 25%, transparent 50%, #628141 50%, #628141 75%, transparent 75%, transparent)', backgroundSize: '20px 20px' }}

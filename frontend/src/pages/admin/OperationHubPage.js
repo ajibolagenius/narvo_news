@@ -79,7 +79,7 @@ const OperationHubPage = () => {
   return (
     <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="operation-hub-page">
       {/* Telemetry Bar */}
-      <div className="px-8 py-4 narvo-border-b bg-black/20 flex gap-12 items-center overflow-x-auto shrink-0">
+      <div className="px-8 py-4 narvo-border-b bg-background-dark/20 flex gap-12 items-center overflow-x-auto shrink-0">
         {loading ? (
           <span className="mono-ui text-[10px] text-forest animate-pulse">LOADING_TELEMETRY...</span>
         ) : (
@@ -153,7 +153,7 @@ const OperationHubPage = () => {
         {/* Charts & Alerts */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Chart */}
-          <div className="lg:col-span-2 narvo-border bg-black/40 p-8 flex flex-col gap-6">
+          <div className="lg:col-span-2 narvo-border bg-background-dark/40 p-8 flex flex-col gap-6">
             <div className="flex justify-between items-center">
               <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">INGEST_VOLUME // 24H_CYCLE</h3>
               <div className="flex gap-4 mono-ui text-[9px] font-bold text-forest">
@@ -179,7 +179,7 @@ const OperationHubPage = () => {
           </div>
 
           {/* Alerts */}
-          <div className="narvo-border bg-black/40 p-8 flex flex-col gap-6">
+          <div className="narvo-border bg-background-dark/40 p-8 flex flex-col gap-6">
             <div className="flex justify-between items-center">
               <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">{t('admin.system_alerts')}</h3>
               <span className="mono-ui text-[9px] bg-primary/10 text-primary border border-primary px-2 py-0.5">{alerts.length}_NEW</span>
@@ -206,7 +206,7 @@ const OperationHubPage = () => {
         </div>
 
         {/* Streams Table */}
-        <div className="narvo-border overflow-hidden bg-black/20">
+        <div className="narvo-border overflow-hidden bg-background-dark/20">
           <div className="px-8 py-6 narvo-border-b flex justify-between items-center bg-background-dark">
             <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">ACTIVE_SIGNAL_MATRIX</h3>
             <div className="flex gap-4">

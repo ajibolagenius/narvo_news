@@ -96,7 +96,7 @@ const NotFoundPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="h-12 narvo-border-t bg-black/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold relative z-10">
+      <footer className="h-12 narvo-border-t bg-background-dark/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold relative z-10">
         <span>NARVO_PROTOCOL: V2.6 // DIAGNOSTIC_MODE</span>
         <span>CONNECTION_STATUS: <span className="text-red-500">INTERRUPTED</span></span>
       </footer>

@@ -107,7 +107,7 @@ const ServerErrorPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="h-12 narvo-border-t border-red-500/30 bg-black/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold relative z-10">
+      <footer className="h-12 narvo-border-t border-red-500/30 bg-background-dark/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold relative z-10">
         <span>NARVO_PROTOCOL: V2.6 // EMERGENCY_MODE</span>
         <span>SYSTEM_STATUS: <span className="text-red-500 animate-pulse">CRITICAL</span></span>
       </footer>

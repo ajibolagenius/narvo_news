@@ -109,7 +109,7 @@ const EmptyState = ({
             return (
               <div 
                 key={idx}
-                className={`narvo-border border-dashed p-4 md:p-6 flex flex-col justify-between bg-black/20 ${slot.opacity} hover:opacity-100 transition-opacity min-h-[120px] md:min-h-[150px]`}
+                className={`narvo-border border-dashed p-4 md:p-6 flex flex-col justify-between bg-background-dark/20 ${slot.opacity} hover:opacity-100 transition-opacity min-h-[120px] md:min-h-[150px]`}
               >
                 <div className="flex justify-between items-start">
                   <span className="mono-ui text-[8px] text-forest font-bold tracking-widest">{slot.id}</span>
