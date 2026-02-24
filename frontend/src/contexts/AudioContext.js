@@ -34,16 +34,22 @@ export const AudioProvider = ({ children }) => {
   }, []);
 
   const playTrack = useCallback((track) => {
-    if (!track?.url) return;
+    // Support both 'url' and 'audio_url' properties
+    const trackUrl = track?.url || track?.audio_url;
+    if (!trackUrl) return;
+    
     const audio = audioRef.current;
-    if (currentTrack?.url === track.url) {
+    const currentUrl = currentTrack?.url || currentTrack?.audio_url;
+    
+    if (currentUrl === trackUrl) {
       if (audio.paused) audio.play().catch(() => {});
       else audio.pause();
       return;
     }
-    audio.src = track.url;
+    
+    audio.src = trackUrl;
     audio.play().catch(() => {});
-    setCurrentTrack(track);
+    setCurrentTrack({ ...track, url: trackUrl });
     setDuration(0);
     setCurrentTime(0);
   }, [currentTrack]);
