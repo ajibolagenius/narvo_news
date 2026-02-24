@@ -1199,6 +1199,119 @@ async def get_radio_countries():
         {"code": "CM", "name": "Cameroon", "flag": "🇨🇲"},
     ]
 
+
+# ===========================================
+# DISCOVER ENDPOINTS (Podcasts & Trending)
+# ===========================================
+class PodcastEpisode(BaseModel):
+    id: str
+    episode: str
+    title: str
+    duration: str
+    description: str
+    category: str = "General"
+    published: Optional[str] = None
+
+@app.get("/api/podcasts", response_model=List[PodcastEpisode])
+async def get_podcasts(
+    sort: str = Query("latest", description="Sort by: latest, popular"),
+    limit: int = Query(10, ge=1, le=50)
+):
+    """Get curated podcast episodes for the Discover page"""
+    episodes = [
+        PodcastEpisode(id="ep402", episode="EP. 402", title="The Geopolitical Shift: Arctic Routes", duration="45:00", description="Understanding the opening trade routes, their environmental impact, and the geopolitical realignment happening at the North Pole.", category="Geopolitics", published="2026-02-20"),
+        PodcastEpisode(id="ep089", episode="EP. 089", title="Tech Horizons: Quantum Synthesis", duration="22:15", description="Exclusive breakthrough at Zurich Labs: the neural interface is ready for human trials. We break down what this means for Africa's tech ecosystem.", category="Technology", published="2026-02-18"),
+        PodcastEpisode(id="ep012", episode="EP. 012", title="Urban Architecture: Megacities", duration="60:00", description="Reimagining dense metropolitan spaces. Nigeria 2050 infrastructure planning data reveals surprising trends in sustainable urban development.", category="Urban", published="2026-02-15"),
+        PodcastEpisode(id="ep201", episode="EP. 201", title="Soundscapes: Amazon Rainforest", duration="33:45", description="Binaural field recordings and biodiversity metrics from the Amazon. An audio journey through the world's most biodiverse ecosystem.", category="Environment", published="2026-02-12"),
+        PodcastEpisode(id="ep156", episode="EP. 156", title="African Markets: Digital Currency Surge", duration="28:30", description="How digital currencies are transforming trade across West Africa. From Lagos to Accra, new financial rails are being built.", category="Finance", published="2026-02-10"),
+        PodcastEpisode(id="ep340", episode="EP. 340", title="Health Frontiers: Malaria Gene Drive", duration="35:20", description="The controversial gene drive technology that could eradicate malaria. Scientists in Kenya share their latest trial results.", category="Health", published="2026-02-08"),
+    ]
+    if sort == "popular":
+        episodes.sort(key=lambda x: x.duration, reverse=True)
+    return episodes[:limit]
+
+@app.get("/api/discover/trending")
+async def get_trending_topics():
+    """Get trending topics and categories for the Discover page"""
+    try:
+        # Aggregate trending categories from recent news
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:3]]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for result in results:
+            if isinstance(result, list):
+                all_news.extend(result)
+        
+        # Count categories
+        category_counts = {}
+        for item in all_news:
+            cat = item.get("category", "General")
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+        
+        trending = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:8]
+        return [{"topic": cat, "count": count, "trend": "up" if count > 2 else "stable"} for cat, count in trending]
+    except Exception as e:
+        print(f"Trending error: {e}")
+        return [
+            {"topic": "Politics", "count": 12, "trend": "up"},
+            {"topic": "Economy", "count": 8, "trend": "up"},
+            {"topic": "Security", "count": 6, "trend": "stable"},
+            {"topic": "Technology", "count": 5, "trend": "up"},
+            {"topic": "Health", "count": 4, "trend": "stable"},
+        ]
+
+# ===========================================
+# OFFLINE ENDPOINTS (Article caching)
+# ===========================================
+class OfflineArticle(BaseModel):
+    story_id: str
+    title: str
+    summary: str
+    narrative: Optional[str] = None
+    source: str
+    category: str = "General"
+    image_url: Optional[str] = None
+
+@app.post("/api/offline/save")
+async def save_offline_article(article: OfflineArticle):
+    """Save an article for offline reading"""
+    doc = article.dict()
+    doc["saved_at"] = datetime.now(timezone.utc).isoformat()
+    db.offline_articles.update_one(
+        {"story_id": article.story_id},
+        {"$set": doc},
+        upsert=True
+    )
+    return {"status": "saved", "story_id": article.story_id}
+
+@app.get("/api/offline/articles")
+async def get_offline_articles():
+    """Get all saved offline articles"""
+    articles = list(db.offline_articles.find({}, {"_id": 0}).sort("saved_at", -1))
+    return articles
+
+@app.delete("/api/offline/articles/{story_id}")
+async def delete_offline_article(story_id: str):
+    """Remove an offline article"""
+    db.offline_articles.delete_one({"story_id": story_id})
+    return {"status": "deleted", "story_id": story_id}
+
+@app.delete("/api/offline/articles")
+async def clear_offline_articles():
+    """Clear all offline articles"""
+    result = db.offline_articles.delete_many({})
+    return {"status": "cleared", "count": result.deleted_count}
+
+@app.get("/api/offline/stats")
+async def get_offline_stats():
+    """Get offline storage statistics"""
+    article_count = db.offline_articles.count_documents({})
+    return {
+        "article_count": article_count,
+        "audio_note": "Audio caching is managed client-side via IndexedDB",
+    }
+
+
 # ===========================================
 # BOOKMARK ENDPOINTS (MongoDB persistent)
 # ===========================================
