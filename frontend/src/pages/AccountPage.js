@@ -174,7 +174,7 @@ const AccountPage = () => {
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="flex justify-between items-start">
               <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
-                PRIMARY_REGION_STATUS
+                {t('account.primary_region')}
               </h3>
               <MapPin className="w-5 h-5 text-forest" />
             </div>
@@ -220,7 +220,7 @@ const AccountPage = () => {
             </div>
           </div>
           <div className="mono-ui text-[9px] text-forest">
-            SESSION_ACTIVE // ENCRYPTION: AES-256-GCM
+            {t('account.session_active')}
           </div>
         </div>
       )}
