@@ -1,81 +1,61 @@
-import React, { useState } from 'react';
-import { LayoutGrid, List, AlertTriangle, CheckCircle, HelpCircle, MoreHorizontal, CheckSquare, Flag } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { LayoutGrid, List, AlertTriangle, CheckCircle, HelpCircle, MoreHorizontal, CheckSquare, Flag, RefreshCw } from 'lucide-react';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const ModerationHubPage = () => {
   const [viewMode, setViewMode] = useState('grid');
+  const [moderationItems, setModerationItems] = useState([]);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const moderationItems = [
-    {
-      id: '#8821X',
-      source: 'TW_X',
-      status: 'DISPUTED',
-      statusIcon: AlertTriangle,
-      statusColor: 'red',
-      title: 'Contested results in District 9 due to "irregularities"',
-      description: 'Reports emerging from multiple accounts regarding polling station closures. Official commission silent. High velocity signal detected.',
-      tags: ['#ELECTION2024'],
-      confidence: '98%',
-      time: '14:02 UTC',
-    },
-    {
-      id: '#9942A',
-      source: 'DIRECT',
-      status: 'VERIFIED',
-      statusIcon: CheckCircle,
-      statusColor: 'primary',
-      title: 'Dam levels stabilize after weekend rainfall cycle',
-      description: 'Water authority confirms reservoir capacity returning to normal levels following seasonal precipitation.',
-      tags: ['#INFRASTRUCTURE'],
-      confidence: '99%',
-      time: '13:58 UTC',
-      hasImage: true,
-    },
-    {
-      id: '#1102Z',
-      source: 'FB_WATCH',
-      status: 'UNVERIFIED',
-      statusIcon: HelpCircle,
-      statusColor: 'forest',
-      title: 'Protest footage confirmed potential deepfake scan',
-      description: 'Inconsistencies detected in background lighting and shadow vectors. Forensics team reassignment recommended.',
-      tags: ['#DEEP_GEN', '#AI_SCAN'],
-      confidence: '67%',
-      time: '13:45 UTC',
-      muted: true,
-    },
-    {
-      id: '#5543B',
-      source: 'REUTERS',
-      status: 'VERIFIED',
-      statusIcon: CheckCircle,
-      statusColor: 'primary',
-      title: 'Central Bank announces new monetary policy framework',
-      description: 'Inflation targeting measures and interest rate adjustments effective next quarter.',
-      tags: ['#ECONOMY', '#POLICY'],
-      confidence: '100%',
-      time: '13:30 UTC',
-    },
-    {
-      id: '#7721C',
-      source: 'LOCAL_NET',
-      status: 'DISPUTED',
-      statusIcon: AlertTriangle,
-      statusColor: 'red',
-      title: 'Viral health claims require fact-check verification',
-      description: 'Multiple sources spreading unverified medical information. Cross-reference with health authority databases required.',
-      tags: ['#HEALTH', '#MISINFO'],
-      confidence: '45%',
-      time: '13:15 UTC',
-    },
-  ];
+  const fetchData = async () => {
+    try {
+      const [itemsRes, statsRes] = await Promise.all([
+        fetch(`${API_URL}/api/admin/moderation`),
+        fetch(`${API_URL}/api/admin/stats`)
+      ]);
+      
+      const [itemsData, statsData] = await Promise.all([
+        itemsRes.json(),
+        statsRes.json()
+      ]);
+      
+      setModerationItems(itemsData);
+      setStats(statsData);
+      setLoading(false);
+    } catch (err) {
+      console.error('Failed to fetch moderation data:', err);
+      setLoading(false);
+    }
+  };
 
-  const getStatusClasses = (color) => {
-    const classes = {
-      red: { text: 'text-red-500', bg: 'bg-red-500', border: 'border-red-500' },
-      primary: { text: 'text-primary', bg: 'bg-primary', border: 'border-primary' },
-      forest: { text: 'text-forest', bg: 'bg-forest', border: 'border-forest' },
-    };
-    return classes[color] || classes.forest;
+  useEffect(() => {
+    fetchData();
+    // Auto-refresh every 60 seconds
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'DISPUTED': return AlertTriangle;
+      case 'VERIFIED': return CheckCircle;
+      case 'UNVERIFIED': return HelpCircle;
+      default: return HelpCircle;
+    }
+  };
+
+  const getStatusClasses = (status) => {
+    switch (status) {
+      case 'DISPUTED':
+        return { text: 'text-red-500', bg: 'bg-red-500', border: 'border-red-500' };
+      case 'VERIFIED':
+        return { text: 'text-primary', bg: 'bg-primary', border: 'border-primary' };
+      case 'UNVERIFIED':
+      default:
+        return { text: 'text-forest', bg: 'bg-forest', border: 'border-forest' };
+    }
   };
 
   return (
@@ -87,6 +67,13 @@ const ModerationHubPage = () => {
           <span className="mono-ui text-[9px] text-forest font-bold border border-forest px-2 py-0.5">LIVE_WATCH</span>
         </div>
         <div className="flex gap-2">
+          <button 
+            onClick={fetchData}
+            className="w-10 h-10 narvo-border flex items-center justify-center text-forest hover:text-white transition-all"
+            title="Refresh"
+          >
+            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+          </button>
           <button 
             onClick={() => setViewMode('grid')}
             className={`w-10 h-10 narvo-border flex items-center justify-center transition-all ${viewMode === 'grid' ? 'text-primary bg-forest/20' : 'text-forest hover:text-white'}`}
@@ -106,13 +93,13 @@ const ModerationHubPage = () => {
       <div className="flex-1 overflow-y-auto custom-scroll p-8">
         <div className={`grid gap-8 ${viewMode === 'grid' ? 'grid-cols-1 md:grid-cols-2 xl:grid-cols-3' : 'grid-cols-1'}`}>
           {moderationItems.map((item, idx) => {
-            const StatusIcon = item.statusIcon;
-            const statusClasses = getStatusClasses(item.statusColor);
+            const StatusIcon = getStatusIcon(item.status);
+            const statusClasses = getStatusClasses(item.status);
             
             return (
               <article 
                 key={idx}
-                className={`narvo-border bg-surface/30 p-6 flex flex-col gap-6 relative group hover:border-primary transition-all ${item.muted ? 'opacity-70 hover:opacity-100' : ''}`}
+                className={`narvo-border bg-surface/30 p-6 flex flex-col gap-6 relative group hover:border-primary transition-all`}
                 data-testid={`moderation-card-${item.id}`}
               >
                 {/* Status Bar */}
@@ -130,7 +117,7 @@ const ModerationHubPage = () => {
                     </span>
                     <p className="mono-ui text-[8px] text-forest font-bold">ID: {item.id} {'//'} {item.source}</p>
                   </div>
-                  <span className="mono-ui text-[9px] text-forest font-bold">{item.time}</span>
+                  <span className="mono-ui text-[9px] text-forest font-bold">{item.timestamp}</span>
                 </div>
 
                 {/* Content */}
@@ -139,7 +126,7 @@ const ModerationHubPage = () => {
                     {item.title}
                   </h3>
                   
-                  {item.hasImage && (
+                  {item.has_image && (
                     <div className="aspect-video narvo-border bg-black/40 overflow-hidden relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-forest/20 to-transparent" />
                       <div className="absolute inset-0 flex items-center justify-center">
@@ -201,12 +188,12 @@ const ModerationHubPage = () => {
       {/* Stats Bar */}
       <div className="h-12 narvo-border-t bg-black/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold shrink-0">
         <div className="flex items-center gap-6">
-          <span>QUEUE_TOTAL: <span className="text-white">47</span></span>
-          <span>DISPUTED: <span className="text-red-500">12</span></span>
-          <span>VERIFIED: <span className="text-primary">28</span></span>
-          <span>PENDING: <span className="text-forest">7</span></span>
+          <span>QUEUE_TOTAL: <span className="text-white">{stats?.queue_total || 0}</span></span>
+          <span>DISPUTED: <span className="text-red-500">{stats?.disputed || 0}</span></span>
+          <span>VERIFIED: <span className="text-primary">{stats?.verified || 0}</span></span>
+          <span>PENDING: <span className="text-forest">{stats?.pending || 0}</span></span>
         </div>
-        <span>DUBAWA_API: <span className="text-primary">CONNECTED</span> {'//'} LAST_SYNC: 2MIN_AGO</span>
+        <span>DUBAWA_API: <span className="text-primary">{stats?.dubawa_status || 'CHECKING'}</span> {'//'} LAST_SYNC: {stats?.last_sync || '--'}</span>
       </div>
     </main>
   );
