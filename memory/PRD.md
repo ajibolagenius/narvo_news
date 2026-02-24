@@ -163,6 +163,17 @@ const handleDownloadAll = async () => {
 
 ## API Endpoints
 
+### Translation (NEW)
+- `GET /api/translate/languages` → List 5 supported languages
+- `GET /api/translate/quick?text=...&lang=pcm` → Quick translation
+- `POST /api/translate/text` → Full translation with metadata
+- `POST /api/translate/narrate` → Translate + broadcast narrative
+
+### Fact-Check (NEW)
+- `GET /api/factcheck/search?query=...` → Search Google Fact Check API
+- `GET /api/factcheck/verify?claim=...` → Get verdict & confidence
+- `POST /api/factcheck/analyze` → Keyword-based quick analysis
+
 ### Podcast Audio Proxy
 - `GET /api/podcasts/{id}/audio` → Streams audio (CORS-safe)
 
@@ -172,6 +183,18 @@ const handleDownloadAll = async () => {
 - `DELETE /api/offline/articles/{id}` → Remove
 
 ## Test Results
+
+### Translation API ✓
+```
+/api/translate/quick?text=The government announced&lang=pcm
+Response: "Oya, tori don land! Di goment don drop new rules dem..."
+```
+
+### Fact-Check API ✓
+```
+/api/factcheck/verify?claim=COVID vaccine is safe
+Response: {verdict: "MISLEADING", confidence: 71, source: "MOCK_FACTCHECK"}
+```
 
 ### Podcast Download ✓
 ```
@@ -197,3 +220,8 @@ Service Worker: {active: 'activated'}
 
 ## Test Reports
 - `/app/test_reports/iteration_26.json` - Global Download Queue Indicator (7/7 tests passed)
+- `/app/test_reports/iteration_27.json` - Translation, Fact-Check, Language Settings (17/17 tests passed)
+
+## MOCKED APIs
+- **Google Fact Check API** - Uses mock when `GOOGLE_FACT_CHECK_API_KEY` not set
+- Response includes `source: "MOCK_FACTCHECK"` to indicate mock usage
