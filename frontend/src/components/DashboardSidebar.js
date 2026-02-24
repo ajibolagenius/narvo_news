@@ -97,25 +97,25 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
 
         {/* Settings Section */}
         <div className="narvo-border-t py-3 flex flex-col gap-1">
-          <button
-            onClick={() => {
-              if (open) {
-                setSettingsExpanded(!settingsExpanded);
-              } else {
-                navigate('/settings');
-              }
-            }}
-            className={`flex items-center gap-3 transition-all mx-2 ${isSettingsActive ? 'text-primary bg-primary/5 narvo-border' : 'text-forest hover:text-primary hover:bg-surface/30'} ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
-            title="Settings"
-          >
-            <Settings className="w-5 h-5 shrink-0" />
+          <div className="flex items-center mx-2">
+            <button
+              onClick={() => navigate('/settings')}
+              className={`flex items-center gap-3 transition-all flex-1 ${isSettingsActive ? 'text-primary bg-primary/5 narvo-border' : 'text-forest hover:text-primary hover:bg-surface/30'} ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
+              title="Settings Hub"
+            >
+              <Settings className="w-5 h-5 shrink-0" />
+              {open && <span className="mono-ui text-xs uppercase tracking-wider">Settings</span>}
+            </button>
             {open && (
-              <>
-                <span className="mono-ui text-xs uppercase tracking-wider flex-1 text-left">Settings</span>
+              <button
+                onClick={() => setSettingsExpanded(!settingsExpanded)}
+                className="p-3 text-forest hover:text-primary transition-colors"
+                title={settingsExpanded ? "Collapse" : "Expand"}
+              >
                 <ChevronDown className={`w-4 h-4 transition-transform ${settingsExpanded ? 'rotate-180' : ''}`} />
-              </>
+              </button>
             )}
-          </button>
+          </div>
           
           {/* Settings Sub-nav (only when expanded) */}
           {open && settingsExpanded && (
