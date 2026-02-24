@@ -316,13 +316,13 @@ const DashboardPage = () => {
       <aside className="w-72 xl:w-80 hidden xl:flex flex-col narvo-border-l bg-background-dark shrink-0" data-testid="telemetry-sidebar">
         <div className="h-16 flex items-center px-5 narvo-border-b bg-surface/10">
           <span className="mono-ui text-xs font-bold text-forest tracking-widest uppercase flex items-center gap-3">
-            <Activity className="text-primary w-4 h-4" /> {t('dashboard.telemetry')}
+            <Activity weight="bold" className="text-primary w-4 h-4" /> {t('dashboard.telemetry')}
           </span>
         </div>
         <div className="flex-1 overflow-y-auto p-5 space-y-6 custom-scroll">
           {/* Weather */}
           <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-2 opacity-20"><CloudSun className="w-8 h-8" /></div>
+            <div className="absolute top-0 right-0 p-2 opacity-20"><CloudSun weight="fill" className="w-8 h-8" /></div>
             <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">REGIONAL_ENV</span>
             <div className="flex items-end justify-between">
               <div>
