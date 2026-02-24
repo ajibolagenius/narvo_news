@@ -130,7 +130,7 @@ const DiscoverPage = () => {
   };
 
   return (
-    <main className="flex-1 flex flex-col bg-background-dark relative" data-testid="discover-page">
+    <main className="flex-1 flex flex-col bg-background-dark relative min-h-0" data-testid="discover-page">
       <div className="flex-1 overflow-y-auto custom-scroll">
         {/* Featured Matrix Hero */}
         <section className="h-[300px] md:h-[450px] narvo-border-b relative group overflow-hidden shrink-0">
