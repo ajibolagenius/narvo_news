@@ -419,7 +419,7 @@ const NewsDetailPage = () => {
           {/* Tags */}
           {news.tags?.length > 0 && (
             <div>
-              <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">SIGNAL_TAGS</span>
+              <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
               <div className="flex flex-wrap gap-1.5 xl:gap-2">
                 {news.tags.map((tag, i) => (
                   <span key={i} className="narvo-border px-1.5 xl:px-2 py-1 mono-ui text-[8px] xl:text-[9px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#{tag.toUpperCase()}</span>
@@ -431,7 +431,7 @@ const NewsDetailPage = () => {
           {/* Related Stories */}
           {relatedNews.length > 0 && (
             <div>
-              <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">RELATED_TRANSMISSIONS</span>
+              <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.related_transmissions')}</span>
               <div className="space-y-2 xl:space-y-3">
                 {relatedNews.map((item) => (
                   <div
