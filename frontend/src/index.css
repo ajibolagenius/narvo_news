@@ -89,8 +89,8 @@ html {
 html, body, #root {
   height: 100%;
   width: 100%;
-  background-color: var(--color-bg);
-  color: var(--color-text-primary);
+  background-color: rgb(var(--color-bg));
+  color: rgb(var(--color-text-primary));
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -99,8 +99,8 @@ html, body, #root {
 
 /* Selection */
 ::selection {
-  background: var(--color-primary);
-  color: var(--color-bg);
+  background: rgb(var(--color-primary));
+  color: rgb(var(--color-bg));
 }
 
 /* ===========================================
@@ -128,32 +128,32 @@ html, body, #root {
    SWISS GRID SYSTEM
    =========================================== */
 .swiss-grid {
-  border: var(--border-width) solid var(--color-border);
+  border: var(--border-width) solid rgb(var(--color-border));
 }
 
 .swiss-cell {
-  border: var(--border-width) solid var(--color-border);
-  background: var(--color-surface);
+  border: var(--border-width) solid rgb(var(--color-border));
+  background: rgb(var(--color-surface));
 }
 
 .swiss-border {
-  border: var(--border-width) solid var(--color-border);
+  border: var(--border-width) solid rgb(var(--color-border));
 }
 
 .swiss-border-t {
-  border-top: var(--border-width) solid var(--color-border);
+  border-top: var(--border-width) solid rgb(var(--color-border));
 }
 
 .swiss-border-b {
-  border-bottom: var(--border-width) solid var(--color-border);
+  border-bottom: var(--border-width) solid rgb(var(--color-border));
 }
 
 .swiss-border-l {
-  border-left: var(--border-width) solid var(--color-border);
+  border-left: var(--border-width) solid rgb(var(--color-border));
 }
 
 .swiss-border-r {
-  border-right: var(--border-width) solid var(--color-border);
+  border-right: var(--border-width) solid rgb(var(--color-border));
 }
 
 /* ===========================================
