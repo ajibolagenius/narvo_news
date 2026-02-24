@@ -135,7 +135,7 @@ const AccountPage = () => {
         <div className="p-6 md:p-10 narvo-border-r narvo-border-b md:border-b-0 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
           <div className="flex justify-between items-start">
             <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
-              SIGNALS_PROCESSED
+              {t('account.signals_processed')}
             </h3>
             <AudioWaveform className="w-5 h-5 text-forest" />
           </div>
