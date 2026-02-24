@@ -824,10 +824,18 @@ async def generate_morning_briefing(
     global _briefing_cache
     
     now = datetime.now(timezone.utc)
+    today_date = now.strftime('%Y-%m-%d')
+    
+    # Check if today's briefing exists in DB
+    existing = briefings_col.find_one({"date": today_date}, {"_id": 0})
+    if existing and not force_regenerate:
+        return existing
+    
+    # Check memory cache
     cache_valid = (
         _briefing_cache["briefing"] is not None and 
         _briefing_cache["generated_at"] is not None and
-        (now - _briefing_cache["generated_at"]).total_seconds() < 3600  # 1 hour cache
+        (now - _briefing_cache["generated_at"]).total_seconds() < 3600
     )
     
     if cache_valid and not force_regenerate:
@@ -836,14 +844,13 @@ async def generate_morning_briefing(
     try:
         # Fetch top stories with timeout
         all_news = []
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]  # Limit feeds for faster response
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         
         for items in results:
             if isinstance(items, list):
                 all_news.extend(items)
         
-        # Sort by recency and get top 5
         all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
         top_stories = all_news[:5]
         
@@ -853,55 +860,54 @@ async def generate_morning_briefing(
         # Generate briefing script
         script = await generate_briefing_script(top_stories)
         
-        # Generate TTS audio with shorter text
+        # Generate TTS audio
         audio_url = None
         try:
             from emergentintegrations.llm.openai import OpenAITextToSpeech
             
-            # Truncate to reduce processing time
             tts_text = script[:2500] if len(script) > 2500 else script
-            
             tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
             audio_bytes = await tts.generate_speech(
-                text=tts_text,
-                model="tts-1",
-                voice=voice_id,
-                response_format="mp3",
-                speed=1.0
+                text=tts_text, model="tts-1", voice=voice_id, response_format="mp3", speed=1.0
             )
             audio_b64 = base64.b64encode(audio_bytes).decode()
             audio_url = f"data:audio/mpeg;base64,{audio_b64}"
         except Exception as e:
             print(f"TTS Error for briefing: {e}")
         
-        # Build briefing response
-        briefing = MorningBriefing(
-            id=f"briefing-{now.strftime('%Y%m%d-%H%M')}",
-            title=f"Morning Briefing - {now.strftime('%B %d, %Y')}",
-            generated_at=now.isoformat(),
-            duration_estimate="~3 minutes",
-            stories=[
-                BriefingStory(
-                    id=s["id"],
-                    title=s["title"][:100],
-                    summary=s["summary"][:150] + "..." if len(s.get("summary", "")) > 150 else s.get("summary", ""),
-                    source=s["source"],
-                    category=s.get("category", "General")
-                )
+        # Build briefing object
+        briefing_data = {
+            "id": f"briefing-{now.strftime('%Y%m%d-%H%M')}",
+            "date": today_date,
+            "title": f"Morning Briefing - {now.strftime('%B %d, %Y')}",
+            "generated_at": now.isoformat(),
+            "duration_estimate": "~3 minutes",
+            "stories": [
+                {
+                    "id": s["id"],
+                    "title": s["title"][:100],
+                    "summary": s["summary"][:150] + "..." if len(s.get("summary", "")) > 150 else s.get("summary", ""),
+                    "source": s["source"],
+                    "category": s.get("category", "General")
+                }
                 for s in top_stories
             ],
-            script=script,
-            audio_url=audio_url,
-            voice_id=voice_id
-        )
-        
-        # Cache the briefing
-        _briefing_cache = {
-            "briefing": briefing,
-            "generated_at": now
+            "script": script,
+            "audio_url": audio_url,
+            "voice_id": voice_id
         }
         
-        return briefing
+        # Store in MongoDB
+        briefings_col.update_one(
+            {"date": today_date},
+            {"$set": briefing_data},
+            upsert=True
+        )
+        
+        # Cache in memory
+        _briefing_cache = {"briefing": briefing_data, "generated_at": now}
+        
+        return briefing_data
     except HTTPException:
         raise
     except Exception as e:
@@ -910,10 +916,37 @@ async def generate_morning_briefing(
 
 @app.get("/api/briefing/latest")
 async def get_latest_briefing():
-    """Get the most recent cached briefing (without regenerating)"""
-    if _briefing_cache["briefing"] is None:
-        raise HTTPException(status_code=404, detail="No briefing available. Generate one first.")
-    return _briefing_cache["briefing"]
+    """Get the most recent briefing from database"""
+    # Try to get from DB first
+    latest = briefings_col.find_one({}, {"_id": 0}, sort=[("date", -1)])
+    if latest:
+        return latest
+    if _briefing_cache["briefing"] is not None:
+        return _briefing_cache["briefing"]
+    raise HTTPException(status_code=404, detail="No briefing available. Generate one first.")
+
+@app.get("/api/briefing/history")
+async def get_briefing_history(
+    limit: int = Query(30, le=90, description="Number of briefings to return"),
+    skip: int = Query(0, description="Number to skip for pagination")
+):
+    """Get historical briefings list"""
+    briefings = list(
+        briefings_col.find({}, {"_id": 0, "script": 0, "audio_url": 0})
+        .sort("date", -1)
+        .skip(skip)
+        .limit(limit)
+    )
+    total = briefings_col.count_documents({})
+    return {"briefings": briefings, "total": total}
+
+@app.get("/api/briefing/{briefing_date}")
+async def get_briefing_by_date(briefing_date: str):
+    """Get a specific briefing by date (YYYY-MM-DD)"""
+    briefing = briefings_col.find_one({"date": briefing_date}, {"_id": 0})
+    if not briefing:
+        raise HTTPException(status_code=404, detail=f"No briefing found for {briefing_date}")
+    return briefing
 
 @app.post("/api/briefing/audio")
 async def generate_briefing_audio(
@@ -928,18 +961,11 @@ async def generate_briefing_audio(
         
         tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
         audio_bytes = await tts.generate_speech(
-            text=tts_text,
-            model="tts-1",
-            voice=voice_id,
-            response_format="mp3",
-            speed=1.0
+            text=tts_text, model="tts-1", voice=voice_id, response_format="mp3", speed=1.0
         )
         audio_b64 = base64.b64encode(audio_bytes).decode()
         
-        return {
-            "audio_url": f"data:audio/mpeg;base64,{audio_b64}",
-            "voice_id": voice_id
-        }
+        return {"audio_url": f"data:audio/mpeg;base64,{audio_b64}", "voice_id": voice_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
