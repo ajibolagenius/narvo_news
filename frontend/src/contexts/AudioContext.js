@@ -213,6 +213,8 @@ export const AudioProvider = ({ children }) => {
     const textToSpeak = track.narrative || track.summary || track.title;
     if (!textToSpeak) return null;
     
+    console.log('[AudioContext] Generating TTS with language:', broadcastLanguage);
+    
     try {
       const response = await fetch(`${API_URL}/api/tts/generate`, {
         method: 'POST',
@@ -227,6 +229,7 @@ export const AudioProvider = ({ children }) => {
       if (!response.ok) throw new Error('TTS generation failed');
       
       const data = await response.json();
+      console.log('[AudioContext] TTS response - language:', data.language, 'translated:', !!data.translated_text);
       return data.audio_url;
     } catch (err) {
       console.error('TTS error:', err);
