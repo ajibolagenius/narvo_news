@@ -124,11 +124,14 @@ class TTSRequest(BaseModel):
     voice_id: str = "nova"
     stability: float = 0.5
     similarity_boost: float = 0.75
+    language: str = "en"  # Target language for translation (en, pcm, yo, ha, ig)
 
 class TTSResponse(BaseModel):
     audio_url: str
     text: str
+    translated_text: Optional[str] = None
     voice_id: str
+    language: str = "en"
 
 class ParaphraseRequest(BaseModel):
     text: str
@@ -408,15 +411,35 @@ async def paraphrase_content(request: ParaphraseRequest):
 
 @app.post("/api/tts/generate", response_model=TTSResponse)
 async def generate_tts(request: TTSRequest):
-    """Generate text-to-speech audio using OpenAI TTS via Emergent"""
+    """Generate text-to-speech audio using OpenAI TTS via Emergent, with optional translation"""
     try:
         from emergentintegrations.llm.openai import OpenAITextToSpeech
+        from services.translation_service import translate_text, SUPPORTED_LANGUAGES
+        
+        # Get text to speak - translate if needed
+        text_to_speak = request.text
+        translated_text = None
+        final_voice = request.voice_id
+        
+        # Translate if language is not English
+        if request.language and request.language != "en" and request.language in SUPPORTED_LANGUAGES:
+            translation_result = await translate_text(
+                text=request.text,
+                target_language=request.language,
+                source_language="en",
+                style="broadcast"
+            )
+            if translation_result.get("success"):
+                text_to_speak = translation_result.get("translated", request.text)
+                translated_text = text_to_speak
+                # Use the recommended voice for this language
+                final_voice = translation_result.get("voice_id", request.voice_id)
         
         # Map voice_id to OpenAI voice if needed
-        voice = request.voice_id if request.voice_id in ["alloy", "ash", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"] else "nova"
+        voice = final_voice if final_voice in ["alloy", "ash", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"] else "nova"
         
         # Truncate text to 4096 chars (OpenAI limit)
-        text = request.text[:4096] if len(request.text) > 4096 else request.text
+        text = text_to_speak[:4096] if len(text_to_speak) > 4096 else text_to_speak
         
         tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
         
@@ -435,7 +458,9 @@ async def generate_tts(request: TTSRequest):
         return TTSResponse(
             audio_url=f"data:audio/mpeg;base64,{audio_b64}",
             text=request.text,
-            voice_id=voice
+            translated_text=translated_text,
+            voice_id=voice,
+            language=request.language
         )
     except Exception as e:
         print(f"TTS Error: {e}")

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash, Translate } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
+import { useAudio } from '../contexts/AudioContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { requestNotificationPermission, getNotificationStatus, subscribeToPush, unsubscribeFromPush, getSubscription, isPushSupported } from '../lib/notificationService';
 
@@ -30,6 +31,7 @@ const DEFAULT_SETTINGS = {
 const SystemGearSixPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { setBroadcastLanguage } = useAudio();
   const { showAlert } = useHapticAlert();
   const [settings, setGearSix] = useState(DEFAULT_SETTINGS);
   const [hasChanges, setHasChanges] = useState(false);
@@ -99,6 +101,8 @@ const SystemGearSixPage = () => {
       });
       if (res.ok) {
         setHasChanges(false);
+        // Update AudioContext with new language preference
+        setBroadcastLanguage(settings.broadcastLanguage);
         showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
       }
     } catch (err) {
