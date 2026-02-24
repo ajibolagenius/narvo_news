@@ -220,8 +220,35 @@ const SearchPage = () => {
             })}
           </div>
         ) : query ? (
-          <div className="narvo-border bg-surface/20 p-8 md:p-12 text-center">
-            <span className="mono-ui text-[10px] md:text-xs text-forest">NO RESULTS FOR "{query.toUpperCase()}"</span>
+          <div className="narvo-border bg-surface/20 p-8 md:p-12 text-center relative overflow-hidden">
+            <div 
+              className="absolute inset-0 opacity-5 pointer-events-none"
+              style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+            />
+            <div className="relative z-10 space-y-6">
+              <div className="w-16 h-16 mx-auto narvo-border border-dashed flex items-center justify-center">
+                <Search className="w-8 h-8 text-forest" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-display text-2xl font-bold text-white uppercase">NO_RESULTS_FOUND</h3>
+                <p className="mono-ui text-[10px] text-forest">QUERY: "{query.toUpperCase()}" RETURNED_ZERO_MATCHES</p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button 
+                  onClick={() => setQuery('')}
+                  className="px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all"
+                >
+                  CLEAR_QUERY
+                </button>
+                <button 
+                  onClick={() => navigate('/discover')}
+                  className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-primary hover:bg-primary hover:text-background-dark transition-all"
+                >
+                  BROWSE_DISCOVER
+                </button>
+              </div>
+              <p className="mono-ui text-[8px] text-forest/50">ERR_CODE: 0x00_EMPTY_SET // NARVO_SYS_V2.6</p>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-[1px] md:bg-forest/20 md:narvo-border overflow-hidden">
