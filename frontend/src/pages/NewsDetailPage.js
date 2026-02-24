@@ -139,7 +139,7 @@ const NewsDetailPage = () => {
 
   if (loading || !news) {
     return (
-      <>
+      <div className="flex-1 flex min-h-0">
         <section className="flex-1 overflow-y-auto bg-background-dark custom-scroll" data-testid="news-detail-loading">
           <div className="max-w-3xl mx-auto py-8 md:py-12 px-4 md:px-8">
             <ArticleSkeleton />
@@ -155,7 +155,7 @@ const NewsDetailPage = () => {
             </div>
           </div>
         </aside>
-      </>
+      </div>
     );
   }
 
