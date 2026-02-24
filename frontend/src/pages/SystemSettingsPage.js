@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Monitor, Bell, Vibrate, Gauge, Zap, RotateCcw, Save, Loader2 } from '@phosphor-icons/react';
+import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 

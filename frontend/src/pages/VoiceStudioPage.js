@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, AudioWaveform, Radio, CircleOff, Check } from '@phosphor-icons/react';
+import { Play, Pause, SkipBack, SkipForward, Waveform, Radio, Prohibit, Check } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
