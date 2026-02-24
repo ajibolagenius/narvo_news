@@ -5,23 +5,13 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const VoiceManagementPage = () => {
   const [voices, setVoices] = useState([]);
-  const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     try {
-      const [voicesRes, metricsRes] = await Promise.all([
-        fetch(`${API_URL}/api/admin/voices`),
-        fetch(`${API_URL}/api/admin/metrics`)
-      ]);
-      
-      const [voicesData, metricsData] = await Promise.all([
-        voicesRes.json(),
-        metricsRes.json()
-      ]);
-      
+      const voicesRes = await fetch(`${API_URL}/api/admin/voices`);
+      const voicesData = await voicesRes.json();
       setVoices(voicesData);
-      setMetrics(metricsData);
       setLoading(false);
     } catch (err) {
       console.error('Failed to fetch voice data:', err);
