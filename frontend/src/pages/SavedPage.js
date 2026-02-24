@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckSquare, Archive, Trash2, ArrowUpRight, Bookmark } from 'lucide-react';
+import { CheckSquare, Archive, Trash2, ArrowUpRight, Bookmark, Satellite, RotateCcw } from 'lucide-react';
 import { useBookmarks } from '../hooks/useBookmarks';
 import Skeleton from '../components/Skeleton';
 
@@ -108,19 +108,54 @@ const SavedPage = () => {
           ))}
         </section>
       ) : bookmarks.length === 0 ? (
-        <section className="narvo-border bg-surface/5 flex flex-col items-center justify-center p-12 md:p-16">
-          <Bookmark className="w-12 h-12 md:w-16 md:h-16 text-forest mb-4" />
-          <h3 className="font-display text-xl md:text-2xl text-white mb-2 uppercase">No Saved Stories</h3>
-          <p className="mono-ui text-[10px] md:text-xs text-forest mb-6 text-center">
-            BOOKMARK_STORIES_FROM_FEED_TO_ACCESS_OFFLINE
-          </p>
-          <button 
-            onClick={() => navigate('/dashboard')}
-            className="bg-primary text-background-dark font-display font-bold px-6 md:px-8 py-3 md:py-4 text-sm md:text-base hover:bg-white transition-all"
-            data-testid="go-to-feed-btn"
-          >
-            [ GO_TO_FEED ]
-          </button>
+        <section className="narvo-border bg-surface/5 relative overflow-hidden min-h-[400px] flex items-center justify-center" data-testid="saved-empty-state">
+          {/* Matrix Background */}
+          <div 
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '60px 60px' }}
+          />
+          
+          <div className="bg-background-dark narvo-border p-8 md:p-12 max-w-lg w-full mx-4 text-center shadow-2xl backdrop-blur-md relative z-10">
+            {/* Icon */}
+            <div className="mb-6 md:mb-8 flex justify-center">
+              <div className="w-20 h-20 md:w-24 md:h-24 bg-surface narvo-border border-dashed flex items-center justify-center relative">
+                <div className="absolute inset-0 border border-primary/20 animate-ping" />
+                <Satellite className="w-10 h-10 md:w-12 md:h-12 text-primary" />
+              </div>
+            </div>
+
+            {/* Title & Message */}
+            <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-4 uppercase tracking-tighter">
+              ARCHIVE EMPTY
+            </h3>
+            <p className="text-forest text-sm mono-ui leading-relaxed mb-8 md:mb-10 lowercase">
+              You have not saved any stories yet. Bookmark articles from the feed to access them offline and build your personal archive.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="h-12 md:h-14 px-6 md:px-8 bg-primary text-background-dark font-bold mono-ui text-[10px] md:text-[11px] hover:bg-white transition-all flex items-center justify-center gap-3"
+                data-testid="go-to-feed-btn"
+              >
+                <RotateCcw className="w-4 h-4 md:w-5 md:h-5" />
+                GO TO FEED
+              </button>
+              <button 
+                onClick={() => navigate('/discover')}
+                className="h-12 md:h-14 px-6 md:px-8 narvo-border text-primary font-bold mono-ui text-[10px] md:text-[11px] hover:bg-primary hover:text-background-dark transition-all"
+              >
+                BROWSE TRENDING
+              </button>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-8 md:mt-10 pt-6 narvo-border-t flex justify-between items-center text-[8px] md:text-[9px] mono-ui font-bold text-forest">
+              <span>ERR_CODE: 0x00_NO_SAVES</span>
+              <span>NARVO_SYS_V2.6</span>
+            </div>
+          </div>
         </section>
       ) : (
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6" data-testid="saved-stories-grid">
