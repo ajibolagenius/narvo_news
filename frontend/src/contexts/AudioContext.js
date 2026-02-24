@@ -12,12 +12,15 @@ export const AudioProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [volume, setVolumeState] = useState(0.8);
+  const [isMuted, setIsMuted] = useState(false);
   const [queue, setQueue] = useState([]);
   const [queueIndex, setQueueIndex] = useState(-1);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const audio = new Audio();
+    audio.volume = volume;
     audioRef.current = audio;
     
     audio.addEventListener('timeupdate', () => setCurrentTime(audio.currentTime));
@@ -41,6 +44,25 @@ export const AudioProvider = ({ children }) => {
     };
     // eslint-disable-next-line
   }, []);
+
+  // Volume control
+  const setVolume = useCallback((newVolume) => {
+    const vol = Math.max(0, Math.min(1, newVolume));
+    setVolumeState(vol);
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : vol;
+    }
+  }, [isMuted]);
+
+  const toggleMute = useCallback(() => {
+    setIsMuted(prev => {
+      const newMuted = !prev;
+      if (audioRef.current) {
+        audioRef.current.volume = newMuted ? 0 : volume;
+      }
+      return newMuted;
+    });
+  }, [volume]);
 
   // Generate TTS audio for a track
   const generateTTS = useCallback(async (track) => {
