@@ -84,6 +84,21 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - ✅ **Download all podcasts** - Batch download with progress
 - ✅ **Global Download Queue Indicator** - Floating UI showing download progress across pages
 
+### P4 Features - NEW (Feb 24, 2025)
+- ✅ **Background Audio Playback** - Media Session API for lock screen controls
+- ✅ **Multi-Language Translation** - 5 languages (English, Pidgin, Yoruba, Hausa, Igbo)
+- ✅ **Google Fact Check API** - Real API with mock fallback
+- ✅ **Language Settings UI** - System Settings page with language selection
+
+## Supported Languages
+| Code | Name | Native Name | Voice |
+|------|------|-------------|-------|
+| en | English | English | nova |
+| pcm | Nigerian Pidgin | Naija | onyx |
+| yo | Yoruba | Èdè Yorùbá | echo |
+| ha | Hausa | Harshen Hausa | alloy |
+| ig | Igbo | Asụsụ Igbo | shimmer |
+
 ## Key Components
 
 ### Download Queue Context & Indicator (Feb 24, 2025)
