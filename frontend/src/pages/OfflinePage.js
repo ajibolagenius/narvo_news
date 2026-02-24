@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { FolderOpen, Play, Pause, Trash2, AlertOctagon, RotateCcw, Filter, Waves, Mic, Speaker } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { FolderOpen, Play, Pause, Trash2, AlertOctagon, RotateCcw, Filter, Waves, Mic, Speaker, Satellite, WifiOff } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import { getAllCachedIds, getCachedAudio, removeCachedAudio } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 
 const OfflinePage = () => {
+  const navigate = useNavigate();
   const [cachedItems, setCachedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
@@ -200,10 +202,48 @@ const OfflinePage = () => {
               </div>
             ))
           ) : paginatedItems.length === 0 ? (
-            <div className="p-8 md:p-12 text-center">
-              <FolderOpen className="w-10 h-10 md:w-12 md:h-12 text-forest mx-auto mb-3 md:mb-4" />
-              <p className="mono-ui text-[10px] md:text-xs text-forest">NO_CACHED_FILES_DETECTED</p>
-              <p className="mono-ui text-[9px] md:text-[10px] text-forest/50 mt-2">Play stories to cache audio for offline</p>
+            <div className="p-8 md:p-12 relative overflow-hidden min-h-[300px] flex items-center justify-center" data-testid="offline-empty-state">
+              {/* Matrix Background */}
+              <div 
+                className="absolute inset-0 opacity-10 pointer-events-none"
+                style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+              />
+              
+              <div className="bg-background-dark narvo-border p-6 md:p-10 max-w-md w-full text-center shadow-xl backdrop-blur-md relative z-10">
+                <div className="mb-4 md:mb-6 flex justify-center">
+                  <div className="w-16 h-16 md:w-20 md:h-20 bg-surface narvo-border border-dashed flex items-center justify-center relative">
+                    <WifiOff className="w-8 h-8 md:w-10 md:h-10 text-forest" />
+                  </div>
+                </div>
+                
+                <h3 className="font-display text-xl md:text-2xl font-bold text-white mb-3 uppercase tracking-tighter">
+                  NO CACHED DATA
+                </h3>
+                <p className="text-forest text-xs md:text-sm mono-ui leading-relaxed mb-6 lowercase">
+                  No offline content is available. Play stories while online to automatically cache audio for offline listening.
+                </p>
+                
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button 
+                    onClick={() => navigate('/dashboard')}
+                    className="h-10 md:h-12 px-5 md:px-6 bg-primary text-background-dark font-bold mono-ui text-[9px] md:text-[10px] hover:bg-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    GO ONLINE
+                  </button>
+                  <button 
+                    onClick={() => navigate('/settings')}
+                    className="h-10 md:h-12 px-5 md:px-6 narvo-border text-primary font-bold mono-ui text-[9px] md:text-[10px] hover:bg-primary hover:text-background-dark transition-all"
+                  >
+                    MANAGE STORAGE
+                  </button>
+                </div>
+                
+                <div className="mt-6 pt-4 narvo-border-t flex justify-between items-center text-[7px] md:text-[8px] mono-ui font-bold text-forest">
+                  <span>ERR_CODE: 0x00_CACHE_EMPTY</span>
+                  <span>NARVO_SYS_V2.6</span>
+                </div>
+              </div>
             </div>
           ) : (
             paginatedItems.map((item, index) => {
