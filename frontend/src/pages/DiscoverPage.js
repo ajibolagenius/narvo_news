@@ -315,9 +315,9 @@ const DiscoverPage = () => {
                 </div>
               ) : (
                 podcasts.map((podcast) => {
-                  const isDownloading = downloadingPodcasts[podcast.id] !== undefined;
+                  const inQueue = isInQueue(podcast.id);
                   const isCached = cachedPodcasts[podcast.id];
-                  const downloadProgress = downloadingPodcasts[podcast.id] || 0;
+                  const downloadProgress = getQueueProgress(podcast.id);
                   
                   return (
                     <article 
@@ -362,12 +362,12 @@ const DiscoverPage = () => {
                         {podcast.audio_url && !isCached && (
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDownloadPodcast(podcast); }}
-                            disabled={isDownloading}
-                            className={`flex items-center gap-1.5 mono-ui text-[8px] md:text-[9px] ${isDownloading ? 'text-forest cursor-wait' : 'text-forest hover:text-primary'} transition-colors`}
+                            disabled={inQueue}
+                            className={`flex items-center gap-1.5 mono-ui text-[8px] md:text-[9px] ${inQueue ? 'text-primary cursor-wait' : 'text-forest hover:text-primary'} transition-colors`}
                             data-testid={`download-podcast-${podcast.id}`}
                             title="Download for offline"
                           >
-                            {isDownloading ? (
+                            {inQueue ? (
                               <>
                                 <CircleNotch className="w-4 h-4 animate-spin" />
                                 <span>{downloadProgress}%</span>
