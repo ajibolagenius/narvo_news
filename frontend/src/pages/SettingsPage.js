@@ -128,6 +128,40 @@ const SettingsPage = () => {
             </div>
           )}
 
+          {/* Theme Toggle */}
+          <div className="space-y-4">
+            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+              APPEARANCE_MODE
+            </h2>
+            <div className="narvo-border bg-surface/5 p-5 md:p-6">
+              <div className="flex items-center gap-4 md:gap-6">
+                <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-background-dark flex items-center justify-center">
+                  {theme === 'dark' ? (
+                    <Moon weight="fill" className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                  ) : (
+                    <Sun weight="fill" className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-display text-lg md:text-xl font-bold text-white uppercase">THEME_MODE</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">SWITCH BETWEEN DARK AND LIGHT INTERFACE</p>
+                </div>
+                <button
+                  onClick={toggleTheme}
+                  className="flex items-center gap-3 px-4 py-3 narvo-border bg-surface/10 hover:bg-primary/10 hover:border-primary transition-all"
+                  data-testid="settings-theme-toggle"
+                >
+                  <span className="mono-ui text-[10px] text-primary font-bold">{theme === 'dark' ? 'DARK' : 'LIGHT'}</span>
+                  <div className="w-12 h-6 bg-background-dark narvo-border relative">
+                    <div 
+                      className={`absolute top-1 w-4 h-4 bg-primary transition-all ${theme === 'dark' ? 'left-1' : 'left-6'}`}
+                    />
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+
           {/* Language Selector */}
           <div className="space-y-4">
             <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
