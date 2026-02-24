@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   SquaresFour, Waveform, BookmarkSimple, MagnifyingGlass, Compass, WifiSlash,
-  GearSix, User, Microphone, Monitor, Wheelchair, CaretDown, ShieldCheck,
-  List
+  GearSix, ShieldCheck, List
 } from '@phosphor-icons/react';
 import ThemeToggle from './ThemeToggle';
 
@@ -18,23 +17,14 @@ const getNavItems = (t) => [
   { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
 ];
 
-const settingsSubNav = [
-  { icon: User, label: 'Account', path: '/account' },
-  { icon: Microphone, label: 'Voices', path: '/voices' },
-  { icon: Monitor, label: 'System', path: '/system' },
-  { icon: Wheelchair, label: 'Access', path: '/accessibility' },
-];
-
 const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
   const navItems = getNavItems(t);
-  const [settingsExpanded, setSettingsExpanded] = useState(
-    settingsSubNav.some(item => location.pathname === item.path) || location.pathname === '/settings'
-  );
 
-  const isSettingsActive = settingsSubNav.some(item => location.pathname === item.path) || location.pathname === '/settings';
+  const isSettingsActive = location.pathname === '/settings' || 
+    ['/account', '/voices', '/system', '/accessibility'].includes(location.pathname);
 
   // Mobile bottom tab bar
   if (mobile) {
