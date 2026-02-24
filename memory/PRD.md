@@ -111,11 +111,17 @@ export function queueOfflineAction(actionType, payload) {
 
 ### Download All Podcasts
 ```javascript
+// Now uses DownloadQueueContext for global state management
 const handleDownloadAll = async () => {
-  for (const podcast of podcastsToDownload) {
-    await downloadAndCacheAudio(podcast.id, proxyUrl, metadata, onProgress);
-    setDownloadAllProgress(overallProgress);
-  }
+  const items = podcastsToDownload.map(podcast => ({
+    id: podcast.id,
+    audioUrl: `${API_URL}/api/podcasts/${podcast.id}/audio`,
+    title: podcast.title,
+    source: podcast.episode,
+    duration: podcast.duration,
+    type: 'podcast'
+  }));
+  addToQueue(items); // Queue handles sequential processing
 };
 ```
 
