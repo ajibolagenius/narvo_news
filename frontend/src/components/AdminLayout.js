@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
-import { Clock, Signal, Shield } from 'lucide-react';
+import { Clock, WifiHigh, Shield } from '@phosphor-icons/react';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ const AdminLayout = () => {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-4 mono-ui text-[9px] font-bold">
             <div className="flex items-center gap-2 text-forest">
-              <Signal className="w-4 h-4" />
+              <WifiHigh className="w-4 h-4" />
               <span>SIGNAL: <span className="text-primary">100%</span></span>
             </div>
             <div className="flex items-center gap-2 text-forest">
