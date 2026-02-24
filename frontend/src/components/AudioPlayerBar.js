@@ -129,10 +129,17 @@ const AudioPlayerBar = () => {
             </button>
             <button
               onClick={togglePlay}
-              className="w-10 h-10 bg-primary flex items-center justify-center hover:bg-white transition-colors"
+              disabled={isLoading}
+              className="w-10 h-10 bg-primary flex items-center justify-center hover:bg-white transition-colors disabled:opacity-50"
               data-testid="player-play-pause"
             >
-              {isPlaying ? <Pause className="w-5 h-5 text-background-dark" /> : <Play className="w-5 h-5 text-background-dark ml-0.5" />}
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-background-dark border-t-transparent animate-spin rounded-full" />
+              ) : isPlaying ? (
+                <Pause className="w-5 h-5 text-background-dark" />
+              ) : (
+                <Play className="w-5 h-5 text-background-dark ml-0.5" />
+              )}
             </button>
             <button
               onClick={playNext}
