@@ -273,31 +273,76 @@ const DiscoverPage = () => {
                   />
                 </div>
               ) : (
-                podcasts.map((podcast) => (
-                  <article 
-                    key={podcast.id}
-                    className="bg-background-dark p-4 md:p-8 flex flex-col gap-4 md:gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50"
-                    data-testid={`podcast-${podcast.id}`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <span className="mono-ui text-[8px] md:text-[9px] text-primary border border-primary/30 px-1.5 md:px-2 py-0.5 bg-primary/10 font-bold">
-                        {podcast.episode}
-                      </span>
-                      <span className="mono-ui text-[8px] md:text-[9px] text-forest">{podcast.duration}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="mono-ui text-[7px] text-forest bg-surface/50 px-1.5 py-0.5 uppercase">{podcast.category}</span>
-                    </div>
-                    <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors">
-                      {podcast.title}
-                    </h4>
-                    <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
-                      {podcast.description}
-                    </p>
-                    <button 
-                      onClick={() => handlePlayPodcast(podcast)}
-                      className="mt-auto pt-4 md:pt-6 flex items-center gap-2 md:gap-3 text-primary mono-ui text-[9px] md:text-[10px] font-bold hover:text-content transition-colors"
-                      data-testid={`play-podcast-${podcast.id}`}
+                podcasts.map((podcast) => {
+                  const isDownloading = downloadingPodcasts[podcast.id] !== undefined;
+                  const isCached = cachedPodcasts[podcast.id];
+                  const downloadProgress = downloadingPodcasts[podcast.id] || 0;
+                  
+                  return (
+                    <article 
+                      key={podcast.id}
+                      className="bg-background-dark p-4 md:p-8 flex flex-col gap-4 md:gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50"
+                      data-testid={`podcast-${podcast.id}`}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-center gap-2">
+                          <span className="mono-ui text-[8px] md:text-[9px] text-primary border border-primary/30 px-1.5 md:px-2 py-0.5 bg-primary/10 font-bold">
+                            {podcast.episode}
+                          </span>
+                          {isCached && (
+                            <span className="flex items-center gap-1 mono-ui text-[7px] text-green-500">
+                              <CheckCircle weight="fill" className="w-3 h-3" />
+                              OFFLINE
+                            </span>
+                          )}
+                        </div>
+                        <span className="mono-ui text-[8px] md:text-[9px] text-forest">{podcast.duration}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="mono-ui text-[7px] text-forest bg-surface/50 px-1.5 py-0.5 uppercase">{podcast.category}</span>
+                      </div>
+                      <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors">
+                        {podcast.title}
+                      </h4>
+                      <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
+                        {podcast.description}
+                      </p>
+                      <div className="mt-auto pt-4 md:pt-6 flex items-center justify-between">
+                        <button 
+                          onClick={() => handlePlayPodcast(podcast)}
+                          className="flex items-center gap-2 md:gap-3 text-primary mono-ui text-[9px] md:text-[10px] font-bold hover:text-content transition-colors"
+                          data-testid={`play-podcast-${podcast.id}`}
+                        >
+                          <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
+                          <span>[ LISTEN_CMD ]</span>
+                        </button>
+                        
+                        {/* Download for offline button */}
+                        {podcast.audio_url && !isCached && (
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleDownloadPodcast(podcast); }}
+                            disabled={isDownloading}
+                            className={`flex items-center gap-1.5 mono-ui text-[8px] md:text-[9px] ${isDownloading ? 'text-forest cursor-wait' : 'text-forest hover:text-primary'} transition-colors`}
+                            data-testid={`download-podcast-${podcast.id}`}
+                            title="Download for offline"
+                          >
+                            {isDownloading ? (
+                              <>
+                                <CircleNotch className="w-4 h-4 animate-spin" />
+                                <span>{downloadProgress}%</span>
+                              </>
+                            ) : (
+                              <>
+                                <CloudArrowDown className="w-4 h-4" />
+                                <span className="hidden md:inline">OFFLINE</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })
                     >
                       <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
                       <span>[ LISTEN_CMD ]</span>
