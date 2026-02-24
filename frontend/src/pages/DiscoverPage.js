@@ -186,7 +186,7 @@ const DiscoverPage = () => {
             <>
               <div 
                 className="absolute inset-0 bg-cover bg-center grayscale contrast-125 transition-transform duration-700 group-hover:scale-105"
-                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=1600')" }}
+                style={{ backgroundImage: "url('https://images.pexels.com/photos/5061702/pexels-photo-5061702.jpeg?auto=compress&cs=tinysrgb&w=1600')" }}
               />
               <div className="absolute inset-0 bg-background-dark/40 mix-blend-multiply" />
             </>
