@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlayCircle, Languages, Bookmark, BookmarkCheck, ArrowDown, Activity, CloudSun } from 'lucide-react';
+import { PlayCircle, Languages, Bookmark, BookmarkCheck, ArrowDown, Activity, CloudSun, Share2 } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { FeaturedSkeleton, StreamCardSkeleton } from '../components/Skeleton';
+import TruthTag from '../components/TruthTag';
+import { useHapticAlert } from '../components/HapticAlerts';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -14,6 +16,7 @@ const DashboardPage = () => {
   const [metrics, setMetrics] = useState(null);
   const { playTrack } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
+  const { showAlert } = useHapticAlert();
 
   useEffect(() => {
     Promise.all([
