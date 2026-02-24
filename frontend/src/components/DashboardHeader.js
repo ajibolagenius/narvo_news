@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Search, User, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
