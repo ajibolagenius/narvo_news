@@ -118,10 +118,8 @@ const OfflinePage = () => {
   };
 
   const handleClearAll = async () => {
-    // Clear audio cache
-    for (const item of cachedItems) {
-      await removeCachedAudio(item.id);
-    }
+    // Clear audio cache using the new function
+    await clearAllCache();
     // Clear saved articles from backend
     try {
       await fetch(`${API_URL}/api/offline/articles`, { method: 'DELETE' });
@@ -143,9 +141,8 @@ const OfflinePage = () => {
       });
     } else {
       const cached = await getCachedAudio(item.id);
-      if (cached?.audioBlob) {
-        const audioUrl = URL.createObjectURL(cached.audioBlob);
-        playTrack({ id: item.id, title: item.title, audio_url: audioUrl });
+      if (cached?.audio_url) {
+        playTrack({ id: item.id, title: item.title, audio_url: cached.audio_url, isOffline: cached.isOffline });
       }
     }
   };
