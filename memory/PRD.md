@@ -61,8 +61,21 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - ✅ **Background sync** - IndexedDB queue + sync event
 - ✅ **Push notifications** - Breaking news alerts toggle in Settings
 - ✅ **Download all podcasts** - Batch download with progress
+- ✅ **Global Download Queue Indicator** - Floating UI showing download progress across pages
 
 ## Key Components
+
+### Download Queue Context & Indicator (Feb 24, 2025)
+```javascript
+// DownloadQueueContext.js - Manages global download state
+const { addToQueue, addSingleToQueue, queue, isProcessing, clearAll } = useDownloadQueue();
+
+// DownloadQueueIndicator.js - Floating UI at bottom-right
+// Shows: DOWNLOADING... / DOWNLOADS_COMPLETE / {n} FAILED
+// Progress: completed/total count, percentage ring, pending count
+// Expandable: Shows individual items with progress bars
+// Actions: CLEAR_COMPLETED, CLEAR_ALL
+```
 
 ### Service Worker (sw.js)
 ```javascript
