@@ -390,8 +390,8 @@ const NewsDetailPage = () => {
                 <span className="text-primary font-bold">{readTime} MIN</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
-                <span className="text-forest">AI_SYNTHESIS</span>
-                <span className="text-primary font-bold">{news.narrative ? 'COMPLETE' : 'PENDING'}</span>
+                <span className="text-forest">{t('news_detail.ai_synthesis')}</span>
+                <span className="text-primary font-bold">{news.narrative ? t('news_detail.complete') : t('news_detail.pending')}</span>
               </div>
             </div>
           </div>
