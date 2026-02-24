@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAudio } from '../contexts/AudioContext';
-import { Play, Pause, Calendar, RefreshCw, Clock, Radio, CaretRight } from '@phosphor-icons/react';
+import { Play, Pause, Calendar, ArrowClockwise, Clock, Radio, CaretRight } from '@phosphor-icons/react';
 import Skeleton, { ListSkeleton } from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
