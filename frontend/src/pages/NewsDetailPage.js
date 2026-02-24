@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Play, Pause, Bookmark, BookmarkCheck, Languages, ExternalLink, ArrowLeft, Lightbulb, Share2, Clock, Eye, Radio } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
@@ -19,6 +20,7 @@ const NewsDetailPage = () => {
   const { playTrack, currentTrack, isPlaying } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
+  const { t } = useTranslation();
   const hasAutoPlayed = useRef(false);
 
   useEffect(() => {
@@ -171,7 +173,7 @@ const NewsDetailPage = () => {
               data-testid="back-btn"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>BACK_TO_FEED</span>
+              <span>{t('news_detail.back_to_feed')}</span>
             </button>
             <div className="flex items-center gap-3">
               <TruthTag storyId={news.id} />
@@ -246,7 +248,7 @@ const NewsDetailPage = () => {
             </button>
             <div className="flex flex-col justify-center flex-1 min-w-0">
               <span className="text-[9px] md:text-[10px] text-forest font-mono uppercase tracking-widest mb-1">
-                {isCurrentlyPlaying ? 'NOW PLAYING' : 'NARRATIVE AUDIO'}
+                {isCurrentlyPlaying ? t('news_detail.now_playing') : t('news_detail.narrative_audio')}
               </span>
               <span className="text-xs md:text-sm text-white font-medium font-display uppercase tracking-wide truncate">
                 {news.title?.slice(0, 50)}...
@@ -284,7 +286,7 @@ const NewsDetailPage = () => {
               <div className="absolute top-0 left-0 w-1 h-full bg-forest" />
               <h3 className="text-base md:text-lg font-bold text-white mb-3 md:mb-4 flex items-center gap-2 font-display uppercase tracking-tight">
                 <Lightbulb className="text-primary w-4 h-4 md:w-5 md:h-5" />
-                Key Takeaways
+                {t('news_detail.key_takeaways')}
               </h3>
               <ul className="space-y-2 md:space-y-3">
                 {news.key_takeaways.map((takeaway, i) => (
@@ -320,7 +322,7 @@ const NewsDetailPage = () => {
 
           {/* Source Attribution */}
           <div className="mt-8 md:mt-12 narvo-border bg-surface/20 p-4 md:p-6">
-            <span className="mono-ui text-[9px] md:text-[10px] text-forest block mb-2 md:mb-3 font-bold tracking-widest">SOURCE_ATTRIBUTION</span>
+            <span className="mono-ui text-[9px] md:text-[10px] text-forest block mb-2 md:mb-3 font-bold tracking-widest">{t('news_detail.source_attribution')}</span>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-white font-display font-bold text-sm md:text-base">{news.source}</span>
@@ -333,7 +335,7 @@ const NewsDetailPage = () => {
                   data-testid="share-source-btn"
                 >
                   <Share2 className="w-3 h-3" />
-                  <span>SHARE</span>
+                  <span>{t('dashboard.share')}</span>
                 </button>
                 {news.source_url && (
                   <a 
@@ -343,7 +345,7 @@ const NewsDetailPage = () => {
                     className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
                   >
                     <ExternalLink className="w-3 h-3" />
-                    <span>ORIGINAL_SOURCE</span>
+                    <span>{t('news_detail.original_source')}</span>
                   </a>
                 )}
               </div>
@@ -355,12 +357,12 @@ const NewsDetailPage = () => {
       {/* Right Sidebar: Related & Metadata - hidden on mobile/tablet */}
       <aside className="w-72 xl:w-80 hidden lg:flex flex-col narvo-border-l bg-background-dark shrink-0" data-testid="detail-sidebar">
         <div className="h-16 xl:h-20 flex items-center px-4 xl:px-6 narvo-border-b bg-surface/10">
-          <span className="mono-ui text-[10px] xl:text-xs font-bold text-forest tracking-widest uppercase">Article_Metadata</span>
+          <span className="mono-ui text-[10px] xl:text-xs font-bold text-forest tracking-widest uppercase">{t('news_detail.article_metadata')}</span>
         </div>
         <div className="flex-1 overflow-y-auto p-4 xl:p-6 space-y-6 xl:space-y-8 custom-scroll">
           {/* Truth Tag Display */}
           <div className="narvo-border bg-primary/5 p-3 xl:p-4 border-primary/30">
-            <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">VERIFICATION_STATUS</span>
+            <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">{t('news_detail.verification_status')}</span>
             <div className="flex items-center justify-between">
               <TruthTag storyId={news.id} />
               <span className="mono-ui text-[8px] text-forest">DUBAWA_AI</span>
@@ -369,22 +371,22 @@ const NewsDetailPage = () => {
 
           {/* Article Info */}
           <div className="narvo-border bg-surface/20 p-3 xl:p-4">
-            <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">SIGNAL_METADATA</span>
+            <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">{t('news_detail.signal_metadata')}</span>
             <div className="space-y-2 xl:space-y-3">
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
-                <span className="text-forest">CATEGORY</span>
+                <span className="text-forest">{t('news_detail.category')}</span>
                 <span className="text-primary font-bold">{news.category?.toUpperCase() || 'GENERAL'}</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
-                <span className="text-forest">SOURCE</span>
+                <span className="text-forest">{t('news_detail.source')}</span>
                 <span className="text-white">{news.source?.toUpperCase() || 'UNKNOWN'}</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
-                <span className="text-forest">REGION</span>
+                <span className="text-forest">{t('news_detail.region')}</span>
                 <span className="text-white">{news.region?.toUpperCase() || 'AFRICA'}</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
-                <span className="text-forest">READ_TIME</span>
+                <span className="text-forest">{t('news_detail.read_time')}</span>
                 <span className="text-primary font-bold">{readTime} MIN</span>
               </div>
               <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
