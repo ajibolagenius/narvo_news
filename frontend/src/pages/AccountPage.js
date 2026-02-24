@@ -30,40 +30,40 @@ const AccountPage = () => {
       {/* Upper Section: Subscription & Alerts */}
       <div className="narvo-border-b flex flex-col lg:flex-row min-h-[300px] lg:min-h-[400px]">
         {/* Subscription Panel */}
-        <div className="flex-1 p-6 md:p-10 lg:narvo-border-r hover:bg-primary/5 transition-all group relative overflow-hidden">
-          <div className="absolute -top-10 -right-10 opacity-5 group-hover:opacity-10 transition-opacity">
-            <RadioTower className="w-64 h-64 md:w-72 md:h-72 text-primary group-hover:text-background-dark" />
+        <div className="flex-1 p-6 md:p-10 lg:narvo-border-r relative overflow-hidden">
+          <div className="absolute -top-10 -right-10 opacity-5">
+            <RadioTower className="w-64 h-64 md:w-72 md:h-72 text-primary" />
           </div>
           
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="space-y-4 md:space-y-6">
               <div className="flex items-center gap-3">
-                <span className="w-2 h-2 bg-primary animate-pulse group-hover:bg-background-dark" />
-                <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold uppercase group-hover:text-background-dark">Stream_Active</span>
+                <span className="w-2 h-2 bg-primary animate-pulse" />
+                <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold uppercase">Stream_Active</span>
               </div>
               
               <div className="space-y-2">
-                <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold uppercase group-hover:text-background-dark tracking-widest">
+                <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold uppercase tracking-widest">
                   CURRENT_PLAN
                 </h3>
-                <p className="font-display text-4xl md:text-5xl lg:text-7xl font-bold text-white uppercase leading-none group-hover:text-background-dark">
+                <p className="font-display text-4xl md:text-5xl lg:text-7xl font-bold text-white uppercase leading-none">
                   Premium<br/>Broadcast
                 </p>
               </div>
               
-              <div className="inline-flex px-2 md:px-3 py-1 border border-primary text-primary mono-ui text-[9px] md:text-[10px] font-bold group-hover:border-background-dark group-hover:text-background-dark">
+              <div className="inline-flex px-2 md:px-3 py-1 border border-primary text-primary mono-ui text-[9px] md:text-[10px] font-bold">
                 [PROTO_ID: PRM-BC-26]
               </div>
             </div>
             
             <div className="flex flex-wrap gap-3 md:gap-6 mt-6">
               <button 
-                className="px-4 md:px-8 py-2 md:py-3 bg-transparent border border-white text-white mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white hover:text-background-dark transition-all group-hover:border-background-dark group-hover:text-background-dark"
+                className="px-4 md:px-8 py-2 md:py-3 bg-transparent border border-white text-white mono-ui text-[10px] md:text-[11px] font-bold"
                 data-testid="manage-plan-btn"
               >
                 MANAGE_PLAN
               </button>
-              <button className="px-3 md:px-4 py-2 md:py-3 text-slate-400 mono-ui text-[10px] md:text-[11px] font-bold hover:text-white transition-colors group-hover:text-background-dark flex items-center gap-2">
+              <button className="px-3 md:px-4 py-2 md:py-3 text-slate-400 mono-ui text-[10px] md:text-[11px] font-bold flex items-center gap-2">
                 <FileText className="w-4 h-4" />
                 <span className="hidden sm:inline">VIEW_INVOICES</span>
               </button>
@@ -82,7 +82,7 @@ const AccountPage = () => {
             {alerts.map(alert => (
               <div 
                 key={alert.id}
-                className={`p-4 md:p-6 narvo-border relative hover:bg-forest/10 transition-colors cursor-pointer group ${
+                className={`p-4 md:p-6 narvo-border relative ${
                   alert.priority ? 'bg-primary/5' : 'border-forest/30 bg-surface/5'
                 }`}
                 data-testid={`alert-${alert.id}`}
@@ -102,60 +102,60 @@ const AccountPage = () => {
       {/* Lower Section: Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-3">
         {/* Metric 1: Broadcast Hours */}
-        <div className="p-6 md:p-10 narvo-border-r narvo-border-b md:border-b-0 hover:bg-primary/5 transition-all flex flex-col justify-between group cursor-pointer min-h-[200px] md:min-h-[250px]">
+        <div className="p-6 md:p-10 narvo-border-r narvo-border-b md:border-b-0 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
           <div className="flex justify-between items-start">
-            <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest group-hover:text-background-dark">
+            <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
               BROADCAST_HOURS
             </h3>
-            <Timer className="w-5 h-5 text-forest group-hover:text-background-dark" />
+            <Timer className="w-5 h-5 text-forest" />
           </div>
           
           <div className="space-y-2">
             {loading ? (
               <Skeleton variant="text" className="w-32 h-16" />
             ) : (
-              <span className="font-display text-5xl md:text-6xl font-bold text-white block group-hover:text-background-dark transition-colors">
+              <span className="font-display text-5xl md:text-6xl font-bold text-white block">
                 142.5
               </span>
             )}
             <div className="flex items-center gap-2 mono-ui text-[8px] md:text-[9px] font-bold">
-              <span className="text-primary group-hover:text-background-dark">+12.4%</span>
-              <span className="text-forest group-hover:text-background-dark opacity-70">VS_PREV_CYCLE</span>
+              <span className="text-primary">+12.4%</span>
+              <span className="text-forest opacity-70">VS_PREV_CYCLE</span>
             </div>
           </div>
           
-          <div className="w-full h-1 bg-forest/20 mt-6 md:mt-8 relative group-hover:bg-background-dark/20">
-            <div className="absolute top-0 left-0 h-full w-[70%] bg-primary group-hover:bg-background-dark transition-all" />
+          <div className="w-full h-1 bg-forest/20 mt-6 md:mt-8 relative">
+            <div className="absolute top-0 left-0 h-full w-[70%] bg-primary" />
           </div>
         </div>
 
         {/* Metric 2: Signals Processed */}
-        <div className="p-6 md:p-10 narvo-border-r narvo-border-b md:border-b-0 hover:bg-primary/5 transition-all flex flex-col justify-between group cursor-pointer min-h-[200px] md:min-h-[250px]">
+        <div className="p-6 md:p-10 narvo-border-r narvo-border-b md:border-b-0 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
           <div className="flex justify-between items-start">
-            <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest group-hover:text-background-dark">
+            <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
               SIGNALS_PROCESSED
             </h3>
-            <AudioWaveform className="w-5 h-5 text-forest group-hover:text-background-dark" />
+            <AudioWaveform className="w-5 h-5 text-forest" />
           </div>
           
           <div className="space-y-2">
             {loading ? (
               <Skeleton variant="text" className="w-24 h-16" />
             ) : (
-              <span className="font-display text-5xl md:text-6xl font-bold text-white block group-hover:text-background-dark transition-colors">
+              <span className="font-display text-5xl md:text-6xl font-bold text-white block">
                 {metrics?.stories_processed || 892}
               </span>
             )}
             <div className="flex items-center gap-2 mono-ui text-[8px] md:text-[9px] font-bold">
-              <span className="text-forest group-hover:text-background-dark opacity-70">AVG_28_PER_ROTATION</span>
+              <span className="text-forest opacity-70">AVG_28_PER_ROTATION</span>
             </div>
           </div>
           
-          <div className="flex items-end gap-1 h-10 md:h-12 mt-6 md:mt-8 opacity-40 group-hover:opacity-80 transition-all">
+          <div className="flex items-end gap-1 h-10 md:h-12 mt-6 md:mt-8 opacity-40">
             {[40, 60, 30, 80, 100, 50, 70].map((h, i) => (
               <div 
                 key={i} 
-                className={`flex-1 ${i === 4 ? 'bg-primary' : 'bg-forest'} group-hover:bg-background-dark`} 
+                className={`flex-1 ${i === 4 ? 'bg-primary' : 'bg-forest'}`} 
                 style={{ height: `${h}%` }} 
               />
             ))}
@@ -163,41 +163,41 @@ const AccountPage = () => {
         </div>
 
         {/* Region Status */}
-        <div className="p-6 md:p-10 relative group hover:bg-primary/5 transition-all bg-background-dark cursor-pointer overflow-hidden min-h-[200px] md:min-h-[250px]">
+        <div className="p-6 md:p-10 relative bg-background-dark overflow-hidden min-h-[200px] md:min-h-[250px]">
           <div 
-            className="absolute inset-0 opacity-10 group-hover:opacity-0 transition-opacity"
+            className="absolute inset-0 opacity-10"
             style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '20px 20px' }}
           />
           
           <div className="relative z-10 h-full flex flex-col justify-between">
             <div className="flex justify-between items-start">
-              <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest group-hover:text-background-dark">
+              <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
                 PRIMARY_REGION_STATUS
               </h3>
-              <MapPin className="w-5 h-5 text-forest group-hover:text-background-dark" />
+              <MapPin className="w-5 h-5 text-forest" />
             </div>
             
             <div className="mt-auto space-y-3 md:space-y-4">
               <div className="flex items-center gap-3 md:gap-4">
-                <MapPin className="w-8 h-8 md:w-10 md:h-10 text-primary group-hover:text-background-dark transition-colors" />
+                <MapPin className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                 <div className="space-y-1">
-                  <h4 className="font-display text-2xl md:text-3xl font-bold text-white group-hover:text-background-dark uppercase leading-none transition-colors">
+                  <h4 className="font-display text-2xl md:text-3xl font-bold text-white uppercase leading-none">
                     Lagos, NG
                   </h4>
-                  <div className="flex gap-3 md:gap-4 mono-ui text-[8px] md:text-[9px] text-primary font-bold group-hover:text-background-dark">
+                  <div className="flex gap-3 md:gap-4 mono-ui text-[8px] md:text-[9px] text-primary font-bold">
                     <span>LAT: 6.5244</span>
                     <span>LON: 3.3792</span>
                   </div>
                 </div>
               </div>
               
-              <div className="narvo-border border-forest/30 p-2 md:p-3 bg-surface/10 group-hover:border-background-dark transition-all">
-                <div className="flex justify-between mono-ui text-[7px] md:text-[8px] text-forest font-bold group-hover:text-background-dark">
+              <div className="narvo-border border-forest/30 p-2 md:p-3 bg-surface/10">
+                <div className="flex justify-between mono-ui text-[7px] md:text-[8px] text-forest font-bold">
                   <span>HUB_LOAD</span>
                   <span>{metrics?.network_load || '24%'}</span>
                 </div>
                 <div className="w-full h-[2px] bg-forest/20 mt-2">
-                  <div className="w-[24%] h-full bg-primary group-hover:bg-background-dark" />
+                  <div className="w-[24%] h-full bg-primary" />
                 </div>
               </div>
             </div>
