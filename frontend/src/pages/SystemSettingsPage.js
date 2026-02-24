@@ -89,7 +89,7 @@ const SystemGearSixPage = () => {
     return (
       <main className="flex-1 overflow-y-auto custom-scroll flex items-center justify-center bg-background-dark" data-testid="system-settings-page">
         <div className="flex items-center gap-3 mono-ui text-xs text-forest">
-          <Loader2 className="w-5 h-5 animate-spin text-primary" />
+          <CircleNotch className="w-5 h-5 animate-spin text-primary" />
           {t('system_settings.loading')}
         </div>
       </main>
@@ -179,7 +179,7 @@ const SystemGearSixPage = () => {
             <div className="p-4 md:p-8 flex items-center justify-between hover:bg-surface/5 transition-colors group">
               <div className="flex items-center gap-4 md:gap-6">
                 <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
-                  <Vibrate className="w-5 h-5 md:w-6 md:h-6" />
+                  <Pulse className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
                   <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.haptic_sync')}</h3>
@@ -277,7 +277,7 @@ const SystemGearSixPage = () => {
             <div className="p-4 md:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-surface/5 transition-colors group">
               <div className="flex items-center gap-4 md:gap-6">
                 <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
-                  <Zap className="w-5 h-5 md:w-6 md:h-6" />
+                  <Lightning className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
                   <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.bandwidth_priority')}</h3>
@@ -311,7 +311,7 @@ const SystemGearSixPage = () => {
             className="px-6 md:px-10 py-3 md:py-4 mono-ui text-[10px] md:text-[11px] font-bold text-forest narvo-border hover:bg-forest/10 transition-all flex items-center justify-center gap-2"
             data-testid="reset-defaults-btn"
           >
-            <RotateCcw className="w-4 h-4" />
+            <ArrowCounterClockwise className="w-4 h-4" />
             {t('system_settings.reset_defaults')}
           </button>
           <button 
@@ -324,7 +324,7 @@ const SystemGearSixPage = () => {
             }`}
             data-testid="save-config-btn"
           >
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {saving ? <CircleNotch className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
             {saving ? t('system_settings.saving') : t('system_settings.save_config')}
           </button>
         </div>
