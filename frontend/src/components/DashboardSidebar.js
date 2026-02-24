@@ -102,7 +102,7 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
               if (open) {
                 setSettingsExpanded(!settingsExpanded);
               } else {
-                navigate('/account');
+                navigate('/settings');
               }
             }}
             className={`flex items-center gap-3 transition-all mx-2 ${isSettingsActive ? 'text-primary bg-primary/5 narvo-border' : 'text-forest hover:text-primary hover:bg-surface/30'} ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
