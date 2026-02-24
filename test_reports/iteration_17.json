@@ -1,0 +1,135 @@
+{
+  "summary": "Iteration 17 testing complete. Validated: i18n extended to all pages (landing, onboarding, account, admin), 7 languages including Igbo, category-specific images on dashboard, breaking news banner with dismiss/READ_NOW, notification toggle in settings. Backend API for breaking news working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_17.py",
+    "/app/test_reports/pytest/pytest_results_v17.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "i18n correctly implemented across all pages with useTranslation() hook",
+    "7 languages configured including new Igbo (ig) locale with full translations",
+    "Breaking news API returns RSS stories with 'breaking' keyword priority, falls back to most recent story",
+    "BreakingNewsBanner component properly integrates with BreakingNewsProvider context",
+    "Category images using getCategoryImage() from categoryImages.js maps to Unsplash URLs",
+    "NotificationToggle component uses browser Notification API for push notifications"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_17.py"
+  ],
+  "success_rate": {
+    "backend": "100% (12/12 tests passed)",
+    "frontend": "100% (all requested features working)"
+  },
+  "test_credentials": "Guest mode: Click '[Oya, Play]' button on landing page",
+  "seed_data_creation": "None - data from RSS feeds",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All iteration 17 features verified: i18n on landing/onboarding/account/admin pages, 7 languages (en, fr, yo, ha, ig, pcm, sw), category images on news cards, breaking news banner with dismiss/READ_NOW, notification toggle in settings. Breaking news API at /api/news/breaking returns priority stories with breaking keywords or latest story as fallback.",
+  "features_tested": {
+    "landing_page_i18n": {
+      "tagline": "PASS - 'BROADCAST_INITIATED // VOICE-FIRST NEWS PLATFORM'",
+      "headline": "PASS - 'NARVO: THE LOCAL PULSE, REFINED.'",
+      "description": "PASS - Full description with i18n",
+      "start_broadcast_btn": "PASS - '[Start Broadcast]' with i18n",
+      "guest_play_btn": "PASS - '[Oya, Play]' with i18n",
+      "pillars": "PASS - 4 pillars with i18n: NATIVE TRANSLATION, AUDIO-FIRST, PRECISION GRID, TRUTH PROTOCOL",
+      "console_voices_truth": "PASS - THE CONSOLE, NATIVE VOICES, TRUTH TAG sections"
+    },
+    "onboarding_page_i18n": {
+      "setup_console": "PASS - SETUP_CONSOLE label visible",
+      "regional_node": "PASS - Regional Node section with Lagos, Nairobi, etc.",
+      "voice_engine": "PASS - Vocal Matrix section with Pidgin, Yoruba, Igbo voices",
+      "interest_matrix": "PASS - Interest Matrix with Politics, Tech, Sports, etc.",
+      "initialize_btn": "PASS - Initialize Narrative Feed button"
+    },
+    "account_page_i18n": {
+      "stream_active": "PASS",
+      "current_plan": "PASS",
+      "premium_broadcast": "PASS",
+      "manage_plan": "PASS",
+      "broadcast_hours": "PASS - Shows 142.5",
+      "signals_processed": "PASS - Shows 342",
+      "system_alerts": "PASS - Alerts panel visible"
+    },
+    "admin_sidebar_i18n": {
+      "operation_hub": "PASS",
+      "curation_console": "PASS",
+      "voice_management": "PASS",
+      "moderation_zone": "PASS"
+    },
+    "admin_operation_hub_i18n": {
+      "last_update": "PASS - LAST_UPDATE label visible",
+      "system_alerts": "PASS - SYSTEM_ALERTS section visible"
+    },
+    "dashboard_category_images": {
+      "featured_card_image": "PASS - Unsplash image based on category",
+      "stream_card_thumbnails": "PASS - Category thumbnails with gradient overlays",
+      "category_color_gradients": "PASS - getCategoryColor() returns appropriate gradients"
+    },
+    "breaking_news_banner": {
+      "visibility": "PASS - Red banner at top of dashboard",
+      "breaking_news_label": "PASS - 'BREAKING NEWS' label visible",
+      "story_title": "PASS - Story title displayed with truncation",
+      "read_now_button": "PASS - READ_NOW navigates to story detail",
+      "dismiss_button": "PASS - X button hides the banner",
+      "auto_cycle": "INFO - Auto-cycles if multiple stories (8 second interval)"
+    },
+    "settings_page_notifications": {
+      "notification_toggle": "PASS - data-testid='notification-toggle' visible",
+      "enable_notifications_text": "PASS - 'Enable Notifications' with i18n",
+      "push_notifications_section": "PASS - PUSH_NOTIFICATIONS section header"
+    },
+    "settings_page_languages": {
+      "language_count": "PASS - 7 languages available",
+      "english": "PASS - English (GLOBAL)",
+      "francais": "PASS - Français (WEST_AFRICA)",
+      "yoruba": "PASS - Yorùbá (NIGERIA)",
+      "hausa": "PASS - Hausa (NIGERIA)",
+      "igbo": "PASS - Igbo (NIGERIA) - NEW",
+      "pidgin": "PASS - Pidgin (WEST_AFRICA)",
+      "kiswahili": "PASS - Kiswahili (EAST_AFRICA)"
+    },
+    "igbo_language_i18n": {
+      "sidebar_feed": "PASS - 'NRI'",
+      "sidebar_briefing": "PASS - 'NCHỊKỌTA'",
+      "sidebar_saved": "PASS - 'NDỊ ECHEKWARA'",
+      "sidebar_search": "PASS - 'CHỌỌ'",
+      "sidebar_discover": "PASS - 'CHỌPỤTA'",
+      "sidebar_offline": "PASS - 'ENWEGHỊ NTANETỊ'",
+      "sidebar_settings": "PASS - 'NTỌALA'",
+      "sidebar_admin": "PASS - 'ONYE NLEKỌTA'",
+      "settings_title": "PASS - 'ỤLỌ_NTỌALA'",
+      "breaking_news": "PASS - 'AKỤKỌ PỤTARA ÍCH'"
+    },
+    "backend_breaking_news_api": {
+      "endpoint": "PASS - GET /api/news/breaking returns 200",
+      "returns_list": "PASS - Returns array of stories",
+      "has_stories": "PASS - Returns at least 1 story",
+      "story_structure": "PASS - Stories have id, title, summary, source fields",
+      "route_ordering": "PASS - /api/news/breaking before /api/news/{id}"
+    }
+  },
+  "mocked_data_note": "MOCKED: Dubawa fact-check API uses simulated responses based on story_id hash",
+  "test_viewports": {
+    "desktop": "1920x1080"
+  },
+  "screenshots": [
+    ".screenshots/landing_page_i18n.png",
+    ".screenshots/breaking_news_banner.png",
+    ".screenshots/dashboard_category_images.png",
+    ".screenshots/settings_7_languages.png",
+    ".screenshots/settings_igbo_ui.png",
+    ".screenshots/account_i18n.png",
+    ".screenshots/admin_sidebar_i18n.png",
+    ".screenshots/admin_operation_hub.png"
+  ]
+}
