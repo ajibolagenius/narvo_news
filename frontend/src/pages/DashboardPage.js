@@ -17,23 +17,37 @@ const DashboardPage = () => {
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [allLoaded, setAllLoaded] = useState(false);
   const { playTrack } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/api/news?limit=15`).then(r => r.json()),
+      fetch(`${API_URL}/api/news?limit=50`).then(r => r.json()),
       fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
     ]).then(([newsData, metricsData]) => {
       setNews(newsData);
       setMetrics(metricsData);
       setLoading(false);
+      if (newsData.length <= 10) setAllLoaded(true);
     }).catch(() => setLoading(false));
   }, []);
 
   const featured = news[0];
-  const stream = news.slice(1);
+  const stream = news.slice(1, visibleCount + 1);
+
+  const loadMore = () => {
+    setLoadingMore(true);
+    setTimeout(() => {
+      const next = visibleCount + 10;
+      setVisibleCount(next);
+      if (next + 1 >= news.length) setAllLoaded(true);
+      setLoadingMore(false);
+    }, 400);
+  };
 
   const toggleBookmark = (e, item) => {
     e.stopPropagation();
