@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LogOut, User, Mic, Monitor, Accessibility, ChevronRight, Shield, Zap, Database, Clock } from 'lucide-react';
+import { useHapticAlert, ALERT_PRESETS } from '../components/HapticAlerts';
+import { LogOut, User, Mic, Monitor, Accessibility, ChevronRight, Shield, Zap, Database, Clock, Bell } from 'lucide-react';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
