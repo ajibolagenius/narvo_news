@@ -16,6 +16,7 @@ const PODCAST_EPISODES = [
 ];
 
 const DiscoverPage = () => {
+  const { t } = useTranslation();
   const [featuredNews, setFeaturedNews] = useState(null);
   const [loading, setLoading] = useState(true);
   const [podcastSort, setPodcastSort] = useState('latest');
