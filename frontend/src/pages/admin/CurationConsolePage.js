@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronRight, Lock, Sparkles, Sliders, RotateCcw, Check, X } from 'lucide-react';
+import { CaretRight, Lock, Sparkle, Sliders, ArrowCounterClockwise, Check, X } from '@phosphor-icons/react';
 
 const CurationConsolePage = () => {
   const { t } = useTranslation();
