@@ -6,6 +6,7 @@ import en from './locales/en.json';
 import fr from './locales/fr.json';
 import yo from './locales/yo.json';
 import ha from './locales/ha.json';
+import ig from './locales/ig.json';
 import pcm from './locales/pcm.json';
 import sw from './locales/sw.json';
 
@@ -18,6 +19,7 @@ i18n
       fr: { translation: fr },
       yo: { translation: yo },
       ha: { translation: ha },
+      ig: { translation: ig },
       pcm: { translation: pcm },
       sw: { translation: sw },
     },
@@ -35,6 +37,7 @@ export const LANGUAGES = [
   { code: 'fr', label: 'Français', flag: 'FR', region: 'WEST_AFRICA' },
   { code: 'yo', label: 'Yorùbá', flag: 'NG', region: 'NIGERIA' },
   { code: 'ha', label: 'Hausa', flag: 'NG', region: 'NIGERIA' },
+  { code: 'ig', label: 'Igbo', flag: 'NG', region: 'NIGERIA' },
   { code: 'pcm', label: 'Pidgin', flag: 'NG', region: 'WEST_AFRICA' },
   { code: 'sw', label: 'Kiswahili', flag: 'KE', region: 'EAST_AFRICA' },
 ];
