@@ -16,17 +16,34 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 /app/
 ├── backend/
 │   ├── server.py           # Main FastAPI with modular routers
-│   └── routes/
-│       ├── discover.py     # Podcasts with audio proxy, trending, radio
-│       ├── offline.py      # Offline article storage
-│       ├── admin.py        # Admin dashboard
-│       └── user.py         # User preferences
+│   ├── routes/
+│   │   ├── discover.py     # Podcasts with audio proxy, trending, radio
+│   │   ├── offline.py      # Offline article storage
+│   │   ├── admin.py        # Admin dashboard metrics & alerts
+│   │   ├── user.py         # User preferences, bookmarks, settings
+│   │   └── factcheck.py    # Fact-checking API (mocked Dubawa)
+│   └── services/           # Business logic layer
+│       ├── news_service.py      # RSS feed fetching, news aggregation
+│       ├── podcast_service.py   # Podcast episode management
+│       ├── radio_service.py     # Radio Browser API integration
+│       ├── admin_service.py     # System metrics, alerts, moderation
+│       ├── factcheck_service.py # Fact-checking logic (mocked)
+│       ├── narrative_service.py # AI narrative generation
+│       ├── offline_service.py   # Offline article management
+│       ├── user_service.py      # User data management
+│       ├── tts_service.py       # Text-to-speech generation
+│       └── briefing_service.py  # Morning briefing generation
 ├── frontend/
 │   ├── public/
 │   │   ├── sw.js           # Service Worker with background sync + push
 │   │   ├── manifest.json   # PWA manifest
 │   │   └── index.html      # SW registration
 │   └── src/
+│       ├── contexts/
+│       │   ├── AudioContext.js
+│       │   └── DownloadQueueContext.js  # Global download state
+│       ├── components/
+│       │   └── DownloadQueueIndicator.js # Floating download UI
 │       ├── lib/
 │       │   ├── audioCache.js       # IndexedDB blob storage
 │       │   └── notificationService.js  # Push notification service
