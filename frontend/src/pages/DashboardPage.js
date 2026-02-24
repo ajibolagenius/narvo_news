@@ -264,6 +264,14 @@ const DashboardPage = () => {
                             </button>
                             <div className="flex-1 h-[1px] bg-forest/10" />
                             <button
+                              onClick={(e) => { e.stopPropagation(); addToQueue(item); showAlert({ type: 'sync', title: 'QUEUE_UPDATED', message: `Added to queue: ${item.title?.slice(0, 40)}...`, code: 'Q_ADD', duration: 2000 }); }}
+                              className="text-forest hover:text-primary transition-colors"
+                              title="Add to Queue"
+                              data-testid={`queue-btn-${item.id}`}
+                            >
+                              <ListPlus className="w-4 h-4" />
+                            </button>
+                            <button
                               onClick={(e) => shareStory(e, item)}
                               className="text-forest hover:text-primary transition-colors"
                               title="Share"
