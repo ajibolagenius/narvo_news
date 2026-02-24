@@ -119,7 +119,7 @@ const DashboardPage = () => {
             <span className="mono-ui text-[10px] md:text-xs text-forest hidden sm:inline">LIVE_TRANSMISSION</span>
           </div>
           <div className="flex items-center gap-3">
-            <button className="mono-ui text-[10px] md:text-xs text-forest border border-forest px-2 md:px-3 py-1 hover:bg-forest hover:text-white transition-colors" data-testid="filter-btn">FILTERS</button>
+            <button className="mono-ui text-[10px] md:text-xs text-forest border border-forest px-2 md:px-3 py-1 hover:bg-forest hover:text-content transition-colors" data-testid="filter-btn">FILTERS</button>
             <button className="mono-ui text-[10px] md:text-xs text-primary border border-primary px-2 md:px-3 py-1 hover:bg-primary hover:text-background-dark transition-colors" data-testid="sort-btn">SORT</button>
           </div>
         </div>
@@ -167,7 +167,7 @@ const DashboardPage = () => {
                       <div className="flex-1 p-5 md:p-8 flex flex-col justify-between">
                         <div>
                           <span className="mono-ui text-[10px] md:text-xs text-forest block mb-2 font-bold tracking-widest">NARRATIVE_NODE {'//'} {featured.category?.toUpperCase()}</span>
-                          <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-white mb-3 md:mb-4 leading-none group-hover:text-primary transition-colors">
+                          <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-content mb-3 md:mb-4 leading-none group-hover:text-primary transition-colors">
                             {featured.title}
                           </h2>
                           <p className="text-sm md:text-base text-forest font-mono leading-relaxed mb-4 md:mb-6 opacity-80 line-clamp-3">
@@ -245,7 +245,7 @@ const DashboardPage = () => {
                               ))}
                             </div>
                           </div>
-                          <h3 className="font-display text-lg md:text-xl font-bold uppercase tracking-tight text-white group-hover:text-primary transition-colors leading-tight">
+                          <h3 className="font-display text-lg md:text-xl font-bold uppercase tracking-tight text-content group-hover:text-primary transition-colors leading-tight">
                             {item.title}
                           </h3>
                           <p className="text-sm md:text-base text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
@@ -254,7 +254,7 @@ const DashboardPage = () => {
                           <div className="flex items-center gap-4 md:gap-6 pt-1">
                             <button
                               onClick={(e) => { e.stopPropagation(); playTrack(item); }}
-                              className="mono-ui text-[10px] md:text-xs text-primary flex items-center gap-2 hover:text-white transition-colors"
+                              className="mono-ui text-[10px] md:text-xs text-primary flex items-center gap-2 hover:text-content transition-colors"
                               data-testid={`play-btn-${item.id}`}
                             >
                               <Pulse weight="bold" className="w-4 h-4 text-forest" />
@@ -326,7 +326,7 @@ const DashboardPage = () => {
             <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">REGIONAL_ENV</span>
             <div className="flex items-end justify-between">
               <div>
-                <span className="font-display text-3xl font-bold text-white tracking-tighter">28°C</span>
+                <span className="font-display text-3xl font-bold text-content tracking-tighter">28°C</span>
                 <span className="mono-ui text-[10px] text-forest block mt-1">LAGOS, NIGERIA</span>
               </div>
               <div className="text-right">
@@ -341,7 +341,7 @@ const DashboardPage = () => {
             <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">{t('dashboard.trending')}</span>
             <div className="flex flex-wrap gap-1.5">
               {['#ECONOMY', '#SOLAR_GRID', '#AI_SYNTH', '#ENERGY', '#TECH'].map(tag => (
-                <span key={tag} className="narvo-border px-2 py-1 mono-ui text-[9px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">
+                <span key={tag} className="narvo-border px-2 py-1 mono-ui text-[9px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">
                   {tag}
                 </span>
               ))}
@@ -360,7 +360,7 @@ const DashboardPage = () => {
               ].map(node => (
                 <div key={node.name} className="space-y-1">
                   <div className="flex justify-between mono-ui text-[10px]">
-                    <span className="text-white">{node.name}_NODE</span>
+                    <span className="text-content">{node.name}_NODE</span>
                     <span className={`${node.color === 'bg-primary' ? 'text-primary' : 'text-forest'} font-bold`}>{node.pct}%</span>
                   </div>
                   <div className="h-1 w-full bg-forest/20"><div className={`h-full ${node.color}`} style={{ width: `${node.pct}%` }} /></div>
@@ -373,7 +373,7 @@ const DashboardPage = () => {
           <div className="grid grid-cols-2 gap-[1px] narvo-border bg-forest">
             <div className="bg-background-dark p-3 flex flex-col justify-between h-20">
               <span className="mono-ui text-[9px] text-forest">LISTENERS</span>
-              <span className="font-display text-2xl font-bold text-white tracking-tighter">{metrics?.total_listeners || '14.2K'}</span>
+              <span className="font-display text-2xl font-bold text-content tracking-tighter">{metrics?.total_listeners || '14.2K'}</span>
             </div>
             <div className="bg-background-dark p-3 flex flex-col justify-between h-20">
               <span className="mono-ui text-[9px] text-forest">SOURCES</span>

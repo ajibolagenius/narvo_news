@@ -86,7 +86,7 @@ const VoiceStudioPage = () => {
       <div className="p-6 md:p-8 narvo-border-b bg-background-dark flex flex-col gap-4 md:gap-6 shrink-0">
         <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
           <div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               Broadcast_Preview
             </h2>
             <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-1">
@@ -97,7 +97,7 @@ const VoiceStudioPage = () => {
           </div>
           
           <div className="flex gap-2">
-            <button className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-white hover:bg-forest transition-colors">
+            <button className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-content hover:bg-forest transition-colors">
               <SkipBack className="w-5 h-5" />
             </button>
             <button 
@@ -107,7 +107,7 @@ const VoiceStudioPage = () => {
             >
               {previewPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" fill="currentColor" />}
             </button>
-            <button className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-white hover:bg-forest transition-colors">
+            <button className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-content hover:bg-forest transition-colors">
               <SkipForward className="w-5 h-5" />
             </button>
           </div>
@@ -144,7 +144,7 @@ const VoiceStudioPage = () => {
             <button 
               onClick={() => setRegionFilter(regionFilter === 'AFRICA' ? 'ALL' : 'AFRICA')}
               className={`px-3 md:px-4 py-2 narvo-border mono-ui text-[8px] md:text-[9px] font-bold transition-all ${
-                regionFilter === 'AFRICA' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white hover:border-white'
+                regionFilter === 'AFRICA' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content hover:border-white'
               }`}
             >
               REGION: {regionFilter}
@@ -152,7 +152,7 @@ const VoiceStudioPage = () => {
             <button 
               onClick={() => setDialectFilter(dialectFilter === 'ALL' ? 'PIDGIN' : 'ALL')}
               className={`px-3 md:px-4 py-2 narvo-border mono-ui text-[8px] md:text-[9px] font-bold transition-all ${
-                dialectFilter !== 'ALL' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white hover:border-white'
+                dialectFilter !== 'ALL' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content hover:border-white'
               }`}
             >
               DIALECT: {dialectFilter}
@@ -195,7 +195,7 @@ const VoiceStudioPage = () => {
                       }`}>
                         {status.label}
                       </span>
-                      <h4 className="font-display text-xl md:text-2xl font-bold text-white uppercase">
+                      <h4 className="font-display text-xl md:text-2xl font-bold text-content uppercase">
                         {voice.name.replace(' ', '_')}
                       </h4>
                     </div>
@@ -237,7 +237,7 @@ const VoiceStudioPage = () => {
               <Check className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
             <div>
-              <span className="text-white font-display font-bold text-sm md:text-base">{selectedVoice.name}</span>
+              <span className="text-content font-display font-bold text-sm md:text-base">{selectedVoice.name}</span>
               <span className="mono-ui text-[8px] md:text-[9px] text-forest block">{selectedVoice.description}</span>
             </div>
           </div>

@@ -82,7 +82,7 @@ const GearSixPage = () => {
           <span className="w-2 h-2 bg-primary animate-pulse" />
           <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold">CONTROL_CENTER_ACTIVE</span>
         </div>
-        <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-white uppercase tracking-tight">
+        <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-content uppercase tracking-tight">
           {t('settings.title')}
         </h1>
         <p className="mono-ui text-[10px] md:text-[11px] text-forest mt-2">
@@ -108,7 +108,7 @@ const GearSixPage = () => {
                     </span>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <span className="text-white block font-display font-bold text-lg md:text-xl truncate">
+                    <span className="text-content block font-display font-bold text-lg md:text-xl truncate">
                       {user.email}
                     </span>
                     <span className="mono-ui text-[9px] md:text-[10px] text-forest block mt-1">
@@ -143,7 +143,7 @@ const GearSixPage = () => {
                   )}
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-display text-lg md:text-xl font-bold text-white uppercase">THEME_MODE</h3>
+                  <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">THEME_MODE</h3>
                   <p className="mono-ui text-[8px] md:text-[9px] text-forest">SWITCH BETWEEN DARK AND LIGHT INTERFACE</p>
                 </div>
                 <button
@@ -173,7 +173,7 @@ const GearSixPage = () => {
                   <Globe className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg md:text-xl font-bold text-white uppercase">{t('settings.language')}</h3>
+                  <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">{t('settings.language')}</h3>
                   <p className="mono-ui text-[8px] md:text-[9px] text-forest">{t('settings.language_desc')}</p>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
@@ -196,7 +196,7 @@ const GearSixPage = () => {
                     }`}
                     data-testid={`lang-${lang.code}`}
                   >
-                    <span className="block font-display text-sm font-bold text-white mb-1">{lang.label}</span>
+                    <span className="block font-display text-sm font-bold text-content mb-1">{lang.label}</span>
                     <span className="mono-ui text-[7px] text-forest font-bold">{lang.region}</span>
                   </button>
                 ))}
@@ -234,7 +234,7 @@ const GearSixPage = () => {
                         </div>
                         <CaretRight weight="bold" className="w-5 h-5 text-forest group-hover:text-primary group-hover:translate-x-1 transition-all" />
                       </div>
-                      <h3 className="font-display text-lg md:text-xl font-bold text-white uppercase mb-1 group-hover:text-primary transition-colors">
+                      <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase mb-1 group-hover:text-primary transition-colors">
                         {item.label}
                       </h3>
                       <p className="mono-ui text-[8px] md:text-[9px] text-forest leading-relaxed">

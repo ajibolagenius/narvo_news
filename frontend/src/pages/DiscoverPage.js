@@ -145,7 +145,7 @@ const DiscoverPage = () => {
                 </>
               ) : (
                 <>
-                  <h2 className="font-display text-3xl md:text-6xl font-bold uppercase tracking-tighter text-white leading-none">
+                  <h2 className="font-display text-3xl md:text-6xl font-bold uppercase tracking-tighter text-content leading-none">
                     {featuredNews?.title?.split(' ').slice(0, 3).join(' ')} <span className="text-primary">Shift.</span>
                   </h2>
                   <p className="text-xs md:text-sm text-forest font-body max-w-2xl leading-relaxed hidden sm:block">
@@ -175,17 +175,17 @@ const DiscoverPage = () => {
           {/* Podcast Matrix */}
           <div className="lg:col-span-2 lg:narvo-border-r h-full">
             <div className="flex items-center justify-between p-4 md:p-8 narvo-border-b bg-surface/10 sticky top-0 z-10 backdrop-blur-md">
-              <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-white tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
+              <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
               <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
                 <button 
                   onClick={() => setPodcastSort('latest')}
-                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-white'}`}
+                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
                 >
                   {t('discover.latest')}
                 </button>
                 <button 
                   onClick={() => setPodcastSort('popular')}
-                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-white'}`}
+                  className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
                 >
                   {t('discover.popular')}
                 </button>
@@ -205,7 +205,7 @@ const DiscoverPage = () => {
                     </span>
                     <span className="mono-ui text-[8px] md:text-[9px] text-forest">{podcast.duration}</span>
                   </div>
-                  <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors">
+                  <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors">
                     {podcast.title}
                   </h4>
                   <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
@@ -213,7 +213,7 @@ const DiscoverPage = () => {
                   </p>
                   <button 
                     onClick={() => handlePlayPodcast(podcast)}
-                    className="mt-auto pt-4 md:pt-6 flex items-center gap-2 md:gap-3 text-primary mono-ui text-[9px] md:text-[10px] font-bold hover:text-white transition-colors"
+                    className="mt-auto pt-4 md:pt-6 flex items-center gap-2 md:gap-3 text-primary mono-ui text-[9px] md:text-[10px] font-bold hover:text-content transition-colors"
                     data-testid={`play-podcast-${podcast.id}`}
                   >
                     <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
@@ -231,7 +231,7 @@ const DiscoverPage = () => {
             
             <div className="p-4 md:p-8 narvo-border-b bg-background-dark sticky top-0 z-10">
               <div className="flex items-center justify-between mb-2">
-                <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-white tracking-tight">{t('discover.radio_garden')}</h3>
+                <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.radio_garden')}</h3>
                 <div className="flex items-center gap-1.5 text-[8px] md:text-[9px] mono-ui text-primary font-bold bg-primary/10 px-1.5 md:px-2 py-0.5 narvo-border">
                   <span className={`w-1.5 h-1.5 ${isRadioPlaying ? 'bg-primary animate-pulse' : 'bg-forest'}`} />
                   {isRadioPlaying ? 'LIVE' : 'STANDBY'}
@@ -249,7 +249,7 @@ const DiscoverPage = () => {
                   className={`px-2 py-1 mono-ui text-[8px] md:text-[9px] font-bold transition-all ${
                     selectedCountry === c.code 
                       ? 'bg-primary text-background-dark' 
-                      : 'narvo-border text-forest hover:text-white hover:border-white'
+                      : 'narvo-border text-forest hover:text-content hover:border-white'
                   }`}
                   data-testid={`radio-country-${c.code}`}
                 >
@@ -273,7 +273,7 @@ const DiscoverPage = () => {
                 <div className="p-4 flex flex-col items-center justify-center min-h-[200px]">
                   <div className="narvo-border bg-surface/10 p-6 text-center">
                     <Radio className="w-8 h-8 text-forest mx-auto mb-3 opacity-50" />
-                    <h4 className="font-display text-sm font-bold text-white uppercase mb-2">NO STATIONS FOUND</h4>
+                    <h4 className="font-display text-sm font-bold text-content uppercase mb-2">NO STATIONS FOUND</h4>
                     <p className="mono-ui text-[9px] text-forest">Try selecting another country.</p>
                   </div>
                 </div>
@@ -292,7 +292,7 @@ const DiscoverPage = () => {
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span className={`font-display text-xs md:text-sm font-bold uppercase truncate ${
-                          currentStation?.id === station.id && isRadioPlaying ? 'text-primary' : 'text-white'
+                          currentStation?.id === station.id && isRadioPlaying ? 'text-primary' : 'text-content'
                         }`}>
                           {station.name}
                         </span>
@@ -315,7 +315,7 @@ const DiscoverPage = () => {
               <div className="flex items-center justify-between mb-3">
                 <div className="space-y-1 min-w-0 flex-1">
                   <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold block">{t('discover.now_playing')}</span>
-                  <p className="mono-ui text-[10px] md:text-xs text-white font-bold uppercase truncate">
+                  <p className="mono-ui text-[10px] md:text-xs text-content font-bold uppercase truncate">
                     {currentStation?.name || t('discover.select_station')}
                   </p>
                   <p className="mono-ui text-[8px] text-forest">

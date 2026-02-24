@@ -163,7 +163,7 @@ const AlertItem = ({ alert, onDismiss }) => {
       {/* Dismiss */}
       <button 
         onClick={() => onDismiss(alert.id)}
-        className="text-forest hover:text-white transition-colors shrink-0"
+        className="text-forest hover:text-content transition-colors shrink-0"
       >
         <X className="w-4 h-4" />
       </button>

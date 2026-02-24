@@ -35,7 +35,7 @@ const LandingPage = () => {
               <svg className="w-8 h-8 text-forest" viewBox="0 0 256 256" fill="currentColor">
                 <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM168,128a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V88a8,8,0,0,1,16,0v32h24A8,8,0,0,1,168,128Z"/>
               </svg>
-              <h1 className="font-display text-2xl font-bold tracking-tighter text-white">NARVO</h1>
+              <h1 className="font-display text-2xl font-bold tracking-tighter text-content">NARVO</h1>
             </div>
             <div className="hidden md:flex items-center gap-4 border-l border-forest pl-6 h-10">
               <span className="mono-ui text-[10px] text-forest">SYSTEM_STATUS:</span>
@@ -61,7 +61,7 @@ const LandingPage = () => {
             <span className="w-2 h-2 bg-forest block"></span>
             {t('landing.tagline')}
           </div>
-          <h1 className="font-display text-5xl lg:text-7xl font-bold leading-[0.9] tracking-tighter text-white mb-8">
+          <h1 className="font-display text-5xl lg:text-7xl font-bold leading-[0.9] tracking-tighter text-content mb-8">
             {t('landing.headline').split('\n').map((line, i) => <React.Fragment key={i}>{i > 0 && <br />}{line}</React.Fragment>)}
           </h1>
           <p className="text-lg lg:text-xl text-slate-400 max-w-xl mb-12">
@@ -71,7 +71,7 @@ const LandingPage = () => {
             <button onClick={() => navigate('/auth')} className="bg-primary text-background-dark font-display font-bold px-8 py-4 text-lg hover:bg-white transition-all" data-testid="start-broadcast-btn">
               [{t('landing.start_broadcast')}]
             </button>
-            <button onClick={() => { localStorage.setItem('narvo_guest', 'true'); navigate('/dashboard'); }} className="border border-forest text-forest font-display font-bold px-8 py-4 text-lg hover:bg-forest hover:text-white transition-all" data-testid="demo-btn">
+            <button onClick={() => { localStorage.setItem('narvo_guest', 'true'); navigate('/dashboard'); }} className="border border-forest text-forest font-display font-bold px-8 py-4 text-lg hover:bg-forest hover:text-content transition-all" data-testid="demo-btn">
               [{t('landing.guest_play')}]
             </button>
           </div>
@@ -88,14 +88,14 @@ const LandingPage = () => {
                 onClick={() => navigate(`/news/${breaking[0].id}`)}
                 className="flex-1 min-w-0 text-left group"
               >
-                <span className="mono-ui text-[10px] md:text-[11px] text-white font-bold truncate block group-hover:text-red-300 transition-colors">
+                <span className="mono-ui text-[10px] md:text-[11px] text-content font-bold truncate block group-hover:text-red-300 transition-colors">
                   {breaking[0].title}
                 </span>
               </button>
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => navigate(`/news/${breaking[0].id}`)}
-                  className="mono-ui text-[8px] text-red-400 font-bold hover:text-white transition-colors hidden sm:flex items-center gap-1"
+                  className="mono-ui text-[8px] text-red-400 font-bold hover:text-content transition-colors hidden sm:flex items-center gap-1"
                 >
                   {t('notifications.read_now')}
                   <ArrowRight weight="bold" className="w-3 h-3" />
@@ -122,7 +122,7 @@ const LandingPage = () => {
                   <span className="mono-ui text-[9px] text-primary border border-primary px-1">{(item.category || 'GENERAL').toUpperCase()}</span>
                   <span className="mono-ui text-[9px] text-forest">{item.source || 'RSS'} // {item.region || 'AFRICA'}</span>
                 </div>
-                <h3 className="font-display text-md font-bold leading-snug mb-2 group-hover:text-primary transition-colors text-white line-clamp-2">{item.title}</h3>
+                <h3 className="font-display text-md font-bold leading-snug mb-2 group-hover:text-primary transition-colors text-content line-clamp-2">{item.title}</h3>
                 <div className="flex items-center gap-3 mt-2">
                   <span className="w-1 h-3 bg-primary animate-pulse" />
                   <span className="mono-ui text-[8px] text-forest">{item.published ? new Date(item.published).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'LIVE'}</span>
@@ -143,7 +143,7 @@ const LandingPage = () => {
         ].map((pillar, idx) => (
           <div key={idx} className={`p-8 ${idx < 3 ? 'border-r border-forest' : ''} ${idx % 2 === 0 ? 'bg-forest/5' : 'bg-background-dark'} h-64 flex flex-col justify-between group hover:bg-forest/10 transition-all`}>
             <span className="mono-ui text-[10px] text-forest">{pillar.num}. {pillar.title}</span>
-            <h4 className="font-display text-xl text-white">{pillar.desc}</h4>
+            <h4 className="font-display text-xl text-content">{pillar.desc}</h4>
             <div className="flex justify-end"><div className="w-12 h-12 text-forest opacity-30 group-hover:opacity-60 transition-opacity" /></div>
           </div>
         ))}
@@ -157,7 +157,7 @@ const LandingPage = () => {
         ].map((mod, idx) => (
           <div key={idx} className={`p-8 ${idx < 2 ? 'border-r border-forest' : ''}`}>
             <div className="flex justify-between items-start mb-4"><p className="mono-ui text-[10px] text-forest">MOD_ID: {mod.id}</p></div>
-            <h3 className="font-display text-2xl font-bold mb-4 uppercase text-white">{mod.title}</h3>
+            <h3 className="font-display text-2xl font-bold mb-4 uppercase text-content">{mod.title}</h3>
             <p className="text-slate-400 text-sm mb-6">{mod.desc}</p>
             <div className="border-t border-forest pt-4 flex justify-between items-center">
               <span className="mono-ui text-[10px] text-forest">{mod.label}</span>
@@ -169,7 +169,7 @@ const LandingPage = () => {
 
       <section className="grid grid-cols-1 lg:grid-cols-2 border-b border-forest">
         <div className="p-8 lg:p-16 border-r border-forest bg-forest/5 flex flex-col justify-center">
-          <h2 className="font-display text-4xl font-bold mb-8 text-white">{t('landing.system_core')}</h2>
+          <h2 className="font-display text-4xl font-bold mb-8 text-content">{t('landing.system_core')}</h2>
           <div className="space-y-4">
             {[
               { num: '01', title: 'RSS_SUMMARIZATION', desc: 'Multi-source ingestion filtered per user subscription.' },
@@ -179,7 +179,7 @@ const LandingPage = () => {
               <div key={idx} className="flex gap-4 p-4 border border-forest bg-background-dark">
                 <div className="w-10 h-10 flex items-center justify-center border border-forest text-primary font-mono text-xs shrink-0">{step.num}</div>
                 <div>
-                  <h4 className="mono-ui text-sm text-white mb-1">{step.title}</h4>
+                  <h4 className="mono-ui text-sm text-content mb-1">{step.title}</h4>
                   <p className="text-[10px] text-slate-400 font-mono">{step.desc}</p>
                 </div>
               </div>
@@ -190,7 +190,7 @@ const LandingPage = () => {
           <div className="p-8 flex-1 border-b border-forest flex flex-col justify-center">
             <div className="flex items-center gap-4 mb-6">
               <svg className="w-6 h-6 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M152,96H104a8,8,0,0,0-8,8v48a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V104A8,8,0,0,0,152,96Zm-8,48H112V112h32Z"/></svg>
-              <h4 className="mono-ui text-lg text-white">Broadcast_Control_Unit</h4>
+              <h4 className="mono-ui text-lg text-content">Broadcast_Control_Unit</h4>
             </div>
             <div className="aspect-video w-full bg-forest/10 border border-forest relative overflow-hidden flex items-end p-8 gap-1">
               {[25, 50, 75, 66, 100, 33, 50].map((h, i) => (
@@ -215,9 +215,9 @@ const LandingPage = () => {
 
       <footer className="mt-auto grid grid-cols-1 md:grid-cols-4 border-t border-forest bg-background-dark">
         <div className="p-6 border-r border-forest flex flex-col justify-between">
-          <div className="flex items-center gap-2 mb-8 text-white">
+          <div className="flex items-center gap-2 mb-8 text-content">
             <svg className="w-6 h-6 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/></svg>
-            <span className="font-display font-bold text-white tracking-tighter">NARVO</span>
+            <span className="font-display font-bold text-content tracking-tighter">NARVO</span>
           </div>
           <p className="mono-ui text-[9px] text-forest">V.2.5.0_STABLE_BUILD<br />2026 NARVO</p>
         </div>

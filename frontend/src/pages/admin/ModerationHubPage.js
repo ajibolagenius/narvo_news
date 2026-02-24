@@ -65,26 +65,26 @@ const ModerationHubPage = () => {
       {/* Header */}
       <div className="px-8 py-6 narvo-border-b flex justify-between items-center bg-black/20 shrink-0">
         <div className="flex items-baseline gap-4">
-          <h2 className="font-display text-2xl font-bold text-white uppercase tracking-tight">Incoming_Matrix</h2>
+          <h2 className="font-display text-2xl font-bold text-content uppercase tracking-tight">Incoming_Matrix</h2>
           <span className="mono-ui text-[9px] text-forest font-bold border border-forest px-2 py-0.5">LIVE_WATCH</span>
         </div>
         <div className="flex gap-2">
           <button 
             onClick={fetchData}
-            className="w-10 h-10 narvo-border flex items-center justify-center text-forest hover:text-white transition-all"
+            className="w-10 h-10 narvo-border flex items-center justify-center text-forest hover:text-content transition-all"
             title="Refresh"
           >
             <ArrowClockwise className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <button 
             onClick={() => setViewMode('grid')}
-            className={`w-10 h-10 narvo-border flex items-center justify-center transition-all ${viewMode === 'grid' ? 'text-primary bg-forest/20' : 'text-forest hover:text-white'}`}
+            className={`w-10 h-10 narvo-border flex items-center justify-center transition-all ${viewMode === 'grid' ? 'text-primary bg-forest/20' : 'text-forest hover:text-content'}`}
           >
             <SquaresFour className="w-5 h-5" />
           </button>
           <button 
             onClick={() => setViewMode('list')}
-            className={`w-10 h-10 narvo-border flex items-center justify-center transition-all ${viewMode === 'list' ? 'text-primary bg-forest/20' : 'text-forest hover:text-white'}`}
+            className={`w-10 h-10 narvo-border flex items-center justify-center transition-all ${viewMode === 'list' ? 'text-primary bg-forest/20' : 'text-forest hover:text-content'}`}
           >
             <List className="w-5 h-5" />
           </button>
@@ -124,7 +124,7 @@ const ModerationHubPage = () => {
 
                 {/* Content */}
                 <div className="flex-1 space-y-3">
-                  <h3 className="font-display text-xl font-bold text-white uppercase leading-tight group-hover:text-primary transition-colors">
+                  <h3 className="font-display text-xl font-bold text-content uppercase leading-tight group-hover:text-primary transition-colors">
                     {item.title}
                   </h3>
                   
@@ -162,20 +162,20 @@ const ModerationHubPage = () => {
                     </button>
                   ) : item.status === 'DISPUTED' ? (
                     <>
-                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-red-500 hover:border-red-500 transition-all uppercase flex items-center justify-center gap-2">
+                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-red-500 hover:border-red-500 transition-all uppercase flex items-center justify-center gap-2">
                         <Flag className="w-4 h-4" />
                         FLAG
                       </button>
-                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-forest transition-all uppercase">
+                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-forest transition-all uppercase">
                         IGNORE
                       </button>
                     </>
                   ) : (
                     <>
-                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-forest transition-all uppercase">
+                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-forest transition-all uppercase">
                         ASSIGN
                       </button>
-                      <button className="w-12 narvo-border flex items-center justify-center hover:bg-forest text-white transition-all">
+                      <button className="w-12 narvo-border flex items-center justify-center hover:bg-forest text-content transition-all">
                         <DotsThree className="w-5 h-5" />
                       </button>
                     </>
@@ -190,7 +190,7 @@ const ModerationHubPage = () => {
       {/* Stats Bar */}
       <div className="h-12 narvo-border-t bg-black/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold shrink-0">
         <div className="flex items-center gap-6">
-          <span>QUEUE_TOTAL: <span className="text-white">{stats?.queue_total || 0}</span></span>
+          <span>QUEUE_TOTAL: <span className="text-content">{stats?.queue_total || 0}</span></span>
           <span>DISPUTED: <span className="text-red-500">{stats?.disputed || 0}</span></span>
           <span>VERIFIED: <span className="text-primary">{stats?.verified || 0}</span></span>
           <span>PENDING: <span className="text-forest">{stats?.pending || 0}</span></span>

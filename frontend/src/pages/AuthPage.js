@@ -60,7 +60,7 @@ const AuthPage = () => {
           <svg className="w-6 h-6 text-primary" viewBox="0 0 256 256" fill="currentColor">
             <path d="M208,40H48A16,16,0,0,0,32,56V200a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V56A16,16,0,0,0,208,40Zm0,160H48V56H208V200ZM64,96a8,8,0,0,1,8-8H184a8,8,0,0,1,0,16H72A8,8,0,0,1,64,96Zm0,32a8,8,0,0,1,8-8H184a8,8,0,0,1,0,16H72A8,8,0,0,1,64,128Zm0,32a8,8,0,0,1,8-8h72a8,8,0,0,1,0,16H72A8,8,0,0,1,64,160Z"/>
           </svg>
-          <div className="font-display text-xl tracking-tight font-bold uppercase text-white">
+          <div className="font-display text-xl tracking-tight font-bold uppercase text-content">
             NARVO <span className="text-forest font-light mx-2">{'//'}</span> ACCESS_CENTER
           </div>
           <div className="h-4 w-[1px] bg-forest mx-2" />
@@ -82,7 +82,7 @@ const AuthPage = () => {
           <div className="absolute inset-0 grid grid-rows-6">
             <div className="border-b border-forest p-6 flex flex-col justify-end">
               <span className="mono-ui text-[9px] text-forest block mb-1">NODE_ID</span>
-              <span className="mono-ui text-[10px] text-white">NRV-LGS-X1</span>
+              <span className="mono-ui text-[10px] text-content">NRV-LGS-X1</span>
             </div>
             <div className="border-b border-forest p-6 flex flex-col justify-end">
               <span className="mono-ui text-[9px] text-forest block mb-1">ENCRYPTION</span>
@@ -105,7 +105,7 @@ const AuthPage = () => {
           <div className="w-full max-w-md z-10 relative">
             <div className="border border-forest bg-background-dark mb-[-1px]">
               <div className="p-4 flex justify-between items-center border-b border-forest">
-                <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-white">
+                <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-content">
                   {isSignUp ? 'Create Account' : 'Initialize Session'}
                 </h2>
                 <svg className="w-6 h-6 text-primary" viewBox="0 0 256 256" fill="currentColor">
@@ -135,7 +135,7 @@ const AuthPage = () => {
                   <svg className="w-5 h-5 text-forest mr-3" viewBox="0 0 256 256" fill="currentColor">
                     <path d="M200,112H184V88a56,56,0,0,0-112,0v24H56a8,8,0,0,0-8,8v80a8,8,0,0,0,8,8H200a8,8,0,0,0,8-8V120A8,8,0,0,0,200,112Z"/>
                   </svg>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 bg-transparent border-none outline-none text-white mono-ui text-sm" placeholder="operator@narvo.io" required data-testid="email-input" />
+                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="flex-1 bg-transparent border-none outline-none text-content mono-ui text-sm" placeholder="operator@narvo.io" required data-testid="email-input" />
                 </div>
               </div>
 
@@ -148,7 +148,7 @@ const AuthPage = () => {
                   <svg className="w-5 h-5 text-forest mr-3" viewBox="0 0 256 256" fill="currentColor">
                     <path d="M216.57,39.43A80,80,0,0,0,83.91,120.78L28.69,176A15.86,15.86,0,0,0,24,187.31V216a16,16,0,0,0,16,16H72a8,8,0,0,0,8-8V208H96a8,8,0,0,0,8-8V184h16a8,8,0,0,0,5.66-2.34l9.56-9.57A80,80,0,0,0,216.57,39.43Z"/>
                   </svg>
-                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="flex-1 bg-transparent border-none outline-none text-white mono-ui text-sm" placeholder="min 6 characters" required minLength={6} data-testid="password-input" />
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="flex-1 bg-transparent border-none outline-none text-content mono-ui text-sm" placeholder="min 6 characters" required minLength={6} data-testid="password-input" />
                 </div>
               </div>
 
@@ -175,7 +175,7 @@ const AuthPage = () => {
                 </svg>
                 <div className="flex flex-col">
                   <span className="mono-ui text-[9px] text-forest">AUTHENTICATION</span>
-                  <span className="mono-ui text-[10px] text-white">Supabase_Auth</span>
+                  <span className="mono-ui text-[10px] text-content">Supabase_Auth</span>
                 </div>
               </div>
               <div className="p-4 flex items-center gap-3">
@@ -184,7 +184,7 @@ const AuthPage = () => {
                 </svg>
                 <div className="flex flex-col">
                   <span className="mono-ui text-[9px] text-forest">PROTOCOL</span>
-                  <span className="mono-ui text-[10px] text-white">E2E_ENCRYPTED</span>
+                  <span className="mono-ui text-[10px] text-content">E2E_ENCRYPTED</span>
                 </div>
               </div>
             </div>
@@ -215,7 +215,7 @@ const AuthPage = () => {
             <div className="border-b border-forest" />
             <div className="p-6 flex flex-col justify-end items-end text-right">
               <span className="mono-ui text-[9px] text-forest uppercase">Node_Location</span>
-              <span className="mono-ui text-[10px] text-white">6.5244 N, 3.3792 E</span>
+              <span className="mono-ui text-[10px] text-content">6.5244 N, 3.3792 E</span>
             </div>
           </div>
         </div>

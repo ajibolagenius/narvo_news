@@ -48,7 +48,7 @@ const AccountPage = () => {
                 <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold uppercase tracking-widest">
                   {t('account.current_plan')}
                 </h3>
-                <p className="font-display text-4xl md:text-5xl lg:text-7xl font-bold text-white uppercase leading-none">
+                <p className="font-display text-4xl md:text-5xl lg:text-7xl font-bold text-content uppercase leading-none">
                   {t('account.premium_broadcast').split('\n').map((l, i) => <React.Fragment key={i}>{i > 0 && <br/>}{l}</React.Fragment>)}
                 </p>
               </div>
@@ -60,7 +60,7 @@ const AccountPage = () => {
             
             <div className="flex flex-wrap gap-3 md:gap-6 mt-6">
               <button 
-                className="px-4 md:px-8 py-2 md:py-3 bg-transparent border border-white text-white mono-ui text-[10px] md:text-[11px] font-bold hover:bg-primary hover:border-primary hover:text-background-dark transition-all"
+                className="px-4 md:px-8 py-2 md:py-3 bg-transparent border border-white text-content mono-ui text-[10px] md:text-[11px] font-bold hover:bg-primary hover:border-primary hover:text-background-dark transition-all"
                 data-testid="manage-plan-btn"
               >
                 {t('account.manage_plan')}
@@ -90,7 +90,7 @@ const AccountPage = () => {
                 data-testid={`alert-${alert.id}`}
               >
                 {alert.priority && <div className="absolute top-0 left-0 w-1 h-full bg-primary" />}
-                <p className={`mono-ui text-[10px] md:text-[11px] font-bold mb-2 ${alert.priority ? 'text-primary' : 'text-white'}`}>
+                <p className={`mono-ui text-[10px] md:text-[11px] font-bold mb-2 ${alert.priority ? 'text-primary' : 'text-content'}`}>
                   {alert.title}
                 </p>
                 <p className="mono-ui text-[8px] md:text-[9px] text-forest leading-relaxed">{alert.desc}</p>
@@ -116,7 +116,7 @@ const AccountPage = () => {
             {loading ? (
               <Skeleton variant="text" className="w-32 h-16" />
             ) : (
-              <span className="font-display text-5xl md:text-6xl font-bold text-white block">
+              <span className="font-display text-5xl md:text-6xl font-bold text-content block">
                 142.5
               </span>
             )}
@@ -144,7 +144,7 @@ const AccountPage = () => {
             {loading ? (
               <Skeleton variant="text" className="w-24 h-16" />
             ) : (
-              <span className="font-display text-5xl md:text-6xl font-bold text-white block">
+              <span className="font-display text-5xl md:text-6xl font-bold text-content block">
                 {metrics?.stories_processed || 892}
               </span>
             )}
@@ -183,7 +183,7 @@ const AccountPage = () => {
               <div className="flex items-center gap-3 md:gap-4">
                 <MapPin className="w-8 h-8 md:w-10 md:h-10 text-primary" />
                 <div className="space-y-1">
-                  <h4 className="font-display text-2xl md:text-3xl font-bold text-white uppercase leading-none">
+                  <h4 className="font-display text-2xl md:text-3xl font-bold text-content uppercase leading-none">
                     Lagos, NG
                   </h4>
                   <div className="flex gap-3 md:gap-4 mono-ui text-[8px] md:text-[9px] text-primary font-bold">
@@ -215,7 +215,7 @@ const AccountPage = () => {
               <span className="font-display text-primary text-xl font-bold">{user.email?.[0]?.toUpperCase()}</span>
             </div>
             <div>
-              <span className="text-white block font-display font-bold text-sm">{user.email}</span>
+              <span className="text-content block font-display font-bold text-sm">{user.email}</span>
               <span className="mono-ui text-[8px] text-forest">USER_ID: {user.id?.slice(0, 16)}</span>
             </div>
           </div>

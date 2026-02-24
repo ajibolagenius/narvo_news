@@ -83,11 +83,11 @@ const EmptyState = ({
       {/* Header */}
       <div className="flex justify-between items-end pb-4 narvo-border-b relative z-10">
         <div>
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-white uppercase tracking-tight">GLOBAL FEED MATRIX</h2>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">GLOBAL FEED MATRIX</h2>
           <p className="mono-ui text-[10px] text-forest font-bold mt-1">SECTOR_7 {'//'} NULL_TRANSMISSION</p>
         </div>
         <div className="flex gap-4">
-          <button className="px-4 md:px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase">
+          <button className="px-4 md:px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase">
             <Funnel className="w-4 h-4" />
             <span className="hidden sm:inline">FILTER</span>
           </button>
@@ -136,7 +136,7 @@ const EmptyState = ({
           </div>
 
           {/* Title & Message */}
-          <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-4 uppercase tracking-tighter">
+          <h3 className="font-display text-2xl md:text-3xl font-bold text-content mb-4 uppercase tracking-tighter">
             {title || config.title}
           </h3>
           <p className="text-forest text-sm mono-ui leading-relaxed mb-8 md:mb-10 lowercase">

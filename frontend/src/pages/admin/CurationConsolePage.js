@@ -42,7 +42,7 @@ const CurationConsolePage = () => {
           {/* Header */}
           <div className="p-8 pb-4 shrink-0">
             <div className="flex justify-between items-start mb-6">
-              <h2 className="font-display text-3xl font-bold text-white uppercase tracking-tight max-w-2xl leading-tight">
+              <h2 className="font-display text-3xl font-bold text-content uppercase tracking-tight max-w-2xl leading-tight">
                 Source_Analysis: Geopolitical_Shift_Lagos
               </h2>
               <span className="mono-ui text-[9px] border border-primary px-3 py-1 bg-primary/10 text-primary font-bold">
@@ -64,7 +64,7 @@ const CurationConsolePage = () => {
                   <p 
                     key={idx} 
                     className={item.type === 'quote' 
-                      ? 'bg-primary/5 p-4 border-l-2 border-primary/20 text-white italic' 
+                      ? 'bg-primary/5 p-4 border-l-2 border-primary/20 text-content italic' 
                       : 'opacity-60 hover:opacity-100 transition-opacity'
                     }
                   >
@@ -80,12 +80,12 @@ const CurationConsolePage = () => {
                 <span className="mono-ui text-[9px] text-primary font-bold tracking-widest uppercase">NARVO_SYNTHESIS // V2.4</span>
                 <Sparkle className="w-4 h-4 text-primary" />
               </div>
-              <div className="p-8 overflow-y-auto custom-scroll space-y-6 text-sm text-white font-medium leading-relaxed">
+              <div className="p-8 overflow-y-auto custom-scroll space-y-6 text-sm text-content font-medium leading-relaxed">
                 {synthesizedContent.map((item, idx) => (
                   <p 
                     key={idx} 
                     className={item.type === 'highlight' 
-                      ? 'bg-forest/10 p-4 border-l-2 border-forest text-white' 
+                      ? 'bg-forest/10 p-4 border-l-2 border-forest text-content' 
                       : ''
                     }
                   >
@@ -113,7 +113,7 @@ const CurationConsolePage = () => {
           <div className="p-6 narvo-border-b">
             <div className="flex items-center gap-3 mb-2">
               <Sliders className="w-5 h-5 text-primary" />
-              <h3 className="mono-ui text-[11px] text-white font-bold tracking-widest">ADJUSTMENT_PANEL</h3>
+              <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">ADJUSTMENT_PANEL</h3>
             </div>
             <p className="mono-ui text-[8px] text-forest">FINE_TUNE_SYNTHESIS_PARAMS</p>
           </div>
@@ -189,12 +189,12 @@ const CurationConsolePage = () => {
 
           {/* Action Buttons */}
           <div className="p-6 narvo-border-t space-y-3">
-            <button className="w-full py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:bg-forest hover:text-white transition-all flex items-center justify-center gap-2">
+            <button className="w-full py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:bg-forest hover:text-content transition-all flex items-center justify-center gap-2">
               <ArrowCounterClockwise className="w-4 h-4" />
               REGENERATE
             </button>
             <div className="flex gap-3">
-              <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-white hover:bg-red-500 hover:border-red-500 transition-all flex items-center justify-center gap-2">
+              <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-red-500 hover:border-red-500 transition-all flex items-center justify-center gap-2">
                 <X className="w-4 h-4" />
                 REJECT
               </button>

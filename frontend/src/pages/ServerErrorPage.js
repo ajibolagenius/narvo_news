@@ -17,7 +17,7 @@ const ServerErrorPage = () => {
     { label: 'SERVER_STATUS', value: 'CRITICAL', icon: Desktop, color: 'text-red-500' },
     { label: 'CPU_LOAD', value: '99.9%', icon: Cpu, color: 'text-red-400' },
     { label: 'MEMORY', value: 'OVERFLOW', icon: HardDrive, color: 'text-red-400' },
-    { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-white' },
+    { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-content' },
   ];
 
   return (
@@ -47,7 +47,7 @@ const ServerErrorPage = () => {
         <div className="max-w-4xl w-full space-y-12">
           {/* Large Error Display */}
           <div className="text-center space-y-6">
-            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-white">
+            <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold tracking-tighter text-content">
               <span className="text-red-500">[</span>SYSTEM HALT<span className="text-red-500">]</span>
             </h1>
             <div className="flex items-center justify-center gap-3 text-red-500 mono-ui text-xl md:text-2xl font-bold">

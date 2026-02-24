@@ -125,14 +125,14 @@ export const BreakingNewsBanner = () => {
         onClick={() => navigate(`/news/${story.id}`)}
         className="flex-1 min-w-0 text-left group"
       >
-        <span className="mono-ui text-[10px] md:text-[11px] text-white font-bold truncate block group-hover:text-red-300 transition-colors">
+        <span className="mono-ui text-[10px] md:text-[11px] text-content font-bold truncate block group-hover:text-red-300 transition-colors">
           {story.title}
         </span>
       </button>
       <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={() => navigate(`/news/${story.id}`)}
-          className="mono-ui text-[8px] text-red-400 font-bold hover:text-white transition-colors hidden sm:block"
+          className="mono-ui text-[8px] text-red-400 font-bold hover:text-content transition-colors hidden sm:block"
           data-testid="breaking-read-now"
         >
           {t('notifications.read_now')}

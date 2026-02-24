@@ -45,7 +45,7 @@ const LoadingScreen = ({ onComplete, duration = 3000 }) => {
       </header>
       <main className="relative z-10 flex-grow flex flex-col items-center justify-center">
         <div className="relative">
-          <h1 className="font-display text-8xl md:text-9xl font-bold tracking-tighter text-white mb-12">NARVO</h1>
+          <h1 className="font-display text-8xl md:text-9xl font-bold tracking-tighter text-content mb-12">NARVO</h1>
           <div className="absolute -top-6 -right-10">
             <div className="w-4 h-4 bg-primary animate-pulse" />
           </div>
