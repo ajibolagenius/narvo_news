@@ -171,7 +171,7 @@ const DashboardPage = () => {
                         <img
                           alt={featured.title}
                           className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale hover:grayscale-0 absolute inset-0"
-                          src={getCategoryImage(featured.category || featured.tags?.[0], featured.id)}
+                          src={featured.image_url || getCategoryImage(featured.category || featured.tags?.[0], featured.id)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-background-dark/80 to-transparent" />
                         <div className="absolute top-4 left-4 flex gap-2">
@@ -246,7 +246,7 @@ const DashboardPage = () => {
                         {/* Category thumbnail */}
                         <div className="hidden sm:block w-20 h-20 md:w-24 md:h-24 shrink-0 narvo-border overflow-hidden relative">
                           <img
-                            src={getCategoryImage(item.category || item.tags?.[0], item.id)}
+                            src={item.image_url || getCategoryImage(item.category || item.tags?.[0], item.id)}
                             alt={item.category}
                             className="w-full h-full object-cover opacity-50 group-hover:opacity-80 grayscale group-hover:grayscale-0 transition-all duration-500"
                           />
