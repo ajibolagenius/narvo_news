@@ -223,16 +223,22 @@ const DashboardPage = () => {
                 )}
 
                 {/* Synthesized Streams */}
-                <section className="space-y-4 md:space-y-6">
+                <motion.section
+                  className="space-y-4 md:space-y-6"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="show"
+                >
                   <div className="flex items-center justify-between border-b border-forest/30 pb-2">
                     <span className="mono-ui text-[10px] md:text-xs text-forest font-bold tracking-[0.2em]">{'//'} {t('dashboard.synthesized_streams')}</span>
                     <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase">Nodes: {String(stream.length).padStart(2, '0')}</span>
                   </div>
 
-                  <div className="narvo-border bg-surface/20 divide-y divide-forest/10">
+                  <motion.div variants={cardVariants} className="narvo-border bg-surface/20 divide-y divide-forest/10">
                     {stream.map((item, idx) => (
-                      <article
+                      <motion.article
                         key={item.id}
+                        variants={cardVariants}
                         className="p-4 md:p-6 group hover:bg-surface/40 transition-colors cursor-pointer flex gap-4"
                         onClick={() => navigate(`/news/${item.id}`)}
                         data-testid={`stream-card-${item.id}`}
@@ -301,9 +307,9 @@ const DashboardPage = () => {
                             </button>
                           </div>
                         </div>
-                      </article>
+                      </motion.article>
                     ))}
-                  </div>
+                  </motion.div>
 
                   {!allLoaded && (
                   <button
