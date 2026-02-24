@@ -63,11 +63,11 @@ const AccountPage = () => {
                 className="px-4 md:px-8 py-2 md:py-3 bg-transparent border border-white text-white mono-ui text-[10px] md:text-[11px] font-bold hover:bg-primary hover:border-primary hover:text-background-dark transition-all"
                 data-testid="manage-plan-btn"
               >
-                MANAGE_PLAN
+                {t('account.manage_plan')}
               </button>
               <button className="px-3 md:px-4 py-2 md:py-3 text-slate-400 mono-ui text-[10px] md:text-[11px] font-bold hover:text-primary transition-colors flex items-center gap-2">
                 <FileText className="w-4 h-4" />
-                <span className="hidden sm:inline">VIEW_INVOICES</span>
+                <span className="hidden sm:inline">{t('account.view_invoices')}</span>
               </button>
             </div>
           </div>
@@ -77,7 +77,7 @@ const AccountPage = () => {
         <div className="w-full lg:w-[350px] xl:w-[400px] p-6 md:p-10 flex flex-col gap-6 md:gap-8 narvo-border-t lg:border-t-0">
           <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold flex items-center gap-3 tracking-[0.2em]">
             <Bell className="w-4 h-4" />
-            SYSTEM_ALERTS
+            {t('account.system_alerts')}
           </h3>
           
           <div className="space-y-3 md:space-y-4">
