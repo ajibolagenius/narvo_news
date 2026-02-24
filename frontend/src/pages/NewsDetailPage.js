@@ -82,7 +82,8 @@ const NewsDetailPage = () => {
   };
 
   const shareStory = async () => {
-    const shareUrl = `${window.location.origin}/news/${news.id}`;
+    // Use the /share/ URL which has proper OG meta tags for social media
+    const shareUrl = `${API_URL}/share/${news.id}`;
     const shareText = `${news.title} - Listen on NARVO`;
     
     if (navigator.share) {
