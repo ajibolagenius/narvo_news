@@ -119,13 +119,14 @@ const LandingPage = () => {
             {news.map((item, idx) => (
               <article key={item.id} className={`p-6 ${idx < news.length - 1 ? 'border-b border-forest' : ''} group cursor-pointer hover:bg-forest/10 transition-all flex-1 flex flex-col justify-center`} onClick={() => navigate(`/news/${item.id}`)} data-testid={`transmission-${idx}`}>
                 <div className="flex justify-between items-start mb-2">
-                  <span className="mono-ui text-[9px] text-primary border border-primary px-1">AUDIO</span>
-                  <span className="mono-ui text-[9px] text-forest">{item.truth_score ? `TRUTH_TAG: ${item.truth_score}%` : '04m 12s'}</span>
+                  <span className="mono-ui text-[9px] text-primary border border-primary px-1">{(item.category || 'GENERAL').toUpperCase()}</span>
+                  <span className="mono-ui text-[9px] text-forest">{item.source || 'RSS'} // {item.region || 'AFRICA'}</span>
                 </div>
                 <h3 className="font-display text-md font-bold leading-snug mb-2 group-hover:text-primary transition-colors text-white line-clamp-2">{item.title}</h3>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="w-1 h-3 bg-primary animate-pulse"></span>
-                  <span className="mono-ui text-[8px] text-forest">[PROCESSING_PULSE]</span>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="w-1 h-3 bg-primary animate-pulse" />
+                  <span className="mono-ui text-[8px] text-forest">{item.published ? new Date(item.published).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'LIVE'}</span>
+                  {item.read_time && <span className="mono-ui text-[8px] text-forest">{item.read_time}</span>}
                 </div>
               </article>
             ))}
