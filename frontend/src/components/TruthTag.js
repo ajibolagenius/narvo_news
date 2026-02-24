@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, AlertTriangle, HelpCircle, XCircle, Loader2 } from 'lucide-react';
+import { CheckCircle, Warning, Question, XCircle, CircleNotch } from '@phosphor-icons/react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
