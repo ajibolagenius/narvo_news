@@ -5,37 +5,42 @@ from datetime import datetime
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
-# Supported languages with their codes and TTS voice recommendations
+# Supported languages with authentic native names and TTS voice recommendations
 SUPPORTED_LANGUAGES = {
     "en": {
         "name": "English",
         "native_name": "English",
         "voice_id": "nova",
-        "description": "Standard English broadcast"
+        "voice_name": "Adaeze",
+        "description": "International English broadcast"
     },
     "pcm": {
-        "name": "Nigerian Pidgin",
-        "native_name": "Naija Pidgin",
+        "name": "Naijá",
+        "native_name": "Naijá Tok",
         "voice_id": "onyx",
-        "description": "Nigerian Pidgin English - widely spoken across Nigeria"
+        "voice_name": "Chukwuemeka",
+        "description": "Naijá Pidgin - di language wey everybody sabi for Naija"
     },
     "yo": {
-        "name": "Yoruba",
+        "name": "Yorùbá",
         "native_name": "Èdè Yorùbá",
         "voice_id": "echo",
-        "description": "Yoruba language - spoken in Southwest Nigeria"
+        "voice_name": "Olúwásẹ̀un",
+        "description": "Èdè Yorùbá - àwọn ará Gúúsù Ìwọ̀ Oòrùn Nàìjíríà"
     },
     "ha": {
         "name": "Hausa",
         "native_name": "Harshen Hausa",
         "voice_id": "alloy",
-        "description": "Hausa language - spoken in Northern Nigeria and West Africa"
+        "voice_name": "Abubakar",
+        "description": "Harshen Hausa - yaren Arewacin Najeriya"
     },
     "ig": {
         "name": "Igbo",
         "native_name": "Asụsụ Igbo",
         "voice_id": "shimmer",
-        "description": "Igbo language - spoken in Southeast Nigeria"
+        "voice_name": "Chinyere",
+        "description": "Asụsụ Igbo - asụsụ ndị Ala Igbo"
     }
 }
 
