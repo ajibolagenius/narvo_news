@@ -94,6 +94,7 @@ const SystemGearSixPage = () => {
           alert_volume: settings.alertVolume,
           data_limit: settings.dataLimit / 1000,
           bandwidth_priority: settings.bandwidthPriority.toLowerCase(),
+          broadcast_language: settings.broadcastLanguage,
         }),
       });
       if (res.ok) {
