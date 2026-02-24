@@ -7,6 +7,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [selectedRegion, setSelectedRegion] = useState('lagos');
   const [selectedVoice, setSelectedVoice] = useState('pidgin');
