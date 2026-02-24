@@ -200,9 +200,9 @@ const VoiceStudioPage = () => {
                       </h4>
                     </div>
                     {status.active ? (
-                      <AudioWaveform className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                      <Waveform className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                     ) : (
-                      <CircleOff className="w-5 h-5 md:w-6 md:h-6 text-forest" />
+                      <Prohibit className="w-5 h-5 md:w-6 md:h-6 text-forest" />
                     )}
                   </div>
                   
