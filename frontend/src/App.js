@@ -33,6 +33,7 @@ const SystemSettingsPage = lazy(() => import('./pages/SystemSettingsPage'));
 const AccessibilityPage = lazy(() => import('./pages/AccessibilityPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ServerErrorPage = lazy(() => import('./pages/ServerErrorPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 // Admin Pages
 const OperationHubPage = lazy(() => import('./pages/admin/OperationHubPage'));
 const CurationConsolePage = lazy(() => import('./pages/admin/CurationConsolePage'));
@@ -62,6 +63,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/auth" element={<AuthPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
                 {/* Dashboard routes with shared layout (header + sidebar + player) */}
                 <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
