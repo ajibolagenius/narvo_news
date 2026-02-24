@@ -122,6 +122,44 @@ export const AudioProvider = ({ children }) => {
     }
   }, []);
 
+  // Queue management (defined before playTrack so it's available)
+  const addToQueue = useCallback((track) => {
+    setQueue(prev => {
+      if (prev.some(t => t.id === track.id)) return prev;
+      return [...prev, track];
+    });
+  }, []);
+
+  const removeFromQueue = useCallback((trackId) => {
+    setQueue(prev => prev.filter(t => t.id !== trackId));
+  }, []);
+
+  const clearQueue = useCallback(() => {
+    setQueue([]);
+    setQueueIndex(-1);
+  }, []);
+
+  // Reorder queue items (drag-and-drop support)
+  const reorderQueue = useCallback((fromIndex, toIndex) => {
+    // Don't allow reordering the currently playing item
+    if (fromIndex === queueIndex) return;
+    
+    setQueue(prev => {
+      const updated = [...prev];
+      const [moved] = updated.splice(fromIndex, 1);
+      updated.splice(toIndex, 0, moved);
+      
+      // Update queueIndex if needed
+      if (fromIndex < queueIndex && toIndex >= queueIndex) {
+        setQueueIndex(qi => qi - 1);
+      } else if (fromIndex > queueIndex && toIndex <= queueIndex) {
+        setQueueIndex(qi => qi + 1);
+      }
+      
+      return updated;
+    });
+  }, [queueIndex]);
+
   const playTrack = useCallback(async (track, forcePlay = false) => {
     if (!track) return;
     
