@@ -41,15 +41,15 @@ const AccountPage = () => {
             <div className="space-y-4 md:space-y-6">
               <div className="flex items-center gap-3">
                 <span className="w-2 h-2 bg-primary animate-pulse" />
-                <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold uppercase">Stream_Active</span>
+                <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold uppercase">{t('account.stream_active')}</span>
               </div>
               
               <div className="space-y-2">
                 <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold uppercase tracking-widest">
-                  CURRENT_PLAN
+                  {t('account.current_plan')}
                 </h3>
                 <p className="font-display text-4xl md:text-5xl lg:text-7xl font-bold text-white uppercase leading-none">
-                  Premium<br/>Broadcast
+                  {t('account.premium_broadcast').split('\n').map((l, i) => <React.Fragment key={i}>{i > 0 && <br/>}{l}</React.Fragment>)}
                 </p>
               </div>
               
