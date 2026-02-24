@@ -211,18 +211,20 @@ Global pages for error states, empty content, and notifications.
 - **Mobile Bottom Navigation**: 6-item bottom nav bar (Feed, Briefing, Saved, Voices, Search, More)
 - **Desktop Elements Hidden on Mobile**: Dashboard sidebar, telemetry sidebar, and detail sidebar properly hidden
 
-### Backend APIs (20+ endpoints)
+### Backend APIs (30+ endpoints)
 - Core: `/api/health`, `/api/news`, `/api/news/{id}`, `/api/voices`, `/api/metrics`
 - AI/TTS: `/api/paraphrase`, `/api/tts/generate`
 - Briefing: `/api/briefing/generate`, `/api/briefing/latest`, `/api/briefing/audio`
 - Bookmarks (MongoDB): `POST/GET/DELETE /api/bookmarks`
 - Preferences (MongoDB): `POST/GET /api/preferences`
 - Support: `/api/regions`, `/api/categories`, `/api/trending`
-- Radio (NEW): `/api/radio/stations?country={code}&limit={n}` (Radio Browser API)
+- Radio: `/api/radio/stations?country={code}&limit={n}` (Radio Browser API)
+- Admin (NEW): `/api/admin/metrics`, `/api/admin/alerts`, `/api/admin/streams`, `/api/admin/voices`, `/api/admin/moderation`, `/api/admin/stats`
+- Fact-check (NEW): `/api/factcheck/{story_id}` (GET), `/api/factcheck/analyze` (POST) - Mock Dubawa integration
 
 ## Testing
-- Backend: 100% (9/9 new tests) — iteration_11.json
-- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX), iteration_10.json (Library pages), iteration_11.json (User Profile & Radio), iteration_12.json (Admin pages), iteration_13.json (System States & Events)
+- Backend: 100% (28/28 tests) — iteration_14.json
+- Frontend: 100% (all flows verified) — iteration_9.json (UI/UX), iteration_10.json (Library pages), iteration_11.json (User Profile & Radio), iteration_12.json (Admin pages), iteration_13.json (System States), iteration_14.json (Admin API integration)
 
 ## Prioritized Backlog
 
@@ -236,20 +238,21 @@ Global pages for error states, empty content, and notifications.
 - [x] Live Radio Integration on Discover Page ✅ (Feb 23, 2026)
 - [x] Admin & Curation Dashboard (4 pages) ✅ (Feb 24, 2026)
 - [x] System States & Events (404/500 pages, Empty States, Haptic Alerts) ✅ (Feb 24, 2026)
+- [x] Backend Admin API integration (real-time metrics) ✅ (Feb 24, 2026)
+- [x] Dubawa fact-checking API (mock implementation) ✅ (Feb 24, 2026)
 
 ### P2 (Medium Priority)
-- [ ] Dubawa fact-checking / Truth Tags
+- [ ] Display Truth Tags on news cards using fact-check API
 - [ ] Share stories feature
 - [ ] Multi-language UI support
 - [x] Mobile responsive refinements ✅ (Feb 23, 2026)
 - [x] Collapsible sidebar ✅ (Feb 23, 2026)
 - [ ] Connect User Profile pages to backend for saving preferences
 - [ ] Historical Morning Briefings browser
-- [ ] Backend integration for Admin pages (real-time metrics, curation workflow)
 
 ### P3 (Future)
 - [ ] React Native mobile app
-- [ ] Admin dashboard for content curation
+- [ ] Real Dubawa API integration (when public API available)
 - [ ] Voice cloning for regional accents
 - [ ] WebSocket real-time updates
 - [ ] Scheduled 5 AM briefing generation
