@@ -217,6 +217,19 @@ export const AudioProvider = ({ children }) => {
     }
   }, [queue, queueIndex, playTrack]);
 
+  // Smooth transition to next track (broadcast-style)
+  const playNextSmooth = useCallback(async () => {
+    if (queue.length === 0) return;
+    const nextIdx = queueIndex + 1;
+    if (nextIdx < queue.length) {
+      fadeOut(async () => {
+        const next = queue[nextIdx];
+        setQueueIndex(nextIdx);
+        await playTrack(next);
+      });
+    }
+  }, [queue, queueIndex, playTrack, fadeOut]);
+
   const playPrev = useCallback(async () => {
     if (queue.length === 0) return;
     const prevIdx = queueIndex - 1;
