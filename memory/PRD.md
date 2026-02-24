@@ -240,15 +240,18 @@ Global pages for error states, empty content, and notifications.
 - [x] System States & Events (404/500 pages, Empty States, Haptic Alerts) ✅ (Feb 24, 2026)
 - [x] Backend Admin API integration (real-time metrics) ✅ (Feb 24, 2026)
 - [x] Dubawa fact-checking API (mock implementation) ✅ (Feb 24, 2026)
+- [x] EmptyState components integrated (Search, Saved, Offline pages) ✅ (Feb 24, 2026)
+- [x] Truth Tags on news cards (TruthTag component) ✅ (Feb 24, 2026)
+- [x] User Settings persistence (Voice Studio saves to backend) ✅ (Feb 24, 2026)
+- [x] Share stories feature (Web Share API + clipboard fallback) ✅ (Feb 24, 2026)
 
 ### P2 (Medium Priority)
-- [ ] Display Truth Tags on news cards using fact-check API
-- [ ] Share stories feature
 - [ ] Multi-language UI support
 - [x] Mobile responsive refinements ✅ (Feb 23, 2026)
 - [x] Collapsible sidebar ✅ (Feb 23, 2026)
-- [ ] Connect User Profile pages to backend for saving preferences
 - [ ] Historical Morning Briefings browser
+- [ ] System Settings page backend persistence
+- [ ] Accessibility Settings page backend persistence
 
 ### P3 (Future)
 - [ ] React Native mobile app
