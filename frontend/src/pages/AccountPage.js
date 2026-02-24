@@ -103,110 +103,118 @@ const AccountPage = () => {
       </div>
 
       {/* Lower Section: Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3">
-        {/* Metric 1: Broadcast Hours */}
-        <div className="p-6 md:p-10 narvo-border-r narvo-border-b md:border-b-0 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
-          <div className="flex justify-between items-start">
-            <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
-              {t('account.broadcast_hours')}
-            </h3>
-            <Timer className="w-5 h-5 text-forest" />
-          </div>
-          
-          <div className="space-y-2">
-            {loading ? (
-              <Skeleton variant="text" className="w-32 h-16" />
-            ) : (
-              <span className="font-display text-5xl md:text-6xl font-bold text-content block">
-                142.5
-              </span>
-            )}
-            <div className="flex items-center gap-2 mono-ui text-[8px] md:text-[9px] font-bold">
-              <span className="text-primary">+12.4%</span>
-              <span className="text-forest opacity-70">VS_PREV_CYCLE</span>
-            </div>
-          </div>
-          
-          <div className="w-full h-1 bg-forest/20 mt-6 md:mt-8 relative">
-            <div className="absolute top-0 left-0 h-full w-[70%] bg-primary" />
-          </div>
-        </div>
-
-        {/* Metric 2: Signals Processed */}
-        <div className="p-6 md:p-10 narvo-border-r narvo-border-b md:border-b-0 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
-          <div className="flex justify-between items-start">
-            <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
-              {t('account.signals_processed')}
-            </h3>
-            <Waveform className="w-5 h-5 text-forest" />
-          </div>
-          
-          <div className="space-y-2">
-            {loading ? (
-              <Skeleton variant="text" className="w-24 h-16" />
-            ) : (
-              <span className="font-display text-5xl md:text-6xl font-bold text-content block">
-                {metrics?.stories_processed || 892}
-              </span>
-            )}
-            <div className="flex items-center gap-2 mono-ui text-[8px] md:text-[9px] font-bold">
-              <span className="text-forest opacity-70">AVG_28_PER_ROTATION</span>
-            </div>
-          </div>
-          
-          <div className="flex items-end gap-1 h-10 md:h-12 mt-6 md:mt-8 opacity-40">
-            {[40, 60, 30, 80, 100, 50, 70].map((h, i) => (
-              <div 
-                key={i} 
-                className={`flex-1 ${i === 4 ? 'bg-primary' : 'bg-forest'}`} 
-                style={{ height: `${h}%` }} 
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Region Status */}
-        <div className="p-6 md:p-10 relative bg-background-dark overflow-hidden min-h-[200px] md:min-h-[250px]">
-          <div 
-            className="absolute inset-0 opacity-10"
-            style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '20px 20px' }}
-          />
-          
-          <div className="relative z-10 h-full flex flex-col justify-between">
-            <div className="flex justify-between items-start">
-              <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
-                {t('account.primary_region')}
-              </h3>
-              <MapPin className="w-5 h-5 text-forest" />
-            </div>
-            
-            <div className="mt-auto space-y-3 md:space-y-4">
-              <div className="flex items-center gap-3 md:gap-4">
-                <MapPin className="w-8 h-8 md:w-10 md:h-10 text-primary" />
-                <div className="space-y-1">
-                  <h4 className="font-display text-2xl md:text-3xl font-bold text-content uppercase leading-none">
-                    Lagos, NG
-                  </h4>
-                  <div className="flex gap-3 md:gap-4 mono-ui text-[8px] md:text-[9px] text-primary font-bold">
-                    <span>LAT: 6.5244</span>
-                    <span>LON: 3.3792</span>
+      <ResponsiveTabView
+        tabs={[
+          {
+            label: t('account.broadcast_hours'),
+            icon: Timer,
+            content: (
+              <div className="p-6 md:p-10 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
+                <div className="flex justify-between items-start">
+                  <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
+                    {t('account.broadcast_hours')}
+                  </h3>
+                  <Timer className="w-5 h-5 text-forest" />
+                </div>
+                <div className="space-y-2">
+                  {loading ? (
+                    <Skeleton variant="text" className="w-32 h-16" />
+                  ) : (
+                    <span className="font-display text-5xl md:text-6xl font-bold text-content block">
+                      142.5
+                    </span>
+                  )}
+                  <div className="flex items-center gap-2 mono-ui text-[8px] md:text-[9px] font-bold">
+                    <span className="text-primary">+12.4%</span>
+                    <span className="text-forest opacity-70">VS_PREV_CYCLE</span>
+                  </div>
+                </div>
+                <div className="w-full h-1 bg-forest/20 mt-6 md:mt-8 relative">
+                  <div className="absolute top-0 left-0 h-full w-[70%] bg-primary" />
+                </div>
+              </div>
+            ),
+          },
+          {
+            label: t('account.signals_processed'),
+            icon: Waveform,
+            content: (
+              <div className="p-6 md:p-10 flex flex-col justify-between min-h-[200px] md:min-h-[250px]">
+                <div className="flex justify-between items-start">
+                  <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
+                    {t('account.signals_processed')}
+                  </h3>
+                  <Waveform className="w-5 h-5 text-forest" />
+                </div>
+                <div className="space-y-2">
+                  {loading ? (
+                    <Skeleton variant="text" className="w-24 h-16" />
+                  ) : (
+                    <span className="font-display text-5xl md:text-6xl font-bold text-content block">
+                      {metrics?.stories_processed || 892}
+                    </span>
+                  )}
+                  <div className="flex items-center gap-2 mono-ui text-[8px] md:text-[9px] font-bold">
+                    <span className="text-forest opacity-70">AVG_28_PER_ROTATION</span>
+                  </div>
+                </div>
+                <div className="flex items-end gap-1 h-10 md:h-12 mt-6 md:mt-8 opacity-40">
+                  {[40, 60, 30, 80, 100, 50, 70].map((h, i) => (
+                    <div 
+                      key={i} 
+                      className={`flex-1 ${i === 4 ? 'bg-primary' : 'bg-forest'}`} 
+                      style={{ height: `${h}%` }} 
+                    />
+                  ))}
+                </div>
+              </div>
+            ),
+          },
+          {
+            label: t('account.primary_region'),
+            icon: MapPin,
+            content: (
+              <div className="p-6 md:p-10 relative bg-background-dark overflow-hidden min-h-[200px] md:min-h-[250px]">
+                <div 
+                  className="absolute inset-0 opacity-10"
+                  style={{ backgroundImage: 'linear-gradient(rgb(var(--color-border)) 1px, transparent 1px), linear-gradient(90deg, rgb(var(--color-border)) 1px, transparent 1px)', backgroundSize: '20px 20px' }}
+                />
+                <div className="relative z-10 h-full flex flex-col justify-between">
+                  <div className="flex justify-between items-start">
+                    <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
+                      {t('account.primary_region')}
+                    </h3>
+                    <MapPin className="w-5 h-5 text-forest" />
+                  </div>
+                  <div className="mt-auto space-y-3 md:space-y-4">
+                    <div className="flex items-center gap-3 md:gap-4">
+                      <MapPin className="w-8 h-8 md:w-10 md:h-10 text-primary" />
+                      <div className="space-y-1">
+                        <h4 className="font-display text-2xl md:text-3xl font-bold text-content uppercase leading-none">
+                          Lagos, NG
+                        </h4>
+                        <div className="flex gap-3 md:gap-4 mono-ui text-[8px] md:text-[9px] text-primary font-bold">
+                          <span>LAT: 6.5244</span>
+                          <span>LON: 3.3792</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="narvo-border border-forest/30 p-2 md:p-3 bg-surface/10">
+                      <div className="flex justify-between mono-ui text-[7px] md:text-[8px] text-forest font-bold">
+                        <span>HUB_LOAD</span>
+                        <span>{metrics?.network_load || '24%'}</span>
+                      </div>
+                      <div className="w-full h-[2px] bg-forest/20 mt-2">
+                        <div className="w-[24%] h-full bg-primary" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="narvo-border border-forest/30 p-2 md:p-3 bg-surface/10">
-                <div className="flex justify-between mono-ui text-[7px] md:text-[8px] text-forest font-bold">
-                  <span>HUB_LOAD</span>
-                  <span>{metrics?.network_load || '24%'}</span>
-                </div>
-                <div className="w-full h-[2px] bg-forest/20 mt-2">
-                  <div className="w-[24%] h-full bg-primary" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+            ),
+          },
+        ]}
+      />
 
       {/* User Info Footer */}
       {user && (
