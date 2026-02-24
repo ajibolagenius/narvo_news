@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Bell, Timer, Waveform, MapPin, FileText, Broadcast } from '@phosphor-icons/react';
 import Skeleton from '../components/Skeleton';
+import ResponsiveTabView from '../components/ResponsiveTabView';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
