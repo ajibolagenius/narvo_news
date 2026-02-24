@@ -184,6 +184,50 @@ const SettingsPage = () => {
             </div>
           </div>
 
+          {/* Haptic Alert Demo */}
+          <div className="space-y-4">
+            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+              NOTIFICATION_TEST_PANEL
+            </h2>
+            <p className="mono-ui text-[9px] text-forest/70 mb-4">
+              Test haptic alert patterns for different system events
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <button 
+                onClick={() => showAlert('SYNC_SUCCESS')}
+                className="narvo-border bg-primary/10 p-4 hover:bg-primary/20 transition-colors text-left"
+                data-testid="test-sync-success"
+              >
+                <Bell className="w-4 h-4 text-primary mb-2" />
+                <span className="mono-ui text-[9px] text-primary font-bold block">SYNC_SUCCESS</span>
+              </button>
+              <button 
+                onClick={() => showAlert('BREAKING_NEWS')}
+                className="narvo-border bg-red-500/10 p-4 hover:bg-red-500/20 transition-colors text-left"
+                data-testid="test-breaking-news"
+              >
+                <Zap className="w-4 h-4 text-red-500 mb-2" />
+                <span className="mono-ui text-[9px] text-red-500 font-bold block">BREAKING_NEWS</span>
+              </button>
+              <button 
+                onClick={() => showAlert('BOOKMARK_ADDED')}
+                className="narvo-border bg-forest/10 p-4 hover:bg-forest/20 transition-colors text-left"
+                data-testid="test-bookmark"
+              >
+                <Bell className="w-4 h-4 text-forest mb-2" />
+                <span className="mono-ui text-[9px] text-forest font-bold block">BOOKMARK_ADDED</span>
+              </button>
+              <button 
+                onClick={() => showAlert('NETWORK_ERROR')}
+                className="narvo-border bg-red-500/10 p-4 hover:bg-red-500/20 transition-colors text-left"
+                data-testid="test-network-error"
+              >
+                <Bell className="w-4 h-4 text-red-400 mb-2" />
+                <span className="mono-ui text-[9px] text-red-400 font-bold block">NETWORK_ERROR</span>
+              </button>
+            </div>
+          </div>
+
           {/* Logout Section */}
           <div className="pt-6 md:pt-8 border-t border-forest/20">
             <button 
