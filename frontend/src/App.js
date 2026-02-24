@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { AudioProvider } from './contexts/AudioContext';
 import { HapticAlertProvider } from './components/HapticAlerts';
+import { BreakingNewsProvider } from './components/BreakingNews';
 import LoadingScreen from './components/LoadingScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
