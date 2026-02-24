@@ -412,7 +412,7 @@ const NewsDetailPage = () => {
               data-testid="sidebar-bookmark-btn"
             >
               {isBookmarked(news.id) ? <BookmarkCheck className="w-3 h-3" /> : <Bookmark className="w-3 h-3" />}
-              {isBookmarked(news.id) ? 'SAVED' : 'SAVE'}
+              {isBookmarked(news.id) ? t('dashboard.saved') : t('dashboard.save')}
             </button>
           </div>
 
