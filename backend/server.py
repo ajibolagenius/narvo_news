@@ -1116,6 +1116,86 @@ async def get_preferences(user_id: str = Query(..., description="User ID")):
         return doc
     return {"region": "lagos", "voice": "pidgin", "interests": ["politics", "sports", "afrobeats"]}
 
+# Category colors for OG image
+OG_CATEGORY_COLORS = {
+    "politics": "#dc2626", "tech": "#0891b2", "sports": "#16a34a",
+    "finance": "#d97706", "business": "#d97706", "culture": "#9333ea",
+    "health": "#0d9488", "environment": "#059669", "general": "#6b7280",
+}
+
+@app.get("/api/og/{news_id}", response_class=HTMLResponse)
+async def og_image_html(news_id: str):
+    """Generate an HTML page that serves as OG image preview for social sharing"""
+    all_news = []
+    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    for items in results:
+        if isinstance(items, list):
+            all_news.extend(items)
+
+    story = None
+    for item in all_news:
+        if item.get("id") == news_id:
+            story = item
+            break
+
+    if not story:
+        raise HTTPException(status_code=404, detail="Story not found")
+
+    title = story.get("title", "Narvo News")[:100]
+    source = story.get("source", "NARVO")
+    category = (story.get("category", "general") or "general").lower().replace("#", "").strip()
+    region = story.get("region", "AFRICA")
+    accent = OG_CATEGORY_COLORS.get(category, "#6b7280")
+
+    html = f"""<!DOCTYPE html>
+<html><head><meta charset="utf-8">
+<meta property="og:title" content="{title}" />
+<meta property="og:description" content="Listen on Narvo — Audio-first news for Africa" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="NARVO" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{title}" />
+<style>
+  * {{ margin:0; padding:0; box-sizing:border-box; }}
+  body {{ width:1200px; height:630px; background:#0a0a0a; font-family:'Segoe UI',system-ui,sans-serif; display:flex; flex-direction:column; }}
+  .top {{ height:6px; background:{accent}; }}
+  .main {{ flex:1; display:flex; padding:60px; gap:40px; }}
+  .left {{ flex:1; display:flex; flex-direction:column; justify-content:space-between; }}
+  .cat {{ display:inline-block; background:{accent}; color:#fff; font-size:14px; font-weight:700; letter-spacing:3px; padding:6px 16px; text-transform:uppercase; }}
+  .title {{ color:#fff; font-size:48px; font-weight:800; line-height:1.1; letter-spacing:-1px; text-transform:uppercase; margin-top:24px; }}
+  .meta {{ display:flex; gap:20px; align-items:center; }}
+  .meta span {{ color:#6b7280; font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; }}
+  .meta .src {{ color:{accent}; }}
+  .right {{ width:200px; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; }}
+  .logo {{ color:{accent}; font-size:28px; font-weight:900; letter-spacing:6px; }}
+  .tag {{ color:#374151; font-size:11px; font-weight:600; letter-spacing:3px; text-align:right; }}
+  .bar {{ height:4px; background:linear-gradient(90deg,{accent},transparent); }}
+</style></head>
+<body>
+  <div class="top"></div>
+  <div class="main">
+    <div class="left">
+      <div>
+        <span class="cat">{category}</span>
+        <div class="title">{title}</div>
+      </div>
+      <div class="meta">
+        <span class="src">{source}</span>
+        <span>{region}</span>
+        <span>NARVO // AUDIO-FIRST</span>
+      </div>
+    </div>
+    <div class="right">
+      <div class="logo">N</div>
+      <div class="tag">NARVO.NEWS<br/>VOICE-FIRST<br/>PLATFORM</div>
+    </div>
+  </div>
+  <div class="bar"></div>
+</body></html>"""
+    return HTMLResponse(content=html)
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
