@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Activity, FileText, Mic, ShieldCheck, ChevronLeft, Radio } from 'lucide-react';
+import { Pulse, FileText, Microphone, ShieldCheck, CaretLeft, Radio } from '@phosphor-icons/react';
 
 const AdminSidebar = () => {
   const navigate = useNavigate();
@@ -9,9 +9,9 @@ const AdminSidebar = () => {
   const { t } = useTranslation();
 
   const adminNavItems = [
-    { icon: Activity, label: t('admin.operation_hub'), path: '/admin/operations' },
+    { icon: Pulse, label: t('admin.operation_hub'), path: '/admin/operations' },
     { icon: FileText, label: t('admin.curation_console'), path: '/admin/curation' },
-    { icon: Mic, label: t('admin.voice_management'), path: '/admin/voices' },
+    { icon: Microphone, label: t('admin.voice_management'), path: '/admin/voices' },
     { icon: ShieldCheck, label: t('admin.moderation_zone'), path: '/admin/moderation' },
   ];
 
@@ -31,7 +31,7 @@ const AdminSidebar = () => {
           onClick={() => navigate('/dashboard')}
           className="w-full py-2 narvo-border text-forest mono-ui text-[9px] font-bold hover:text-white hover:bg-forest/20 transition-all flex items-center justify-center gap-2"
         >
-          <ChevronLeft className="w-4 h-4" />
+          <CaretLeft className="w-4 h-4" />
           {t('news_detail.back_to_feed')}
         </button>
       </div>
