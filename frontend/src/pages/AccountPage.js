@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Bell, Timer, AudioWaveform, MapPin, FileText, RadioTower } from 'lucide-react';
 import Skeleton from '../components/Skeleton';
@@ -7,6 +8,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const AccountPage = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
 
