@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RadioTower, Activity, AlertOctagon, Database, Search, FileText, AlertTriangle, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+import { Broadcast, Pulse, WarningOctagon, Database, MagnifyingGlass, FileText, Warning, CheckCircle, XCircle, ArrowClockwise } from '@phosphor-icons/react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RadioTower, Filter, PlusSquare, MoreVertical, Loader2, RefreshCw } from 'lucide-react';
+import { Broadcast, Funnel, PlusSquare, DotsThreeVertical, CircleNotch, ArrowClockwise } from '@phosphor-icons/react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
