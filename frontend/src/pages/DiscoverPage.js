@@ -18,6 +18,8 @@ const DiscoverPage = () => {
   const [trendingTopics, setTrendingTopics] = useState([]);
   const [downloadingPodcasts, setDownloadingPodcasts] = useState({});
   const [cachedPodcasts, setCachedPodcasts] = useState({});
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const [downloadAllProgress, setDownloadAllProgress] = useState(0);
   const { playTrack } = useAudio();
   
   // Radio state
