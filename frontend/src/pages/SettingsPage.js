@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { LogOut, User, Mic, Monitor, Accessibility, ChevronRight, Shield, Zap, Database, Clock, Bell, Globe } from 'lucide-react';
 import { LANGUAGES } from '../i18n';
+import { NotificationToggle } from '../components/BreakingNews';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
