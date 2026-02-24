@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderOpen, Play, Pause, Trash2, AlertOctagon, RotateCcw, Filter, Waves, Mic, Speaker, WifiOff } from '@phosphor-icons/react';
+import { FolderOpen, Play, Pause, Trash, AlertOctagon, RotateCcw, Filter, Waves, Microphone, Speaker, WifiHighOff } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { getAllCachedIds, getCachedAudio, removeCachedAudio } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
@@ -165,7 +165,7 @@ const OfflinePage = () => {
           className="flex items-center gap-2 mono-ui text-[9px] md:text-[10px] font-bold text-forest hover:text-primary transition-colors"
           data-testid="clear-cache-btn"
         >
-          <Trash2 className="w-4 h-4" />
+          <Trash className="w-4 h-4" />
           <span>CLEAR_LOCAL_CACHE</span>
         </button>
       </section>
@@ -212,7 +212,7 @@ const OfflinePage = () => {
               <div className="bg-background-dark narvo-border p-6 md:p-10 max-w-md w-full text-center shadow-xl backdrop-blur-md relative z-10">
                 <div className="mb-4 md:mb-6 flex justify-center">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-surface narvo-border border-dashed flex items-center justify-center relative">
-                    <WifiOff className="w-8 h-8 md:w-10 md:h-10 text-forest" />
+                    <WifiHighOff className="w-8 h-8 md:w-10 md:h-10 text-forest" />
                   </div>
                 </div>
                 
@@ -268,7 +268,7 @@ const OfflinePage = () => {
                     ) : item.type === 'audio' ? (
                       <Waves className="w-4 h-4 md:w-5 md:h-5" />
                     ) : (
-                      <Mic className="w-4 h-4 md:w-5 md:h-5" />
+                      <Microphone className="w-4 h-4 md:w-5 md:h-5" />
                     )}
                   </div>
                   
@@ -308,7 +308,7 @@ const OfflinePage = () => {
                       className={`${isActive ? 'text-primary/50' : 'text-white'} hover:text-primary`}
                       data-testid={`remove-cached-${item.id}`}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

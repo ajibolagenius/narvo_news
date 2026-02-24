@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { getAllCachedIds, removeCachedAudio } from '../lib/audioCache';
-import { Bookmark, Play, Pause, Trash2, Check } from '@phosphor-icons/react';
+import { Bookmark, Play, Pause, Trash, Check } from '@phosphor-icons/react';
 import { ListSkeleton } from '../components/Skeleton';
 
 const BookmarksPage = () => {
@@ -82,7 +82,7 @@ const BookmarksPage = () => {
                           <div className="flex-1 h-[1px] bg-forest/10 hidden md:block" />
                           <span className="mono-ui text-[7px] md:text-[8px] text-forest/50 hidden md:inline">SAVED: {new Date(item.saved_at).toLocaleDateString()}</span>
                           <button onClick={(e) => { e.stopPropagation(); handleRemove(item.story_id); }} className="text-forest hover:text-red-400 transition-colors ml-auto md:ml-0" data-testid={`remove-bookmark-${item.story_id}`}>
-                            <Trash2 className="w-4 h-4" />
+                            <Trash className="w-4 h-4" />
                           </button>
                         </div>
                       </div>

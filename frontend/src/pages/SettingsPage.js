@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useHapticAlert } from '../components/HapticAlerts';
-import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon } from '@phosphor-icons/react';
+import { SignOut, User, Microphonerophone, Monitor, Wheelchair, CaretRight, ShieldCheckCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon } from '@phosphor-icons/react';
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 
-const SettingsPage = () => {
+const GearSixPage = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, signOut } = useAuth();
@@ -38,7 +38,7 @@ const SettingsPage = () => {
           status: 'PREMIUM_ACTIVE'
         },
         { 
-          icon: Microphone, 
+          icon: Microphonerophone, 
           label: t('settings.voice_studio'), 
           desc: 'BROADCAST_VOICE_MODEL // DIALECT_CONFIG', 
           path: '/voices',
@@ -68,7 +68,7 @@ const SettingsPage = () => {
   ];
 
   const systemStats = [
-    { icon: ShieldCheck, label: 'ENCRYPTION', value: 'AES-256-GCM' },
+    { icon: ShieldCheckCheck, label: 'ENCRYPTION', value: 'AES-256-GCM' },
     { icon: Lightning, label: 'AUTH_PROVIDER', value: 'SUPABASE' },
     { icon: Database, label: 'STORAGE_USED', value: '2.4 GB' },
     { icon: Clock, label: 'SESSION_TIME', value: '04:32:18' },
@@ -212,7 +212,7 @@ const SettingsPage = () => {
             <NotificationToggle />
           </div>
 
-          {/* Settings Sections */}
+          {/* GearSix Sections */}
           {settingsSections.map((section, sectionIdx) => (
             <div key={sectionIdx} className="space-y-4">
               <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
@@ -341,4 +341,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default GearSixPage;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, PlayCircle, Pause, Radio, Volume2, VolumeX } from '@phosphor-icons/react';
+import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
 import Skeleton from '../components/Skeleton';
@@ -342,7 +342,7 @@ const DiscoverPage = () => {
               
               {/* Volume Control */}
               <div className="flex items-center gap-3">
-                <VolumeX className="w-4 h-4 text-forest" />
+                <SpeakerSlash className="w-4 h-4 text-forest" />
                 <input
                   type="range"
                   min="0"
@@ -353,7 +353,7 @@ const DiscoverPage = () => {
                   className="flex-1 h-1 bg-forest/30 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:bg-primary"
                   data-testid="radio-volume"
                 />
-                <Volume2 className="w-4 h-4 text-primary" />
+                <SpeakerHigh className="w-4 h-4 text-primary" />
               </div>
             </div>
           </div>

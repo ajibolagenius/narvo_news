@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAudio } from '../contexts/AudioContext';
-import { Play, Pause, Calendar, RefreshCw, Clock, Radio, ChevronRight } from '@phosphor-icons/react';
+import { Play, Pause, Calendar, RefreshCw, Clock, Radio, CaretRight } from '@phosphor-icons/react';
 import Skeleton, { ListSkeleton } from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -192,7 +192,7 @@ const MorningBriefingPage = () => {
                         </div>
                         <span className="text-slate-300 text-xs md:text-sm group-hover:text-primary transition-colors line-clamp-2">{story.title}</span>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-forest/30 group-hover:text-primary transition-colors shrink-0" />
+                      <CaretRight className="w-4 h-4 text-forest/30 group-hover:text-primary transition-colors shrink-0" />
                     </div>
                   ))}
                 </div>

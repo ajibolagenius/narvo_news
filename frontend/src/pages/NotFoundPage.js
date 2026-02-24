@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertOctagon, WifiOff, Server, Timer, Clock, RotateCcw, Plus } from 'lucide-react';
+import { AlertOctagon, WifiHighOff, Server, Timer, Clock, RotateCcw, Plus } from 'lucide-react';
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const NotFoundPage = () => {
   }, []);
 
   const metrics = [
-    { label: 'PACKET_LOSS', value: '100%', icon: WifiOff, color: 'text-red-400' },
+    { label: 'PACKET_LOSS', value: '100%', icon: WifiHighOff, color: 'text-red-400' },
     { label: 'LAST_NODE', value: 'NGR_WEST_01', icon: Server, color: 'text-primary' },
     { label: 'LATENCY', value: '∞ MS', icon: Timer, color: 'text-white' },
     { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-white' },
