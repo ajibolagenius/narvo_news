@@ -42,6 +42,7 @@ function App() {
   }
 
   return (
+    <HelmetProvider>
     <AuthProvider>
       <AudioProvider>
       <BreakingNewsProvider>
@@ -84,6 +85,7 @@ function App() {
       </BreakingNewsProvider>
       </AudioProvider>
     </AuthProvider>
+    </HelmetProvider>
   );
 }
 
