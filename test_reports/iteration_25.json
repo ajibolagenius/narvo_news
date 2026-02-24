@@ -1,0 +1,91 @@
+{
+  "summary": "Iteration 25 Testing Complete - All reported issues verified as FIXED. Dashboard scrolling works correctly (overflow-y-auto on motion.div wrapper), Breaking news banner text is WHITE in light mode (text-white class), all backend modular routes working, Save for Offline functionality working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_25.py",
+    "/app/test_reports/pytest/pytest_results_v25.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PASS: DashboardLayout.js line 40 has overflow-y-auto on motion.div wrapper - scrolling works correctly",
+    "PASS: BreakingNews.js line 128 has text-white class on banner title - WHITE text confirmed (rgb(255, 255, 255))",
+    "PASS: /api/podcasts returns 6 curated podcast episodes from routes/discover.py",
+    "PASS: /api/discover/trending returns trending topics from routes/discover.py",
+    "PASS: /api/radio/countries returns 12 African countries from routes/discover.py",
+    "PASS: /api/offline/stats returns storage statistics from routes/offline.py",
+    "PASS: /api/admin/metrics returns system metrics from routes/admin.py",
+    "PASS: /api/voices returns 5 TTS voices from routes/user.py",
+    "PASS: Save for Offline button (CloudArrowDown) visible on featured card and 10 stream cards",
+    "PASS: SAVED_OFFLINE toast notification appears when saving article for offline"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_25.py"
+  ],
+  "success_rate": {
+    "backend": "100% (16/16 tests passed)",
+    "frontend": "100% (all features working)"
+  },
+  "test_credentials": "Guest mode: Click 'Oya, Play' button on landing page",
+  "seed_data_creation": "None - test article created and deleted during offline API tests",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 25 verified all fixes: (1) Dashboard scrolling - FIXED (motion.div wrapper has overflow-y-auto, scrollHeight=3421 > clientHeight=533 on smaller viewports), (2) Breaking news banner text - FIXED (text-white class, rgb(255,255,255) confirmed), (3) Backend modular routes - ALL WORKING (/api/podcasts, /api/discover/trending, /api/radio/countries, /api/offline/stats, /api/admin/metrics, /api/voices), (4) Discover page - WORKING (podcasts from API, radio stations), (5) Offline page - WORKING (filter tabs ALL/AUDIO/ARTICLES with counts), (6) Save for Offline - WORKING (CloudArrowDown button, SAVED_OFFLINE toast), (7) Theme toggle - WORKING (light/dark modes).",
+  "features_tested": {
+    "dashboard_scrolling": {
+      "status": "PASS",
+      "notes": "DashboardLayout.js motion.div wrapper has overflow-y-auto overflow-x-hidden. On 700px viewport: scrollHeight=3421, clientHeight=533, canScroll=true. Scroll position changed from 0 to 2888 when scrolling to bottom."
+    },
+    "breaking_news_banner_text": {
+      "status": "PASS",
+      "notes": "BreakingNews.js line 128: text-white class applied to banner title. Computed color: rgb(255, 255, 255) - WHITE confirmed in both light and dark modes."
+    },
+    "backend_modular_routes": {
+      "status": "PASS",
+      "notes": "All 4 new route files included in server.py: routes/discover.py, routes/offline.py, routes/admin.py, routes/user.py. All endpoints responding correctly."
+    },
+    "discover_page_podcasts": {
+      "status": "PASS",
+      "notes": "6 podcast cards displayed from /api/podcasts. LATEST/POPULAR toggle visible. Episodes: Arctic Routes, Quantum Synthesis, Megacities, Amazon Rainforest, Digital Currency, Sahel Report."
+    },
+    "offline_page_filter_tabs": {
+      "status": "PASS",
+      "notes": "Filter tabs: ALL (0), AUDIO (0), ARTICLES (0). Empty state shows 'NO CACHED DATA' with GO ONLINE and MANAGE STORAGE buttons."
+    },
+    "save_for_offline_button": {
+      "status": "PASS",
+      "notes": "CloudArrowDown button on featured card (data-testid='featured-offline-btn') and 10 stream cards (data-testid='offline-btn-{id}'). SAVED_OFFLINE toast notification appears on click."
+    },
+    "theme_toggle": {
+      "status": "PASS",
+      "notes": "Toggle switches between light (data-theme='light') and dark (data-theme='dark'). Button shows 'LIGHT' in light mode, 'DARK' in dark mode."
+    }
+  },
+  "mocked_data_note": "MOCKED: Dubawa fact-check API (/api/factcheck/{story_id}) uses simulated responses based on story_id hash",
+  "api_verification": {
+    "podcasts_endpoint": "/api/podcasts - 200 OK, returns 6 curated episodes",
+    "trending_endpoint": "/api/discover/trending - 200 OK, returns 6 trending topics",
+    "radio_countries": "/api/radio/countries - 200 OK, returns 12 African countries",
+    "offline_stats": "/api/offline/stats - 200 OK, returns article_count and audio_note",
+    "admin_metrics": "/api/admin/metrics - 200 OK, returns active_streams, avg_bitrate, error_rate, uptime",
+    "voices": "/api/voices - 200 OK, returns 5 TTS voices (nova, onyx, echo, alloy, shimmer)",
+    "offline_save": "/api/offline/save - 200 OK, saves article to MongoDB",
+    "offline_articles": "/api/offline/articles - 200 OK, returns saved articles",
+    "offline_delete": "/api/offline/articles/{story_id} DELETE - 200 OK, removes article"
+  },
+  "screenshots": [
+    ".screenshots/dashboard_iter25_initial.png",
+    ".screenshots/dashboard_at_bottom_iter25.png",
+    ".screenshots/discover_page_iter25.png",
+    ".screenshots/offline_page_iter25.png",
+    ".screenshots/light_mode_iter25.png",
+    ".screenshots/offline_save_toast_iter25.png"
+  ]
+}
