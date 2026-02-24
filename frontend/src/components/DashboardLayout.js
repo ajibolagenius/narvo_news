@@ -37,7 +37,7 @@ const DashboardLayout = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: 'easeOut' }}
-            className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden"
+            className="flex-1 flex flex-col min-h-0"
           >
             <Outlet />
           </motion.div>
