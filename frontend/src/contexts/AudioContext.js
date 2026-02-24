@@ -20,6 +20,25 @@ export const AudioProvider = ({ children }) => {
   const [queueIndex, setQueueIndex] = useState(-1);
   const [autoPlay, setAutoPlay] = useState(true);
   const [error, setError] = useState(null);
+  const [broadcastLanguage, setBroadcastLanguage] = useState('en');
+
+  // Fetch user's language preference on mount
+  useEffect(() => {
+    const fetchLanguagePreference = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/settings/guest`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.broadcast_language) {
+            setBroadcastLanguage(data.broadcast_language);
+          }
+        }
+      } catch (err) {
+        console.log('Using default language: en');
+      }
+    };
+    fetchLanguagePreference();
+  }, []);
 
   // Update Media Session metadata for lock screen/background playback
   const updateMediaSession = useCallback((track) => {
