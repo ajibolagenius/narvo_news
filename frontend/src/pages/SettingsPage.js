@@ -2,8 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { useHapticAlert } from '../components/HapticAlerts';
-import { LogOut, User, Mic, Monitor, Accessibility, ChevronRight, Shield, Zap, Database, Clock, Bell, Globe } from 'lucide-react';
+import { SignOut, User, Microphone, Monitor, Accessibility as AccessibilityIcon, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon } from '@phosphor-icons/react';
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 
