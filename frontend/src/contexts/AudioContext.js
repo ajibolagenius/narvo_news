@@ -203,7 +203,7 @@ export const AudioProvider = ({ children }) => {
     });
   }, [volume]);
 
-  // Generate TTS audio for a track
+  // Generate TTS audio for a track (with translation if needed)
   const generateTTS = useCallback(async (track) => {
     const textToSpeak = track.narrative || track.summary || track.title;
     if (!textToSpeak) return null;
@@ -214,7 +214,8 @@ export const AudioProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: textToSpeak.slice(0, 4000),
-          voice_id: 'nova'
+          voice_id: 'nova',
+          language: broadcastLanguage  // Pass user's preferred language
         })
       });
       
@@ -226,7 +227,7 @@ export const AudioProvider = ({ children }) => {
       console.error('TTS error:', err);
       return null;
     }
-  }, []);
+  }, [broadcastLanguage]);
 
   // Queue management (defined before playTrack so it's available)
   const addToQueue = useCallback((track) => {
