@@ -1241,6 +1241,111 @@ OG_CATEGORY_COLORS = {
     "health": "#0d9488", "environment": "#059669", "general": "#6b7280",
 }
 
+# Common social media crawler user agents
+CRAWLER_USER_AGENTS = [
+    'facebookexternalhit', 'twitterbot', 'linkedinbot', 'pinterest',
+    'slackbot', 'telegrambot', 'whatsapp', 'discordbot', 'applebot',
+    'googlebot', 'bingbot', 'yandex', 'baiduspider'
+]
+
+def is_crawler(user_agent: str) -> bool:
+    """Check if request is from a social media crawler"""
+    if not user_agent:
+        return False
+    ua_lower = user_agent.lower()
+    return any(crawler in ua_lower for crawler in CRAWLER_USER_AGENTS)
+
+@app.get("/share/{news_id}", response_class=HTMLResponse)
+async def share_page(news_id: str, request: Request):
+    """
+    Shareable page that serves proper OG meta tags for social media crawlers.
+    For regular browsers, redirects to the React app.
+    """
+    user_agent = request.headers.get('user-agent', '')
+    
+    # Fetch the news item
+    all_news = []
+    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    for items in results:
+        if isinstance(items, list):
+            all_news.extend(items)
+
+    story = None
+    for item in all_news:
+        if item.get("id") == news_id:
+            story = item
+            break
+
+    if not story:
+        # Redirect to homepage if story not found
+        return HTMLResponse(content=f'<html><head><meta http-equiv="refresh" content="0;url=/"></head></html>')
+
+    title = story.get("title", "Narvo News")[:100]
+    description = (story.get("summary", "") or "Listen on Narvo — Audio-first news for Africa")[:200]
+    source = story.get("source", "NARVO")
+    category = (story.get("category", "general") or "general").lower()
+    image_url = story.get("image_url") or "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=80"
+    
+    # Get the base URL from request
+    base_url = str(request.base_url).rstrip('/')
+    share_url = f"{base_url}/share/{news_id}"
+    app_url = f"{base_url}/news/{news_id}"
+    og_image_url = f"{base_url}/api/og/{news_id}"
+
+    # For crawlers: return HTML with OG meta tags
+    # For browsers: redirect to React app
+    if is_crawler(user_agent):
+        html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{title} — NARVO</title>
+    <meta name="description" content="{description}">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{title}">
+    <meta property="og:description" content="{description}">
+    <meta property="og:url" content="{share_url}">
+    <meta property="og:image" content="{image_url}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="NARVO">
+    <meta property="article:publisher" content="Narvo">
+    <meta property="article:section" content="{category}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{title}">
+    <meta name="twitter:description" content="{description}">
+    <meta name="twitter:image" content="{image_url}">
+    <meta name="twitter:site" content="@narvo">
+    
+    <!-- Telegram -->
+    <meta property="telegram:channel" content="@narvo">
+</head>
+<body>
+    <h1>{title}</h1>
+    <p>{description}</p>
+    <p>Source: {source}</p>
+    <a href="{app_url}">Read on Narvo</a>
+</body>
+</html>"""
+        return HTMLResponse(content=html)
+    else:
+        # For regular browsers, redirect to React app
+        return HTMLResponse(content=f'''<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{title} — NARVO</title>
+    <meta http-equiv="refresh" content="0;url=/news/{news_id}">
+    <script>window.location.href = "/news/{news_id}";</script>
+</head>
+<body>Redirecting...</body>
+</html>''')
+
 @app.get("/api/og/{news_id}", response_class=HTMLResponse)
 async def og_image_html(news_id: str):
     """Generate an HTML page that serves as OG image preview for social sharing"""
