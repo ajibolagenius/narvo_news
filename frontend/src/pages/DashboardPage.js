@@ -20,7 +20,7 @@ const DashboardPage = () => {
   const [visibleCount, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
-  const { playTrack } = useAudio();
+  const { playTrack, addToQueue } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
 
