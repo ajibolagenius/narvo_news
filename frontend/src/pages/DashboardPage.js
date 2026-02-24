@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { PlayCircle, Languages, Bookmark, BookmarkCheck, ArrowDown, Activity, CloudSun, Share2 } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { FeaturedSkeleton, StreamCardSkeleton } from '../components/Skeleton';
 import TruthTag from '../components/TruthTag';
 import { useHapticAlert } from '../components/HapticAlerts';
+import { getCategoryImage, getCategoryColor } from '../lib/categoryImages';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
