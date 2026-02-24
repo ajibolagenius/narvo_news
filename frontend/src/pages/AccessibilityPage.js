@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Rows, Type, Hand, Pointer, Mic, Info, Loader2, Save } from '@phosphor-icons/react';
+import { Rows, Type, Hand, Pointer, Microphone, Info, Loader2, Save } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 
@@ -27,10 +27,10 @@ const AccessibilityPage = () => {
   ]);
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [loadingSettings, setLoadingSettings] = useState(true);
+  const [loadingGearSix, setLoadingGearSix] = useState(true);
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchGearSix = async () => {
       const userId = user?.id || 'guest';
       try {
         const res = await fetch(`${API_URL}/api/settings/${userId}`);
@@ -46,9 +46,9 @@ const AccessibilityPage = () => {
       } catch (err) {
         console.error('Failed to load accessibility settings:', err);
       }
-      setLoadingSettings(false);
+      setLoadingGearSix(false);
     };
-    fetchSettings();
+    fetchGearSix();
   }, [user?.id]);
 
   const handleDensityChange = (id) => {
@@ -96,7 +96,7 @@ const AccessibilityPage = () => {
     { id: 'expanded', label: t('accessibility.expanded'), desc: 'MAX_WHITESPACE // FOCUS_DOCK', bars: 1 },
   ];
 
-  if (loadingSettings) {
+  if (loadingGearSix) {
     return (
       <main className="flex-1 flex items-center justify-center bg-background-dark" data-testid="accessibility-page">
         <div className="flex items-center gap-3 mono-ui text-xs text-forest">
@@ -309,7 +309,7 @@ const AccessibilityPage = () => {
                   key={cmd.id}
                   className="w-full p-3 md:p-4 narvo-border bg-surface/5 flex items-center gap-3 md:gap-4 hover:bg-forest/10 transition-all group"
                 >
-                  <Mic className="w-4 h-4 text-forest group-hover:text-primary transition-colors" />
+                  <Microphone className="w-4 h-4 text-forest group-hover:text-primary transition-colors" />
                   <span className="mono-ui text-[9px] md:text-[10px] text-white font-bold flex-1 text-left">{cmd.command}</span>
                   <span className="mono-ui text-[7px] md:text-[8px] text-primary border border-primary px-1.5 md:px-2">ACTIVE</span>
                 </button>

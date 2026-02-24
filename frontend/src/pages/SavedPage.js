@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CheckSquare, Archive, Trash2, ArrowUpRight, Bookmark, Satellite, RotateCcw } from '@phosphor-icons/react';
+import { CheckSquare, Archive, Trash, ArrowUpRight, Bookmark, Satellite, RotateCcw } from '@phosphor-icons/react';
 import { useBookmarks } from '../hooks/useBookmarks';
 import Skeleton from '../components/Skeleton';
 
@@ -87,7 +87,7 @@ const SavedPage = () => {
             }`}
             data-testid="delete-selected-btn"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash className="w-4 h-4" />
             <span>DELETE_SIG</span>
           </button>
         </div>

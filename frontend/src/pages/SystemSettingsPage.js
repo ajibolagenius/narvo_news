@@ -15,23 +15,23 @@ const DEFAULT_SETTINGS = {
   bandwidthPriority: 'STREAMING',
 };
 
-const SystemSettingsPage = () => {
+const SystemGearSixPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { showAlert } = useHapticAlert();
-  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [settings, setGearSix] = useState(DEFAULT_SETTINGS);
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [loadingSettings, setLoadingSettings] = useState(true);
+  const [loadingGearSix, setLoadingGearSix] = useState(true);
 
   useEffect(() => {
-    const fetchSettings = async () => {
+    const fetchGearSix = async () => {
       const userId = user?.id || 'guest';
       try {
         const res = await fetch(`${API_URL}/api/settings/${userId}`);
         if (res.ok) {
           const data = await res.json();
-          setSettings({
+          setGearSix({
             highContrast: data.high_contrast ?? DEFAULT_SETTINGS.highContrast,
             interfaceScale: (data.interface_scale || 'DEFAULT').toUpperCase().replace('%', '').replace('100', 'DEFAULT'),
             hapticSync: data.haptic_sync ?? DEFAULT_SETTINGS.hapticSync,
@@ -43,13 +43,13 @@ const SystemSettingsPage = () => {
       } catch (err) {
         console.error('Failed to load settings:', err);
       }
-      setLoadingSettings(false);
+      setLoadingGearSix(false);
     };
-    fetchSettings();
+    fetchGearSix();
   }, [user?.id]);
 
   const updateSetting = (key, value) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
+    setGearSix(prev => ({ ...prev, [key]: value }));
     setHasChanges(true);
   };
 
@@ -80,12 +80,12 @@ const SystemSettingsPage = () => {
   };
 
   const handleReset = () => {
-    setSettings(DEFAULT_SETTINGS);
+    setGearSix(DEFAULT_SETTINGS);
     setHasChanges(true);
     showAlert({ type: 'sync', title: t('alerts.settings_reset'), message: t('alerts.settings_reset_msg'), code: 'RESET_OK' });
   };
 
-  if (loadingSettings) {
+  if (loadingGearSix) {
     return (
       <main className="flex-1 overflow-y-auto custom-scroll flex items-center justify-center bg-background-dark" data-testid="system-settings-page">
         <div className="flex items-center gap-3 mono-ui text-xs text-forest">
@@ -333,4 +333,4 @@ const SystemSettingsPage = () => {
   );
 };
 
-export default SystemSettingsPage;
+export default SystemGearSixPage;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, Mic, Bookmark, Clock, Calendar, Filter, Layers } from '@phosphor-icons/react';
+import { Search, Microphone, Bookmark, Clock, Calendar, Filter, Layers } from '@phosphor-icons/react';
 import { useBookmarks } from '../hooks/useBookmarks';
 import Skeleton from '../components/Skeleton';
 
@@ -111,7 +111,7 @@ const SearchPage = () => {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6">
             <button className="flex items-center gap-2 md:gap-3 bg-primary text-background-dark px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-colors" data-testid="voice-input-btn">
-              <Mic className="w-4 h-4" />
+              <Microphone className="w-4 h-4" />
               <span>[ VOICE_INPUT_PROTOCOL ]</span>
             </button>
             <div className="hidden sm:block h-10 w-px bg-forest/30" />
