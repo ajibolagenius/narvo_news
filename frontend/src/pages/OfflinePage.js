@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderOpen, Play, Pause, Trash, WarningOctagon, ArrowCounterClockwise, Funnel, Waves, Microphone, SpeakerHigh, WifiSlash, CloudArrowDown, Article } from '@phosphor-icons/react';
+import { FolderOpen, Play, Pause, Trash, WarningOctagon, ArrowCounterClockwise, Funnel, Waves, Microphone, SpeakerHigh, WifiSlash, CloudArrowDown, Article, CheckCircle } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
-import { getAllCachedIds, getCachedAudio, removeCachedAudio } from '../lib/audioCache';
+import { getAllCachedAudio, getCachedAudio, removeCachedAudio, getCacheStats, clearAllCache } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -13,7 +13,7 @@ const OfflinePage = () => {
   const [savedArticles, setSavedArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState('all');
-  const [totalSize, setTotalSize] = useState(0);
+  const [cacheStats, setCacheStats] = useState({ totalSize: 0, formattedSize: '0 KB', offlineReady: 0 });
   const [currentPage, setCurrentPage] = useState(1);
   const [offlineStats, setOfflineStats] = useState({ article_count: 0 });
   const { playTrack, currentTrack, isPlaying, pauseTrack } = useAudio();
@@ -65,19 +65,24 @@ const OfflinePage = () => {
   };
 
   const loadCachedItems = async () => {
-    setLoading(true);
     try {
-      const ids = await getAllCachedIds();
-      const items = [];
-      let size = 0;
+      // Get all cached audio with metadata
+      const items = await getAllCachedAudio();
+      const stats = await getCacheStats();
       
-      for (const id of ids) {
-        const cached = await getCachedAudio(id);
-        if (cached) {
-          const itemSize = cached.audioBlob?.size || 0;
-          size += itemSize;
-          items.push({
-            id,
+      setCachedItems(items.map(item => ({
+        id: item.id,
+        title: item.title || `Audio_${item.id.slice(0, 8)}`,
+        metadata: item.source || 'CACHED',
+        duration: item.duration || '--:--',
+        size: item.size || 0,
+        type: item.type || 'audio',
+        timestamp: item.cached_at,
+        status: item.hasBlob ? 'complete' : 'url_only',
+        hasBlob: item.hasBlob
+      })));
+      
+      setCacheStats(stats);
             title: cached.title || `Audio_${id.slice(0, 8)}.wav`,
             metadata: cached.metadata || 'CACHED_AUDIO // LOCAL_STORAGE',
             duration: cached.duration || '--:--',
