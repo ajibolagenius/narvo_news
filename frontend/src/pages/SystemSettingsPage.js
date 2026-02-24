@@ -101,8 +101,13 @@ const SystemGearSixPage = () => {
       });
       if (res.ok) {
         setHasChanges(false);
-        // Update AudioContext with new language preference
+        // Update AudioContext with new language preference immediately
         setBroadcastLanguage(settings.broadcastLanguage);
+        // Also refresh from server to ensure sync
+        if (refreshLanguagePreference) {
+          refreshLanguagePreference();
+        }
+        console.log('[Settings] Saved broadcast_language:', settings.broadcastLanguage);
         showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
       }
     } catch (err) {
