@@ -26,7 +26,7 @@ const CurationConsolePage = () => {
   ];
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="curation-console-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="curation-console-page">
       {/* Breadcrumb Bar */}
       <div className="h-14 narvo-border-b bg-background-dark/20 flex items-center px-8 gap-4 shrink-0">
         <span className="mono-ui text-[9px] text-forest font-bold">DASHBOARD</span>

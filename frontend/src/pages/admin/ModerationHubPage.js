@@ -61,7 +61,7 @@ const ModerationHubPage = () => {
   };
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="moderation-hub-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="moderation-hub-page">
       {/* Header */}
       <div className="px-8 py-6 narvo-border-b flex justify-between items-center bg-background-dark/20 shrink-0">
         <div className="flex items-baseline gap-4">

@@ -77,7 +77,7 @@ const OperationHubPage = () => {
   };
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden bg-background-dark" data-testid="operation-hub-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="operation-hub-page">
       {/* Telemetry Bar */}
       <div className="px-8 py-4 narvo-border-b bg-background-dark/20 flex gap-12 items-center overflow-x-auto shrink-0">
         {loading ? (
