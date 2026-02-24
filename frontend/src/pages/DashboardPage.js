@@ -164,7 +164,7 @@ const DashboardPage = () => {
   return (
     <>
       {/* Primary Feed */}
-      <main className="flex-1 flex flex-col bg-background-dark min-w-0">
+      <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0">
         {/* Sub-Header */}
         <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
           <div className="flex items-center gap-3">
