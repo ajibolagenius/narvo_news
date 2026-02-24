@@ -8,15 +8,15 @@
    NARVO DESIGN SYSTEM - CSS Variables
    =========================================== */
 :root {
-  /* Colors - Dark Mode (Default) - The 10% Rule */
-  --color-primary: #EBD5AB;       /* Sand/Beige - Signal color, 10% max */
-  --color-bg: #1B211A;            /* Deep Matte Charcoal - Base surface */
-  --color-surface: #242B23;       /* Muted Green/Grey - Secondary surface */
-  --color-border: #628141;        /* Forest Green - Structural lines */
-  --color-text-primary: #F2F2F2;  /* 90% White - High-fidelity content */
-  --color-text-secondary: #8BAE66; /* Sage Green - Metadata, labels */
-  --color-text-dim: #808080;      /* 50% Grey - Utility text */
-  --color-accent: #D4FF00;        /* Lime accent for highlights */
+  /* Colors - Dark Mode (Default) - RGB triplets for Tailwind opacity support */
+  --color-primary: 235 213 171;       /* Sand/Beige - Signal color, 10% max */
+  --color-bg: 27 33 26;               /* Deep Matte Charcoal - Base surface */
+  --color-surface: 36 43 35;          /* Muted Green/Grey - Secondary surface */
+  --color-border: 98 129 65;          /* Forest Green - Structural lines */
+  --color-text-primary: 242 242 242;  /* 90% White - High-fidelity content */
+  --color-text-secondary: 139 174 102; /* Sage Green - Metadata, labels */
+  --color-text-dim: 128 128 128;      /* 50% Grey - Utility text */
+  --color-accent: 212 255 0;          /* Lime accent for highlights */
 
   /* Semantic Category Colors */
   --color-finance: #EBD5AB;
@@ -62,14 +62,14 @@
    LIGHT MODE
    =========================================== */
 [data-theme='light'] {
-  --color-primary: #1B211A;
-  --color-bg: #EBD5AB;
-  --color-surface: #D9C5A0;
-  --color-border: #628141;
-  --color-text-primary: #1B211A;
-  --color-text-secondary: #628141;
-  --color-text-dim: #666666;
-  --color-accent: #628141;
+  --color-primary: 27 33 26;
+  --color-bg: 235 213 171;
+  --color-surface: 217 197 160;
+  --color-border: 98 129 65;
+  --color-text-primary: 27 33 26;
+  --color-text-secondary: 98 129 65;
+  --color-text-dim: 102 102 102;
+  --color-accent: 98 129 65;
 }
 
 /* Theme transition */
