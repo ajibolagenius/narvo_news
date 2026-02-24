@@ -7,16 +7,45 @@ export const useAudio = () => useContext(AudioContext);
 
 export const AudioProvider = ({ children }) => {
   const audioRef = useRef(null);
+  const fadeIntervalRef = useRef(null);
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(0.8);
   const [isMuted, setIsMuted] = useState(false);
   const [queue, setQueue] = useState([]);
   const [queueIndex, setQueueIndex] = useState(-1);
+  const [autoPlay, setAutoPlay] = useState(true);
   const [error, setError] = useState(null);
+
+  // Smooth fade out for broadcast transitions
+  const fadeOut = useCallback((callback) => {
+    const audio = audioRef.current;
+    if (!audio) return callback?.();
+    
+    setIsTransitioning(true);
+    const startVolume = audio.volume;
+    const steps = 10;
+    let step = 0;
+    
+    clearInterval(fadeIntervalRef.current);
+    fadeIntervalRef.current = setInterval(() => {
+      step++;
+      audio.volume = Math.max(0, startVolume * (1 - step / steps));
+      if (step >= steps) {
+        clearInterval(fadeIntervalRef.current);
+        callback?.();
+        // Restore volume for next track
+        setTimeout(() => {
+          audio.volume = isMuted ? 0 : volume;
+          setIsTransitioning(false);
+        }, 100);
+      }
+    }, 50);
+  }, [volume, isMuted]);
 
   useEffect(() => {
     const audio = new Audio();
@@ -27,7 +56,10 @@ export const AudioProvider = ({ children }) => {
     audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
-      playNext();
+      // Auto-play next with smooth transition
+      if (autoPlay) {
+        playNextSmooth();
+      }
     });
     audio.addEventListener('play', () => setIsPlaying(true));
     audio.addEventListener('pause', () => setIsPlaying(false));
@@ -39,6 +71,7 @@ export const AudioProvider = ({ children }) => {
     });
 
     return () => {
+      clearInterval(fadeIntervalRef.current);
       audio.pause();
       audio.src = '';
     };
