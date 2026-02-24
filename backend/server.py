@@ -621,7 +621,7 @@ async def save_user_settings(user_id: str, settings: UserSettings):
     """Save user settings (merges with existing)"""
     existing = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
     existing_settings = existing.get("settings", {}) if existing else {}
-    incoming = settings.dict(exclude_unset=True)
+    incoming = settings.model_dump(exclude_unset=True)
     merged = {**existing_settings, **incoming}
     preferences_col.update_one(
         {"user_id": user_id},
