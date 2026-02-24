@@ -141,6 +141,19 @@ const DashboardSidebar = ({ open, onClose, mobile }) => {
             </div>
           )}
         </div>
+
+        {/* Admin Section */}
+        <div className="narvo-border-t py-3">
+          <button
+            onClick={() => navigate('/admin/operations')}
+            className={`flex items-center gap-3 transition-all mx-2 ${location.pathname.startsWith('/admin') ? 'text-red-500 bg-red-500/10 narvo-border border-red-500/50' : 'text-forest hover:text-red-500 hover:bg-red-500/5'} ${open ? 'px-4 py-3' : 'py-3 justify-center'}`}
+            title="Admin Console"
+            data-testid="sidebar-admin"
+          >
+            <Shield className="w-5 h-5 shrink-0" />
+            {open && <span className="mono-ui text-xs uppercase tracking-wider">Admin</span>}
+          </button>
+        </div>
       </aside>
     </>
   );
