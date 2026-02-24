@@ -132,7 +132,7 @@ const OfflinePage = () => {
       <section className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 md:gap-6 py-4 md:py-6 narvo-border-b border-forest/30">
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
           <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 mono-ui text-[9px] md:text-[10px] font-bold text-white hover:bg-primary hover:text-background-dark transition-all group">
-            <Filter className="w-4 h-4" />
+            <Funnel className="w-4 h-4" />
             <span>FILTER</span>
           </button>
           <div className="h-4 w-px bg-forest/30 hidden sm:block" />
@@ -212,7 +212,7 @@ const OfflinePage = () => {
               <div className="bg-background-dark narvo-border p-6 md:p-10 max-w-md w-full text-center shadow-xl backdrop-blur-md relative z-10">
                 <div className="mb-4 md:mb-6 flex justify-center">
                   <div className="w-16 h-16 md:w-20 md:h-20 bg-surface narvo-border border-dashed flex items-center justify-center relative">
-                    <WifiHighOff className="w-8 h-8 md:w-10 md:h-10 text-forest" />
+                    <WifiSlash className="w-8 h-8 md:w-10 md:h-10 text-forest" />
                   </div>
                 </div>
                 
@@ -228,7 +228,7 @@ const OfflinePage = () => {
                     onClick={() => navigate('/dashboard')}
                     className="h-10 md:h-12 px-5 md:px-6 bg-primary text-background-dark font-bold mono-ui text-[9px] md:text-[10px] hover:bg-white transition-all flex items-center justify-center gap-2"
                   >
-                    <RotateCcw className="w-4 h-4" />
+                    <ArrowCounterClockwise className="w-4 h-4" />
                     GO ONLINE
                   </button>
                   <button 
@@ -262,9 +262,9 @@ const OfflinePage = () => {
                   
                   <div className={`col-span-1 flex justify-center ${isActive ? 'text-primary animate-pulse' : isCorrupted ? 'text-primary/50' : 'text-primary'}`}>
                     {isCorrupted ? (
-                      <AlertOctagon className="w-4 h-4 md:w-5 md:h-5" />
+                      <WarningOctagon className="w-4 h-4 md:w-5 md:h-5" />
                     ) : isActive ? (
-                      <Speaker className="w-4 h-4 md:w-5 md:h-5" />
+                      <SpeakerHigh className="w-4 h-4 md:w-5 md:h-5" />
                     ) : item.type === 'audio' ? (
                       <Waves className="w-4 h-4 md:w-5 md:h-5" />
                     ) : (
@@ -292,7 +292,7 @@ const OfflinePage = () => {
                   <div className={`col-span-2 flex items-center justify-end gap-2 md:gap-3 ${isActive ? '' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
                     {isCorrupted ? (
                       <button className="text-white hover:text-primary">
-                        <RotateCcw className="w-4 h-4 md:w-5 md:h-5" />
+                        <ArrowCounterClockwise className="w-4 h-4 md:w-5 md:h-5" />
                       </button>
                     ) : (
                       <button 

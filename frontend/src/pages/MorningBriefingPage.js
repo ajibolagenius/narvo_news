@@ -109,7 +109,7 @@ const MorningBriefingPage = () => {
               className="h-8 px-3 bg-primary text-background-dark mono-ui text-[9px] font-bold hover:bg-white transition-all disabled:opacity-50 flex items-center gap-1.5"
               data-testid="generate-btn"
             >
-              <RefreshCw className={`w-3 h-3 ${generating ? 'animate-spin' : ''}`} />
+              <ArrowClockwise className={`w-3 h-3 ${generating ? 'animate-spin' : ''}`} />
               {generating ? 'GENERATING...' : 'NEW'}
             </button>
           </div>
@@ -224,7 +224,7 @@ const MorningBriefingPage = () => {
                   className="bg-primary text-background-dark font-display font-bold px-6 md:px-8 py-3 md:py-4 text-sm md:text-base hover:bg-white transition-all disabled:opacity-50 flex items-center gap-2 mx-auto"
                   data-testid="generate-briefing-btn"
                 >
-                  <RefreshCw className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} />
+                  <ArrowClockwise className={`w-4 h-4 ${generating ? 'animate-spin' : ''}`} />
                   {generating ? 'GENERATING...' : '[ GENERATE BRIEFING ]'}
                 </button>
               </div>

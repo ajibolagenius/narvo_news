@@ -120,7 +120,7 @@ const SavedPage = () => {
             <div className="mb-6 md:mb-8 flex justify-center">
               <div className="w-20 h-20 md:w-24 md:h-24 bg-surface narvo-border border-dashed flex items-center justify-center relative">
                 <div className="absolute inset-0 border border-primary/20 animate-ping" />
-                <Satellite className="w-10 h-10 md:w-12 md:h-12 text-primary" />
+                <Planet className="w-10 h-10 md:w-12 md:h-12 text-primary" />
               </div>
             </div>
 
@@ -139,7 +139,7 @@ const SavedPage = () => {
                 className="h-12 md:h-14 px-6 md:px-8 bg-primary text-background-dark font-bold mono-ui text-[10px] md:text-[11px] hover:bg-white transition-all flex items-center justify-center gap-3"
                 data-testid="go-to-feed-btn"
               >
-                <RotateCcw className="w-4 h-4 md:w-5 md:h-5" />
+                <ArrowCounterClockwise className="w-4 h-4 md:w-5 md:h-5" />
                 GO TO FEED
               </button>
               <button 

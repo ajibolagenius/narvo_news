@@ -257,7 +257,7 @@ const DashboardPage = () => {
                               className="mono-ui text-[10px] md:text-xs text-primary flex items-center gap-2 hover:text-white transition-colors"
                               data-testid={`play-btn-${item.id}`}
                             >
-                              <Activity weight="bold" className="w-4 h-4 text-forest" />
+                              <Pulse weight="bold" className="w-4 h-4 text-forest" />
                               <span>GENERATE_AUDIO</span>
                             </button>
                             <div className="flex-1 h-[1px] bg-forest/10" />
@@ -316,7 +316,7 @@ const DashboardPage = () => {
       <aside className="w-72 xl:w-80 hidden xl:flex flex-col narvo-border-l bg-background-dark shrink-0" data-testid="telemetry-sidebar">
         <div className="h-16 flex items-center px-5 narvo-border-b bg-surface/10">
           <span className="mono-ui text-xs font-bold text-forest tracking-widest uppercase flex items-center gap-3">
-            <Activity weight="bold" className="text-primary w-4 h-4" /> {t('dashboard.telemetry')}
+            <Pulse weight="bold" className="text-primary w-4 h-4" /> {t('dashboard.telemetry')}
           </span>
         </div>
         <div className="flex-1 overflow-y-auto p-5 space-y-6 custom-scroll">
