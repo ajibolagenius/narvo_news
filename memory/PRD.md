@@ -1,7 +1,7 @@
 # Narvo - Product Requirements Document
 
 ## Overview
-Narvo is a precision-engineered, audio-first news broadcast platform with PWA support for offline functionality.
+Narvo is a precision-engineered, audio-first news broadcast platform with full PWA support for offline functionality.
 
 ## Tech Stack
 - **Frontend**: React, Tailwind CSS, @phosphor-icons/react, framer-motion
@@ -9,7 +9,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with PWA su
 - **Database**: MongoDB
 - **Auth**: Supabase
 - **AI/TTS**: Google Gemini & OpenAI TTS (via Emergent LLM Key)
-- **PWA**: Service Worker + IndexedDB for offline support
+- **PWA**: Service Worker + IndexedDB + Push Notifications
 
 ## Architecture
 ```
@@ -23,78 +23,119 @@ Narvo is a precision-engineered, audio-first news broadcast platform with PWA su
 │       └── user.py         # User preferences
 ├── frontend/
 │   ├── public/
-│   │   ├── sw.js           # Service Worker for PWA
+│   │   ├── sw.js           # Service Worker with background sync + push
 │   │   ├── manifest.json   # PWA manifest
 │   │   └── index.html      # SW registration
 │   └── src/
 │       ├── lib/
-│       │   └── audioCache.js  # IndexedDB blob storage for offline audio
+│       │   ├── audioCache.js       # IndexedDB blob storage
+│       │   └── notificationService.js  # Push notification service
 │       └── pages/
-│           ├── DiscoverPage.js  # Podcast download with progress
-│           └── OfflinePage.js   # Cached content management
+│           ├── DiscoverPage.js     # "Download All" batch feature
+│           ├── OfflinePage.js      # Cached content management
+│           └── SystemSettingsPage.js # Push notification toggle
 └── memory/
     └── PRD.md
 ```
 
-## Key Features Implemented
+## All Features Complete (Feb 24, 2025)
 
-### Podcast Audio Caching (P1 - COMPLETE ✓)
-- **Backend proxy**: `/api/podcasts/{id}/audio` streams audio to bypass CORS
-- **IndexedDB storage**: Audio blobs stored with metadata
-- **Download UI**: Progress indicator, OFFLINE badge on cached podcasts
-- **Offline playback**: Cached audio plays from blob URL
+### Core Features
+- ✅ Dashboard with news feed, images, animations
+- ✅ Audio player with queue management
+- ✅ On-demand TTS generation
+- ✅ Search, Saved, Morning Briefing pages
+- ✅ Discover page with podcasts & radio
+- ✅ Offline page with cached content
 
-### Service Worker PWA (P2 - COMPLETE ✓)
-- **sw.js**: Network-first caching strategy for static assets
-- **manifest.json**: PWA metadata with theme colors
-- **Registration**: Auto-registers on page load
-- **Offline support**: Falls back to cached content when offline
+### P1 Features (Complete)
+- ✅ **Podcast audio download** - Backend proxy + blob storage
+- ✅ **Offline playback** - From IndexedDB cache
+- ✅ **Dashboard scrolling** - Fixed flex container layout
 
-### Audio Cache Schema (v2)
+### P2 Features (Complete)
+- ✅ **Service Worker PWA** - Network-first caching
+- ✅ **Backend modularization** - 4 route modules
+
+### P3 Features (Complete)
+- ✅ **Background sync** - IndexedDB queue + sync event
+- ✅ **Push notifications** - Breaking news alerts toggle in Settings
+- ✅ **Download all podcasts** - Batch download with progress
+
+## Key Components
+
+### Service Worker (sw.js)
 ```javascript
-{
-  story_id: string,
-  audioBlob: Blob,        // Actual audio file
-  title: string,
-  source: string,
-  duration: string,
-  type: 'podcast' | 'audio',
-  size: number,           // File size in bytes
-  cached_at: ISO string
+// Background sync
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-offline-actions') {
+    event.waitUntil(processOfflineQueue());
+  }
+});
+
+// Push notifications
+self.addEventListener('push', (event) => {
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+```
+
+### Notification Service
+```javascript
+export async function subscribeToPush() {
+  const subscription = await registration.pushManager.subscribe({...});
+  return subscription;
+}
+
+export function queueOfflineAction(actionType, payload) {
+  navigator.serviceWorker.controller.postMessage({
+    type: 'QUEUE_OFFLINE_ACTION',
+    action: { actionType, payload }
+  });
 }
 ```
 
-### Key API Endpoints
-- `GET /api/podcasts` → List with audio_url
-- `GET /api/podcasts/{id}/audio` → **Proxy stream** for audio files
+### Download All Podcasts
+```javascript
+const handleDownloadAll = async () => {
+  for (const podcast of podcastsToDownload) {
+    await downloadAndCacheAudio(podcast.id, proxyUrl, metadata, onProgress);
+    setDownloadAllProgress(overallProgress);
+  }
+};
+```
+
+## API Endpoints
+
+### Podcast Audio Proxy
+- `GET /api/podcasts/{id}/audio` → Streams audio (CORS-safe)
+
+### Offline Storage
 - `POST /api/offline/save` → Save article
-- `GET /api/offline/stats` → Cache statistics
+- `GET /api/offline/articles` → List saved
+- `DELETE /api/offline/articles/{id}` → Remove
 
-## Test Results (Feb 24, 2025)
+## Test Results
 
-### Podcast Download E2E ✓
+### Podcast Download ✓
 ```
-✓ Download complete - OFFLINE badge visible
-✓ Audio filter shows: AUDIO (1)
-✓ IndexedDB: [{id: 'ep089', title: 'Tech Horizons...', hasBlob: true, size: 10222911}]
-✓ Playing cached audio!
-```
-
-### PWA Service Worker ✓
-```
-✓ Service Worker status: {supported: true, registrations: [{active: 'activated'}]}
-✓ Manifest link: .../manifest.json
+IndexedDB: [{id: 'ep089', hasBlob: true, size: 10222911}]
+Playing cached audio: "Tech Horizons: Quantum Synthesis" 00:01 / 07:05
 ```
 
-## Remaining Tasks
+### Service Worker ✓
+```
+Service Worker: {active: 'activated'}
+```
 
-### P3 (Future Enhancements)
-- [ ] Background sync for offline actions
-- [ ] Push notifications for breaking news
-- [ ] Download all podcasts in batch
-- [ ] Real Dubawa fact-checking API integration
+### Push Notifications ✓
+- Toggle visible in System Settings
+- Shows "PERMISSION_BLOCKED_IN_BROWSER" when denied
+- BellRinging/BellSlash icons based on state
 
-## Bug Fixes Applied This Session
-1. **Dashboard scrolling** - Fixed Fragment wrapper → flex container
-2. **Breaking news text** - White color for light mode
-3. **CORS audio download** - Backend proxy for external audio URLs
+## Bug Fixes Applied
+1. Dashboard scrolling - Fragment → flex container
+2. Breaking news text - white for light mode
+3. CORS audio - Backend proxy
+4. pauseTrack error - Changed to togglePlay
