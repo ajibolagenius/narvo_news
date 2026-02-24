@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash } from '@phosphor-icons/react';
+import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash, Translate } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { requestNotificationPermission, getNotificationStatus, subscribeToPush, unsubscribeFromPush, getSubscription, isPushSupported } from '../lib/notificationService';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+// Supported broadcast languages
+const BROADCAST_LANGUAGES = [
+  { code: 'en', name: 'English', native: 'English', description: 'STANDARD_BROADCAST' },
+  { code: 'pcm', name: 'Nigerian Pidgin', native: 'Naija', description: 'PIDGIN_STYLE' },
+  { code: 'yo', name: 'Yoruba', native: 'Èdè Yorùbá', description: 'SOUTHWEST_NG' },
+  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'NORTHERN_NG' },
+  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'SOUTHEAST_NG' },
+];
 
 const DEFAULT_SETTINGS = {
   highContrast: true,
@@ -15,6 +24,7 @@ const DEFAULT_SETTINGS = {
   dataLimit: 2400,
   bandwidthPriority: 'STREAMING',
   pushNotifications: false,
+  broadcastLanguage: 'en',
 };
 
 const SystemGearSixPage = () => {
