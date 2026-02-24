@@ -95,6 +95,33 @@ const SystemGearSixPage = () => {
     setSaving(false);
   };
 
+  const handleToggleNotifications = async () => {
+    if (!isPushSupported()) {
+      showAlert({ type: 'warning', title: 'NOT_SUPPORTED', message: 'Push notifications are not supported in this browser.', code: 'PUSH_NS' });
+      return;
+    }
+    
+    try {
+      if (isSubscribed) {
+        await unsubscribeFromPush();
+        setIsSubscribed(false);
+        showAlert({ type: 'sync', title: 'NOTIFICATIONS_OFF', message: 'Breaking news notifications disabled.', code: 'PUSH_OFF' });
+      } else {
+        const permission = await requestNotificationPermission();
+        if (permission) {
+          await subscribeToPush();
+          setIsSubscribed(true);
+          showAlert({ type: 'success', title: 'NOTIFICATIONS_ON', message: 'You will receive breaking news alerts.', code: 'PUSH_ON' });
+        } else {
+          showAlert({ type: 'error', title: 'PERMISSION_DENIED', message: 'Please enable notifications in browser settings.', code: 'PUSH_DENY' });
+        }
+      }
+      setNotificationStatus(getNotificationStatus());
+    } catch (err) {
+      showAlert({ type: 'error', title: 'NOTIFICATION_ERROR', message: err.message, code: 'PUSH_ERR' });
+    }
+  };
+
   const handleReset = () => {
     setGearSix(DEFAULT_SETTINGS);
     setHasChanges(true);
