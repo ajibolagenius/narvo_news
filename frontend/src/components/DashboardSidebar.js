@@ -22,6 +22,8 @@ const settingsSubNav = [
 const DashboardSidebar = ({ open, onClose, mobile }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
+  const navItems = getNavItems(t);
   const [settingsExpanded, setSettingsExpanded] = useState(
     settingsSubNav.some(item => location.pathname === item.path) || location.pathname === '/settings'
   );
