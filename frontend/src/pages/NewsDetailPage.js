@@ -434,7 +434,7 @@ const NewsDetailPage = () => {
               className={`flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] flex items-center justify-center gap-2 transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary hover:border-primary'}`}
               data-testid="sidebar-bookmark-btn"
             >
-              {<BookmarkSimple weight={isBookmarked(news.id) ? "fill" : "regular"} className="w-3 h-3" /> className="w-3 h-3" />}
+              {<BookmarkSimple weight={isBookmarked(news.id) ? "fill" : "regular"} className="w-3 h-3" />}
               {isBookmarked(news.id) ? t('dashboard.saved') : t('dashboard.save')}
             </button>
           </div>
