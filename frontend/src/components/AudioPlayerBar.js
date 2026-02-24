@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, SkipBack, SkipForward, Volume2, ListMusic, X, Trash2, GripVertical } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ListMusic, X, Trash2, GripVertical } from 'lucide-react';
 import { useAudio } from '../contexts/AudioContext';
 
 const formatTime = (s) => {
@@ -18,6 +18,40 @@ const AudioPlayerBar = () => {
     queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
   } = useAudio();
   const [showQueue, setShowQueue] = useState(false);
+  const [volume, setVolume] = useState(0.8);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const volumeRef = useRef(null);
+
+  // Apply volume to any playing audio
+  useEffect(() => {
+    const audioElements = document.querySelectorAll('audio');
+    audioElements.forEach(audio => {
+      audio.volume = isMuted ? 0 : volume;
+    });
+  }, [volume, isMuted]);
+
+  // Close volume slider when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (volumeRef.current && !volumeRef.current.contains(e.target)) {
+        setShowVolumeSlider(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleVolumeChange = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    setVolume(pct);
+    if (pct > 0) setIsMuted(false);
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
 
   return (
     <footer className="hidden md:flex flex-col bg-background-dark border-t-2 border-primary z-20 shrink-0 relative" data-testid="audio-player-bar">
