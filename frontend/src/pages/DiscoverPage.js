@@ -363,7 +363,7 @@ const DiscoverPage = () => {
         {/* Footer Stats & Tools */}
         <div className="narvo-border-t grid grid-cols-2 lg:grid-cols-4 bg-background-dark shrink-0">
           <div className="p-4 md:p-6 narvo-border-r space-y-3 md:space-y-4">
-            <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">SIGNAL_ANALYSIS</span>
+            <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">{t('discover.signal_analysis')}</span>
             <div className="flex items-end gap-1 h-16 md:h-20">
               <div className="bg-forest/30 w-full h-[40%]" />
               <div className="bg-forest/50 w-full h-[70%]" />
@@ -373,7 +373,7 @@ const DiscoverPage = () => {
             </div>
           </div>
           <div className="p-4 md:p-6 narvo-border-r flex flex-col justify-between">
-            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">SYSTEM_LOG</span>
+            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('discover.system_log')}</span>
             <div className="mono-ui text-[8px] md:text-[9px] text-white/70 space-y-1 md:space-y-2">
               <p className="text-primary">&gt; BROADCAST_STABLE</p>
               <p>&gt; BITRATE: 320 KBPS</p>
@@ -381,7 +381,7 @@ const DiscoverPage = () => {
             </div>
           </div>
           <div className="p-4 md:p-6 col-span-2 flex flex-col gap-3 md:gap-4">
-            <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">NEWSLETTER_SUBSCRIPTION</span>
+            <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">{t('discover.newsletter')}</span>
             <div className="flex gap-2 h-9 md:h-10">
               <input 
                 type="email" 
@@ -392,7 +392,7 @@ const DiscoverPage = () => {
                 data-testid="newsletter-input"
               />
               <button className="bg-primary text-background-dark px-4 md:px-6 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-colors">
-                SUBMIT
+                {t('discover.submit')}
               </button>
             </div>
           </div>
