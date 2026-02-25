@@ -20,8 +20,7 @@ const MorningBriefingPage = () => {
   const [generating, setGenerating] = useState(false);
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
-  const [selectedVoice, setSelectedVoice] = useState('nova');
-  const [voices, setVoices] = useState([]);
+  const [selectedVoice] = useState('nova');
   const [showArchive, setShowArchive] = useState(false);
   const { playTrack, currentTrack, isPlaying, isLoading: audioLoading, currentTime: audioCurrentTime, duration: audioDuration } = useAudio();
   const [sfxEnabled, setSfxEnabled] = useState(true);
@@ -74,11 +73,9 @@ const MorningBriefingPage = () => {
     Promise.all([
       fetch(`${API_URL}/api/briefing/latest`).then(r => r.ok ? r.json() : null).catch(() => null),
       fetch(`${API_URL}/api/briefing/history?limit=10`).then(r => r.json()).catch(() => ({ briefings: [] })),
-      fetch(`${API_URL}/api/voices`).then(r => r.json()).catch(() => [])
-    ]).then(([latestBriefing, historyData, voicesData]) => {
+    ]).then(([latestBriefing, historyData]) => {
       if (latestBriefing) setBriefing(latestBriefing);
       setHistory(historyData.briefings || []);
-      setVoices(voicesData);
       setLoading(false);
       setHistoryLoading(false);
     });
