@@ -14,7 +14,7 @@ Following the Swiss Grid principle, every page is treated as a high-fidelity **n
     - Primary Broadcast CTA
     - Global Stats grid cells
 - **Onboarding (Multi-panel Setup)**
-    - Regional Select
+    - **Language & Region Select**: Primary choice for native tongue translation.
     - Voice Preference
     - Interest Matrix
 - **Auth (Center Console)**
@@ -32,11 +32,12 @@ Following the Swiss Grid principle, every page is treated as a high-fidelity **n
         - Center Panel (Primary Stream)
         - Right Sidebar (Contextual Metadata)
     - **The Broadcast Loop**: Persistent mini-player with tabular waveform visualization and grid-synced pulsing.
+    - **Technical Cards:** Grid-mapped containers with 1px borders, no shadows, **strict 0px corners**, and rigid internal alignment.
     - **Technical Console Cells**: Rigid 1px grid layout for all navigation and content containers.
 - **News Detail (The Deep Dive)**
-    - **Technical Header**: Category, Source, and [TRUTH TAG] transparency metrics.
-    - **Broadcast Narrative**: The synthesized story body with monospaced "Key Takeaways."
-    - **Playback Console**: Tabular numerals, amplitude controls, and [REGIONAL VOICE] selector.
+    - **Technical Header**: Category, Source, **Language**, and [TRUTH TAG] transparency metrics.
+    - **Broadcast Narrative**: The translated narrative story body with monospaced "Key Takeaways."
+    - **Playback Console**: Tabular numerals, amplitude controls, and **[NATIVE LANGUAGE]** selector.
     - **Contextual RAG Zone**: Semantic grid cells showing related historical narratives and verified facts.
 
 ---

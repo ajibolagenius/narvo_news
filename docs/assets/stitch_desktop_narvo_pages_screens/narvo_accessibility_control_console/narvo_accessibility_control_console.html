@@ -1,311 +1,368 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Accessibility Control Console</title>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Accessibility Control Console</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#EBD5AB", // Sand/Beige
-                        "background-dark": "#1B211A", // Deep Matte Charcoal
-                        "forest": "#628141", // Forest Green
-                        "forest-light": "#628141", // Kept same as border for consistency or slightly lighter if needed, sticking to request
-                        "surface": "#1B211A", // Same as background for flat look
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
-                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "0px", "sm": "0px"}, // Remove rounded corners
+                    borderRadius: {
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
+                    },
                 },
             },
         }
     </script>
-<style>::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        ::-webkit-scrollbar-track {
-            background: #1B211A; 
+
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #628141; 
-            border-radius: 0px;
+
+        .narvo-border {
+            border: 1px solid #628141;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #EBD5AB; 
-        }input[type=range] {
-            -webkit-appearance: none; 
-            background: transparent; 
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
         }
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
             height: 24px;
-            width: 12px;
-            border-radius: 0px;
+            width: 8px;
             background: #EBD5AB;
             cursor: pointer;
-            margin-top: -10px; 
-            border: 1px solid #1B211A;
+            margin-top: -10px;
+            border: none;
         }
+
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
             height: 4px;
             cursor: pointer;
-            background: #628141;
-            border-radius: 0px;
+            background: rgba(98, 129, 65, 0.3);
         }
     </style>
 </head>
-<body class="bg-background-dark font-display text-slate-100 min-h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-background-dark">
-<header class="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-forest px-6 py-4 bg-background-dark z-20">
-<div class="flex items-center gap-4 text-white">
-<div class="size-6 text-primary">
-<span class="material-symbols-outlined text-2xl">grid_view</span>
-</div>
-<div class="flex flex-col">
-<h2 class="text-white text-xl font-bold leading-none tracking-tight uppercase">NARVO <span class="text-forest mx-2">//</span> ACCESSIBILITY CONSOLE</h2>
-<span class="text-xs font-mono text-gray-400 mt-1 tracking-widest">[SYSTEM V.2.4 :: CONNECTED]</span>
-</div>
-</div>
-<div class="flex gap-3 font-mono">
-<button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden border border-forest hover:border-primary transition-colors h-9 px-4 bg-transparent text-primary text-xs font-bold uppercase tracking-wider group">
-<span class="material-symbols-outlined text-base mr-2 group-hover:rotate-180 transition-transform">restart_alt</span>
-                Reset Defaults
-            </button>
-<button class="flex min-w-[120px] cursor-pointer items-center justify-center overflow-hidden h-9 px-4 bg-primary text-background-dark border border-primary text-xs font-bold uppercase tracking-wider hover:bg-white transition-colors">
-<span class="material-symbols-outlined text-base mr-2">save</span>
-                Save Changes
-            </button>
-</div>
-</header>
-<main class="flex-1 grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-forest bg-background-dark h-full overflow-hidden">
-<section class="flex flex-col h-full relative group">
-<div class="p-6 border-b border-forest flex justify-between items-center bg-background-dark">
-<h3 class="text-primary font-bold text-lg tracking-wide uppercase">01 // Display Density</h3>
-<span class="material-symbols-outlined text-forest">density_medium</span>
-</div>
-<div class="flex-1 overflow-y-auto p-6 space-y-6">
-<p class="text-gray-400 text-sm font-mono mb-6 leading-relaxed">Adjust the information density of the broadcast grid. Higher density allows for more data streams simultaneously.</p>
-<label class="block relative cursor-pointer group/option">
-<input class="peer sr-only" name="density" type="radio"/>
-<div class="p-5 border border-forest bg-background-dark hover:bg-forest/10 peer-checked:bg-transparent peer-checked:border-primary transition-all duration-200">
-<div class="flex justify-between items-start mb-3">
-<span class="text-sm font-mono text-forest peer-checked:text-primary tracking-widest">MODE_A</span>
-<div class="size-4 border border-forest peer-checked:bg-primary peer-checked:border-primary"></div>
-</div>
-<h4 class="text-white text-xl font-bold uppercase mb-2">Compact</h4>
-<p class="text-gray-400 text-xs font-mono">High information density. Reduced padding. Ideal for multi-stream monitoring.</p>
-<div class="mt-4 flex gap-1 h-8 opacity-50 group-hover/option:opacity-100 transition-opacity">
-<div class="bg-forest/40 w-1/4 h-full"></div>
-<div class="bg-forest/40 w-1/4 h-full"></div>
-<div class="bg-forest/40 w-1/4 h-full"></div>
-<div class="bg-forest/40 w-1/4 h-full"></div>
-</div>
-</div>
-</label>
-<label class="block relative cursor-pointer group/option">
-<input checked="" class="peer sr-only" name="density" type="radio"/>
-<div class="p-5 border border-forest bg-background-dark hover:bg-forest/10 peer-checked:bg-transparent peer-checked:border-primary transition-all duration-200">
-<div class="flex justify-between items-start mb-3">
-<span class="text-sm font-mono text-forest peer-checked:text-primary tracking-widest">MODE_B</span>
-<div class="size-4 border border-forest peer-checked:bg-primary peer-checked:border-primary"></div>
-</div>
-<h4 class="text-white text-xl font-bold uppercase mb-2">Standard</h4>
-<p class="text-gray-400 text-xs font-mono">Balanced layout. Optimal for standard newsroom operations and readability.</p>
-<div class="mt-4 flex gap-2 h-8 opacity-50 group-hover/option:opacity-100 transition-opacity">
-<div class="bg-forest/40 w-1/3 h-full"></div>
-<div class="bg-forest/40 w-1/3 h-full"></div>
-<div class="bg-forest/40 w-1/3 h-full"></div>
-</div>
-</div>
-</label>
-<label class="block relative cursor-pointer group/option">
-<input class="peer sr-only" name="density" type="radio"/>
-<div class="p-5 border border-forest bg-background-dark hover:bg-forest/10 peer-checked:bg-transparent peer-checked:border-primary transition-all duration-200">
-<div class="flex justify-between items-start mb-3">
-<span class="text-sm font-mono text-forest peer-checked:text-primary tracking-widest">MODE_C</span>
-<div class="size-4 border border-forest peer-checked:bg-primary peer-checked:border-primary"></div>
-</div>
-<h4 class="text-white text-xl font-bold uppercase mb-2">Expanded</h4>
-<p class="text-gray-400 text-xs font-mono">Maximum readability. Increased whitespace. Focus mode for single stream.</p>
-<div class="mt-4 flex gap-3 h-8 opacity-50 group-hover/option:opacity-100 transition-opacity">
-<div class="bg-forest/40 w-1/2 h-full"></div>
-<div class="bg-forest/40 w-1/2 h-full"></div>
-</div>
-</div>
-</label>
-</div>
-</section>
-<section class="flex flex-col h-full relative">
-<div class="p-6 border-b border-forest flex justify-between items-center bg-background-dark">
-<h3 class="text-primary font-bold text-lg tracking-wide uppercase">02 // Font Scaling</h3>
-<span class="material-symbols-outlined text-forest">format_size</span>
-</div>
-<div class="flex-1 overflow-y-auto p-6 flex flex-col">
-<div class="mb-10">
-<div class="flex justify-between items-end mb-4">
-<label class="text-sm font-mono text-gray-400 uppercase tracking-wider">Scale Factor</label>
-<span class="text-primary font-mono text-xl">110%</span>
-</div>
-<div class="relative h-12 flex items-center w-full">
-<input class="w-full bg-transparent appearance-none z-10 focus:outline-none focus:ring-0" max="150" min="75" type="range" value="110"/>
-<div class="absolute w-full flex justify-between px-1 pointer-events-none top-1/2 -mt-3">
-<div class="h-6 w-px bg-forest"></div>
-<div class="h-3 w-px bg-forest"></div>
-<div class="h-3 w-px bg-forest"></div>
-<div class="h-6 w-px bg-forest"></div> 
-<div class="h-3 w-px bg-forest"></div>
-<div class="h-3 w-px bg-forest"></div>
-<div class="h-6 w-px bg-forest"></div>
-</div>
-</div>
-<div class="flex justify-between text-xs font-mono text-forest mt-2">
-<span>75%</span>
-<span>100%</span>
-<span>150%</span>
-</div>
-</div>
-<div class="flex-1 border border-forest p-6 relative bg-transparent flex flex-col justify-center gap-6">
-<div class="absolute top-0 left-0 bg-forest text-white text-[10px] font-mono px-2 py-0.5 uppercase tracking-wider">Live Preview</div>
-<div>
-<span class="text-primary text-xs font-mono mb-2 block border-l-2 border-primary pl-2 uppercase">Headline // Space Grotesk</span>
-<h1 class="text-white font-bold leading-tight" style="font-size: 1.375rem;">BREAKING: Global market shifts reported in sector 4 following new trade agreements.</h1>
-</div>
-<div>
-<span class="text-forest text-xs font-mono mb-2 block border-l-2 border-forest pl-2 uppercase">Body // JetBrains Mono</span>
-<p class="text-gray-300 font-mono leading-relaxed" style="font-size: 0.875rem;">
-                            System analysis indicates a 14% increase in network traffic. Nodes 4, 8, and 12 are operating at peak capacity. Recommend immediate resource reallocation.
-                        </p>
-</div>
-<div class="flex gap-4 items-center pt-4 border-t border-forest">
-<button class="bg-primary text-background-dark font-bold px-4 py-2 text-sm uppercase hover:bg-white transition-colors">Confirm</button>
-<button class="text-white border border-forest px-4 py-2 text-sm uppercase hover:border-white transition-colors">Cancel</button>
-</div>
-</div>
-<div class="mt-8 p-4 border border-forest bg-background-dark">
-<h4 class="text-primary text-sm font-bold uppercase mb-2 flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">info</span>
-                        Typography Note
-                    </h4>
-<p class="text-xs text-gray-400 font-mono">Font scaling affects all terminal readouts and teleprompter displays. Graphics overlays maintain fixed ratios.</p>
-</div>
-</div>
-</section>
-<section class="flex flex-col h-full relative">
-<div class="p-6 border-b border-forest flex justify-between items-center bg-background-dark">
-<h3 class="text-primary font-bold text-lg tracking-wide uppercase">03 // Voice-Gestural UI</h3>
-<span class="material-symbols-outlined text-forest">touch_app</span>
-</div>
-<div class="flex-1 overflow-y-auto p-6 space-y-8">
-<div>
-<h4 class="text-white text-sm font-mono uppercase border-b border-forest pb-2 mb-4 tracking-widest text-forest">Gesture Configuration</h4>
-<div class="grid grid-cols-1 gap-4">
-<div class="flex items-center justify-between p-4 border border-forest bg-background-dark hover:border-primary transition-colors group">
-<div class="flex items-center gap-4">
-<div class="size-12 bg-transparent rounded-none flex items-center justify-center border border-forest group-hover:border-primary">
-<span class="material-symbols-outlined text-white">swipe_left</span>
-</div>
-<div>
-<h5 class="text-white font-bold text-sm uppercase">Lateral Swipe</h5>
-<p class="text-xs text-gray-500 font-mono">Navigates between data streams.</p>
-</div>
-</div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input checked="" class="sr-only peer" type="checkbox" value=""/>
-<div class="w-11 h-6 bg-forest/30 peer-focus:outline-none rounded-none peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-none after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-<div class="flex items-center justify-between p-4 border border-forest bg-background-dark hover:border-primary transition-colors group">
-<div class="flex items-center gap-4">
-<div class="size-12 bg-transparent rounded-none flex items-center justify-center border border-forest group-hover:border-primary">
-<span class="material-symbols-outlined text-white">pinch</span>
-</div>
-<div>
-<h5 class="text-white font-bold text-sm uppercase">Pinch Zoom</h5>
-<p class="text-xs text-gray-500 font-mono">Expands map detail view.</p>
-</div>
-</div>
-<label class="relative inline-flex items-center cursor-pointer">
-<input class="sr-only peer" type="checkbox" value=""/>
-<div class="w-11 h-6 bg-forest/30 peer-focus:outline-none rounded-none peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-none after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-</label>
-</div>
-</div>
-</div>
-<div>
-<div class="flex justify-between items-end border-b border-forest pb-2 mb-4">
-<h4 class="text-white text-sm font-mono uppercase tracking-widest text-forest">Voice Command</h4>
-<span class="text-xs text-primary font-mono animate-pulse">● LISTENING</span>
-</div>
-<div class="p-4 bg-black border border-forest mb-4">
-<div class="flex justify-between items-center h-12 gap-1 px-2">
-<div class="w-1.5 bg-forest h-3 animate-[pulse_1s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-5 animate-[pulse_1.2s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-8 animate-[pulse_0.8s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-primary h-10 animate-[pulse_1.5s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-primary h-6 animate-[pulse_1.1s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-4 animate-[pulse_0.9s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-8 animate-[pulse_1.3s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-3 animate-[pulse_1s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-5 animate-[pulse_1.2s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-8 animate-[pulse_0.8s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-primary h-10 animate-[pulse_1.5s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-primary h-6 animate-[pulse_1.1s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-4 animate-[pulse_0.9s_ease-in-out_infinite]"></div>
-<div class="w-1.5 bg-forest h-8 animate-[pulse_1.3s_ease-in-out_infinite]"></div>
-</div>
-<div class="mt-2 text-center">
-<p class="text-gray-500 font-mono text-[10px] uppercase">Input Sensitivity: -12dB</p>
-</div>
-</div>
-<div class="space-y-3">
-<div class="flex items-center gap-3 p-2 hover:bg-forest/10 cursor-pointer transition-colors group">
-<span class="material-symbols-outlined text-forest group-hover:text-primary">mic</span>
-<div class="flex-1">
-<p class="text-white font-mono text-sm">"Narvo, open newsfeed"</p>
-</div>
-<span class="text-xs bg-forest/20 text-forest px-2 py-0.5 border border-forest">Enabled</span>
-</div>
-<div class="flex items-center gap-3 p-2 hover:bg-forest/10 cursor-pointer transition-colors group">
-<span class="material-symbols-outlined text-forest group-hover:text-primary">mic</span>
-<div class="flex-1">
-<p class="text-white font-mono text-sm">"Narvo, brightness up"</p>
-</div>
-<span class="text-xs bg-forest/20 text-forest px-2 py-0.5 border border-forest">Enabled</span>
-</div>
-<div class="flex items-center gap-3 p-2 hover:bg-forest/10 cursor-pointer transition-colors group opacity-50">
-<span class="material-symbols-outlined text-forest group-hover:text-primary">mic_off</span>
-<div class="flex-1">
-<p class="text-white font-mono text-sm">"Narvo, emergency broadcast"</p>
-</div>
-<span class="text-xs bg-surface text-gray-600 px-2 py-0.5 border border-forest/30">Disabled</span>
-</div>
-</div>
-<button class="w-full mt-6 py-3 border border-dashed border-forest text-forest text-xs font-mono hover:text-primary hover:border-primary hover:bg-primary/5 transition-all uppercase tracking-widest">
-                        + Calibrate New Command
-                    </button>
-</div>
-</div>
-</section>
-</main>
-<footer class="flex-none border-t border-forest bg-background-dark text-gray-500 text-[10px] font-mono py-2 px-6 flex justify-between items-center z-20">
-<div class="flex gap-6">
-<span class="flex items-center gap-2"><div class="size-2 bg-green-500 rounded-none animate-pulse"></div> SERVER: ONLINE</span>
-<span>LATENCY: 12ms</span>
-<span>UPTIME: 42:19:03</span>
-</div>
-<div>
-            ID: NVR-8821-X
-        </div>
-</footer>
 
-</body></html>
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header Navigation -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-universal-access text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> ACCESSIBILITY_CONSOLE
+                </h1>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <button
+                class="flex items-center gap-2 narvo-border px-6 py-2 mono-ui text-[10px] font-bold text-white hover:bg-forest transition-all">
+                <i class="ph ph-arrows-clockwise"></i>
+                <span>RESET_DEFAULTS</span>
+            </button>
+            <button
+                class="flex items-center gap-2 bg-primary text-background-dark px-6 py-2 mono-ui text-[10px] font-bold hover:bg-white transition-all">
+                <i class="ph ph-floppy-disk"></i>
+                <span>SAVE_CONFIG</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main
+        class="flex-1 grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-forest/30 overflow-hidden">
+        <!-- 01: Display Density -->
+        <section class="flex flex-col h-full overflow-hidden">
+            <div class="p-8 narvo-border-b flex justify-between items-center shrink-0">
+                <div class="space-y-1">
+                    <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">LAYER_01</span>
+                    <h3 class="text-primary font-bold text-xl tracking-tight uppercase">DISPLAY_DENSITY</h3>
+                </div>
+                <i class="ph ph-rows text-forest text-2xl"></i>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll p-8 space-y-8">
+                <p class="mono-ui text-[10px] text-forest leading-relaxed font-bold">ADJUST THE INFORMATION DENSITY OF
+                    THE BROADCAST GRID. HIGHER DENSITY ALLOWS FOR MAXIMUM DATA THROUGHPUT.</p>
+
+                <div class="space-y-4">
+                    <!-- Option Compact -->
+                    <label class="block cursor-pointer group">
+                        <input type="radio" name="density" class="peer sr-only" checked>
+                        <div
+                            class="p-6 narvo-border bg-surface/10 peer-checked:bg-primary/5 peer-checked:border-primary transition-all relative">
+                            <div
+                                class="absolute right-6 top-6 size-4 narvo-border peer-checked:bg-primary peer-checked:border-primary transition-all">
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white uppercase mb-2">Compact</h4>
+                            <p class="mono-ui text-[9px] text-forest font-bold">MAX_DENSITY_MODE // MIN_PADDING</p>
+                            <div class="mt-4 flex gap-1 h-6 opacity-30 group-hover:opacity-60">
+                                <div class="bg-forest flex-1"></div>
+                                <div class="bg-forest flex-1"></div>
+                                <div class="bg-forest flex-1"></div>
+                                <div class="bg-forest flex-1"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Option Balanced -->
+                    <label class="block cursor-pointer group">
+                        <input type="radio" name="density" class="peer sr-only">
+                        <div
+                            class="p-6 narvo-border bg-surface/10 peer-checked:bg-primary/5 peer-checked:border-primary transition-all relative">
+                            <div
+                                class="absolute right-6 top-6 size-4 narvo-border peer-checked:bg-primary peer-checked:border-primary transition-all">
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white uppercase mb-2">Standard</h4>
+                            <p class="mono-ui text-[9px] text-forest font-bold">BALANCED_FLOW // OPTIMAL_READ</p>
+                            <div class="mt-4 flex gap-2 h-6 opacity-30 group-hover:opacity-60">
+                                <div class="bg-forest flex-1"></div>
+                                <div class="bg-forest flex-1"></div>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Option Expanded -->
+                    <label class="block cursor-pointer group">
+                        <input type="radio" name="density" class="peer sr-only">
+                        <div
+                            class="p-6 narvo-border bg-surface/10 peer-checked:bg-primary/5 peer-checked:border-primary transition-all relative">
+                            <div
+                                class="absolute right-6 top-6 size-4 narvo-border peer-checked:bg-primary peer-checked:border-primary transition-all">
+                            </div>
+                            <h4 class="font-display text-xl font-bold text-white uppercase mb-2">Expanded</h4>
+                            <p class="mono-ui text-[9px] text-forest font-bold">MAX_WHITESPACE // FOCUS_DOCK</p>
+                            <div class="mt-4 h-6 opacity-30 group-hover:opacity-60 bg-forest w-full"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- 02: Font Scaling -->
+        <section class="flex flex-col h-full overflow-hidden">
+            <div class="p-8 narvo-border-b flex justify-between items-center shrink-0">
+                <div class="space-y-1">
+                    <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">LAYER_02</span>
+                    <h3 class="text-primary font-bold text-xl tracking-tight uppercase">FONT_SCALING</h3>
+                </div>
+                <i class="ph ph-text-aa text-forest text-2xl"></i>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll p-8 space-y-12">
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end">
+                        <span class="mono-ui text-[10px] text-forest font-bold">SCALE_FACTOR</span>
+                        <span class="font-display text-3xl font-bold text-primary leading-none">110%</span>
+                    </div>
+                    <div class="relative py-4">
+                        <input type="range" class="w-full" min="75" max="150" value="110">
+                        <div class="flex justify-between mt-4 mono-ui text-[9px] text-forest font-bold">
+                            <span>75%</span>
+                            <span>100%</span>
+                            <span>150%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="narvo-border bg-surface/5 p-8 space-y-8 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 bg-forest px-3 py-1 mono-ui text-[8px] text-white font-bold">
+                        OUTPUT_PREVIEW</div>
+                    <div class="space-y-4 pt-4">
+                        <div class="space-y-2">
+                            <span
+                                class="mono-ui text-[9px] text-primary font-bold border-l-2 border-primary pl-2 uppercase">HEADLINE
+                                // SPACE GROTESK</span>
+                            <h4 class="font-display text-2xl font-bold text-white uppercase leading-tight">BREAKING:
+                                GLOBAL_MARKET_NODE_4 SHIFT REPORTED.</h4>
+                        </div>
+                        <div class="space-y-2">
+                            <span
+                                class="mono-ui text-[9px] text-forest font-bold border-l-2 border-forest pl-2 uppercase">BODY
+                                // JETBRAINS MONO</span>
+                            <p class="mono-ui text-[11px] text-forest leading-relaxed">SYSTEM ANALYSIS DETECTS 14%
+                                FLUCTUATION. NODES 4, 8, AND 12 ARE OPERATING AT PEAK CAPACITY.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="narvo-border p-4 bg-primary/5 flex gap-4">
+                    <i class="ph ph-info text-primary text-xl"></i>
+                    <p class="mono-ui text-[9px] text-forest leading-relaxed font-bold">FONT SCALING AFFECTS ALL
+                        TERMINAL READOUTS. BROADCAST GRAPHICS MAINTAIN FIXED RATIOS FOR INTEGRITY.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 03: Interaction -->
+        <section class="flex flex-col h-full overflow-hidden">
+            <div class="p-8 narvo-border-b flex justify-between items-center shrink-0">
+                <div class="space-y-1">
+                    <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">LAYER_03</span>
+                    <h3 class="text-primary font-bold text-xl tracking-tight uppercase">UI_INTERACTION</h3>
+                </div>
+                <i class="ph ph-hand-pointing text-forest text-2xl"></i>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll p-8 space-y-10">
+                <div class="space-y-6">
+                    <h4 class="mono-ui text-[10px] text-forest font-bold border-b border-forest/30 pb-2">
+                        GESTURAL_CONTROL</h4>
+
+                    <div class="space-y-3">
+                        <div
+                            class="p-4 narvo-border bg-surface/5 flex items-center justify-between group hover:border-primary transition-all">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="size-12 narvo-border flex items-center justify-center text-white group-hover:text-primary transition-colors">
+                                    <i class="ph ph-hand-swipe-left text-2xl"></i>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <h5 class="mono-ui text-[11px] text-white font-bold">Lateral Swipe</h5>
+                                    <p class="mono-ui text-[9px] text-forest">NAV_DATA_STREAMS</p>
+                                </div>
+                            </div>
+                            <input type="checkbox"
+                                class="size-5 bg-transparent narvo-border checked:bg-primary focus:ring-0" checked>
+                        </div>
+
+                        <div
+                            class="p-4 narvo-border bg-surface/5 flex items-center justify-between group hover:border-primary transition-all">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="size-12 narvo-border flex items-center justify-center text-white group-hover:text-primary transition-colors">
+                                    <i class="ph ph-hand-pinch text-2xl"></i>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <h5 class="mono-ui text-[11px] text-white font-bold">Pinch Zoom</h5>
+                                    <p class="mono-ui text-[9px] text-forest">EXPAND_MAP_DOCK</p>
+                                </div>
+                            </div>
+                            <input type="checkbox"
+                                class="size-5 bg-transparent narvo-border checked:bg-primary focus:ring-0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex justify-between items-end border-b border-forest/30 pb-2">
+                        <h4 class="mono-ui text-[10px] text-forest font-bold">VOICE_COMMANDS</h4>
+                        <span class="mono-ui text-[9px] text-primary font-bold animate-pulse">● LISTENING_V2</span>
+                    </div>
+
+                    <div class="narvo-border bg-black p-4 flex items-center justify-center gap-1 h-32">
+                        <div class="w-1.5 bg-forest/40 h-8"></div>
+                        <div class="w-1.5 bg-forest/60 h-16"></div>
+                        <div class="w-1.5 bg-forest h-24"></div>
+                        <div class="w-1.5 bg-primary h-20"></div>
+                        <div class="w-1.5 bg-primary h-28"></div>
+                        <div class="w-1.5 bg-forest h-12"></div>
+                        <div class="w-1.5 bg-forest/60 h-20"></div>
+                        <div class="w-1.5 bg-forest/40 h-10"></div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <button
+                            class="w-full p-4 narvo-border bg-surface/5 flex items-center gap-4 hover:bg-forest/10 transition-all group">
+                            <i class="ph ph-microphone text-forest group-hover:text-primary transition-colors"></i>
+                            <span class="mono-ui text-[10px] text-white font-bold flex-1 text-left">"NARVO, OPEN
+                                NEWSFEED"</span>
+                            <span class="mono-ui text-[8px] text-primary border border-primary px-2">ACTIVE</span>
+                        </button>
+                        <button
+                            class="w-full p-4 narvo-border bg-surface/5 flex items-center gap-4 hover:bg-forest/10 transition-all group">
+                            <i class="ph ph-microphone text-forest group-hover:text-primary transition-colors"></i>
+                            <span class="mono-ui text-[10px] text-white font-bold flex-1 text-left">"NARVO, BRIGHTNESS
+                                UP"</span>
+                            <span class="mono-ui text-[8px] text-primary border border-primary px-2">ACTIVE</span>
+                        </button>
+                    </div>
+
+                    <button
+                        class="w-full py-4 narvo-border border-dashed border-forest/50 mono-ui text-[10px] text-forest font-bold hover:text-primary hover:border-primary transition-all">
+                        + CALIBRATE_NEW_COMMAND
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Global Telemetry Footer -->
+    <footer
+        class="h-10 border-t border-forest/30 bg-background-dark flex items-center justify-between px-6 shrink-0 shrink-0">
+        <div class="flex items-center gap-8 mono-ui text-[9px] text-forest font-bold">
+            <div class="flex items-center gap-2">
+                <div class="size-2 bg-primary"></div>
+                <span>NODE_SYNC: NOMINAL</span>
+            </div>
+            <span>LATENCY: 14ms</span>
+            <span>ENCRYPTION: AES-256</span>
+        </div>
+        <div class="mono-ui text-[9px] text-forest font-bold">
+            CONSOLE_ID: NVR-AX-8821
+        </div>
+    </footer>
+</body>
+
+</html>

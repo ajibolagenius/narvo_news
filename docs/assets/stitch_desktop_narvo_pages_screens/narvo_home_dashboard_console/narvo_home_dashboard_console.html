@@ -1,331 +1,534 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Home Dashboard Console</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Primary Command Console</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#ebd3a8", // Sand/Beige
-                        "accent-green": "#628141", // Olive Green Borders
-                        "background-light": "#f8f7f6", // Fallback light
-                        "background-dark": "#1B211A", // Deep Matte Charcoal
-                        "surface-dark": "#232922", // Slightly lighter charcoal for cards
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
                     borderRadius: {
-                        "DEFAULT": "0.125rem", 
-                        "lg": "0.25rem", 
-                        "xl": "0.5rem", 
-                        "full": "9999px"
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
                     },
                 },
             },
         }
     </script>
-<style>
-        /* Custom scrollbar for the center content */
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .narvo-border {
+            border: 1px solid #628141;
+        }
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
+        }
+
+        .narvo-border-l {
+            border-left: 1px solid #628141;
+        }
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
+        }
+
+        .narvo-border-t {
+            border-top: 1px solid #628141;
+        }
+
         .custom-scroll::-webkit-scrollbar {
             width: 4px;
         }
+
         .custom-scroll::-webkit-scrollbar-track {
             background: #1B211A;
         }
+
         .custom-scroll::-webkit-scrollbar-thumb {
             background: #628141;
-            border-radius: 2px;
+        }
+
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen overflow-hidden flex flex-col">
-<!-- Main Grid Container -->
-<div class="flex flex-1 h-[calc(100vh-80px)] overflow-hidden divide-x divide-accent-green border-b border-accent-green">
-<!-- Left Sidebar: Navigation -->
-<aside class="w-64 hidden md:flex flex-col bg-background-light dark:bg-background-dark shrink-0">
-<!-- Brand -->
-<div class="h-20 flex items-center px-6 border-b border-accent-green">
-<div class="flex items-center gap-3">
-<div class="size-8 bg-primary rounded-full flex items-center justify-center">
-<span class="material-symbols-outlined text-background-dark" style="font-size: 20px;">graphic_eq</span>
-</div>
-<h1 class="text-xl font-bold tracking-tight">NARVO</h1>
-</div>
-</div>
-<!-- Nav Links -->
-<nav class="flex-1 py-6 px-4 space-y-2 overflow-y-auto">
-<a class="flex items-center gap-3 px-4 py-3 rounded bg-primary/10 text-primary border border-primary/20 group transition-colors" href="#">
-<span class="material-symbols-outlined group-hover:animate-pulse">broadcast_on_home</span>
-<span class="font-medium text-sm">Primary Stream</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded hover:bg-surface-dark text-slate-400 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">analytics</span>
-<span class="font-medium text-sm">Regional Pulse</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded hover:bg-surface-dark text-slate-400 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">folder_open</span>
-<span class="font-medium text-sm">Archives</span>
-</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded hover:bg-surface-dark text-slate-400 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">public</span>
-<span class="font-medium text-sm">Global Map</span>
-</a>
-<div class="pt-4 mt-4 border-t border-accent-green/30">
-<p class="px-4 text-xs font-mono text-accent-green mb-2 uppercase tracking-wider">System</p>
-<a class="flex items-center gap-3 px-4 py-3 rounded hover:bg-surface-dark text-slate-400 hover:text-white transition-colors" href="#">
-<span class="material-symbols-outlined">settings</span>
-<span class="font-medium text-sm">Settings</span>
-</a>
-</div>
-</nav>
-<!-- User Profile -->
-<div class="p-4 border-t border-accent-green">
-<div class="flex items-center gap-3 p-2 rounded hover:bg-surface-dark cursor-pointer transition-colors">
-<img alt="User Profile Picture" class="size-10 rounded-full object-cover border border-accent-green" data-alt="Close up portrait of a man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZjfpzwFg1uNrujEXn2G08BTBTcbWhBUrUWhBpKVN2AGIR7YWi4OzL44_dNE05HS9WbakrJTAoL1WXEZWBAfDAs9y1eHg7SdelL4cemF2IZNjjXUrI2J61LYPrPUdqGSMfAxCf_dWQbNxkONobUDymFLK7EFJ70cnB04JScUWNtD9wysYK_Q0fEclt9vg8_z7OYttr63jKg-2fiHNqRyDb-A48eGGA43yaCxJZGQsohT8r4jGRFM75h2WXcPOTkida03WzrQVOQos"/>
-<div class="flex flex-col">
-<span class="text-sm font-bold leading-none">Alex V.</span>
-<span class="text-xs font-mono text-accent-green mt-1">PRO_MEMBER</span>
-</div>
-</div>
-</div>
-</aside>
-<!-- Center Panel: Primary Stream -->
-<main class="flex-1 flex flex-col bg-background-light dark:bg-background-dark min-w-0">
-<!-- Header -->
-<header class="h-20 flex items-center justify-between px-8 border-b border-accent-green shrink-0 bg-background-dark/95 backdrop-blur z-10 sticky top-0">
-<div>
-<h2 class="text-2xl font-bold tracking-tight text-white">Live Feed</h2>
-<p class="text-xs font-mono text-accent-green mt-1">SYSTEM_STATUS: ONLINE • <span class="text-primary">UPDATING</span></p>
-</div>
-<div class="flex gap-2">
-<button class="size-9 flex items-center justify-center rounded border border-accent-green text-accent-green hover:bg-accent-green hover:text-white transition-colors">
-<span class="material-symbols-outlined" style="font-size: 20px;">search</span>
-</button>
-<button class="size-9 flex items-center justify-center rounded border border-accent-green text-accent-green hover:bg-accent-green hover:text-white transition-colors">
-<span class="material-symbols-outlined" style="font-size: 20px;">filter_list</span>
-</button>
-</div>
-</header>
-<!-- Stream Content -->
-<div class="flex-1 overflow-y-auto custom-scroll p-8">
-<div class="max-w-3xl mx-auto flex flex-col gap-6">
-<!-- Featured Card -->
-<article class="group relative bg-surface-dark border border-accent-green rounded-lg overflow-hidden transition-all hover:border-primary">
-<div class="absolute top-0 left-0 w-1 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<div class="flex flex-col md:flex-row h-full">
-<div class="md:w-2/5 relative h-48 md:h-auto">
-<img alt="Stock Market Graph" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" data-alt="Abstract blue financial data chart" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-T0eh-zuWYmku_fd1UGhIU52-HBVpJ2xlhMSSeBHdIZGl2LYknkjS0YgUJEUDSwybybf5l-81F8ITaI-EAOUBmeckRb0Ry9-ySPiptnMulS_wN2or6eTlY5xlX6vNbKrQ2h-KsABLCm4NowZuceaAafeCscSK-_MujN3KWbtg50WghOvY4yva_3HzwGIsR-YggrDkk-qRo4S-M-EtvgjgfMqrkKATDrg899gvu2iXGk_EpxAnjjtxZOVRmwQDazPUcsVZNT5ynDk"/>
-<div class="absolute top-3 left-3 bg-black/60 backdrop-blur px-2 py-1 rounded border border-white/10">
-<span class="text-xs font-mono text-primary flex items-center gap-1">
-<span class="material-symbols-outlined text-[12px]">live_tv</span> LIVE
-                                    </span>
-</div>
-</div>
-<div class="flex-1 p-6 flex flex-col justify-between">
-<div>
-<div class="flex items-center justify-between mb-3">
-<span class="font-mono text-xs text-accent-green bg-accent-green/10 px-2 py-1 rounded">REUTERS-API</span>
-<span class="font-mono text-xs text-slate-400">14:02 UTC</span>
-</div>
-<h3 class="text-xl font-bold leading-tight mb-2 group-hover:text-primary transition-colors">Market Shifts in Eastern Sector</h3>
-<p class="text-sm text-slate-400 leading-relaxed line-clamp-2">Immediate impact observed on logistics chains following the morning announcement. Analysts predict a 4.5% variance in Q3 projections.</p>
-</div>
-<div class="mt-5 flex gap-3">
-<button class="flex-1 bg-primary text-background-dark hover:bg-white text-sm font-bold py-2 px-4 rounded flex items-center justify-center gap-2 transition-colors">
-<span class="material-symbols-outlined" style="font-size: 18px;">play_arrow</span> Play Briefing
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header Navigation -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12 flex-1">
+            <div class="flex items-center gap-4 shrink-0">
+                <i class="ph ph-broadcast text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase">
+                    NARVO <span class="text-forest font-light mx-2">//</span> DASHBOARD
+                </h1>
+            </div>
+
+            <!-- Header Search Component (max-w-xl Expansion) -->
+            <div class="relative w-full max-w-xl hidden lg:block">
+                <i class="ph ph-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-primary text-base"></i>
+                <input type="text"
+                    class="w-full bg-surface/30 narvo-border pl-12 pr-4 py-2.5 text-[11px] mono-ui text-white placeholder-forest focus:outline-none focus:border-primary focus:bg-surface/50 transition-all"
+                    placeholder="SEARCH_STREAM_NODES_AND_TRANSMISSIONS...">
+                <div
+                    class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1 mono-ui text-[9px] text-forest border border-forest/30 px-1.5 py-0.5 pointer-events-none">
+                    <span class="text-primary">CMD</span>+<span>K</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6 shrink-0">
+            <div class="hidden md:flex flex-col items-end mono-ui text-[9px] text-forest">
+                <span>SIGNAL_STABILITY: <span class="text-primary font-bold">100%</span></span>
+                <span>LATENCY: <span class="text-primary font-bold">12ms</span></span>
+            </div>
+            <div
+                class="h-10 w-10 narvo-border bg-surface flex items-center justify-center cursor-pointer hover:bg-forest transition-colors">
+                <i class="ph ph-user text-primary"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Sidebar Navigation (Icon Only) -->
+        <aside
+            class="w-16 narvo-border-r h-full flex flex-col items-center py-6 gap-8 bg-background-dark z-10 shrink-0">
+            <button class="text-primary hover:text-white transition-colors" title="Primary Stream"><i
+                    class="ph ph-squares-four text-2xl"></i></button>
+            <button class="text-forest hover:text-primary transition-colors" title="Regional Pulse"><i
+                    class="ph ph-waveform text-2xl"></i></button>
+            <button class="text-forest hover:text-primary transition-colors" title="Archives"><i
+                    class="ph ph-folder-open text-2xl"></i></button>
+            <button class="text-forest hover:text-primary transition-colors" title="Global Map"><i
+                    class="ph ph-globe text-2xl"></i></button>
+            <div class="mt-auto flex flex-col gap-6">
+                <button class="text-forest hover:text-primary transition-colors"><i
+                        class="ph ph-gear text-2xl"></i></button>
+                <button class="text-forest hover:text-primary transition-colors"><i
+                        class="ph ph-bell text-2xl"></i></button>
+            </div>
+        </aside>
+
+        <!-- Primary Feed Container -->
+        <main class="flex-1 flex flex-col bg-background-dark min-w-0">
+            <!-- Feed Sub-Header -->
+            <div class="h-14 flex items-center justify-between px-8 bg-surface/30 narvo-border-b shrink-0">
+                <div class="flex items-center gap-3">
+                    <span class="mono-ui text-[10px] text-forest">CHANNEL: <span
+                            class="text-primary">NIGERIA_LGS_01</span></span>
+                    <i class="ph ph-dot-outline text-primary animate-pulse text-xl"></i>
+                    <span class="mono-ui text-[10px] text-forest">LIVE_TRANSMISSION</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="mono-ui text-[10px] text-forest border border-forest px-3 py-1 hover:bg-forest hover:text-white transition-colors">FILTERS</button>
+                    <button
+                        class="mono-ui text-[10px] text-primary border border-primary px-3 py-1 hover:bg-primary hover:text-background-dark transition-colors">SORT_PRIORITY</button>
+                </div>
+            </div>
+
+            <!-- Feed Content -->
+            <div class="flex-1 overflow-y-auto custom-scroll p-8">
+                <div class="max-w-4xl mx-auto flex flex-col gap-12">
+                    <!-- Featured Transmission Card -->
+                    <section>
+                        <span class="mono-ui text-[9px] text-primary block mb-4 font-bold tracking-[0.2em]">//
+                            PRIORITY_TRANSMISSION</span>
+                        <article
+                            class="narvo-border bg-surface/50 group relative overflow-hidden flex flex-col md:flex-row min-h-[320px]">
+                            <div
+                                class="absolute top-0 left-0 w-1 h-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                            </div>
+                            <div class="md:w-1/2 relative bg-background-dark overflow-hidden">
+                                <img alt="Economic News"
+                                    class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale hover:grayscale-0"
+                                    src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=800" />
+                                <div class="absolute inset-0 bg-gradient-to-r from-background-dark/80 to-transparent">
+                                </div>
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span
+                                        class="bg-primary text-background-dark font-mono text-[9px] font-bold px-2 py-0.5 uppercase tracking-tighter">Feature</span>
+                                    <span
+                                        class="bg-black/50 text-white font-mono text-[9px] px-2 py-0.5 uppercase border border-white/20 backdrop-blur-md">04:22
+                                        UTC</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 p-8 flex flex-col justify-between">
+                                <div>
+                                    <span
+                                        class="mono-ui text-[10px] text-forest block mb-2 font-bold tracking-widest">NARRATIVE_NODE
+                                        // ECONOMY</span>
+                                    <h2
+                                        class="font-display text-3xl font-bold uppercase tracking-tight text-white mb-4 leading-none group-hover:text-primary transition-colors">
+                                        Currency Calibration: Regional Response to Export Shifts.
+                                    </h2>
+                                    <p
+                                        class="text-sm text-forest font-mono leading-relaxed mb-6 opacity-80 line-clamp-3">
+                                        Central nodes reporting significant volume variance in intra-regional trade
+                                        blocks. Secondary synthesis indicates a 12% rise in localized manufacturing
+                                        output across West African hubs.
+                                    </p>
+                                </div>
+                                <div class="flex gap-4">
+                                    <button
+                                        class="flex-1 h-12 bg-primary text-background-dark font-display font-bold text-sm uppercase flex items-center justify-center gap-3 hover:bg-white transition-all">
+                                        <i class="ph ph-play-circle text-2xl"></i>
+                                        <span>Play Briefing</span>
                                     </button>
-<button class="size-9 border border-slate-600 rounded flex items-center justify-center text-slate-400 hover:text-white hover:border-white transition-colors" title="Read Later">
-<span class="material-symbols-outlined" style="font-size: 18px;">bookmark</span>
-</button>
-</div>
-</div>
-</div>
-</article>
-<!-- Standard Card 1 -->
-<article class="bg-surface-dark border border-accent-green/50 rounded-lg p-5 hover:border-primary transition-colors cursor-pointer">
-<div class="flex justify-between items-start mb-2">
-<span class="font-mono text-xs text-accent-green">AP WIRE</span>
-<span class="font-mono text-xs text-slate-500">13:45 UTC</span>
-</div>
-<h3 class="text-lg font-bold leading-snug mb-2">Global Summit Conclusions</h3>
-<p class="text-sm text-slate-400 mb-4">Key takeaways from the G7 summit include new climate protocols and trade agreements affecting the northern hemisphere.</p>
-<div class="flex items-center gap-4 border-t border-white/5 pt-3">
-<button class="text-xs font-mono text-primary hover:text-white uppercase flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">play_circle</span> Listen (3m)
-                            </button>
-<span class="text-xs font-mono text-slate-600">#POLITICS #GLOBAL</span>
-</div>
-</article>
-<!-- Standard Card 2 -->
-<article class="bg-surface-dark border border-accent-green/50 rounded-lg p-5 hover:border-primary transition-colors cursor-pointer">
-<div class="flex justify-between items-start mb-2">
-<span class="font-mono text-xs text-accent-green">TECH CRUNCH</span>
-<span class="font-mono text-xs text-slate-500">12:30 UTC</span>
-</div>
-<h3 class="text-lg font-bold leading-snug mb-2">Quantum Computing Milestone</h3>
-<p class="text-sm text-slate-400 mb-4">Researchers announce a breakthrough in error correction, paving the way for stable qubits at room temperature.</p>
-<div class="flex items-center gap-4 border-t border-white/5 pt-3">
-<button class="text-xs font-mono text-primary hover:text-white uppercase flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">play_circle</span> Listen (5m)
-                            </button>
-<span class="text-xs font-mono text-slate-600">#SCI-TECH #QUANTUM</span>
-</div>
-</article>
-<!-- Photo Card -->
-<article class="bg-surface-dark border border-accent-green/50 rounded-lg overflow-hidden hover:border-primary transition-colors cursor-pointer">
-<div class="h-40 w-full relative">
-<img alt="Abstract city art" class="w-full h-full object-cover opacity-60" data-alt="Abstract colorful geometric city painting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpv2j7V_fhx6cDh4m42eGXpMGWl4jpHkW1wlnBAXPl_2PrEZHVEdc7ldBTzPQshMGrdzBwPpxrTByRu4fMop70NFRjIqV34FwdtCSyQxRXBppRrM-g4OIfyVbzF6C2wcU29Ejdmn1uorvVsWQu2nWjMc0L4wr6SdldMtgoD5Y2eDBOnfzCgIKiS9M-7mRr7zaAaCZt520ejfwPeX1w-f_ejNYVG1gwqWkjzC_ZQvXRTkIXanSLacKLSxfsM_eORqhgnUTGsb0Vav0"/>
-<div class="absolute inset-0 bg-gradient-to-t from-surface-dark to-transparent"></div>
-<div class="absolute bottom-3 left-4">
-<h3 class="text-lg font-bold text-white">Urban Renewal Project</h3>
-</div>
-</div>
-<div class="p-4 pt-1">
-<div class="flex justify-between items-center text-xs font-mono text-slate-500 mb-2">
-<span>CITY GAZETTE</span>
-<span>11:15 UTC</span>
-</div>
-<p class="text-sm text-slate-400">A visual journey through the proposed architectural changes for the downtown district.</p>
-</div>
-</article>
-</div>
-</div>
-</main>
-<!-- Right Sidebar: Contextual Metadata -->
-<aside class="w-80 hidden lg:flex flex-col bg-background-light dark:bg-background-dark shrink-0">
-<!-- Header -->
-<div class="h-20 flex items-center px-6 border-b border-accent-green">
-<h3 class="font-mono text-sm font-bold uppercase tracking-widest text-accent-green">Data_Stream</h3>
-</div>
-<div class="flex-1 overflow-y-auto p-6 space-y-8">
-<!-- Live Metrics -->
-<div class="font-mono">
-<h4 class="text-xs text-slate-500 mb-3 uppercase tracking-wider">Live Metrics</h4>
-<div class="grid grid-cols-2 gap-4">
-<div class="bg-surface-dark border border-accent-green/30 p-3 rounded">
-<div class="text-2xl font-display font-bold text-white">14.2k</div>
-<div class="text-[10px] text-accent-green uppercase mt-1">Active Listeners</div>
-</div>
-<div class="bg-surface-dark border border-accent-green/30 p-3 rounded">
-<div class="text-2xl font-display font-bold text-primary">89</div>
-<div class="text-[10px] text-accent-green uppercase mt-1">Sources Online</div>
-</div>
-</div>
-</div>
-<!-- Weather Widget -->
-<div class="font-mono">
-<h4 class="text-xs text-slate-500 mb-3 uppercase tracking-wider">Regional Weather</h4>
-<div class="bg-surface-dark border border-accent-green/30 rounded p-4 flex items-center justify-between">
-<div>
-<div class="text-3xl font-display font-bold text-white">12°C</div>
-<div class="text-xs text-slate-400 mt-1">London, UK</div>
-</div>
-<div class="text-right">
-<span class="material-symbols-outlined text-primary mb-1" style="font-size: 32px;">cloud</span>
-<div class="text-xs text-accent-green">Overcast</div>
-</div>
-</div>
-</div>
-<!-- Trending Tags -->
-<div class="font-mono">
-<h4 class="text-xs text-slate-500 mb-3 uppercase tracking-wider">Trending Tags</h4>
-<div class="flex flex-wrap gap-2">
-<span class="px-2 py-1 border border-accent-green/30 rounded text-xs text-slate-300 hover:border-primary cursor-pointer hover:text-primary transition-colors">#ECONOMY</span>
-<span class="px-2 py-1 border border-accent-green/30 rounded text-xs text-slate-300 hover:border-primary cursor-pointer hover:text-primary transition-colors">#SPACE_X</span>
-<span class="px-2 py-1 border border-accent-green/30 rounded text-xs text-slate-300 hover:border-primary cursor-pointer hover:text-primary transition-colors">#AI_ETHICS</span>
-<span class="px-2 py-1 border border-accent-green/30 rounded text-xs text-slate-300 hover:border-primary cursor-pointer hover:text-primary transition-colors">#ENERGY</span>
-<span class="px-2 py-1 border border-accent-green/30 rounded text-xs text-slate-300 hover:border-primary cursor-pointer hover:text-primary transition-colors">#CRYPTO</span>
-</div>
-</div>
-<!-- Mini Map Placeholder -->
-<div class="font-mono">
-<h4 class="text-xs text-slate-500 mb-3 uppercase tracking-wider">Active Region</h4>
-<div class="aspect-video w-full rounded border border-accent-green/30 overflow-hidden relative">
-<img class="w-full h-full object-cover grayscale opacity-50 hover:opacity-80 transition-opacity" data-alt="Satellite view of earth from space at night" data-location="Global Satellite View" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCL4-Jx_mEQqfRVJWbKJL-bIKyd-EsLaw5Dt7ba4mbuAwAqfxXxtRtKV_Jr9Akn4mm9-eTZ1VXxODeTR6tTaotllJ6pOyUB168oYSgtyTttVC6a5m6Pmup82aQh8H4l2fDH68lawnvtPjb160CnEzDeB__eLXYCM4L0v6xgDYfvcUXEokJDHQUOI-UL0XbXtGi3mhMXGGHAGq-9On1lM5Bjmx40r99lrVeh7u_0vOcKlVG0xisZo2JgUKh9sBMM_CWKAPqj4sllViU"/>
-<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-<div class="size-20 border border-primary/30 rounded-full animate-ping"></div>
-</div>
-</div>
-</div>
-</div>
-</aside>
-</div>
-<!-- Bottom Player: Broadcast Loop -->
-<footer class="h-20 bg-[#141813] border-t border-accent-green flex items-center justify-between px-6 shrink-0 z-20">
-<!-- Track Info -->
-<div class="flex items-center gap-4 w-1/4 min-w-[200px]">
-<div class="size-12 bg-surface-dark border border-accent-green/50 rounded flex items-center justify-center shrink-0">
-<span class="material-symbols-outlined text-primary">rss_feed</span>
-</div>
-<div class="flex flex-col overflow-hidden">
-<span class="text-sm font-bold text-white truncate">Hourly Briefing - 14:00 UTC</span>
-<span class="text-xs font-mono text-accent-green truncate">NARVO INTELLIGENCE</span>
-</div>
-</div>
-<!-- Controls & Waveform -->
-<div class="flex-1 max-w-2xl flex flex-col items-center justify-center gap-1">
-<div class="flex items-center gap-6">
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined" style="font-size: 20px;">skip_previous</span>
-</button>
-<button class="bg-primary text-background-dark rounded-full p-2 hover:scale-105 transition-transform">
-<span class="material-symbols-outlined block" style="font-size: 24px;">play_arrow</span>
-</button>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined" style="font-size: 20px;">skip_next</span>
-</button>
-</div>
-<!-- Fake Waveform Viz -->
-<div class="w-full h-8 flex items-center justify-center gap-[2px] opacity-80">
-<div class="w-1 bg-primary/20 h-2 rounded-full"></div>
-<div class="w-1 bg-primary/40 h-3 rounded-full"></div>
-<div class="w-1 bg-primary/60 h-5 rounded-full"></div>
-<div class="w-1 bg-primary h-4 rounded-full"></div>
-<div class="w-1 bg-primary h-6 rounded-full"></div>
-<div class="w-1 bg-primary h-3 rounded-full"></div>
-<div class="w-1 bg-primary h-7 rounded-full"></div>
-<div class="w-1 bg-primary h-4 rounded-full"></div>
-<div class="w-1 bg-primary h-5 rounded-full"></div>
-<div class="w-1 bg-primary/80 h-3 rounded-full"></div>
-<div class="w-1 bg-primary/60 h-2 rounded-full"></div>
-<div class="w-1 bg-primary/40 h-4 rounded-full"></div>
-<div class="w-1 bg-primary/20 h-2 rounded-full"></div>
-<!-- Mirror for symmetry effect -->
-<div class="w-1 bg-primary/20 h-3 rounded-full"></div>
-<div class="w-1 bg-primary/40 h-5 rounded-full"></div>
-<div class="w-1 bg-primary/60 h-4 rounded-full"></div>
-<div class="w-1 bg-primary h-6 rounded-full"></div>
-<div class="w-1 bg-primary h-3 rounded-full"></div>
-<div class="w-1 bg-primary h-5 rounded-full"></div>
-<div class="w-1 bg-primary h-4 rounded-full"></div>
-<div class="w-1 bg-primary h-6 rounded-full"></div>
-<div class="w-1 bg-primary h-3 rounded-full"></div>
-<div class="w-1 bg-primary/80 h-5 rounded-full"></div>
-<div class="w-1 bg-primary/60 h-3 rounded-full"></div>
-<div class="w-1 bg-primary/40 h-2 rounded-full"></div>
-</div>
-</div>
-<!-- Volume / Extra Actions -->
-<div class="flex items-center justify-end gap-4 w-1/4 min-w-[150px]">
-<div class="flex items-center gap-2 group">
-<span class="material-symbols-outlined text-slate-500 text-sm">volume_up</span>
-<div class="w-20 h-1 bg-slate-700 rounded-full overflow-hidden">
-<div class="w-2/3 h-full bg-accent-green group-hover:bg-primary transition-colors"></div>
-</div>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined" style="font-size: 20px;">playlist_play</span>
-</button>
-</div>
-</footer>
-</body></html>
+                                    <button
+                                        class="w-12 h-12 narvo-border flex items-center justify-center text-primary group-hover:border-primary transition-colors"
+                                        title="Translate">
+                                        <i class="ph ph-translate text-xl"></i>
+                                    </button>
+                                    <button
+                                        class="w-12 h-12 narvo-border flex items-center justify-center text-forest hover:text-primary transition-colors">
+                                        <i class="ph ph-bookmark-simple text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
+
+                    <!-- REQUEST 1 & 2 (PHASE 3): Text-Only Dense News Feed -->
+                    <section class="space-y-6">
+                        <div class="flex items-center justify-between border-b border-forest/30 pb-2">
+                            <span class="mono-ui text-[9px] text-forest font-bold tracking-[0.2em]">//
+                                SYNTHESIZED_STREAMS</span>
+                            <span class="mono-ui text-[8px] text-forest/50 uppercase">Active_Nodes: 04</span>
+                        </div>
+
+                        <!-- Dense Multipack Card (Text-Only) -->
+                        <div class="narvo-border bg-surface/20 divide-y divide-forest/10">
+                            <!-- Stream Item 1 -->
+                            <article class="p-6 group hover:bg-surface/40 transition-colors">
+                                <div class="flex flex-col gap-3">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="bg-forest/20 text-primary mono-ui text-[8px] px-2 py-0.5 border border-forest/30">SOURCE:INFRASTRUCTURE_METRICS</span>
+                                            <span class="mono-ui text-[8px] text-forest/50">1HR_AGO</span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <span
+                                                class="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#LOGISTICS</span>
+                                            <span
+                                                class="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#TRANSIT</span>
+                                        </div>
+                                    </div>
+                                    <h3
+                                        class="font-display text-xl font-bold uppercase tracking-tight text-white group-hover:text-primary transition-colors leading-tight">
+                                        Transit Velocity: High-Speed Link Expansion Plans for Lagos-Ibadan Corridor.
+                                    </h3>
+                                    <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                                        New feasibility metrics released for the trans-continental corridor development
+                                        project. Transmission indicates potential 15% reduction in cross-node transit
+                                        latency.
+                                    </p>
+                                    <div class="flex items-center gap-6 pt-1">
+                                        <button
+                                            class="mono-ui text-[9px] text-primary flex items-center gap-2 hover:text-white transition-colors">
+                                            <i class="ph ph-waveform-slash text-base text-forest"></i>
+                                            <span>GENERATE_AUDIO_BRIEF (2:10)</span>
+                                        </button>
+                                        <div class="flex-1 h-[1px] bg-forest/10"></div>
+                                        <button class="text-forest hover:text-primary"><i
+                                                class="ph ph-bookmark-simple"></i></button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <!-- Stream Item 2 -->
+                            <article class="p-6 group hover:bg-surface/40 transition-colors">
+                                <div class="flex flex-col gap-3">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="bg-forest/20 text-primary mono-ui text-[8px] px-2 py-0.5 border border-forest/30">SOURCE:REGIONAL_ENERGY_DEPT</span>
+                                            <span class="mono-ui text-[8px] text-forest/50">3HR_AGO</span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <span
+                                                class="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#RENEWABLES</span>
+                                            <span
+                                                class="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#GRID</span>
+                                        </div>
+                                    </div>
+                                    <h3
+                                        class="font-display text-xl font-bold uppercase tracking-tight text-white group-hover:text-primary transition-colors leading-tight">
+                                        Solar Integrity Grid: Expansion Approved for Northern Synthesis Nodes.
+                                    </h3>
+                                    <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                                        Central authorization confirmed for 400MW localized grid integration. Node
+                                        handshake stability remains at optimum levels.
+                                    </p>
+                                    <div class="flex items-center gap-6 pt-1">
+                                        <button
+                                            class="mono-ui text-[9px] text-primary flex items-center gap-2 hover:text-white transition-colors">
+                                            <i class="ph ph-waveform text-base text-forest"></i>
+                                            <span>GENERATE_AUDIO_BRIEF (1:45)</span>
+                                        </button>
+                                        <div class="flex-1 h-[1px] bg-forest/10"></div>
+                                        <button class="text-forest hover:text-primary"><i
+                                                class="ph ph-bookmark-simple"></i></button>
+                                    </div>
+                                </div>
+                            </article>
+
+                            <!-- Stream Item 3 -->
+                            <article class="p-6 group hover:bg-surface/40 transition-colors">
+                                <div class="flex flex-col gap-3">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="bg-forest/20 text-primary mono-ui text-[8px] px-2 py-0.5 border border-forest/30">SOURCE:CULTURAL_ANALYTICS</span>
+                                            <span class="mono-ui text-[8px] text-forest/50">6HR_AGO</span>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <span
+                                                class="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#GLOBAL_PULSE</span>
+                                            <span
+                                                class="mono-ui text-[8px] text-forest border border-forest/20 px-1.5 font-bold">#CULTURE</span>
+                                        </div>
+                                    </div>
+                                    <h3
+                                        class="font-display text-xl font-bold uppercase tracking-tight text-white group-hover:text-primary transition-colors leading-tight">
+                                        Global Resonance Report: Lagos-London Creative Axis Analysis.
+                                    </h3>
+                                    <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                                        Symmetric growth patterns detected in peer-to-peer creative streams. Synthesis
+                                        indicates a permanent shift in resonance frequency.
+                                    </p>
+                                    <div class="flex items-center gap-6 pt-1">
+                                        <button
+                                            class="mono-ui text-[9px] text-primary flex items-center gap-2 hover:text-white transition-colors">
+                                            <i class="ph ph-waveform text-base text-forest"></i>
+                                            <span>GENERATE_AUDIO_BRIEF (3:20)</span>
+                                        </button>
+                                        <div class="flex-1 h-[1px] bg-forest/10"></div>
+                                        <button class="text-forest hover:text-primary"><i
+                                                class="ph ph-bookmark-simple"></i></button>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+
+                        <!-- Load More Hook -->
+                        <button
+                            class="w-full h-12 narvo-border bg-surface/10 mono-ui text-[10px] text-forest hover:bg-surface hover:text-primary transition-all flex items-center justify-center gap-3">
+                            <i class="ph ph-arrow-down"></i>
+                            <span>LOAD_ADDITIONAL_TRANSMISSIONS</span>
+                        </button>
+                    </section>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar Right: System Metrics & Telemetry -->
+        <aside class="w-80 hidden xl:flex flex-col narvo-border-l bg-background-dark shrink-0">
+            <div class="h-20 flex items-center px-6 narvo-border-b bg-surface/10">
+                <span class="mono-ui text-xs font-bold text-forest tracking-widest uppercase items-center flex gap-3">
+                    <i class="ph ph-activity text-primary"></i> Telemetry_Center
+                </span>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scroll">
+
+                <!-- Regional Weather -->
+                <div class="narvo-border bg-surface/20 p-4 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-20"><i class="ph ph-cloud-sun text-4xl"></i></div>
+                    <span
+                        class="mono-ui text-[9px] text-forest block mb-3 font-bold tracking-widest">REGIONAL_ENV_METRICS</span>
+                    <div class="flex items-end justify-between">
+                        <div>
+                            <span class="font-display text-3xl font-bold text-white tracking-tighter">28°C</span>
+                            <span class="mono-ui text-[9px] text-forest block mt-1">LAGOS, NIGERIA</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="mono-ui text-[9px] text-primary font-bold">HUMIDITY: 62%</span>
+                            <span class="mono-ui text-[9px] text-forest block">WIND: 12km/h</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trending Tags -->
+                <div>
+                    <span
+                        class="mono-ui text-[9px] text-forest block mb-4 font-bold tracking-widest">PULSE_TAGS_TRENDING</span>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="narvo-border px-2 py-1 mono-ui text-[8px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#ECONOMY_VOL</span>
+                        <span
+                            class="narvo-border px-2 py-1 mono-ui text-[8px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#SOLAR_GRID</span>
+                        <span
+                            class="narvo-border px-2 py-1 mono-ui text-[8px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#AI_SYNTH</span>
+                        <span
+                            class="narvo-border px-2 py-1 mono-ui text-[8px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#ENERGY_DENSITY</span>
+                        <span
+                            class="narvo-border px-2 py-1 mono-ui text-[8px] text-white hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#NIGERIAN_TECH</span>
+                    </div>
+                </div>
+
+                <!-- Regional Matrix Health -->
+                <div>
+                    <span
+                        class="mono-ui text-[9px] text-forest block mb-4 font-bold tracking-widest">REGIONAL_MATRIX_HEALTH</span>
+                    <div class="space-y-4">
+                        <div class="space-y-1">
+                            <div class="flex justify-between mono-ui text-[9px]">
+                                <span class="text-white">LAGOS_NODE</span>
+                                <span class="text-primary font-bold">98%</span>
+                            </div>
+                            <div class="h-1 w-full bg-forest/20">
+                                <div class="h-full w-[98%] bg-primary"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between mono-ui text-[9px]">
+                                <span class="text-white">NAIROBI_NODE</span>
+                                <span class="text-forest">84%</span>
+                            </div>
+                            <div class="h-1 w-full bg-forest/20">
+                                <div class="h-full w-[84%] bg-forest"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Summary Metrics -->
+                <div class="grid grid-cols-2 gap-[1px] narvo-border bg-forest">
+                    <div class="bg-background-dark p-4 flex flex-col justify-between h-24">
+                        <span class="mono-ui text-[8px] text-forest">LISTENERS</span>
+                        <span class="font-display text-2xl font-bold text-white tracking-tighter">14.2K</span>
+                    </div>
+                    <div class="bg-background-dark p-4 flex flex-col justify-between h-24">
+                        <span class="mono-ui text-[8px] text-forest">SOURCES</span>
+                        <span class="font-display text-2xl font-bold text-primary tracking-tighter">89</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Global Broadcast Loop (Player) -->
+    <footer class="h-100 flex flex-col bg-background-dark border-t-2 border-primary z-20 shrink-0">
+        <!-- News Ticker -->
+        <div class="h-8 bg-primary text-background-dark flex items-center overflow-hidden marquee-container">
+            <div
+                class="marquee-content flex items-center gap-12 font-mono text-[10px] font-bold uppercase tracking-wider">
+                <span>// Narvo Intelligence Update: Regional Manufacturing Hubs report 12% growth.</span>
+                <span>// Signal Quality maintained at 100% across all sub-nodes.</span>
+                <span>// Breaking: New localized dialect synthesis node active in Ghana.</span>
+                <span>// Narvo Intelligence Update: Regional Manufacturing Hubs report 12% growth.</span>
+                <span>// Signal Quality maintained at 100% across all sub-nodes.</span>
+                <span>// Breaking: New localized dialect synthesis node active in Ghana.</span>
+            </div>
+        </div>
+
+        <!-- Controls Console -->
+        <div class="h-20 flex items-center justify-between px-8 bg-background-dark narvo-border-t">
+            <div class="flex items-center gap-6 w-1/4">
+                <div
+                    class="h-12 w-12 narvo-border flex items-center justify-center bg-surface group cursor-pointer hover:border-primary transition-colors">
+                    <i class="ph ph-headphones text-primary text-2xl group-hover:scale-110 transition-transform"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span
+                        class="font-display font-bold text-sm text-white uppercase tracking-tight line-clamp-1 truncate w-48">Daily
+                        Pulse Briefing</span>
+                    <span class="mono-ui text-[9px] text-forest">Sabi-Work Node // Lagos</span>
+                </div>
+            </div>
+
+            <div class="flex-1 max-w-2xl flex flex-col items-center gap-2">
+                <div class="flex items-center gap-8">
+                    <button class="text-forest hover:text-white transition-colors"><i
+                            class="ph ph-caret-left text-xl"></i></button>
+                    <button
+                        class="size-12 bg-primary text-background-dark flex items-center justify-center hover:bg-white transition-all">
+                        <i class="ph ph-play text-3xl"></i>
+                    </button>
+                    <button class="text-forest hover:text-white transition-colors"><i
+                            class="ph ph-caret-right text-xl"></i></button>
+                </div>
+                <div class="w-full h-1 bg-forest/20 relative cursor-pointer group">
+                    <div class="absolute top-0 left-0 h-full w-1/3 bg-primary"></div>
+                    <div
+                        class="absolute top-1/2 left-1/3 -translate-y-1/2 w-1.5 h-4 bg-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-6 w-1/4">
+                <div class="flex items-center gap-3">
+                    <i class="ph ph-speaker-high text-forest"></i>
+                    <div class="w-20 h-1 bg-forest/20 relative">
+                        <div class="absolute top-0 left-0 h-full w-2/3 bg-forest"></div>
+                    </div>
+                </div>
+                <button class="text-forest hover:text-primary transition-colors"><i
+                        class="ph ph-list text-2xl"></i></button>
+                <div class="mono-ui text-[10px] text-forest h-12 flex items-center px-4 narvo-border-l">
+                    ID_X9
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

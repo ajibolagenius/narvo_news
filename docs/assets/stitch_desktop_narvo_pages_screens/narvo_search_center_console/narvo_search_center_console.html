@@ -1,272 +1,412 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Search Center Console</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Search Center Console</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#ecd5ac", // Sand/Beige
-                        "accent-green": "#2d6a4f", // Forest Green approximation for border
-                        "background-light": "#f8f7f6",
-                        "background-dark": "#1B211A", // Deep Matte Charcoal
-                        "surface-dark": "#232922",
-                        "border-dark": "#343a33",
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
+                        // Semantic Palette from Design System
+                        "label-finance": "#EBD5AB",
+                        "label-environ": "#93C5FD",
+                        "label-tech": "#D8B4FE",
+                        "label-urgent": "#FCA5A5",
+                        "label-politics": "#FDBA74",
+                        "label-science": "#5EEAD4",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
                     borderRadius: {
-                        "DEFAULT": "2px", 
-                        "lg": "4px", 
-                        "xl": "8px", 
-                        "full": "9999px"
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
                     },
                 },
             },
         }
     </script>
-<style>
-        /* Swiss Grid aesthetics - crisp borders, no shadows */
-        .swiss-grid-border {
-            border: 1px solid #343a33;
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        .swiss-grid-cell:hover {
-            background-color: #232922;
+
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        /* Custom scrollbar for raw technical feel */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+
+        .narvo-border {
+            border: 1px solid #628141;
         }
-        ::-webkit-scrollbar-track {
-            background: #1B211A; 
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #343a33; 
+
+        .narvo-border-l {
+            border-left: 1px solid #628141;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ecd5ac; 
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
+        }
+
+        .narvo-border-t {
+            border-top: 1px solid #628141;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased overflow-hidden">
-<div class="flex h-screen w-full">
-<!-- Sidebar Navigation -->
-<aside class="w-64 flex-shrink-0 border-r border-border-dark flex flex-col justify-between bg-background-dark">
-<div class="flex flex-col gap-6 p-6">
-<!-- Branding -->
-<div class="flex gap-3 items-center">
-<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-border-dark" data-alt="Abstract gradient orb representation of Narvo brand" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA3imTHAdmJ550EmyzF9fht2O3q_kHGaOxeKGRyzNIHh39JZJCCopdF4zxtTsONFu3VlK25XrMGOnUWNtwNR3c5a2XvA5ErJEjwJpTqoUXWVxWgWXecAVBo1LmDm_IRlW-eP2pyAdpjMHEN1HvCgqLQiG0lWlPDd0bxgSIH7wu-epcwoTWk5k2ON88G44Pkeg_bB4abhSkqX0KbUfMtIKtLUgxU51bdorEKeutmHNqtNbObXX0-xc-vQo5OZ9xUvmBr6PqKtutMzLs");'></div>
-<div class="flex flex-col">
-<h1 class="text-white text-lg font-bold tracking-tight">Narvo</h1>
-<p class="text-gray-400 text-xs font-mono uppercase tracking-widest">Broadcast Console</p>
-</div>
-</div>
-<!-- Nav Links -->
-<nav class="flex flex-col gap-1">
-<a class="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-dark group transition-colors" href="#">
-<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">grid_view</span>
-<span class="text-gray-300 text-sm font-medium group-hover:text-white">Dashboard</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2.5 bg-primary/10 border-l-2 border-primary" href="#">
-<span class="material-symbols-outlined text-primary">search</span>
-<span class="text-primary text-sm font-medium">Search Center</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-dark group transition-colors" href="#">
-<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">podcasts</span>
-<span class="text-gray-300 text-sm font-medium group-hover:text-white">Live Feed</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-dark group transition-colors" href="#">
-<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">folder_open</span>
-<span class="text-gray-300 text-sm font-medium group-hover:text-white">Archives</span>
-</a>
-<a class="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-dark group transition-colors" href="#">
-<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">analytics</span>
-<span class="text-gray-300 text-sm font-medium group-hover:text-white">Analytics</span>
-</a>
-</nav>
-</div>
-<!-- Bottom Settings -->
-<div class="p-6 border-t border-border-dark">
-<a class="flex items-center gap-3 px-3 py-2.5 hover:bg-surface-dark group transition-colors" href="#">
-<span class="material-symbols-outlined text-gray-400 group-hover:text-primary transition-colors">settings</span>
-<span class="text-gray-300 text-sm font-medium group-hover:text-white">Settings</span>
-</a>
-</div>
-</aside>
-<!-- Main Content Area -->
-<main class="flex-1 flex flex-col h-full relative overflow-y-auto">
-<!-- Header / Breadcrumbs -->
-<header class="h-16 border-b border-border-dark flex items-center px-8 justify-between bg-background-dark/95 backdrop-blur sticky top-0 z-10">
-<div class="flex items-center gap-2 text-sm">
-<span class="text-gray-500 font-mono">NARVO</span>
-<span class="text-gray-600">/</span>
-<span class="text-primary font-medium">SEARCH_CENTER</span>
-</div>
-<div class="flex items-center gap-4">
-<div class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
-<span class="text-xs font-mono text-green-500 tracking-widest">SYSTEM ONLINE</span>
-</div>
-</header>
-<!-- Search Section -->
-<section class="flex flex-col items-center justify-center py-16 px-8 border-b border-border-dark bg-gradient-to-b from-background-dark to-surface-dark/30">
-<div class="w-full max-w-4xl flex flex-col gap-8">
-<div class="text-center space-y-2">
-<h2 class="text-4xl font-bold text-white tracking-tight">Global Archive Search</h2>
-<p class="text-gray-400 font-mono text-xs tracking-widest uppercase opacity-70">Indexing 4.2M Broadcast Segments</p>
-</div>
-<!-- Input Group -->
-<div class="relative w-full group">
-<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-<span class="material-symbols-outlined text-primary/50 text-2xl group-focus-within:text-primary transition-colors">search</span>
-</div>
-<input class="block w-full pl-14 pr-4 py-5 bg-background-dark text-white placeholder-gray-600 border border-accent-green focus:border-primary focus:ring-1 focus:ring-primary rounded-none text-xl font-display transition-all" placeholder="Search by keyword, region, or segment ID..." type="text"/>
-<div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-<span class="font-mono text-xs text-accent-green bg-accent-green/10 px-2 py-1 rounded">CMD+K</span>
-</div>
-</div>
-<!-- CTA -->
-<div class="flex justify-center">
-<button class="relative group bg-primary hover:bg-[#dcc090] text-background-dark border border-primary px-8 py-4 flex items-center gap-3 transition-all active:translate-y-0.5">
-<span class="material-symbols-outlined text-[20px]">mic</span>
-<span class="font-mono font-bold tracking-wider text-sm">[ VOICE_INPUT ]</span>
-<!-- Decor corner -->
-<div class="absolute top-0 right-0 w-2 h-2 border-t border-r border-background-dark"></div>
-<div class="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-background-dark"></div>
-</button>
-</div>
-</div>
-</section>
-<!-- Grid Controls -->
-<div class="px-8 py-4 border-b border-border-dark flex items-center justify-between bg-background-dark">
-<h3 class="text-white text-lg font-medium flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-sm">grid_view</span>
-                    Semantic Results
-                </h3>
-<div class="flex items-center gap-4">
-<div class="flex items-center gap-2 border border-border-dark rounded px-1 p-1 bg-surface-dark">
-<button class="px-3 py-1 text-xs font-mono text-primary bg-white/5 rounded">LATEST</button>
-<button class="px-3 py-1 text-xs font-mono text-gray-500 hover:text-gray-300">RELEVANCE</button>
-</div>
-<div class="h-4 w-px bg-border-dark"></div>
-<button class="text-gray-400 hover:text-white material-symbols-outlined text-sm">filter_list</button>
-</div>
-</div>
-<!-- Results Grid -->
-<div class="flex-1 p-8 bg-background-dark">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-border-dark border border-border-dark">
-<!-- Card 1 -->
-<article class="bg-background-dark hover:bg-surface-dark p-6 flex flex-col gap-4 group cursor-pointer transition-colors relative overflow-hidden">
-<div class="flex items-start justify-between">
-<span class="font-mono text-[10px] text-primary tracking-widest border border-primary/30 px-1.5 py-0.5 rounded-sm">FINANCE</span>
-<span class="material-symbols-outlined text-gray-600 group-hover:text-white text-lg transition-colors">bookmark</span>
-</div>
-<h4 class="text-white text-xl font-medium leading-snug group-hover:underline decoration-primary decoration-1 underline-offset-4">Global Market Update: Asia Pacific Opening Bell</h4>
-<p class="text-gray-400 text-sm leading-relaxed line-clamp-2">Markets rally as tech sector shows unexpected resilience in Q3 reports. Analysts predict continued growth...</p>
-<div class="mt-auto pt-4 flex items-center justify-between border-t border-border-dark/50">
-<div class="flex items-center gap-2 text-gray-500">
-<span class="material-symbols-outlined text-sm">schedule</span>
-<span class="font-mono text-xs">10:00 AM</span>
-</div>
-<span class="font-mono text-xs text-gray-600">ID: 8829-A</span>
-</div>
-</article>
-<!-- Card 2 -->
-<article class="bg-background-dark hover:bg-surface-dark p-6 flex flex-col gap-4 group cursor-pointer transition-colors relative">
-<div class="flex items-start justify-between">
-<span class="font-mono text-[10px] text-blue-300 tracking-widest border border-blue-900 px-1.5 py-0.5 rounded-sm">ENVIRON</span>
-<span class="material-symbols-outlined text-gray-600 group-hover:text-white text-lg transition-colors">bookmark</span>
-</div>
-<h4 class="text-white text-xl font-medium leading-snug group-hover:underline decoration-primary decoration-1 underline-offset-4">Climate Summit Keynote: Geneva Accord</h4>
-<p class="text-gray-400 text-sm leading-relaxed line-clamp-2">Representatives from 40 nations gather to discuss the new carbon tax framework proposed by the EU delegation.</p>
-<div class="mt-auto pt-4 flex items-center justify-between border-t border-border-dark/50">
-<div class="flex items-center gap-2 text-gray-500">
-<span class="material-symbols-outlined text-sm">schedule</span>
-<span class="font-mono text-xs">YESTERDAY</span>
-</div>
-<span class="font-mono text-xs text-gray-600">ID: 9912-B</span>
-</div>
-</article>
-<!-- Card 3 -->
-<article class="bg-background-dark hover:bg-surface-dark p-6 flex flex-col gap-4 group cursor-pointer transition-colors relative">
-<div class="flex items-start justify-between">
-<span class="font-mono text-[10px] text-purple-300 tracking-widest border border-purple-900 px-1.5 py-0.5 rounded-sm">TECH</span>
-<span class="material-symbols-outlined text-gray-600 group-hover:text-white text-lg transition-colors">bookmark</span>
-</div>
-<h4 class="text-white text-xl font-medium leading-snug group-hover:underline decoration-primary decoration-1 underline-offset-4">Silicon Valley: The Next Gen AI Models</h4>
-<p class="text-gray-400 text-sm leading-relaxed line-clamp-2">Exclusive interview with leading researchers on the ethical implications of the latest generative models.</p>
-<div class="mt-auto pt-4 flex items-center justify-between border-t border-border-dark/50">
-<div class="flex items-center gap-2 text-gray-500">
-<span class="material-symbols-outlined text-sm">schedule</span>
-<span class="font-mono text-xs">2 DAYS AGO</span>
-</div>
-<span class="font-mono text-xs text-gray-600">ID: 7710-C</span>
-</div>
-</article>
-<!-- Card 4 -->
-<article class="bg-background-dark hover:bg-surface-dark p-6 flex flex-col gap-4 group cursor-pointer transition-colors relative">
-<div class="flex items-start justify-between">
-<span class="font-mono text-[10px] text-red-300 tracking-widest border border-red-900 px-1.5 py-0.5 rounded-sm">URGENT</span>
-<span class="material-symbols-outlined text-gray-600 group-hover:text-white text-lg transition-colors">bookmark</span>
-</div>
-<h4 class="text-white text-xl font-medium leading-snug group-hover:underline decoration-primary decoration-1 underline-offset-4">Breaking: Infrastructure Bill Passed</h4>
-<p class="text-gray-400 text-sm leading-relaxed line-clamp-2">Senate votes 60-40 to approve the new transportation overhaul. Construction set to begin next quarter.</p>
-<div class="mt-auto pt-4 flex items-center justify-between border-t border-border-dark/50">
-<div class="flex items-center gap-2 text-gray-500">
-<span class="material-symbols-outlined text-sm">schedule</span>
-<span class="font-mono text-xs">2 HRS AGO</span>
-</div>
-<span class="font-mono text-xs text-gray-600">ID: 1102-X</span>
-</div>
-</article>
-<!-- Card 5 -->
-<article class="bg-background-dark hover:bg-surface-dark p-6 flex flex-col gap-4 group cursor-pointer transition-colors relative">
-<div class="flex items-start justify-between">
-<span class="font-mono text-[10px] text-orange-300 tracking-widest border border-orange-900 px-1.5 py-0.5 rounded-sm">POLITICS</span>
-<span class="material-symbols-outlined text-gray-600 group-hover:text-white text-lg transition-colors">bookmark</span>
-</div>
-<h4 class="text-white text-xl font-medium leading-snug group-hover:underline decoration-primary decoration-1 underline-offset-4">Election Cycle: Primary Results</h4>
-<p class="text-gray-400 text-sm leading-relaxed line-clamp-2">Detailed breakdown of the voting demographics in the swing states for the upcoming midterms.</p>
-<div class="mt-auto pt-4 flex items-center justify-between border-t border-border-dark/50">
-<div class="flex items-center gap-2 text-gray-500">
-<span class="material-symbols-outlined text-sm">schedule</span>
-<span class="font-mono text-xs">5 HRS AGO</span>
-</div>
-<span class="font-mono text-xs text-gray-600">ID: 4421-P</span>
-</div>
-</article>
-<!-- Card 6 -->
-<article class="bg-background-dark hover:bg-surface-dark p-6 flex flex-col gap-4 group cursor-pointer transition-colors relative">
-<div class="flex items-start justify-between">
-<span class="font-mono text-[10px] text-teal-300 tracking-widest border border-teal-900 px-1.5 py-0.5 rounded-sm">SCIENCE</span>
-<span class="material-symbols-outlined text-gray-600 group-hover:text-white text-lg transition-colors">bookmark</span>
-</div>
-<h4 class="text-white text-xl font-medium leading-snug group-hover:underline decoration-primary decoration-1 underline-offset-4">Mars Mission: Update 42</h4>
-<p class="text-gray-400 text-sm leading-relaxed line-clamp-2">Rover sends back high-resolution images of the northern crater, suggesting ancient water flow.</p>
-<div class="mt-auto pt-4 flex items-center justify-between border-t border-border-dark/50">
-<div class="flex items-center gap-2 text-gray-500">
-<span class="material-symbols-outlined text-sm">schedule</span>
-<span class="font-mono text-xs">3 DAYS AGO</span>
-</div>
-<span class="font-mono text-xs text-gray-600">ID: 6632-S</span>
-</div>
-</article>
-</div>
-</div>
-<!-- Empty state filler or footer -->
-<footer class="p-8 border-t border-border-dark bg-background-dark text-center">
-<p class="text-gray-600 text-xs font-mono">NARVO BROADCAST SYSTEMS v2.4.1 // ALL RIGHTS RESERVED</p>
-</footer>
-</main>
-</div>
-</body></html>
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header Navigation -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-broadcast text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> SEARCH_CENTER
+                </h1>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 h-full">
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">DASHBOARD_FEED</a>
+                <a href="#"
+                    class="text-primary text-[10px] mono-ui font-bold border-b-2 border-primary py-5">ARCHIVE_SEARCH</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">SIGNAL_HISTORY</a>
+            </nav>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="hidden md:flex flex-col items-end mono-ui text-[9px] text-forest">
+                <span>SIGNAL_STABILITY: <span class="text-primary font-bold">100%</span></span>
+                <span>LATENCY: <span class="text-primary font-bold">12ms</span></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="h-2 w-2 bg-primary animate-pulse"></div>
+                <span class="mono-ui text-[9px] text-primary font-bold">ARC_SYST_ONLINE</span>
+            </div>
+            <div
+                class="h-10 w-10 narvo-border bg-surface flex items-center justify-center cursor-pointer hover:bg-forest transition-colors">
+                <i class="ph ph-user text-primary"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Sidebar Navigation (Icon Only) -->
+        <aside
+            class="w-16 narvo-border-r h-full flex flex-col items-center py-6 gap-8 bg-background-dark z-10 shrink-0">
+            <button class="text-forest hover:text-primary transition-colors" title="Primary Stream"><i
+                    class="ph ph-squares-four text-2xl"></i></button>
+            <button class="text-primary hover:text-white transition-colors" title="Search Center"><i
+                    class="ph ph-magnifying-glass text-2xl"></i></button>
+            <button class="text-forest hover:text-primary transition-colors" title="Regional Pulse"><i
+                    class="ph ph-waveform text-2xl"></i></button>
+            <button class="text-forest hover:text-primary transition-colors" title="Archives"><i
+                    class="ph ph-folder-open text-2xl"></i></button>
+            <button class="text-forest hover:text-primary transition-colors" title="Global Map"><i
+                    class="ph ph-globe text-2xl"></i></button>
+            <div class="mt-auto flex flex-col gap-6">
+                <button class="text-forest hover:text-primary transition-colors"><i
+                        class="ph ph-gear text-2xl"></i></button>
+            </div>
+        </aside>
+
+        <!-- Search Content Area -->
+        <main class="flex-1 flex flex-col bg-background-dark overflow-y-auto custom-scroll h-full">
+            <!-- Hero Search Section -->
+            <section class="py-20 px-10 narvo-border-b bg-surface/10 relative overflow-hidden shrink-0">
+                <div class="absolute inset-0 opacity-5 pointer-events-none"
+                    style="background-image: linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px); background-size: 32px 32px;">
+                </div>
+                <div class="max-w-4xl mx-auto space-y-10 relative z-10">
+                    <div class="space-y-2">
+                        <h2 class="font-display text-5xl font-bold uppercase tracking-tight text-white leading-none">
+                            Global Archive <span class="text-primary">Search.</span>
+                        </h2>
+                        <p class="mono-ui text-[10px] text-forest font-bold tracking-[0.2em]">
+                            INDEXING_4.2M_BROADCAST_SEGMENTS // NIGERIA_WEST_AFRICA_NODES</p>
+                    </div>
+
+                    <!-- Search Input Console -->
+                    <div class="relative group">
+                        <i
+                            class="ph ph-magnifying-glass absolute left-6 top-1/2 -translate-y-1/2 text-primary text-2xl group-focus-within:scale-110 transition-transform"></i>
+                        <input type="text"
+                            class="w-full bg-background-dark/80 narvo-border pl-16 pr-24 py-6 text-xl mono-ui text-white placeholder-forest focus:outline-none focus:border-primary focus:bg-background-dark transition-all"
+                            placeholder="QUERY_KEYWORD_REGION_OR_SEGMENT_ID...">
+                        <div
+                            class="absolute right-6 top-1/2 -translate-y-1/2 flex items-center gap-2 mono-ui text-[10px] text-forest border border-forest/30 px-2 py-1 pointer-events-none">
+                            <span class="text-primary">CMD</span>+<span>K</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-6">
+                        <button
+                            class="flex items-center gap-3 bg-primary text-background-dark px-6 py-3 mono-ui text-[11px] font-bold hover:bg-white transition-colors">
+                            <i class="ph ph-microphone text-lg"></i>
+                            <span>[ VOICE_INPUT_PROTOCOL ]</span>
+                        </button>
+                        <div class="h-10 w-px bg-forest/30"></div>
+                        <div class="flex items-center gap-4 text-forest mono-ui text-[10px]">
+                            <span>POPULAR:</span>
+                            <a href="#"
+                                class="text-primary hover:underline decoration-1 underline-offset-4">#CURRENCY_SHIFT</a>
+                            <a href="#"
+                                class="text-primary hover:underline decoration-1 underline-offset-4">#LAGOS_TRANSIT</a>
+                            <a href="#"
+                                class="text-primary hover:underline decoration-1 underline-offset-4">#RENEWABLE_GRID</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Control Bar -->
+            <div class="h-14 flex items-center justify-between px-10 bg-surface/30 narvo-border-b shrink-0">
+                <div class="flex items-center gap-3">
+                    <span class="mono-ui text-[10px] text-forest">SCHEMA: <span
+                            class="text-primary">SEMANTIC_RESULTS</span></span>
+                    <i class="ph ph-stack text-forest"></i>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2 border border-forest/30 p-1">
+                        <button
+                            class="bg-primary text-background-dark px-3 py-1 mono-ui text-[9px] font-bold">LATEST</button>
+                        <button class="text-forest hover:text-white px-3 py-1 mono-ui text-[9px]">RELEVANCE</button>
+                    </div>
+                    <button
+                        class="text-forest hover:text-primary transition-colors flex items-center gap-2 mono-ui text-[10px]">
+                        <i class="ph ph-funnel text-base"></i>
+                        <span>FILTERS</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Grid -->
+            <div class="p-10 flex-1">
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[1px] bg-forest/20 narvo-border overflow-hidden">
+
+                    <!-- Result Card 1: Finance -->
+                    <article
+                        class="bg-background-dark p-6 flex flex-col gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50">
+                        <div class="flex justify-between items-start">
+                            <span
+                                class="mono-ui text-[9px] text-label-finance border border-label-finance/30 px-2 py-0.5 bg-label-finance/10 font-bold">FINANCE</span>
+                            <i class="ph ph-bookmark-simple text-forest group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <h4
+                            class="font-display text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors">
+                            Global Market Update: Asia Pacific Opening Bell
+                        </h4>
+                        <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                            Markets rally as tech sector shows unexpected resilience in Q3 reports. Analysts predict
+                            continued growth.
+                        </p>
+                        <div
+                            class="mt-auto pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[9px] text-forest">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-clock"></i>
+                                <span>10:00 AM</span>
+                            </div>
+                            <span class="opacity-50">NODE_ID: 8829-A</span>
+                        </div>
+                    </article>
+
+                    <!-- Result Card 2: Environment -->
+                    <article
+                        class="bg-background-dark p-6 flex flex-col gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50">
+                        <div class="flex justify-between items-start">
+                            <span
+                                class="mono-ui text-[9px] text-label-environ border border-label-environ/30 px-2 py-0.5 bg-label-environ/10 font-bold uppercase">Environ</span>
+                            <i class="ph ph-bookmark-simple text-forest group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <h4
+                            class="font-display text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors">
+                            Climate Summit Keynote: Geneva Accord Findings
+                        </h4>
+                        <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                            Representatives gather to discuss the new carbon tax framework proposed by the EU
+                            delegation.
+                        </p>
+                        <div
+                            class="mt-auto pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[9px] text-forest">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-calendar"></i>
+                                <span>YESTERDAY</span>
+                            </div>
+                            <span class="opacity-50">NODE_ID: 9912-B</span>
+                        </div>
+                    </article>
+
+                    <!-- Result Card 3: Tech -->
+                    <article
+                        class="bg-background-dark p-6 flex flex-col gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50">
+                        <div class="flex justify-between items-start">
+                            <span
+                                class="mono-ui text-[9px] text-label-tech border border-label-tech/30 px-2 py-0.5 bg-label-tech/10 font-bold uppercase">Tech</span>
+                            <i class="ph ph-bookmark-simple text-forest group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <h4
+                            class="font-display text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors">
+                            Silicon Valley: The Next Gen AI Models Synthesis
+                        </h4>
+                        <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                            Exclusive interview with leading researchers on the ethical implications of the latest
+                            generative models.
+                        </p>
+                        <div
+                            class="mt-auto pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[9px] text-forest">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-clock"></i>
+                                <span>2 DAYS AGO</span>
+                            </div>
+                            <span class="opacity-50">NODE_ID: 7710-C</span>
+                        </div>
+                    </article>
+
+                    <!-- Result Card 4: Urgent -->
+                    <article
+                        class="bg-background-dark p-6 flex flex-col gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50">
+                        <div class="flex justify-between items-start">
+                            <div class="flex gap-2">
+                                <span
+                                    class="bg-label-urgent/20 text-label-urgent mono-ui text-[9px] px-2 py-0.5 border border-label-urgent/30 font-bold uppercase">Urgent</span>
+                                <div class="size-2 bg-label-urgent animate-pulse rounded-full mt-1"></div>
+                            </div>
+                            <i class="ph ph-bookmark-simple text-forest group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <h4
+                            class="font-display text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors">
+                            Breaking: Infrastructure Bill Passed by Senate
+                        </h4>
+                        <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                            Senate votes to approve the new transportation overhaul. Construction set to begin next
+                            quarter.
+                        </p>
+                        <div
+                            class="mt-auto pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[9px] text-forest">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-clock"></i>
+                                <span>2 HRS AGO</span>
+                            </div>
+                            <span class="opacity-50">NODE_ID: 1102-X</span>
+                        </div>
+                    </article>
+
+                    <!-- Result Card 5: Politics -->
+                    <article
+                        class="bg-background-dark p-6 flex flex-col gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50">
+                        <div class="flex justify-between items-start">
+                            <span
+                                class="mono-ui text-[9px] text-label-politics border border-label-politics/30 px-2 py-0.5 bg-label-politics/10 font-bold uppercase">Politics</span>
+                            <i class="ph ph-bookmark-simple text-forest group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <h4
+                            class="font-display text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors">
+                            Election Cycle: Regional Primary Results
+                        </h4>
+                        <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                            Detailed breakdown of the voting demographics in the swing states for the upcoming midterms.
+                        </p>
+                        <div
+                            class="mt-auto pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[9px] text-forest">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-clock"></i>
+                                <span>5 HRS AGO</span>
+                            </div>
+                            <span class="opacity-50">NODE_ID: 4421-P</span>
+                        </div>
+                    </article>
+
+                    <!-- Result Card 6: Science -->
+                    <article
+                        class="bg-background-dark p-6 flex flex-col gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50">
+                        <div class="flex justify-between items-start">
+                            <span
+                                class="mono-ui text-[9px] text-label-science border border-label-science/30 px-2 py-0.5 bg-label-science/10 font-bold uppercase">Science</span>
+                            <i class="ph ph-bookmark-simple text-forest group-hover:text-primary transition-colors"></i>
+                        </div>
+                        <h4
+                            class="font-display text-xl font-bold uppercase tracking-tight text-white leading-tight group-hover:text-primary transition-colors">
+                            Mars Mission: Update 42 - Data Retrieval
+                        </h4>
+                        <p class="text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                            Rover sends back high-resolution images of the northern crater, suggesting ancient water
+                            flow.
+                        </p>
+                        <div
+                            class="mt-auto pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[9px] text-forest">
+                            <div class="flex items-center gap-2">
+                                <i class="ph ph-calendar"></i>
+                                <span>3 DAYS AGO</span>
+                            </div>
+                            <span class="opacity-50">NODE_ID: 6632-S</span>
+                        </div>
+                    </article>
+
+                    <!-- Empty Space Filler -->
+                    <div
+                        class="bg-surface/10 border border-forest/10 flex items-center justify-center p-6 grayscale opacity-20">
+                        <i class="ph ph-lock text-6xl"></i>
+                    </div>
+                    <div
+                        class="bg-surface/10 border border-forest/10 flex items-center justify-center p-6 grayscale opacity-20">
+                        <i class="ph ph-lock text-6xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Archive Note -->
+            <footer class="p-8 narvo-border-t bg-background-dark text-center shrink-0">
+                <p class="mono-ui text-[10px] text-forest tracking-[0.3em]">
+                    NARVO_BROADCAST_SYSTEMS_v2.4.1 // ALL_RIGHTS_RESERVED // GLOBAL_ARCHIVE_NODE_ACTIVE
+                </p>
+            </footer>
+        </main>
+    </div>
+</body>
+
+</html>

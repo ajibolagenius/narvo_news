@@ -1,387 +1,391 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Voice Management Monitor</title>
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!-- Theme Config -->
-<script id="tailwind-config">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Voice Management Monitor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#13ec5b",
-                        "sand": "#EBD5AB",
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#101411", // Deep Matte Charcoal
-                        "surface-dark": "#161b17",
-                        "grid-line": "#28392e",
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
+                        "border-green": "#628141",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
-                    backgroundImage: {
-                        'grid-pattern': "linear-gradient(to right, #28392e 1px, transparent 1px), linear-gradient(to bottom, #28392e 1px, transparent 1px)",
-                    }
+                    borderRadius: {
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
+                    },
                 },
             },
         }
     </script>
-<style>
-        /* Custom scrollbar for that technical feel */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #101411;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #28392e;
-            border-radius: 2px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #13ec5b;
-        }
-        
-        .analyzer-grid {
-            background-size: 40px 40px;
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Animated waveform simulation */
-        @keyframes wave {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
+
+        .narvo-border {
+            border: 1px solid #628141;
+        }
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
+        }
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
+        }
+
+        .narvo-border-l {
+            border-left: 1px solid #628141;
+        }
+
+        .narvo-border-t {
+            border-top: 1px solid #628141;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
         .waveform-anim {
             animation: wave 4s linear infinite;
         }
+
+        .analyzer-bg {
+            background-image: linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-background-dark">
-<!-- Top Navigation / Header -->
-<header class="sticky top-0 z-50 w-full border-b border-grid-line bg-background-dark/95 backdrop-blur">
-<div class="px-6 h-16 flex items-center justify-between">
-<div class="flex items-center gap-4">
-<div class="text-primary">
-<span class="material-symbols-outlined text-2xl">graphic_eq</span>
-</div>
-<h1 class="text-xl font-bold tracking-tight text-white">NARVO <span class="text-gray-500 font-normal text-sm mx-2">//</span> VOICE MANAGER <span class="bg-primary text-background-dark text-[10px] px-1.5 py-0.5 rounded ml-2 font-mono font-bold">v2.4</span></h1>
-</div>
-<div class="flex items-center gap-6">
-<div class="hidden md:flex items-center gap-2 text-xs font-mono text-sand">
-<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                    SYSTEM ONLINE
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-waveform text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> VOICE_MGMT
+                </h1>
+            </div>
+
+            <div
+                class="hidden md:flex items-center gap-6 text-[10px] mono-ui font-bold text-forest uppercase tracking-widest">
+                <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 bg-primary animate-pulse"></span>
+                    MODELS_ONLINE
+                </span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="flex gap-2">
+                <button class="size-10 narvo-border bg-surface flex items-center justify-center text-primary">
+                    <i class="ph ph-sliders-horizontal text-xl"></i>
+                </button>
+                <button class="size-10 narvo-border bg-surface flex items-center justify-center text-primary relative">
+                    <i class="ph ph-bell text-xl"></i>
+                    <span class="absolute top-0 right-0 size-2 bg-primary"></span>
+                </button>
+                <div class="h-10 w-10 narvo-border bg-surface flex items-center justify-center">
+                    <i class="ph ph-user-focus text-primary text-xl"></i>
                 </div>
-<div class="h-6 w-px bg-grid-line mx-2"></div>
-<div class="flex gap-3">
-<button class="flex items-center justify-center w-10 h-10 rounded hover:bg-surface-dark text-gray-400 hover:text-white transition-colors">
-<span class="material-symbols-outlined">settings</span>
-</button>
-<button class="flex items-center justify-center w-10 h-10 rounded hover:bg-surface-dark text-gray-400 hover:text-white transition-colors relative">
-<span class="material-symbols-outlined">notifications</span>
-<span class="absolute top-2 right-2 w-2 h-2 bg-sand rounded-full"></span>
-</button>
-<div class="w-10 h-10 rounded bg-surface-dark border border-grid-line overflow-hidden ml-2">
-<img alt="User Avatar Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDd1bk6BgKREF3dyOOmWZTJhjT6P5tIChr440cWr-7DaLEhe1xUcaUQfM4Q_SIngR7wU-TgPEFWhqjKQaiVZM4Uiip2AZ2-ShE7Kav7BmgPK-DLhJBe3SniymiecP4-nbtE11nlJm4GqUhMCkgOPAtfhUiTtQ_zFtNUM95mqXjK2jD2Dv69laD6jZRDHPmedob4TYHQxQgIWBStUqd6rrVS1aOWDM4Dc7ATvKcNxR6QH5KFyQxNEWnqhC49yKcWKFzCSHSJT9w-yZY"/>
-</div>
-</div>
-</div>
-</div>
-<!-- Regional Status Ticker -->
-<div class="w-full border-b border-grid-line bg-surface-dark py-2 px-6 flex items-center gap-6 overflow-x-auto no-scrollbar whitespace-nowrap">
-<span class="text-[10px] font-bold tracking-widest text-gray-500 font-mono uppercase">Model Status:</span>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px] text-sand">check_circle</span>
-<span class="text-xs font-mono text-sand">Yoruba Model: <span class="text-white">Optimized</span></span>
-</div>
-<div class="w-px h-3 bg-grid-line"></div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px] text-primary">check_circle</span>
-<span class="text-xs font-mono text-primary">Swiss-German: <span class="text-white">Live</span></span>
-</div>
-<div class="w-px h-3 bg-grid-line"></div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px] text-primary">check_circle</span>
-<span class="text-xs font-mono text-primary">US-East: <span class="text-white">Stable</span></span>
-</div>
-<div class="w-px h-3 bg-grid-line"></div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px] text-sand animate-spin">progress_activity</span>
-<span class="text-xs font-mono text-sand">Zurich Accent: <span class="text-white">Training (84%)</span></span>
-</div>
-<div class="w-px h-3 bg-grid-line"></div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px] text-gray-400">cloud_upload</span>
-<span class="text-xs font-mono text-gray-400">French-News: <span class="text-white">Deploying</span></span>
-</div>
-</div>
-</header>
-<main class="flex-1 flex flex-col lg:flex-row h-[calc(100vh-8rem)] overflow-hidden">
-<!-- Sidebar Navigation -->
-<aside class="hidden lg:flex flex-col w-16 border-r border-grid-line bg-surface-dark items-center py-6 gap-6">
-<button class="p-2 rounded text-primary bg-primary/10 transition-colors">
-<span class="material-symbols-outlined">dashboard</span>
-</button>
-<button class="p-2 rounded text-gray-500 hover:text-white hover:bg-background-dark transition-colors">
-<span class="material-symbols-outlined">record_voice_over</span>
-</button>
-<button class="p-2 rounded text-gray-500 hover:text-white hover:bg-background-dark transition-colors">
-<span class="material-symbols-outlined">bar_chart</span>
-</button>
-<button class="p-2 rounded text-gray-500 hover:text-white hover:bg-background-dark transition-colors">
-<span class="material-symbols-outlined">tune</span>
-</button>
-<div class="flex-1 w-px bg-gradient-to-b from-grid-line to-transparent my-2"></div>
-<button class="p-2 rounded text-gray-500 hover:text-red-400 hover:bg-background-dark transition-colors">
-<span class="material-symbols-outlined">power_settings_new</span>
-</button>
-</aside>
-<!-- Main Content Area -->
-<div class="flex-1 flex flex-col overflow-y-auto bg-grid-pattern analyzer-grid">
-<div class="p-6 pb-2">
-<!-- KPI Metrics Grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-<!-- Metric Card 1 -->
-<div class="group relative bg-background-dark border border-grid-line p-5 hover:border-primary/50 transition-colors">
-<div class="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-<span class="material-symbols-outlined text-primary text-xs">arrow_outward</span>
-</div>
-<p class="text-gray-400 text-xs font-mono mb-2 uppercase tracking-wider">Total Active Voices</p>
-<div class="flex items-baseline gap-3">
-<p class="text-white text-3xl font-mono font-bold">24</p>
-<span class="text-primary text-xs font-mono bg-primary/10 px-1 py-0.5 rounded">+2%</span>
-</div>
-<div class="mt-3 h-1 w-full bg-surface-dark overflow-hidden">
-<div class="h-full bg-primary w-[70%]"></div>
-</div>
-</div>
-<!-- Metric Card 2 -->
-<div class="group relative bg-background-dark border border-grid-line p-5 hover:border-primary/50 transition-colors">
-<p class="text-gray-400 text-xs font-mono mb-2 uppercase tracking-wider">Global Latency</p>
-<div class="flex items-baseline gap-3">
-<p class="text-white text-3xl font-mono font-bold">12<span class="text-sm text-gray-500 ml-1">ms</span></p>
-<span class="text-sand text-xs font-mono bg-sand/10 px-1 py-0.5 rounded">+0.4ms</span>
-</div>
-<div class="mt-3 h-1 w-full bg-surface-dark overflow-hidden">
-<div class="h-full bg-sand w-[30%]"></div>
-</div>
-</div>
-<!-- Metric Card 3 -->
-<div class="group relative bg-background-dark border border-grid-line p-5 hover:border-primary/50 transition-colors">
-<p class="text-gray-400 text-xs font-mono mb-2 uppercase tracking-wider">API Requests (24h)</p>
-<div class="flex items-baseline gap-3">
-<p class="text-white text-3xl font-mono font-bold">1.2<span class="text-sm text-gray-500 ml-1">M</span></p>
-<span class="text-primary text-xs font-mono bg-primary/10 px-1 py-0.5 rounded">+15%</span>
-</div>
-<!-- Mini sparkline viz -->
-<div class="mt-3 flex gap-0.5 h-1 items-end">
-<div class="w-1/5 bg-surface-dark h-full"></div>
-<div class="w-1/5 bg-primary/40 h-[40%]"></div>
-<div class="w-1/5 bg-primary/60 h-[60%]"></div>
-<div class="w-1/5 bg-primary/80 h-[50%]"></div>
-<div class="w-1/5 bg-primary h-[80%]"></div>
-</div>
-</div>
-<!-- Metric Card 4 -->
-<div class="group relative bg-background-dark border border-grid-line p-5 hover:border-primary/50 transition-colors">
-<p class="text-gray-400 text-xs font-mono mb-2 uppercase tracking-wider">System Health</p>
-<div class="flex items-baseline gap-3">
-<p class="text-white text-3xl font-mono font-bold">99.9%</p>
-</div>
-<div class="mt-3 flex items-center gap-1">
-<span class="w-2 h-2 rounded-full bg-primary"></span>
-<span class="text-[10px] text-gray-400 font-mono">ALL SYSTEMS OPERATIONAL</span>
-</div>
-</div>
-</div>
-<!-- Voice Matrix Section -->
-<div class="flex flex-col gap-4 mb-6">
-<div class="flex items-center justify-between">
-<h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-<span class="material-symbols-outlined text-primary">view_list</span>
-                            ACTIVE VOICE MATRIX
-                        </h2>
-<div class="flex gap-2">
-<button class="px-3 py-1.5 border border-grid-line bg-surface-dark text-xs text-white font-mono hover:bg-grid-line transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px]">filter_list</span> FILTER
-                            </button>
-<button class="px-3 py-1.5 border border-grid-line bg-surface-dark text-xs text-primary font-mono hover:bg-primary/10 border-primary/30 transition-colors flex items-center gap-2">
-<span class="material-symbols-outlined text-[14px]">add</span> NEW MODEL
-                            </button>
-</div>
-</div>
-<!-- Data Grid Header -->
-<div class="grid grid-cols-12 gap-4 px-4 py-2 bg-surface-dark border-y border-grid-line text-xs font-mono text-gray-500 uppercase tracking-wider">
-<div class="col-span-3">Voice Name / ID</div>
-<div class="col-span-2">Language</div>
-<div class="col-span-2">Latency</div>
-<div class="col-span-2">Clarity Score</div>
-<div class="col-span-2">Status</div>
-<div class="col-span-1 text-right">Actions</div>
-</div>
-<!-- Row 1 -->
-<div class="group grid grid-cols-12 gap-4 px-4 py-3 bg-background-dark border-b border-grid-line items-center hover:bg-surface-dark transition-colors cursor-pointer relative overflow-hidden">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
-<div class="col-span-3 flex items-center gap-3">
-<div class="w-8 h-8 bg-surface-dark border border-grid-line flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm">graphic_eq</span>
-</div>
-<div>
-<p class="text-white font-medium text-sm">Atlas-News-V3</p>
-<p class="text-gray-500 text-xs font-mono">ID: #8821-A</p>
-</div>
-</div>
-<div class="col-span-2 text-gray-300 text-sm">English (Global)</div>
-<div class="col-span-2 font-mono text-primary text-sm">12ms</div>
-<div class="col-span-2">
-<div class="flex items-center gap-2">
-<div class="flex-1 h-1.5 bg-surface-dark border border-grid-line overflow-hidden rounded-sm">
-<div class="h-full bg-primary w-[99%]"></div>
-</div>
-<span class="text-xs font-mono text-white">99.8%</span>
-</div>
-</div>
-<div class="col-span-2">
-<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-xs font-mono font-bold">
-<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> LIVE
-                            </span>
-</div>
-<div class="col-span-1 flex justify-end">
-<button class="text-gray-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">more_vert</span>
-</button>
-</div>
-</div>
-<!-- Row 2 -->
-<div class="group grid grid-cols-12 gap-4 px-4 py-3 bg-background-dark border-b border-grid-line items-center hover:bg-surface-dark transition-colors cursor-pointer relative overflow-hidden">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-sand transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
-<div class="col-span-3 flex items-center gap-3">
-<div class="w-8 h-8 bg-surface-dark border border-grid-line flex items-center justify-center text-sand">
-<span class="material-symbols-outlined text-sm">graphic_eq</span>
-</div>
-<div>
-<p class="text-white font-medium text-sm">Echo-Brief-Experimental</p>
-<p class="text-gray-500 text-xs font-mono">ID: #9942-X</p>
-</div>
-</div>
-<div class="col-span-2 text-gray-300 text-sm">German (Zurich)</div>
-<div class="col-span-2 font-mono text-sand text-sm">45ms</div>
-<div class="col-span-2">
-<div class="flex items-center gap-2">
-<div class="flex-1 h-1.5 bg-surface-dark border border-grid-line overflow-hidden rounded-sm">
-<div class="h-full bg-sand w-[94%]"></div>
-</div>
-<span class="text-xs font-mono text-white">94.2%</span>
-</div>
-</div>
-<div class="col-span-2">
-<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-sand/10 border border-sand/20 text-sand text-xs font-mono font-bold">
-<span class="material-symbols-outlined text-[10px] animate-spin">progress_activity</span> TRAINING
-                            </span>
-</div>
-<div class="col-span-1 flex justify-end">
-<button class="text-gray-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">more_vert</span>
-</button>
-</div>
-</div>
-<!-- Row 3 -->
-<div class="group grid grid-cols-12 gap-4 px-4 py-3 bg-background-dark border-b border-grid-line items-center hover:bg-surface-dark transition-colors cursor-pointer relative overflow-hidden">
-<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary transform -translate-x-full group-hover:translate-x-0 transition-transform"></div>
-<div class="col-span-3 flex items-center gap-3">
-<div class="w-8 h-8 bg-surface-dark border border-grid-line flex items-center justify-center text-primary">
-<span class="material-symbols-outlined text-sm">graphic_eq</span>
-</div>
-<div>
-<p class="text-white font-medium text-sm">Nova-Anchor</p>
-<p class="text-gray-500 text-xs font-mono">ID: #1102-B</p>
-</div>
-</div>
-<div class="col-span-2 text-gray-300 text-sm">English (US-East)</div>
-<div class="col-span-2 font-mono text-primary text-sm">18ms</div>
-<div class="col-span-2">
-<div class="flex items-center gap-2">
-<div class="flex-1 h-1.5 bg-surface-dark border border-grid-line overflow-hidden rounded-sm">
-<div class="h-full bg-primary w-[98%]"></div>
-</div>
-<span class="text-xs font-mono text-white">98.5%</span>
-</div>
-</div>
-<div class="col-span-2">
-<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-primary/10 border border-primary/20 text-primary text-xs font-mono font-bold">
-<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span> LIVE
-                            </span>
-</div>
-<div class="col-span-1 flex justify-end">
-<button class="text-gray-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">more_vert</span>
-</button>
-</div>
-</div>
-</div>
-</div>
-<!-- Bottom Signal Analyzer (Sticky at bottom of main view if content is short, or just flow) -->
-<div class="mt-auto border-t border-grid-line bg-background-dark p-6">
-<div class="flex items-center justify-between mb-4">
-<h3 class="text-xs font-bold text-gray-400 font-mono tracking-widest flex items-center gap-2 uppercase">
-<span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-                        Signal Analysis // Channel 1 (Live)
-                    </h3>
-<div class="flex gap-4 text-xs font-mono text-gray-500">
-<span>SR: 48kHz</span>
-<span>Bit Depth: 24-bit</span>
-<span>Buffer: 128</span>
-</div>
-</div>
-<!-- Audio Visualization Container -->
-<div class="relative h-32 w-full bg-surface-dark border border-grid-line overflow-hidden rounded analyzer-grid">
-<!-- Background Grid for Vis -->
-<div class="absolute inset-0" style="background-image: linear-gradient(#28392e 1px, transparent 1px), linear-gradient(90deg, #28392e 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3;"></div>
-<!-- Center Line -->
-<div class="absolute top-1/2 left-0 w-full h-px bg-sand/30"></div>
-<!-- Animated Waveform SVG -->
-<div class="absolute inset-0 flex items-center overflow-hidden">
-<svg class="w-[200%] h-24 text-primary waveform-anim" fill="none" preserveaspectratio="none" viewbox="0 0 1200 100" xmlns="http://www.w3.org/2000/svg">
-<path d="M0 50 
-                                     C 20 40, 40 60, 60 50 
-                                     C 80 30, 100 70, 120 50 
-                                     C 140 45, 160 55, 180 50
-                                     C 200 20, 220 80, 240 50
-                                     C 260 40, 280 60, 300 50
-                                     C 320 48, 340 52, 360 50
-                                     C 380 10, 400 90, 420 50
-                                     C 440 45, 460 55, 480 50
-                                     C 500 30, 520 70, 540 50
-                                     C 560 40, 580 60, 600 50
-                                     C 620 40, 640 60, 660 50 
-                                     C 680 30, 700 70, 720 50 
-                                     C 740 45, 760 55, 780 50
-                                     C 800 20, 820 80, 840 50
-                                     C 860 40, 880 60, 900 50
-                                     C 920 48, 940 52, 960 50
-                                     C 980 10, 1000 90, 1020 50
-                                     C 1040 45, 1060 55, 1080 50
-                                     C 1100 30, 1120 70, 1140 50
-                                     C 1160 40, 1180 60, 1200 50" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"></path>
-</svg>
-</div>
-<!-- Overlay Data on Viz -->
-<div class="absolute bottom-2 left-2 px-2 py-1 bg-background-dark/80 border border-grid-line text-[10px] font-mono text-primary rounded">
-                        -3.2 dB
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-16 narvo-border-r bg-background-dark flex flex-col items-center py-8 gap-8 hidden md:flex">
+            <button class="p-3 bg-primary text-background-dark"><i class="ph ph-gauge text-xl"></i></button>
+            <button class="p-3 text-forest hover:text-white transition-all"><i
+                    class="ph ph-microphone-stage text-xl"></i></button>
+            <button class="p-3 text-forest hover:text-white transition-all"><i class="ph ph-graph text-xl"></i></button>
+            <button class="p-3 text-forest hover:text-white transition-all"><i
+                    class="ph ph-wrench text-xl"></i></button>
+            <div class="flex-1"></div>
+            <button class="p-3 text-red-500 hover:text-white hover:bg-red-500 transition-all"><i
+                    class="ph ph-power text-xl"></i></button>
+        </aside>
+
+        <!-- Main Monitoring Area -->
+        <main class="flex-1 flex flex-col overflow-hidden bg-background-dark">
+            <div class="p-8 space-y-8 flex-1 overflow-y-auto custom-scroll">
+                <!-- KPI Board -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 bg-forest narvo-border">
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">ACTIVE_VOICES</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-display text-4xl font-bold text-white">24</span>
+                            <span class="mono-ui text-[10px] text-primary font-bold">+2%</span>
+                        </div>
+                        <div class="h-1 bg-forest/20 relative overflow-hidden">
+                            <div class="absolute inset-0 bg-primary w-[70%]"></div>
+                        </div>
                     </div>
-</div>
-</div>
-</div>
-</main>
-</body></html>
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">GLOBAL_LATENCY</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-display text-4xl font-bold text-white">12</span>
+                            <span class="mono-ui text-[12px] text-forest font-bold">MS</span>
+                        </div>
+                        <p class="mono-ui text-[8px] text-primary font-bold">STABLE // SLA_PASS</p>
+                    </div>
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">TOTAL_REQS_24H</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-display text-4xl font-bold text-white">1.2</span>
+                            <span class="mono-ui text-[12px] text-forest font-bold">MIL</span>
+                        </div>
+                        <div class="flex gap-0.5 h-1 items-end">
+                            <div class="w-2 bg-primary h-full"></div>
+                            <div class="w-2 bg-primary/40 h-[40%]"></div>
+                            <div class="w-2 bg-primary/60 h-[60%]"></div>
+                            <div class="w-2 bg-primary h-[80%]"></div>
+                        </div>
+                    </div>
+                    <div class="bg-background-dark p-6 space-y-4">
+                        <span class="mono-ui text-[8px] text-forest font-bold tracking-widest">HEALTH_RANK</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="font-display text-4xl font-bold text-white uppercase">S+</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="size-2 bg-primary"></div>
+                            <span class="mono-ui text-[8px] text-forest font-bold">ALL_NODES_UP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voice Matrix -->
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h2
+                            class="font-display text-2xl font-bold text-white uppercase tracking-tight flex items-center gap-4">
+                            <i class="ph ph-list-numbers text-primary"></i>
+                            Active_Voice_Matrix
+                        </h2>
+                        <div class="flex gap-4">
+                            <button
+                                class="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-white transition-all flex items-center gap-2 uppercase">
+                                <i class="ph ph-funnel"></i> Filter
+                            </button>
+                            <button
+                                class="px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all flex items-center gap-2 uppercase">
+                                <i class="ph ph-plus-square"></i> New_Model
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="narvo-border overflow-hidden bg-black/20">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="narvo-border-b bg-forest/5 mono-ui text-[9px] text-forest font-bold">
+                                    <th class="px-8 py-4">VOICE_IDENTITY</th>
+                                    <th class="px-8 py-4">LANGUAGE_SET</th>
+                                    <th class="px-8 py-4">LATENCY</th>
+                                    <th class="px-8 py-4">CLARITY_SCORE</th>
+                                    <th class="px-8 py-4">STATUS</th>
+                                    <th class="px-8 py-4 text-right">OPS</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mono-ui text-[10px] text-forest font-bold">
+                                <tr class="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer group">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="size-10 narvo-border bg-background-dark flex items-center justify-center text-primary group-hover:border-primary transition-all">
+                                                <i class="ph ph-broadcast text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-white">ATLAS_NEWS_V3</p>
+                                                <p class="text-[8px] text-forest">ID: #8821-A</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">YORUBA (NG)</td>
+                                    <td class="px-8 py-5 text-primary">12MS</td>
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex-1 h-1.5 narvo-border bg-background-dark relative">
+                                                <div class="absolute inset-0 bg-primary w-[99%]"></div>
+                                            </div>
+                                            <span>99.8%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-2 text-primary">
+                                            <span class="size-1.5 bg-primary animate-pulse"></span>
+                                            <span>LIVE</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <i class="ph ph-dots-three-vertical text-lg"></i>
+                                    </td>
+                                </tr>
+                                <tr class="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer group">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="size-10 narvo-border bg-background-dark flex items-center justify-center text-forest group-hover:border-primary transition-all">
+                                                <i class="ph ph-broadcast text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-white">ECHO_BRIEF_XP</p>
+                                                <p class="text-[8px] text-forest">ID: #9942-X</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">HAUSA (NG)</td>
+                                    <td class="px-8 py-5">45MS</td>
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex-1 h-1.5 narvo-border bg-background-dark relative">
+                                                <div class="absolute inset-0 bg-forest w-[94%]"></div>
+                                            </div>
+                                            <span>94.2%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-2 text-forest italic">
+                                            <i class="ph ph-spinner ph-spin"></i>
+                                            <span>TRAINING</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <i class="ph ph-dots-three-vertical text-lg"></i>
+                                    </td>
+                                </tr>
+                                <tr class="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer group">
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="size-10 narvo-border bg-background-dark flex items-center justify-center text-primary group-hover:border-primary transition-all">
+                                                <i class="ph ph-broadcast text-xl"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-white">NOVA_ANCHOR</p>
+                                                <p class="text-[8px] text-forest">ID: #1102-B</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">IGBO (NG)</td>
+                                    <td class="px-8 py-5 text-primary">18MS</td>
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex-1 h-1.5 narvo-border bg-background-dark relative">
+                                                <div class="absolute inset-0 bg-primary w-[98%]"></div>
+                                            </div>
+                                            <span>98.5%</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5">
+                                        <div class="flex items-center gap-2 text-primary">
+                                            <span class="size-1.5 bg-primary animate-pulse"></span>
+                                            <span>LIVE</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-5 text-right">
+                                        <i class="ph ph-dots-three-vertical text-lg"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signal Analyzer Dock -->
+            <div class="h-48 narvo-border-t bg-black/40 p-8 flex flex-col gap-4 shrink-0">
+                <div class="flex justify-between items-center text-[9px] mono-ui font-bold text-forest">
+                    <div class="flex items-center gap-4">
+                        <span class="flex items-center gap-2 text-primary">
+                            <span class="size-2 bg-primary animate-pulse"></span>
+                            SIGNAL_LOCKED: CHANNEL_1
+                        </span>
+                        <span class="h-4 w-[1px] bg-forest/30"></span>
+                        <span>SR: 48KHZ // BIT_DEP: 24BIT // BUF: 128</span>
+                    </div>
+                    <span>LATENCY_SYNC: +0.4MS</span>
+                </div>
+                <div class="flex-1 narvo-border bg-background-dark relative overflow-hidden analyzer-bg">
+                    <div class="absolute inset-y-0 left-0 w-full flex items-center">
+                        <div class="h-px w-full bg-forest/20 absolute top-1/2"></div>
+                        <svg class="w-[200%] h-32 text-primary waveform-anim opacity-80" fill="none"
+                            preserveAspectRatio="none" viewBox="0 0 1200 100">
+                            <path
+                                d="M0 50 C 20 40, 40 60, 60 50 C 80 30, 100 70, 120 50 C 140 45, 160 55, 180 50 C 200 20, 220 80, 240 50 C 260 40, 280 60, 300 50 C 320 48, 340 52, 360 50 C 380 10, 400 90, 420 50 C 440 45, 460 55, 480 50 C 500 30, 520 70, 540 50 C 560 40, 580 60, 600 50 C 620 40, 640 60, 660 50 C 680 30, 700 70, 720 50 C 740 45, 760 55, 780 50 C 800 20, 820 80, 840 50 C 860 40, 880 60, 900 50 C 920 48, 940 52, 960 50 C 980 10, 1000 90, 1020 50 C 1040 45, 1060 55, 1080 50 C 1100 30, 1120 70, 1140 50 C 1160 40, 1180 60, 1200 50"
+                                stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Global Footer -->
+    <footer class="h-10 border-t border-forest/30 bg-background-dark flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-8 mono-ui text-[9px] text-forest font-bold uppercase">
+            <div class="flex items-center gap-2">
+                <div class="size-2 bg-primary"></div>
+                <span>VOICE_ENGINE_ACTIVE</span>
+            </div>
+            <span>PLATFORM_V_2.6.4</span>
+        </div>
+        <div class="mono-ui text-[9px] text-forest font-bold uppercase">
+            LAGOS_VOICE_STUDIO // 2026.02.24
+        </div>
+    </footer>
+</body>
+
+</html>

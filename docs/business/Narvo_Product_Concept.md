@@ -5,9 +5,10 @@ Narvo is not a traditional news aggregator. It is a **Broadcast Entity**. We tra
 
 ## 2. Core Pillars
 - **Audio-First Consumption**: Designed to be heard, then seen. A radio-like background experience.
-- **Broadcast Paraphrasing**: AI recasts news into concise, professionally edited narrative stories using contextual RAG.
+- **Native Language Paraphrasing**: AI recasts news into narrative stories and **translates them into the user's native tongue**.
+- **Linguistic Empowerment**: Breaking language and literacy barriers through localized delivery.
 - **Technical Minimalism**: A UI that feels like a precision instrument (Swiss Grid).
-- **The Truth Tag**: Total transparency on how news is processed, verified, and attributed.
+- **The Truth Tag**: Total transparency on how news is processed, verified, and translated.
 
 ## 3. User Experience Flows
 - **Morning Briefing**: A curated audio reel of the top 5 stories delivered at a scheduled time.
@@ -17,6 +18,7 @@ Narvo is not a traditional news aggregator. It is a **Broadcast Entity**. We tra
 
 ## 4. Concept Goals
 - **Minimize Clutter**: Access high-fidelity broadcasts in 2 taps or less.
-- **Verification Transparency**: The **Truth Tag** detailing facts vs. synthesis, with Dubawa API integration for credibility.
+- **Native Language Access**: Ensure every user receives news in their preferred language (Yoruba, Hausa, Igbo, etc.).
+- **Verification Transparency**: The **Truth Tag** detailing facts, synthesis, and translation accuracy.
 - **Technical Authority**: Establishing Narvo as the most reliable broadcast "instrument" for local news.
 - **Hands-Free Focus**: Fully navigable via voice or simple grid-aligned gestural UI.

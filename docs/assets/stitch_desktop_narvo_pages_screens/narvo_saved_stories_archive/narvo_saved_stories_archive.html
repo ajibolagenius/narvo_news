@@ -1,320 +1,304 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo - Saved Stories Archive</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              "primary": "#eecd2b",
-              "background-light": "#f8f8f6",
-              "background-dark": "#1B211A", // Deep Matte Charcoal
-              "forest-green": "#628141", // Forest Green for borders (new hex)
-              "sage-green": "#8BAE66", // Sage Green for timestamps
-              "sand-beige": "#EBD5AB", // Sand/Beige for active highlights (new hex)
-              "surface-dark": "#1B211A", // Same as background to remove shading distinction
-            },
-            fontFamily: {
-              "display": ["Space Grotesk", "sans-serif"],
-              "mono": ["JetBrains Mono", "monospace"],
-              "inter": ["Inter", "sans-serif"],
-            },
-            borderRadius: {
-              "DEFAULT": "0", 
-              "sm": "0",
-              "md": "0",
-              "lg": "0",
-              "full": "9999px"
-            },
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>NARVO | Saved Stories Archive</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+    rel="stylesheet" />
+  <!-- Phosphoricons CDN -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#EBD5AB",
+            "forest": "#628141",
+            "background-dark": "#1B211A",
+            "surface": "#242B23",
+          },
+          fontFamily: {
+            "display": ["Space Grotesk", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "mono": ["JetBrains Mono", "monospace"]
+          },
+          borderRadius: {
+            "none": "0",
+            "DEFAULT": "0",
+            "sm": "0",
+            "md": "0",
+            "lg": "0",
+            "xl": "0",
+            "full": "0",
           },
         },
-      }
-    </script>
-<style>.swiss-grid-cell {
-            transition: all 0.2s ease-in-out;
-            box-shadow: none !important;}
-        .swiss-grid-cell:hover {
-            border-color: #EBD5AB;background-color: transparent;}
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        body {
-            background-color: #1B211A;}
-    </style>
-</head>
-<body class="bg-background-dark min-h-screen flex flex-col font-display text-slate-100 selection:bg-sand-beige selection:text-black">
-<header class="sticky top-0 z-50 w-full border-b border-forest-green bg-background-dark/95 backdrop-blur-md">
-<div class="px-6 md:px-12 py-4 flex items-center justify-between">
-<div class="flex items-center gap-4">
-<div class="size-8 text-primary">
-<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
-</svg>
-</div>
-<h1 class="text-2xl font-bold tracking-tight font-display">Narvo</h1>
-</div>
-<nav class="hidden md:flex items-center gap-8 font-inter">
-<a class="text-slate-400 hover:text-sand-beige transition-colors text-sm font-medium uppercase tracking-wider" href="#">Feed</a>
-<a class="text-sand-beige text-sm font-medium uppercase tracking-wider border-b border-sand-beige pb-0.5" href="#">Saved</a>
-<a class="text-slate-400 hover:text-sand-beige transition-colors text-sm font-medium uppercase tracking-wider" href="#">Settings</a>
-</nav>
-<div class="flex items-center gap-4">
-<div class="relative hidden sm:block">
-<input class="bg-transparent border border-forest-green text-slate-300 text-xs font-mono py-2 px-3 pl-9 rounded-none w-48 focus:border-sand-beige focus:ring-0 placeholder:text-slate-500" placeholder="SEARCH ARCHIVE" type="text"/>
-<span class="material-symbols-outlined absolute left-2 top-1.5 text-forest-green text-[18px]">search</span>
-</div>
-<button class="p-2 hover:text-sand-beige transition-colors">
-<span class="material-symbols-outlined">account_circle</span>
-</button>
-</div>
-</div>
-</header>
-<main class="flex-grow px-6 md:px-12 py-8 w-full max-w-[1600px] mx-auto">
-<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10 border-b border-forest-green pb-6">
-<div class="flex flex-col gap-2">
-<h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-white font-display">Saved Stories</h2>
-<p class="text-sage-green font-mono text-xs uppercase tracking-widest">Library / Archive / 24 Items</p>
-</div>
-<div class="flex flex-wrap items-center gap-3 font-mono text-sm">
-<button class="flex items-center gap-2 bg-sand-beige text-background-dark px-4 py-2 rounded-none hover:bg-white transition-colors font-bold border border-sand-beige shadow-none">
-<span class="material-symbols-outlined text-[18px]">check_box_outline_blank</span>
-                    SELECT ALL
-                </button>
-<div class="h-6 w-px bg-forest-green mx-1"></div>
-<button class="flex items-center gap-2 bg-transparent border border-forest-green text-slate-300 px-4 py-2 rounded-none hover:border-sand-beige hover:text-sand-beige transition-colors shadow-none">
-<span class="material-symbols-outlined text-[18px]">inventory_2</span>
-                    ARCHIVE
-                </button>
-<button class="flex items-center gap-2 bg-transparent border border-forest-green text-slate-300 px-4 py-2 rounded-none hover:border-red-500 hover:text-red-500 transition-colors shadow-none">
-<span class="material-symbols-outlined text-[18px]">delete</span>
-                    DELETE
-                </button>
-<div class="relative ml-2">
-<button class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-<span class="material-symbols-outlined text-[18px]">sort</span>
-                        SORT: DATE ADDED
-                    </button>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-<article class="swiss-grid-cell group bg-background-dark border border-forest-green p-6 h-full min-h-[280px] flex flex-col justify-between relative">
-<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-<label class="flex items-center cursor-pointer">
-<input class="form-checkbox bg-transparent border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-4">
-<span class="w-2 h-2 rounded-full bg-primary"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Financial Desk</span>
-</div>
-<h3 class="text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-sand-beige transition-colors cursor-pointer font-display">
-                        Global Markets React to Energy Crisis Shifts
-                    </h3>
-</div>
-<div class="mt-8 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">SAVED 2H AGO</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#ECONOMY #GLOBAL</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</article>
-<article class="swiss-grid-cell group bg-background-dark border border-forest-green p-6 h-full min-h-[280px] flex flex-col justify-between relative">
-<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-<label class="flex items-center cursor-pointer">
-<input class="form-checkbox bg-transparent border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-4">
-<span class="w-2 h-2 rounded-full bg-slate-600"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Design Weekly</span>
-</div>
-<h3 class="text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-sand-beige transition-colors cursor-pointer font-display">
-                        The Future of Urban Architecture in Europe
-                    </h3>
-</div>
-<div class="mt-8 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">SAVED 5H AGO</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#DESIGN #URBAN</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</article>
-<article class="swiss-grid-cell group bg-background-dark border border-forest-green p-0 h-full min-h-[280px] flex flex-col justify-between relative overflow-hidden">
-<div class="h-32 w-full bg-cover bg-center opacity-60 group-hover:opacity-80 transition-opacity grayscale group-hover:grayscale-0" data-alt="Cybersecurity data visualization abstract" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_lpeQY-bNKk-rZLyZSEh0AEmHB7J8I56KMbC0IyRti9xC9W8ko_EDAN5EsQemt3uCl9jgnbaLk775TSGsZ9ftaia6x7jrj9wEVsrNsW0QfP0K-s9XxjZTuSEseeJAEOLBWUZmj0ufTqk8b3tZe1M6Bz__ZW4yK1nvkwn__sOM7B3dclLx2-Bfon_zJwWVKBycVHwNLFB58qXT55--e3jMXtWskBFvfsTgUNm79Hmbixz6dVZLjSvW2wd135OjURFsn8hwzhl_uCY');"></div>
-<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-<label class="flex items-center cursor-pointer">
-<input class="form-checkbox bg-black/50 border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div class="p-6 pt-4 flex-1 flex flex-col justify-between">
-<div>
-<div class="flex items-center gap-2 mb-2">
-<span class="w-2 h-2 rounded-full bg-red-500"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Tech Brief</span>
-</div>
-<h3 class="text-xl font-bold leading-tight text-white group-hover:text-sand-beige transition-colors cursor-pointer font-display">
-                            Cybersecurity Protocols for 2024
-                        </h3>
-</div>
-<div class="mt-4 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">YESTERDAY</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#SECURITY</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</div>
-</article>
-<article class="swiss-grid-cell group bg-background-dark border border-forest-green p-6 h-full min-h-[280px] flex flex-col justify-between relative">
-<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-<label class="flex items-center cursor-pointer">
-<input class="form-checkbox bg-transparent border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-4">
-<span class="w-2 h-2 rounded-full bg-slate-600"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Culture</span>
-</div>
-<h3 class="text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-sand-beige transition-colors cursor-pointer font-display">
-                        Minimalism in the Digital Age: A Retrospective
-                    </h3>
-</div>
-<div class="mt-8 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">2 DAYS AGO</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#ART #CULTURE</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</article>
-<article class="swiss-grid-cell group bg-background-dark border border-forest-green p-6 h-full min-h-[280px] flex flex-col justify-between relative">
-<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-<label class="flex items-center cursor-pointer">
-<input class="form-checkbox bg-transparent border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-4">
-<span class="w-2 h-2 rounded-full bg-slate-600"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Science</span>
-</div>
-<h3 class="text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-sand-beige transition-colors cursor-pointer font-display">
-                        Breakthrough in Carbon Capture Tech
-                    </h3>
-</div>
-<div class="mt-8 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">3 DAYS AGO</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#CLIMATE #TECH</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</article>
-<article class="swiss-grid-cell group bg-background-dark border border-forest-green p-6 h-full min-h-[280px] flex flex-col justify-between relative">
-<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-<label class="flex items-center cursor-pointer">
-<input class="form-checkbox bg-transparent border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-4">
-<span class="w-2 h-2 rounded-full bg-primary"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Politics</span>
-</div>
-<h3 class="text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-sand-beige transition-colors cursor-pointer font-display">
-                        Senate Proposes New AI Regulation Framework
-                    </h3>
-</div>
-<div class="mt-8 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">3 DAYS AGO</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#POLITICS #AI</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</article>
-<article class="swiss-grid-cell group bg-background-dark border border-forest-green p-6 h-full min-h-[280px] flex flex-col justify-between relative">
-<div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-<label class="flex items-center cursor-pointer">
-<input class="form-checkbox bg-transparent border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-4">
-<span class="w-2 h-2 rounded-full bg-slate-600"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Opinion</span>
-</div>
-<h3 class="text-xl md:text-2xl font-bold leading-tight text-white group-hover:text-sand-beige transition-colors cursor-pointer font-display">
-                        Why We Need to Re-evaluate Remote Work
-                    </h3>
-</div>
-<div class="mt-8 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">4 DAYS AGO</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#WORK #OPINION</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</article>
-<article class="swiss-grid-cell group bg-background-dark p-6 h-full min-h-[280px] flex flex-col justify-between relative ring-1 ring-inset ring-sand-beige">
-<div class="absolute top-4 right-4 opacity-100 transition-opacity">
-<label class="flex items-center cursor-pointer">
-<input checked="" class="form-checkbox bg-transparent border-forest-green text-sand-beige rounded-none focus:ring-0 focus:ring-offset-0 size-5" type="checkbox"/>
-</label>
-</div>
-<div>
-<div class="flex items-center gap-2 mb-4">
-<span class="w-2 h-2 rounded-full bg-slate-600"></span>
-<span class="font-inter text-xs text-slate-400 uppercase tracking-wide">Sports</span>
-</div>
-<h3 class="text-xl md:text-2xl font-bold leading-tight text-white transition-colors cursor-pointer font-display">
-                        Record Breaking Marathon in Berlin
-                    </h3>
-</div>
-<div class="mt-8 flex items-end justify-between border-t border-forest-green pt-4">
-<div class="flex flex-col gap-1">
-<span class="font-mono text-xs text-sage-green">5 DAYS AGO</span>
-<span class="font-inter text-[10px] text-slate-500 uppercase tracking-wider">#SPORTS</span>
-</div>
-<button class="text-slate-500 hover:text-white transition-colors">
-<span class="material-symbols-outlined">arrow_outward</span>
-</button>
-</div>
-</article>
-</div>
-<div class="mt-12 flex justify-center pb-20">
-<button class="font-mono text-sm border-b border-dashed border-slate-500 pb-1 text-slate-400 hover:text-sand-beige hover:border-sand-beige transition-colors uppercase tracking-widest">
-                Load More Stories
-            </button>
-</div>
-</main>
+      },
+    }
+  </script>
+  <style>
+    body {
+      background-color: #1B211A;
+      color: #F2F2F2;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
 
-</body></html>
+    .mono-ui {
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .narvo-border {
+      border: 1px solid #628141;
+    }
+
+    .narvo-border-r {
+      border-right: 1px solid #628141;
+    }
+
+    .narvo-border-l {
+      border-left: 1px solid #628141;
+    }
+
+    .narvo-border-b {
+      border-bottom: 1px solid #628141;
+    }
+
+    .narvo-border-t {
+      border-top: 1px solid #628141;
+    }
+
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #1B211A;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #628141;
+    }
+  </style>
+</head>
+
+<body
+  class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+  <!-- Top Header Navigation -->
+  <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+    <div class="flex items-center gap-12">
+      <div class="flex items-center gap-4">
+        <i class="ph ph-bookmarks text-primary text-2xl"></i>
+        <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+          NARVO <span class="text-forest font-light mx-2">//</span> SAVED_ARCHIVE
+        </h1>
+      </div>
+
+      <div class="hidden md:flex items-center gap-4 w-full max-w-sm relative group">
+        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-forest text-lg"></i>
+        <input type="text"
+          class="w-full bg-surface/30 narvo-border pl-10 pr-4 py-2 mono-ui text-[10px] text-white placeholder-forest focus:outline-none focus:border-primary transition-all"
+          placeholder="SEARCH_SAVED_SIGNALS...">
+      </div>
+    </div>
+
+    <div class="flex items-center gap-6">
+      <div class="hidden md:flex flex-col items-end mono-ui text-[9px] text-forest">
+        <span>ARCHIVE_SIZE: <span class="text-primary font-bold">2.4 GB</span></span>
+        <span>ENTRY_COUNT: <span class="text-primary font-bold">124</span></span>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="text-forest hover:text-primary transition-colors"><i class="ph ph-bell text-xl"></i></button>
+        <div
+          class="h-10 w-10 narvo-border bg-surface flex items-center justify-center font-display font-bold text-sm text-primary cursor-pointer hover:bg-forest transition-colors">
+          JD</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 overflow-y-auto custom-scroll p-10 max-w-7xl mx-auto w-full">
+    <!-- Dashboard Header -->
+    <section
+      class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-forest/30 pb-10">
+      <div class="space-y-4">
+        <h2 class="font-display text-6xl font-bold uppercase tracking-tighter text-white leading-none">
+          Saved <span class="text-primary">Stories.</span>
+        </h2>
+        <p class="mono-ui text-[10px] text-forest font-bold tracking-[0.3em]">LIBRARY_ROOT // ARCHIVE_SEGMENT //
+          SYNCED_NODES</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <button
+          class="flex items-center gap-3 bg-primary text-background-dark px-6 py-3 mono-ui text-[11px] font-bold hover:bg-white transition-colors">
+          <i class="ph ph-check-square"></i>
+          <span>SELECT_ALL</span>
+        </button>
+        <button
+          class="flex items-center gap-3 narvo-border px-6 py-3 mono-ui text-[11px] font-bold text-white hover:bg-forest transition-colors">
+          <i class="ph ph-archive"></i>
+          <span>ARCHIVE_X</span>
+        </button>
+        <button
+          class="flex items-center gap-3 narvo-border px-6 py-3 mono-ui text-[11px] font-bold text-red-400 hover:bg-red-400 hover:text-white transition-colors">
+          <i class="ph ph-trash"></i>
+          <span>DELETE_SIG</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Grid Matrix -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Story Card 1 -->
+      <article
+        class="bg-surface/5 narvo-border p-8 h-full flex flex-col justify-between group hover:bg-surface/20 transition-all cursor-pointer relative">
+        <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+          <input type="checkbox" class="size-6 bg-transparent narvo-border border-forest/50 text-primary focus:ring-0">
+        </div>
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="size-2 bg-primary"></span>
+            <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">FINANCIAL_DESK</span>
+          </div>
+          <h3
+            class="font-display text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors uppercase">
+            Global Markets React to Energy Crisis Shifts
+          </h3>
+        </div>
+        <div class="mt-8 pt-6 narvo-border-t flex items-end justify-between">
+          <div class="flex flex-col gap-1">
+            <span class="mono-ui text-[9px] text-primary font-bold">SAVED_2H_AGO</span>
+            <span class="mono-ui text-[10px] text-forest font-bold opacity-70">#ECONOMY #GLOBAL</span>
+          </div>
+          <i class="ph ph-arrow-up-right text-forest group-hover:text-primary text-2xl"></i>
+        </div>
+      </article>
+
+      <!-- Story Card 2 -->
+      <article
+        class="bg-surface/5 narvo-border p-8 h-full flex flex-col justify-between group hover:bg-surface/20 transition-all cursor-pointer relative">
+        <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+          <input type="checkbox" class="size-6 bg-transparent narvo-border border-forest/50 text-primary focus:ring-0">
+        </div>
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="size-2 bg-forest"></span>
+            <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">DESIGN_WEEKLY</span>
+          </div>
+          <h3
+            class="font-display text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors uppercase">
+            The Future of Urban Architecture in Lagos
+          </h3>
+        </div>
+        <div class="mt-8 pt-6 narvo-border-t flex items-end justify-between">
+          <div class="flex flex-col gap-1">
+            <span class="mono-ui text-[9px] text-primary font-bold">SAVED_5H_AGO</span>
+            <span class="mono-ui text-[10px] text-forest font-bold opacity-70">#DESIGN #URBAN</span>
+          </div>
+          <i class="ph ph-arrow-up-right text-forest group-hover:text-primary text-2xl"></i>
+        </div>
+      </article>
+
+      <!-- Story Card 3 (With Visual) -->
+      <article
+        class="bg-surface/5 narvo-border h-full flex flex-col group hover:bg-surface/20 transition-all cursor-pointer relative overflow-hidden">
+        <div
+          class="h-40 w-full bg-cover bg-center grayscale opacity-30 group-hover:opacity-60 transition-all duration-500"
+          style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_lpeQY-bNKk-rZLyZSEh0AEmHB7J8I56KMbC0IyRti9xC9W8ko_EDAN5EsQemt3uCl9jgnbaLk775TSGsZ9ftaia6x7jrj9wEVsrNsW0QfP0K-s9XxjZTuSEseeJAEOLBWUZmj0ufTqk8b3tZe1M6Bz__ZW4yK1nvkwn__sOM7B3dclLx2-Bfon_zJwWVKBycVHwNLFB58qXT55--e3jMXtWskBFvfsTgUNm79Hmbixz6dVZLjSvW2wd135OjURFsn8hwzhl_uCY');">
+        </div>
+        <div class="p-8 space-y-6 flex-1 flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center gap-3">
+              <span class="size-2 bg-red-400"></span>
+              <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">TECH_BRIEF</span>
+            </div>
+            <h3
+              class="font-display text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors uppercase">
+              Cybersecurity Protocols for 2026_V2
+            </h3>
+          </div>
+          <div class="mt-8 pt-6 narvo-border-t flex items-end justify-between">
+            <div class="flex flex-col gap-1">
+              <span class="mono-ui text-[9px] text-primary font-bold">YESTERDAY_14:20</span>
+              <span class="mono-ui text-[10px] text-forest font-bold opacity-70">#SECURITY #INFRA</span>
+            </div>
+            <i class="ph ph-arrow-up-right text-forest group-hover:text-primary text-2xl"></i>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 4 -->
+      <article
+        class="bg-surface/5 narvo-border p-8 h-full flex flex-col justify-between group hover:bg-surface/20 transition-all cursor-pointer relative">
+        <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+          <input type="checkbox" class="size-6 bg-transparent narvo-border border-forest/50 text-primary focus:ring-0">
+        </div>
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="size-2 bg-forest"></span>
+            <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">CULTURE_NODE</span>
+          </div>
+          <h3
+            class="font-display text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors uppercase">
+            Digital Minimalism: A Technical Retrospective
+          </h3>
+        </div>
+        <div class="mt-8 pt-6 narvo-border-t flex items-end justify-between">
+          <div class="flex flex-col gap-1">
+            <span class="mono-ui text-[9px] text-primary font-bold">2_DAYS_AGO</span>
+            <span class="mono-ui text-[10px] text-forest font-bold opacity-70">#ART #GLOBAL</span>
+          </div>
+          <i class="ph ph-arrow-up-right text-forest group-hover:text-primary text-2xl"></i>
+        </div>
+      </article>
+
+      <!-- Card 5 -->
+      <article
+        class="bg-surface/5 narvo-border p-8 h-full flex flex-col justify-between group hover:bg-surface/20 transition-all cursor-pointer relative">
+        <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+          <input type="checkbox" class="size-6 bg-transparent narvo-border border-forest/50 text-primary focus:ring-0">
+        </div>
+        <div class="space-y-6">
+          <div class="flex items-center gap-3">
+            <span class="size-2 bg-primary"></span>
+            <span class="mono-ui text-[9px] text-forest font-bold tracking-widest">GOVERNANCE</span>
+          </div>
+          <h3
+            class="font-display text-2xl font-bold leading-tight text-white group-hover:text-primary transition-colors uppercase">
+            AI Regulation Framework: Senate Draft v1.0
+          </h3>
+        </div>
+        <div class="mt-8 pt-6 narvo-border-t flex items-end justify-between">
+          <div class="flex flex-col gap-1">
+            <span class="mono-ui text-[9px] text-primary font-bold">4_DAYS_AGO</span>
+            <span class="mono-ui text-[10px] text-forest font-bold opacity-70">#POLITICS #AI</span>
+          </div>
+          <i class="ph ph-arrow-up-right text-forest group-hover:text-primary text-2xl"></i>
+        </div>
+      </article>
+
+      <!-- Empty Shell -->
+      <div
+        class="narvo-border bg-surface/5 flex flex-col items-center justify-center p-8 grayscale opacity-20 border-dashed">
+        <i class="ph ph-lock text-6xl mb-4"></i>
+        <span class="mono-ui text-[10px] font-bold tracking-widest">ADD_NEW_STREAM_DOCK</span>
+      </div>
+    </section>
+
+    <!-- Load More -->
+    <div class="mt-16 flex justify-center pb-20">
+      <button
+        class="mono-ui text-[11px] font-bold text-forest hover:text-white transition-all border-b border-dashed border-forest/40 hover:border-white pb-2 tracking-[0.3em]">
+        FETCH_ADDITIONAL_TRANSMISSIONS
+      </button>
+    </div>
+  </main>
+</body>
+
+</html>

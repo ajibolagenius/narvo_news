@@ -1,305 +1,340 @@
 <!DOCTYPE html>
+<html class="dark" lang="en">
 
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Curation Review Console</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script>
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Curation Review Console</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        primary: "#EBD5AB", // Sand/Beige as requested
-                        "primary-dark": "#cbb284",
-                        "background-light": "#f8f7f6",
-                        "background-dark": "#0D0D0D", // Deep black/charcoal
-                        "grid-border": "#2E4A35", // Forest Green border
-                        "surface-dark": "#141414",
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
+                        "border-green": "#628141",
                     },
                     fontFamily: {
-                        display: ["Space Grotesk", "sans-serif"],
-                        mono: ["JetBrains Mono", "monospace"],
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
                     borderRadius: {
-                        DEFAULT: "0px", 
-                        sm: "2px",
-                        lg: "4px",
-                        xl: "8px",
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
                     },
                 },
             },
         }
     </script>
-<style>
-        /* Custom scrollbar for technical feel */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #141414; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2E4A35; 
-            border-radius: 2px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #EBD5AB; 
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Range slider styling */
-        input[type=range] {
-            -webkit-appearance: none; 
-            background: transparent; 
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
+
+        .narvo-border {
+            border: 1px solid #628141;
+        }
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
+        }
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
+        }
+
+        .narvo-border-l {
+            border-left: 1px solid #628141;
+        }
+
+        .narvo-border-t {
+            border-top: 1px solid #628141;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            height: 12px;
-            width: 12px;
-            border-radius: 0px;
+            height: 16px;
+            width: 8px;
             background: #EBD5AB;
             cursor: pointer;
-            margin-top: -5px; 
-            border: 1px solid #000;
+            margin-top: -8px;
+            border: none;
         }
+
         input[type=range]::-webkit-slider-runnable-track {
             width: 100%;
-            height: 2px;
+            height: 1px;
             cursor: pointer;
-            background: #2E4A35;
-        }
-        
-        .swiss-grid-border {
-            border: 1px solid #2E4A35;
-        }
-        .swiss-grid-border-r {
-            border-right: 1px solid #2E4A35;
-        }
-        .swiss-grid-border-b {
-            border-bottom: 1px solid #2E4A35;
+            background: #628141;
         }
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-hidden">
-<!-- Top Navigation Bar -->
-<header class="h-16 flex items-center justify-between px-6 swiss-grid-border-b bg-background-dark z-20">
-<div class="flex items-center gap-4 text-primary">
-<div class="size-6">
-<span class="material-symbols-outlined text-[24px]">grid_view</span>
-</div>
-<h2 class="text-primary text-lg font-bold tracking-tight uppercase">Narvo // Curation Console V2.0</h2>
-</div>
-<div class="flex items-center gap-6">
-<div class="flex items-center gap-4 text-xs font-mono text-gray-500 uppercase tracking-widest hidden md:flex">
-<span class="flex items-center gap-2">
-<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                    System Online
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-note-pencil text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> CURATION_CONSOLE
+                </h1>
+            </div>
+
+            <div class="hidden md:flex items-center gap-6 text-[10px] mono-ui font-bold text-forest">
+                <span class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-green-500 animate-pulse"></span>
+                    SYSTEM_SYNC_ACTIVE
                 </span>
-<span>Latency: 12ms</span>
-</div>
-<div class="flex gap-2">
-<button class="flex items-center justify-center size-10 swiss-grid-border hover:bg-grid-border/20 transition-colors text-primary rounded-sm">
-<span class="material-symbols-outlined">notifications</span>
-</button>
-<button class="flex items-center justify-center size-10 swiss-grid-border hover:bg-grid-border/20 transition-colors text-primary rounded-sm">
-<span class="material-symbols-outlined">settings</span>
-</button>
-</div>
-<div class="size-10 rounded-sm bg-gray-800 swiss-grid-border overflow-hidden" data-alt="User avatar placeholder with abstract geometric pattern">
-<img alt="Profile" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-cX9dKTCIG5qxJRNYqTkUP0w79KJcgxuCpEhynCPtb_ZK9oAi54w97ex1imskBLuTJgivYDpuL0RVGTe6gHEt4L-iFq-rzqpMZRo3PbYwEw8c-ZBJrE3fFl_YbtxNYg8FWQgKSER0VibC6Ox7sXv_k4tFj9ujgoAGWylmCLPxkxlW8pMgWDgLrwpV2AJ132oTCg3tyZ1wYB9BQZKyQpZQLhfiyV2IXyT2NZXMCoVFWpl0LpSCLNu4Z7pVfDYQhkMmv17gXfP-RnU"/>
-</div>
-</div>
-</header>
-<!-- Main Layout -->
-<main class="flex flex-1 overflow-hidden">
-<!-- Left Sidebar: Navigation (Collapsed/Icon only for space) -->
-<aside class="w-16 swiss-grid-border-r flex flex-col items-center py-6 gap-6 bg-surface-dark/50 hidden md:flex">
-<button class="text-primary opacity-100 p-2 rounded-sm bg-grid-border/30">
-<span class="material-symbols-outlined">edit_note</span>
-</button>
-<button class="text-gray-500 hover:text-primary transition-colors p-2">
-<span class="material-symbols-outlined">library_books</span>
-</button>
-<button class="text-gray-500 hover:text-primary transition-colors p-2">
-<span class="material-symbols-outlined">analytics</span>
-</button>
-<div class="flex-1"></div>
-<button class="text-gray-500 hover:text-primary transition-colors p-2">
-<span class="material-symbols-outlined">logout</span>
-</button>
-</aside>
-<!-- Content Area: Split Pane -->
-<div class="flex-1 flex flex-col lg:flex-row overflow-hidden">
-<!-- Left Pane: Comparison View -->
-<div class="flex-1 flex flex-col swiss-grid-border-r min-w-[50%]">
-<!-- Breadcrumbs & Meta -->
-<div class="h-14 swiss-grid-border-b flex items-center px-6 gap-2 bg-background-dark">
-<span class="text-gray-500 text-sm font-medium">Dashboard</span>
-<span class="text-gray-700">/</span>
-<span class="text-gray-500 text-sm font-medium">Wire Feeds</span>
-<span class="text-gray-700">/</span>
-<span class="text-primary text-sm font-mono font-medium">Reuters-2023-10-24_ID:8829</span>
-</div>
-<!-- Main Content Header -->
-<div class="p-6 pb-2">
-<div class="flex justify-between items-start mb-4">
-<h1 class="text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight max-w-2xl">
-                            Source Analysis: Geopolitical Shift in Eastern Europe
-                        </h1>
-<span class="px-2 py-1 swiss-grid-border text-xs font-mono text-primary bg-primary/5 uppercase tracking-wider rounded-sm">
-                            High Priority
-                        </span>
-</div>
-</div>
-<!-- Comparison Columns -->
-<div class="flex-1 flex overflow-hidden">
-<!-- Source Column -->
-<div class="flex-1 swiss-grid-border-r flex flex-col min-w-[300px]">
-<div class="px-6 py-3 swiss-grid-border-b bg-surface-dark/30 flex justify-between items-center">
-<span class="text-xs font-mono text-gray-400 uppercase tracking-widest">Raw Source (Reuters)</span>
-<span class="material-symbols-outlined text-gray-600 text-sm">lock</span>
-</div>
-<div class="p-6 overflow-y-auto font-display text-gray-300 leading-relaxed text-sm md:text-base space-y-4">
-<p class="opacity-60 hover:opacity-100 transition-opacity">
-<span class="bg-red-900/30 text-red-200 px-1 rounded-sm">October 24, 2023 - BRUSSELS.</span> High-ranking officials from multiple EU member states convened today in an emergency session regarding the rapidly evolving energy sector regulations. The primary focus of the discussion centered on the proposed standardized pricing caps for renewable energy imports, a topic that has sparked significant debate across the bloc.
+                <span class="h-4 w-[1px] bg-forest/30"></span>
+                <span>LATENCY: 12ms</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="flex gap-2">
+                <button class="size-10 narvo-border bg-surface flex items-center justify-center text-primary">
+                    <i class="ph ph-bell text-xl"></i>
+                </button>
+                <div class="h-10 w-10 narvo-border bg-surface flex items-center justify-center">
+                    <i class="ph ph-user text-primary text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        <!-- Sidebar Rail -->
+        <aside class="w-16 narvo-border-r bg-background-dark flex flex-col items-center py-6 gap-8 hidden md:flex">
+            <button class="p-3 bg-primary text-background-dark"><i class="ph ph-stack text-xl"></i></button>
+            <button class="p-3 text-forest hover:text-white transition-all"><i
+                    class="ph ph-folders text-xl"></i></button>
+            <button class="p-3 text-forest hover:text-white transition-all"><i
+                    class="ph ph-chart-line text-xl"></i></button>
+            <div class="flex-1"></div>
+            <button class="p-3 text-forest hover:text-white transition-all"><i
+                    class="ph ph-sign-out text-xl"></i></button>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="flex-1 flex flex-col overflow-hidden bg-background-dark">
+            <!-- Breadcrumb / Meta Bar -->
+            <div class="h-14 narvo-border-b bg-black/20 flex items-center px-8 gap-4 shrink-0">
+                <span class="mono-ui text-[9px] text-forest font-bold">DASHBOARD</span>
+                <i class="ph ph-caret-right text-[8px] text-forest"></i>
+                <span class="mono-ui text-[9px] text-forest font-bold">WIRE_FEEDS</span>
+                <i class="ph ph-caret-right text-[8px] text-forest"></i>
+                <span class="mono-ui text-[9px] text-primary font-bold">REUTERS_V2 // ID:8829</span>
+            </div>
+
+            <div class="flex-1 flex overflow-hidden lg:flex-row flex-col">
+                <!-- Content Pane -->
+                <div class="flex-1 flex flex-col overflow-hidden narvo-border-r">
+                    <div class="p-8 pb-4 shrink-0">
+                        <div class="flex justify-between items-start mb-6">
+                            <h2
+                                class="font-display text-3xl font-bold text-white uppercase tracking-tight max-w-2xl leading-tight">
+                                Source_Analysis: Geopolitical_Shift_Lagos</h2>
+                            <span
+                                class="mono-ui text-[9px] border border-primary px-3 py-1 bg-primary/10 text-primary font-bold">HIGH_PRIORITY</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex divide-x divide-forest/30 overflow-hidden">
+                        <!-- Raw Feed -->
+                        <div class="flex-1 flex flex-col min-w-[300px]">
+                            <div class="px-8 py-3 narvo-border-b bg-forest/5 flex justify-between items-center">
+                                <span
+                                    class="mono-ui text-[9px] text-forest font-bold tracking-widest uppercase">RAW_SOURCE
+                                    // REUTERS</span>
+                                <i class="ph ph-lock-key text-forest text-xs"></i>
+                            </div>
+                            <div
+                                class="p-8 overflow-y-auto custom-scroll space-y-6 text-sm text-forest font-medium leading-relaxed">
+                                <p class="bg-primary/5 p-4 border-l-2 border-primary/20 text-white italic">"High-ranking
+                                    officials from multiple ECOWAS states convened today in Lagos regarding the rapidly
+                                    evolving energy sector regulations in the Gulf of Guinea..."</p>
+                                <p class="opacity-60 hover:opacity-100 transition-opacity">Primary focus centered on
+                                    proposed standardized pricing caps for renewable energy exports, a topic sparking
+                                    significant debate across the regional bloc.</p>
+                                <p class="opacity-60 hover:opacity-100 transition-opacity">"We are facing a critical
+                                    juncture," stated the Commissioner for Energy, highlighting unprecedented volatility
+                                    in global markets. Analysts suggest that without immediate intervention, projected
+                                    costs could rise by 15%.</p>
+                            </div>
+                        </div>
+
+                        <!-- Synthesized Output -->
+                        <div class="flex-1 flex flex-col min-w-[300px] bg-black/10">
+                            <div class="px-8 py-3 narvo-border-b bg-forest/5 flex justify-between items-center">
+                                <span
+                                    class="mono-ui text-[9px] text-primary font-bold tracking-widest uppercase">NARVO_SYNTHESIS
+                                    // V2.4</span>
+                                <i class="ph ph-sparkle text-primary text-xs"></i>
+                            </div>
+                            <div
+                                class="p-8 overflow-y-auto custom-scroll space-y-6 text-sm text-white font-medium leading-relaxed">
+                                <p class="bg-forest/10 p-4 border-l-2 border-forest text-white">ECOWAS officials met in
+                                    Lagos to address energy market volatility and export pricing caps. The "Regional
+                                    Transition Framework" proposes cutting dependency by 40% over five years.</p>
+                                <p>The Energy Commissioner warned of 15% cost increases for consumers without
+                                    intervention. Major economies like Nigeria and Ghana back the framework, though
+                                    smaller nations seek implementation delays.</p>
+                                <p>The consensus remains that rapid action is vital to stabilize household economies
+                                    across the region.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Legend Hub -->
+                    <div
+                        class="h-12 narvo-border-t bg-black/40 flex items-center px-8 gap-8 mono-ui text-[9px] text-forest font-bold shrink-0 uppercase">
+                        <span class="opacity-40 tracking-widest">Signal_Legend:</span>
+                        <div class="flex items-center gap-2">
+                            <div class="size-2 bg-red-500/50 narvo-border border-red-500"></div>
+                            <span>OMITTED</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="size-2 bg-forest/50 narvo-border"></div>
+                            <span>SYNTHESIZED</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="size-2 bg-primary/50 narvo-border border-primary"></div>
+                            <span>REPHRASED</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adjustment Panel -->
+                <aside class="w-full lg:w-96 flex flex-col bg-background-dark narvo-border-l">
+                    <div class="grid grid-cols-2 narvo-border-b divide-x divide-forest/30">
+                        <div class="p-6 space-y-1 bg-forest/5">
+                            <span class="mono-ui text-[8px] text-forest font-bold">SOURCE_AUTHORITY</span>
+                            <p class="mono-ui text-xl font-bold text-white">AA+ <span
+                                    class="text-[9px] text-primary font-normal">HIGH</span></p>
+                        </div>
+                        <div class="p-6 space-y-1">
+                            <span class="mono-ui text-[8px] text-forest font-bold">BIAS_RANK</span>
+                            <p class="mono-ui text-xl font-bold text-primary">12% <span
+                                    class="text-[9px] text-forest font-normal">LOW</span></p>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 p-8 overflow-y-auto custom-scroll space-y-12">
+                        <div class="space-y-6">
+                            <h3
+                                class="mono-ui text-[10px] text-white font-bold tracking-widest border-b border-forest/20 pb-2">
+                                PARA_ADJUST</h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-end">
+                                    <label class="mono-ui text-[9px] text-forest font-bold">TONE_STRICTURE</label>
+                                    <span class="mono-ui text-[9px] text-primary font-bold">82/100</span>
+                                </div>
+                                <input type="range" class="w-full" min="0" max="100" value="82">
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-end">
+                                    <label class="mono-ui text-[9px] text-forest font-bold">COMPLEXITY</label>
+                                    <span class="mono-ui text-[9px] text-primary font-bold">45/100</span>
+                                </div>
+                                <input type="range" class="w-full" min="0" max="100" value="45">
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3
+                                class="mono-ui text-[10px] text-white font-bold tracking-widest border-b border-forest/20 pb-2">
+                                MANUAL_OVERRIDE</h3>
+                            <textarea
+                                class="w-full h-32 bg-black/20 narvo-border mono-ui text-[10px] p-4 text-white focus:outline-none focus:border-primary resize-none"
+                                placeholder="ENTER_SYNTHESIS_OVERRIDE..."></textarea>
+                            <div class="flex gap-4">
+                                <button
+                                    class="flex-1 py-3 narvo-border mono-ui text-[9px] font-bold text-forest hover:text-white transition-all uppercase">REGENERATE</button>
+                                <button
+                                    class="flex-1 py-3 bg-primary mono-ui text-[9px] font-bold text-background-dark hover:bg-white transition-all uppercase">OVERRIDE</button>
+                            </div>
+                        </div>
+
+                        <div class="p-4 narvo-border bg-black/40 space-y-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <i class="ph ph-warning-diamond"></i>
+                                <span class="mono-ui text-[9px] font-bold">FACT_CHECK_SYNC</span>
+                            </div>
+                            <p class="text-[10px] text-forest font-bold leading-relaxed">
+                                "Green Transition Acceleration" mismatch in regional documents. Did you mean <span
+                                    class="text-primary underline cursor-pointer">"ECOWAS_GREEN_RECOVERY"</span>?
                             </p>
-<p class="opacity-60 hover:opacity-100 transition-opacity">
-                                "We are facing a critical juncture," stated the Commissioner for Energy, highlighting the unprecedented volatility in global markets. <span class="bg-yellow-900/30 text-yellow-200 px-1 rounded-sm">Analysts suggest that without immediate intervention,</span> the projected consumer price index for the coming winter could rise by an additional 15%, putting severe strain on household economies.
-                            </p>
-<p class="opacity-60 hover:opacity-100 transition-opacity">
-                                While Germany and France have tentatively agreed to the framework, smaller member states expressed concerns regarding the implementation timeline. The proposed "Green Transition Acceleration" act aims to reduce dependency on external fossil fuels by 40% within the next five years, a target many consider ambitious but necessary.
-                            </p>
-</div>
-</div>
-<!-- AI Output Column -->
-<div class="flex-1 flex flex-col min-w-[300px] bg-surface-dark/20">
-<div class="px-6 py-3 swiss-grid-border-b bg-surface-dark/30 flex justify-between items-center">
-<span class="text-xs font-mono text-primary uppercase tracking-widest">Narvo AI Synthesis</span>
-<span class="flex items-center gap-1 text-xs text-primary">
-<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
-                                V2.1
-                            </span>
-</div>
-<div class="p-6 overflow-y-auto font-display text-white leading-relaxed text-sm md:text-base space-y-4">
-<p>
-<span class="bg-green-900/30 text-green-200 px-1 border-b border-green-700">EU officials held emergency talks in Brussels today</span> to address volatile energy markets and renewable import price caps. The "Green Transition Acceleration" act proposes cutting external fossil fuel dependency by 40% over five years.
-                            </p>
-<p>
-                                The Energy Commissioner warned of a "critical juncture," with projections showing a potential 15% rise in winter consumer prices without intervention.
-                            </p>
-<p>
-                                Major economies like Germany and France back the framework, though smaller nations worry about the speed of implementation. The consensus remains that rapid action is vital to stabilize household economies across the bloc.
-                            </p>
-</div>
-</div>
-</div>
-<!-- Diff Legend -->
-<div class="h-10 swiss-grid-border-t bg-background-dark flex items-center px-6 gap-4 text-xs font-mono">
-<span class="text-gray-500">LEGEND:</span>
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 bg-red-900/50 border border-red-500 rounded-sm"></div>
-<span class="text-gray-400">Omitted</span>
-</div>
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 bg-green-900/50 border border-green-500 rounded-sm"></div>
-<span class="text-gray-400">Synthesized</span>
-</div>
-<div class="flex items-center gap-2">
-<div class="w-2 h-2 bg-yellow-900/50 border border-yellow-500 rounded-sm"></div>
-<span class="text-gray-400">Rephrased</span>
-</div>
-</div>
-</div>
-<!-- Right Pane: Adjustment Toolkit -->
-<div class="w-full lg:w-[400px] xl:w-[450px] flex flex-col bg-[#111111] z-10 relative">
-<!-- Metrics Grid -->
-<div class="grid grid-cols-2 swiss-grid-border-b">
-<div class="p-4 swiss-grid-border-r">
-<p class="text-gray-500 text-xs font-mono uppercase mb-1">Source Authority</p>
-<p class="text-white text-xl font-bold font-mono">AA+ <span class="text-xs text-green-500 font-normal align-top">High</span></p>
-</div>
-<div class="p-4">
-<p class="text-gray-500 text-xs font-mono uppercase mb-1">Bias Score</p>
-<p class="text-primary text-xl font-bold font-mono">12% <span class="text-xs text-gray-500 font-normal align-top">Low Variance</span></p>
-</div>
-</div>
-<!-- Tools Container -->
-<div class="flex-1 overflow-y-auto p-6 space-y-8">
-<!-- Sliders Section -->
-<div class="space-y-6">
-<h3 class="text-xs font-mono text-gray-500 uppercase tracking-widest border-b border-gray-800 pb-2">Parameter Adjustment</h3>
-<div class="space-y-2">
-<div class="flex justify-between text-sm">
-<label class="text-gray-300">Tone: Formal</label>
-<span class="text-primary font-mono">82/100</span>
-</div>
-<input class="w-full" max="100" min="0" type="range" value="82"/>
-</div>
-<div class="space-y-2">
-<div class="flex justify-between text-sm">
-<label class="text-gray-300">Complexity: Technical</label>
-<span class="text-primary font-mono">45/100</span>
-</div>
-<input class="w-full" max="100" min="0" type="range" value="45"/>
-</div>
-<div class="space-y-2">
-<div class="flex justify-between text-sm">
-<label class="text-gray-300">Length: Concise</label>
-<span class="text-primary font-mono">30/100</span>
-</div>
-<input class="w-full" max="100" min="0" type="range" value="30"/>
-</div>
-</div>
-<!-- Manual Override Section -->
-<div class="space-y-4">
-<h3 class="text-xs font-mono text-gray-500 uppercase tracking-widest border-b border-gray-800 pb-2">Manual Intervention</h3>
-<div class="relative">
-<textarea class="w-full h-32 bg-[#1A1A1A] swiss-grid-border text-sm text-gray-300 p-3 focus:outline-none focus:border-primary font-mono resize-none rounded-sm" placeholder="Enter manual summary override here..."></textarea>
-<div class="absolute bottom-2 right-2 text-[10px] text-gray-600 font-mono">0 / 500</div>
-</div>
-<div class="grid grid-cols-2 gap-3">
-<button class="flex items-center justify-center gap-2 h-10 swiss-grid-border bg-transparent hover:bg-white/5 text-gray-300 text-xs font-bold uppercase tracking-wider transition-all rounded-sm">
-<span class="material-symbols-outlined text-[16px]">restart_alt</span>
-                                Regenerate
-                             </button>
-<button class="flex items-center justify-center gap-2 h-10 bg-primary hover:bg-primary-dark text-black text-xs font-bold uppercase tracking-wider transition-all rounded-sm shadow-[0_0_15px_rgba(235,213,171,0.1)]">
-<span class="material-symbols-outlined text-[16px]">edit</span>
-                                Override
-                             </button>
-</div>
-</div>
-<!-- Fact Check Module -->
-<div class="p-4 swiss-grid-border bg-surface-dark/30 rounded-sm">
-<div class="flex items-center gap-2 mb-3">
-<span class="material-symbols-outlined text-yellow-500 text-[18px]">warning</span>
-<span class="text-sm font-bold text-gray-200">Flagged Entity</span>
-</div>
-<p class="text-xs text-gray-400 mb-3">
-                            The term <span class="text-white font-medium">"Green Transition Acceleration"</span> does not match standard EU nomenclature. Did you mean <span class="text-primary underline cursor-pointer">"Green Deal Industrial Plan"</span>?
-                        </p>
-<div class="flex gap-2">
-<button class="text-[10px] bg-white/10 hover:bg-white/20 px-2 py-1 rounded-sm text-white transition-colors">Ignore</button>
-<button class="text-[10px] bg-primary/20 hover:bg-primary/30 px-2 py-1 rounded-sm text-primary transition-colors">Apply Fix</button>
-</div>
-</div>
-</div>
-<!-- Footer Actions -->
-<div class="p-6 swiss-grid-border-t bg-[#111111]">
-<button class="w-full flex items-center justify-center gap-2 h-12 bg-primary hover:bg-primary-dark text-black text-sm font-bold uppercase tracking-wider transition-all rounded-sm">
-<span class="material-symbols-outlined">publish</span>
-                        Publish to Broadcast
-                    </button>
-<div class="mt-3 flex justify-between text-[10px] font-mono text-gray-600 uppercase">
-<span>Status: Draft</span>
-<span>Auto-saved: 10:42:15</span>
-</div>
-</div>
-</div>
-</div>
-</main>
-</body></html>
+                        </div>
+                    </div>
+
+                    <div class="p-8 narvo-border-t bg-black/40">
+                        <button
+                            class="w-full py-5 bg-primary mono-ui text-[11px] font-bold text-background-dark hover:bg-white transition-all flex items-center justify-center gap-4">
+                            <i class="ph ph-monitor-play text-xl"></i>
+                            <span>PUBLISH_TO_BROADCAST</span>
+                        </button>
+                    </div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <!-- Global Footer -->
+    <footer class="h-10 border-t border-forest/30 bg-background-dark flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-8 mono-ui text-[9px] text-forest font-bold">
+            <div class="flex items-center gap-2">
+                <div class="size-2 bg-primary"></div>
+                <span>NODE_SYNC_ACTIVE</span>
+            </div>
+            <span>PLATFORM_V_2.6.4</span>
+        </div>
+        <div class="mono-ui text-[9px] text-forest font-bold uppercase">
+            LAGOS_CURATION_STATION // SESSION_CUR_8829
+        </div>
+    </footer>
+</body>
+
+</html>
