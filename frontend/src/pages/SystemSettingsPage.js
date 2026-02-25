@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash, Translate } from '@phosphor-icons/react';
+import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash, Translate, SpeakerHigh, Stop } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAudio } from '../contexts/AudioContext';
 import { useHapticAlert } from '../components/HapticAlerts';
