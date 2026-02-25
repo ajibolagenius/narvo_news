@@ -64,6 +64,7 @@ const DashboardPage = () => {
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
   const [sortOrder, setSortOrder] = useState('latest');
+  const [userInterests, setUserInterests] = useState([]);
 
   // Prefetch audio for the first 3 articles in idle time
   useAudioPrefetch(news.slice(0, 3), 'nova', 3);
@@ -76,6 +77,8 @@ const DashboardPage = () => {
         const ms = settings.aggregator_mediastack !== false;
         const nd = settings.aggregator_newsdata !== false;
         setUserAggPrefs({ mediastack: ms, newsdata: nd });
+        // Load user interest preferences for feed prioritization
+        if (settings.interests?.length) setUserInterests(settings.interests);
 
         // Build aggregator_sources param from user prefs
         const enabledSources = [ms && 'mediastack', nd && 'newsdata'].filter(Boolean).join(',');
