@@ -175,10 +175,13 @@ export const AudioProvider = ({ children }) => {
       }
     });
     audio.addEventListener('error', (e) => {
-      console.error('Audio error:', e);
-      setError('Failed to play audio');
-      setIsPlaying(false);
-      setIsLoading(false);
+      // Only log errors when there's actually a source loaded
+      if (audio.src && audio.src !== window.location.href) {
+        console.error('[AudioContext] Audio error:', e.target?.error?.message || 'Unknown error');
+        setError('Failed to play audio');
+        setIsPlaying(false);
+        setIsLoading(false);
+      }
     });
 
     return () => {
