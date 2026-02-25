@@ -53,7 +53,7 @@ const SavedPage = () => {
   };
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 max-w-7xl mx-auto w-full pb-20 md:pb-10 min-h-0" data-testid="saved-page">
+    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 max-w-7xl mx-auto w-full pb-32 md:pb-10 min-h-0" data-testid="saved-page">
       {/* Dashboard Header */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-6 mb-8 md:mb-12 border-b border-forest/30 pb-6 md:pb-10">
         <div className="space-y-2 md:space-y-4">

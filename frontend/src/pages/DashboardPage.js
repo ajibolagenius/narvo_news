@@ -318,7 +318,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Feed Content */}
-        <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-20 md:pb-8" data-testid="news-feed">
+        <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8" data-testid="news-feed">
           <div className="max-w-4xl mx-auto flex flex-col gap-8 md:gap-12">
             {loading ? (
               <>

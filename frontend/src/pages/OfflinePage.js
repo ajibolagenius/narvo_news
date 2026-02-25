@@ -162,7 +162,7 @@ const OfflinePage = () => {
   const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 space-y-8 md:space-y-12 max-w-7xl mx-auto w-full pb-20 md:pb-10 min-h-0" data-testid="offline-page">
+    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 space-y-8 md:space-y-12 max-w-7xl mx-auto w-full pb-32 md:pb-10 min-h-0" data-testid="offline-page">
       {/* Storage Header */}
       <section className="space-y-6 md:space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">

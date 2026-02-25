@@ -49,7 +49,7 @@ const ListeningHistoryPage = () => {
 
   return (
     <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll bg-background-dark min-h-0" data-testid="listening-history-page">
-      <div className="p-4 md:p-8 lg:p-10 pb-20 md:pb-10">
+      <div className="p-4 md:p-8 lg:p-10 pb-32 md:pb-10">
         {/* Header */}
         <div className="flex items-end justify-between mb-6 md:mb-8 narvo-border-b pb-4">
           <div>
