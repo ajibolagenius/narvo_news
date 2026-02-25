@@ -282,45 +282,48 @@ const SystemGearSixPage = () => {
                   <Translate className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">NEWS_TRANSLATION</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">SELECT_YOUR_PREFERRED_BROADCAST_LANGUAGE</p>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">AUDIO_NARRATION_LANGUAGE</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">NEWS_WILL_BE_TRANSLATED_AND_READ_ALOUD_IN_THIS_LANGUAGE</p>
                 </div>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 pl-0 md:pl-[72px]">
-                {BROADCAST_LANGUAGES.map(lang => (
-                  <button
-                    key={lang.code}
-                    onClick={() => updateSetting('broadcastLanguage', lang.code)}
-                    className={`p-3 md:p-4 narvo-border text-left transition-all ${
-                      settings.broadcastLanguage === lang.code 
-                        ? 'bg-primary text-background-dark border-primary' 
-                        : 'hover:bg-surface/10 hover:border-forest'
-                    }`}
-                    data-testid={`lang-${lang.code}`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="mono-ui text-[10px] md:text-[11px] font-bold">{lang.name}</span>
-                      {settings.broadcastLanguage === lang.code && (
-                        <span className="text-[8px] font-bold px-1.5 py-0.5 bg-background-dark text-primary">ACTIVE</span>
+                {BROADCAST_LANGUAGES.map(lang => {
+                  const isActive = settings.broadcastLanguage === lang.code;
+                  return (
+                    <button
+                      key={lang.code}
+                      onClick={() => updateSetting('broadcastLanguage', lang.code)}
+                      className={`relative p-4 md:p-5 narvo-border text-left transition-all ${
+                        isActive
+                          ? 'bg-primary text-background-dark border-primary' 
+                          : 'hover:bg-surface/10 hover:border-forest'
+                      }`}
+                      data-testid={`broadcast-lang-${lang.code}`}
+                    >
+                      {isActive && (
+                        <span className="absolute top-2 right-2 text-[7px] font-bold px-1.5 py-0.5 bg-background-dark text-primary mono-ui">
+                          ON_AIR
+                        </span>
                       )}
-                    </div>
-                    <span className={`mono-ui text-[9px] md:text-[10px] ${
-                      settings.broadcastLanguage === lang.code ? 'text-background-dark/70' : 'text-forest'
-                    }`}>
-                      {lang.native}
-                    </span>
-                    <div className={`mt-1 mono-ui text-[7px] md:text-[8px] ${
-                      settings.broadcastLanguage === lang.code ? 'text-background-dark/50' : 'text-forest/60'
-                    }`}>
-                      {lang.description}
-                    </div>
-                  </button>
-                ))}
+                      <span className="block mono-ui text-[11px] md:text-[12px] font-bold mb-1">{lang.name}</span>
+                      <span className={`block mono-ui text-[9px] md:text-[10px] ${
+                        isActive ? 'text-background-dark/70' : 'text-forest'
+                      }`}>
+                        {lang.native}
+                      </span>
+                      <span className={`block mt-2 mono-ui text-[7px] md:text-[8px] tracking-wider ${
+                        isActive ? 'text-background-dark/50' : 'text-forest/60'
+                      }`}>
+                        {lang.description}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
               
-              <p className="pl-0 md:pl-[72px] mono-ui text-[8px] md:text-[9px] text-forest/70">
-                NEWS_WILL_BE_TRANSLATED_AND_NARRATED_IN_SELECTED_LANGUAGE
+              <p className="pl-0 md:pl-[72px] mono-ui text-[8px] md:text-[9px] text-forest/50">
+                THIS_CONTROLS_AUDIO_NARRATION — INTERFACE_TEXT_LANGUAGE_IS_SET_IN_SETTINGS
               </p>
             </div>
           </div>
