@@ -35,17 +35,31 @@ const TOUR_STEPS = [
 ];
 
 const STORAGE_KEY = 'narvo_tour_completed';
+export const TOUR_EVENT = 'narvo-open-tour';
+
+/** Dispatch this from anywhere to open the tour. */
+export function openTourGuide() {
+  window.dispatchEvent(new Event(TOUR_EVENT));
+}
 
 export const TourGuideModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
 
+  // First-visit auto-show
   useEffect(() => {
     const completed = localStorage.getItem(STORAGE_KEY);
     if (!completed) {
       const timer = setTimeout(() => setIsOpen(true), 2000);
       return () => clearTimeout(timer);
     }
+  }, []);
+
+  // Listen for external open events (login, register, settings button)
+  useEffect(() => {
+    const handler = () => { setStep(0); setIsOpen(true); };
+    window.addEventListener(TOUR_EVENT, handler);
+    return () => window.removeEventListener(TOUR_EVENT, handler);
   }, []);
 
   const close = useCallback(() => {
