@@ -30,14 +30,15 @@ const VoiceStudioPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const userId = user?.id || 'guest';
         const [voicesRes, settingsRes] = await Promise.all([
           fetch(`${API_URL}/api/voices`),
-          user?.id ? fetch(`${API_URL}/api/settings/${user.id}`) : Promise.resolve(null),
+          fetch(`${API_URL}/api/settings/${userId}`),
         ]);
         const voicesData = await voicesRes.json();
         setVoices(voicesData);
 
-        if (settingsRes && settingsRes.ok) {
+        if (settingsRes.ok) {
           const s = await settingsRes.json();
           const saved = voicesData.find(v => v.id === s.voice_model);
           setSelectedVoice(saved || voicesData[0] || null);
