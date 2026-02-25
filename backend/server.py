@@ -49,13 +49,20 @@ app.include_router(translation_router)
 @app.on_event("startup")
 async def startup_feed_health():
     from services.news_service import run_health_check
+    from services.aggregator_service import refresh_cache
 
     async def periodic_health_check():
         while True:
             await run_health_check()
             await asyncio.sleep(300)  # Every 5 minutes
 
+    async def periodic_aggregator_refresh():
+        while True:
+            await refresh_cache()
+            await asyncio.sleep(600)  # Every 10 minutes
+
     asyncio.create_task(periodic_health_check())
+    asyncio.create_task(periodic_aggregator_refresh())
 
 # Initialize clients
 supabase: Client = create_client(
