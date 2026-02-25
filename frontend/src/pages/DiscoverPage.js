@@ -607,11 +607,21 @@ const DiscoverPage = () => {
                   <span className="mono-ui text-sm text-primary font-bold">{getLocalSources()}</span>
                 </div>
                 <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
+                  <span className="mono-ui text-[10px] text-content">CONTINENTAL_AF</span>
+                  <span className="mono-ui text-sm text-primary font-bold">{getContinentalSources()}</span>
+                </div>
+                <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
                   <span className="mono-ui text-[10px] text-content">INTERNATIONAL</span>
                   <span className="mono-ui text-sm text-primary font-bold">{getInternationalSources()}</span>
                 </div>
+                {aggregatorWire && (
+                  <div className="flex justify-between items-center narvo-border p-3 bg-primary/5 border-primary/20">
+                    <span className="mono-ui text-[10px] text-primary">AGGREGATOR_APIs</span>
+                    <span className="mono-ui text-sm text-primary font-bold">{aggregatorWire.total}</span>
+                  </div>
+                )}
                 <div className="mono-ui text-[8px] text-forest/60 mt-2">
-                  {sources?.sources?.slice(0, 5).map(s => s.name).join(' • ') || 'Loading...'}
+                  {sources?.sources?.slice(0, 5).map(s => s.name).join(' · ') || 'Loading...'}
                 </div>
               </div>
             </div>
