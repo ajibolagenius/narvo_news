@@ -39,6 +39,53 @@ const SystemGearSixPage = () => {
   const [loadingGearSix, setLoadingGearSix] = useState(true);
   const [notificationStatus, setNotificationStatus] = useState('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [previewPlaying, setPreviewPlaying] = useState(null); // lang code currently playing
+  const [previewLoading, setPreviewLoading] = useState(null); // lang code currently loading
+  const previewAudioRef = useRef(null);
+
+  const playVoicePreview = async (e, lang) => {
+    e.stopPropagation();
+    // Stop if already playing this language
+    if (previewPlaying === lang.code) {
+      if (previewAudioRef.current) {
+        previewAudioRef.current.pause();
+        previewAudioRef.current = null;
+      }
+      setPreviewPlaying(null);
+      return;
+    }
+    // Stop any currently playing preview
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current = null;
+    }
+    setPreviewLoading(lang.code);
+    setPreviewPlaying(null);
+    try {
+      const res = await fetch(`${API_URL}/api/tts/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: lang.sample, voice_id: 'onyx', language: lang.code }),
+      });
+      if (!res.ok) throw new Error('TTS failed');
+      const data = await res.json();
+      const audio = new Audio(data.audio_url);
+      previewAudioRef.current = audio;
+      audio.onended = () => { setPreviewPlaying(null); previewAudioRef.current = null; };
+      audio.onerror = () => { setPreviewPlaying(null); previewAudioRef.current = null; };
+      await audio.play();
+      setPreviewPlaying(lang.code);
+    } catch (err) {
+      showAlert({ type: 'warning', title: 'PREVIEW_FAILED', message: 'Could not generate voice preview.', code: 'TTS_ERR', duration: 3000 });
+    } finally {
+      setPreviewLoading(null);
+    }
+  };
+
+  // Cleanup preview audio on unmount
+  useEffect(() => {
+    return () => { if (previewAudioRef.current) previewAudioRef.current.pause(); };
+  }, []);
 
   // Check notification status on mount
   useEffect(() => {
