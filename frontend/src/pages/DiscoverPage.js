@@ -15,6 +15,7 @@ const DiscoverPage = () => {
   const [featuredNews, setFeaturedNews] = useState(null);
   const [loading, setLoading] = useState(true);
   const [podcastSort, setPodcastSort] = useState('latest');
+  const [mobileTab, setMobileTab] = useState('podcasts'); // 'podcasts' | 'radio'
   const [podcasts, setPodcasts] = useState([]);
   const [podcastLoading, setPodcastLoading] = useState(true);
   const [trendingTopics, setTrendingTopics] = useState([]);
