@@ -10,36 +10,41 @@ SUPPORTED_LANGUAGES = {
     "en": {
         "name": "English",
         "native_name": "English",
-        "voice_id": "nova",
-        "voice_name": "Nova",
+        "voice_id": "onyx",
+        "voice_name": "Emeka",
+        "gender": "male",
         "description": "International English broadcast"
     },
     "pcm": {
         "name": "Naijá",
         "native_name": "Naijá Tok",
-        "voice_id": "onyx",
-        "voice_name": "Onyx",
+        "voice_id": "echo",
+        "voice_name": "Tunde",
+        "gender": "male",
         "description": "Naijá Pidgin - di language wey everybody sabi for Naija"
     },
     "yo": {
         "name": "Yorùbá",
         "native_name": "Èdè Yorùbá",
-        "voice_id": "echo",
-        "voice_name": "Olúwásẹ̀un",
+        "voice_id": "nova",
+        "voice_name": "Adùnní",
+        "gender": "female",
         "description": "Èdè Yorùbá - àwọn ará Gúúsù Ìwọ̀ Oòrùn Nàìjíríà"
     },
     "ha": {
         "name": "Hausa",
         "native_name": "Harshen Hausa",
-        "voice_id": "alloy",
-        "voice_name": "Abubakar",
+        "voice_id": "shimmer",
+        "voice_name": "Halima",
+        "gender": "female",
         "description": "Harshen Hausa - yaren Arewacin Najeriya"
     },
     "ig": {
         "name": "Igbo",
         "native_name": "Asụsụ Igbo",
-        "voice_id": "shimmer",
-        "voice_name": "Chinyere",
+        "voice_id": "alloy",
+        "voice_name": "Adaeze",
+        "gender": "female",
         "description": "Asụsụ Igbo - asụsụ ndị Ala Igbo"
     }
 }
