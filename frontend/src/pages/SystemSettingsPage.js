@@ -27,6 +27,60 @@ const DEFAULT_SETTINGS = {
   bandwidthPriority: 'STREAMING',
   aggregatorMediastack: true,
   aggregatorNewsdata: true,
+  soundTheme: 'narvo_classic',
+};
+
+const SoundThemesSection = ({ settings, updateSetting }) => {
+  const [themes, setThemes] = useState([]);
+  useEffect(() => {
+    fetch(`${API_URL}/api/sound-themes`)
+      .then(r => r.json())
+      .then(setThemes)
+      .catch(() => {});
+  }, []);
+
+  if (!themes.length) return null;
+
+  return (
+    <section className="space-y-6 md:space-y-8" data-testid="sound-themes-section">
+      <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
+          BROADCAST_THEMES
+        </h2>
+        <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+          AUDIO_BRANDING_ENGINE
+        </span>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+        {themes.map(theme => {
+          const isActive = (settings.soundTheme || 'narvo_classic') === theme.id;
+          return (
+            <button
+              key={theme.id}
+              onClick={() => updateSetting('soundTheme', theme.id)}
+              className={`narvo-border p-4 md:p-5 text-left transition-all relative ${
+                isActive ? 'bg-primary text-background-dark border-primary' : 'hover:bg-surface/10 hover:border-forest'
+              }`}
+              data-testid={`theme-${theme.id}`}
+            >
+              {isActive && (
+                <span className="absolute top-2 right-2 text-[7px] font-bold px-1.5 py-0.5 bg-background-dark text-primary mono-ui">
+                  ACTIVE
+                </span>
+              )}
+              <div className="flex items-center gap-2 mb-2">
+                <MusicNotes className="w-4 h-4" weight="bold" />
+                <span className="mono-ui text-[11px] md:text-[12px] font-bold">{theme.name.toUpperCase()}</span>
+              </div>
+              <p className={`mono-ui text-[8px] md:text-[9px] leading-relaxed ${isActive ? 'text-background-dark/70' : 'text-forest'}`}>
+                {theme.description}
+              </p>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
 };
 
 const SystemGearSixPage = () => {
