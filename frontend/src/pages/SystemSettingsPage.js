@@ -375,6 +375,27 @@ const SystemGearSixPage = () => {
                       }`}>
                         {lang.description}
                       </span>
+                      {/* Voice Preview Button */}
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => playVoicePreview(e, lang)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') playVoicePreview(e, lang); }}
+                        className={`absolute bottom-2 right-2 w-7 h-7 flex items-center justify-center narvo-border transition-all cursor-pointer ${
+                          previewPlaying === lang.code
+                            ? (isActive ? 'bg-background-dark text-primary' : 'bg-primary text-background-dark')
+                            : (isActive ? 'bg-background-dark/20 text-background-dark hover:bg-background-dark hover:text-primary' : 'bg-surface/20 text-forest hover:bg-primary hover:text-background-dark')
+                        }`}
+                        data-testid={`voice-preview-${lang.code}`}
+                      >
+                        {previewLoading === lang.code ? (
+                          <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
+                        ) : previewPlaying === lang.code ? (
+                          <Stop weight="fill" className="w-3.5 h-3.5" />
+                        ) : (
+                          <SpeakerHigh weight="bold" className="w-3.5 h-3.5" />
+                        )}
+                      </span>
                     </button>
                   );
                 })}
