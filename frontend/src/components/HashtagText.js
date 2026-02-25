@@ -55,7 +55,7 @@ export const TagPill = ({ tag, className = '' }) => {
         e.stopPropagation();
         navigate(`/search?q=${encodeURIComponent(tag)}`);
       }}
-      className={`narvo-border px-1.5 py-1 mono-ui text-[8px] text-content hover:bg-primary hover:text-background-dark hover:border-primary cursor-pointer transition-colors ${className}`}
+      className={`narvo-border px-1.5 py-1 mono-ui text-[10px] text-content hover:bg-primary hover:text-background-dark hover:border-primary cursor-pointer transition-colors ${className}`}
       data-testid={`hashtag-${tag.toLowerCase()}`}
     >
       #{tag.toUpperCase()}

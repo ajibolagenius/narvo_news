@@ -11,7 +11,7 @@ const AudioPlayer = () => {
     <div className="fixed bottom-0 left-0 right-0 border-t border-forest bg-background-dark z-50" data-testid="audio-player">
       <div className="flex items-center gap-4 px-6 py-3">
         <div className="flex-1 min-w-0">
-          <span className="mono-ui text-[10px] text-forest block truncate">{currentTrack.source || 'NARVO'}</span>
+          <span className="mono-ui text-[12px] text-forest block truncate">{currentTrack.source || 'NARVO'}</span>
           <span className="font-display text-sm text-content block truncate">{currentTrack.title}</span>
         </div>
         <div className="flex items-center gap-3">
@@ -40,9 +40,9 @@ const AudioPlayer = () => {
           </button>
         </div>
         <div className="hidden sm:flex items-center gap-2 w-48">
-          <span className="mono-ui text-[10px] text-forest">{formatTime(progress)}</span>
+          <span className="mono-ui text-[12px] text-forest">{formatTime(progress)}</span>
           <input type="range" min={0} max={duration || 100} value={progress} onChange={(e) => seek(Number(e.target.value))} className="flex-1" />
-          <span className="mono-ui text-[10px] text-forest">{formatTime(duration)}</span>
+          <span className="mono-ui text-[12px] text-forest">{formatTime(duration)}</span>
         </div>
       </div>
     </div>

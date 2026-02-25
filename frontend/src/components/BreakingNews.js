@@ -117,7 +117,7 @@ export const BreakingNewsBanner = () => {
     >
       <div className="flex items-center gap-2 shrink-0">
         <Lightning className="w-3.5 h-3.5 text-red-400" />
-        <span className="mono-ui text-[9px] md:text-[10px] text-red-400 font-bold tracking-widest">
+        <span className="mono-ui text-[11px] md:text-[12px] text-red-400 font-bold tracking-widest">
           {t('notifications.breaking_news')}
         </span>
       </div>
@@ -125,14 +125,14 @@ export const BreakingNewsBanner = () => {
         onClick={() => navigate(`/news/${story.id}`)}
         className="flex-1 min-w-0 text-left group"
       >
-        <span className="mono-ui text-[10px] md:text-[11px] text-white font-bold truncate block group-hover:text-red-300 transition-colors">
+        <span className="mono-ui text-[12px] md:text-[13px] text-white font-bold truncate block group-hover:text-red-300 transition-colors">
           {story.title}
         </span>
       </button>
       <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={() => navigate(`/news/${story.id}`)}
-          className="mono-ui text-[8px] text-red-400 font-bold hover:text-white transition-colors hidden sm:block"
+          className="mono-ui text-[10px] text-red-400 font-bold hover:text-white transition-colors hidden sm:block"
           data-testid="breaking-read-now"
         >
           {t('notifications.read_now')}
@@ -147,7 +147,7 @@ export const BreakingNewsBanner = () => {
         </button>
       </div>
       {breakingStories.length > 1 && (
-        <span className="mono-ui text-[7px] text-red-500 shrink-0">
+        <span className="mono-ui text-[9px] text-red-500 shrink-0">
           {currentIndex + 1}/{breakingStories.length}
         </span>
       )}
@@ -177,7 +177,7 @@ export const NotificationToggle = () => {
       data-testid="notification-toggle"
     >
       {notificationsEnabled ? <BellRinging className="w-4 h-4" /> : <Bell className="w-4 h-4" />}
-      <span className="mono-ui text-[10px] font-bold">
+      <span className="mono-ui text-[12px] font-bold">
         {notificationsEnabled ? t('notifications.notifications_enabled') : t('notifications.enable_notifications')}
       </span>
     </button>

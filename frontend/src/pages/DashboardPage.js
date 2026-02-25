@@ -231,7 +231,7 @@ const DashboardPage = () => {
         {/* Sub-Header */}
         <div className="h-10 md:h-14 flex items-center justify-between px-2 md:px-8 bg-surface/30 narvo-border-b shrink-0">
           <div className="flex items-center gap-1 md:gap-3 min-w-0">
-            <span className="mono-ui text-[7px] md:text-xs text-primary font-bold shrink-0 hidden xs:inline">LGS_01</span>
+            <span className="mono-ui text-[9px] md:text-xs text-primary font-bold shrink-0 hidden xs:inline">LGS_01</span>
             <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary animate-pulse shrink-0" />
           </div>
           <div className="flex items-center gap-1 md:gap-2 shrink-0 ml-auto">
@@ -241,7 +241,7 @@ const DashboardPage = () => {
                 <button
                   key={f}
                   onClick={() => setSourceFilter(f)}
-                  className={`px-1.5 md:px-2.5 py-0.5 md:py-1 mono-ui text-[7px] md:text-[9px] font-bold transition-colors ${sourceFilter === f ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+                  className={`px-1.5 md:px-2.5 py-0.5 md:py-1 mono-ui text-[9px] md:text-[11px] font-bold transition-colors ${sourceFilter === f ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
                   data-testid={`filter-${f}`}
                 >
                   {f === 'all' ? 'ALL' : f === 'rss' ? 'RSS' : 'AGG'}
@@ -251,7 +251,7 @@ const DashboardPage = () => {
             {/* Sort toggle */}
             <button
               onClick={() => setSortOrder(s => s === 'latest' ? 'oldest' : 'latest')}
-              className="mono-ui text-[8px] md:text-[9px] text-primary border border-primary px-1.5 md:px-2.5 py-0.5 md:py-1 hover:bg-primary hover:text-background-dark transition-colors font-bold"
+              className="mono-ui text-[10px] md:text-[11px] text-primary border border-primary px-1.5 md:px-2.5 py-0.5 md:py-1 hover:bg-primary hover:text-background-dark transition-colors font-bold"
               data-testid="sort-btn"
             >
               {sortOrder === 'latest' ? 'NEW' : 'OLD'}
@@ -268,24 +268,24 @@ const DashboardPage = () => {
           >
             <div className="flex items-center gap-2">
               <Broadcast weight="fill" className="w-3 h-3 text-primary" />
-              <span className="mono-ui text-[8px] text-forest font-bold tracking-widest">TELEMETRY</span>
-              <span className="mono-ui text-[7px] text-primary font-bold">{getTotalSources()} FEEDS</span>
+              <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">TELEMETRY</span>
+              <span className="mono-ui text-[9px] text-primary font-bold">{getTotalSources()} FEEDS</span>
             </div>
-            <span className={`mono-ui text-[8px] text-forest transition-transform ${showTelemetry ? 'rotate-90' : ''}`}>&#9654;</span>
+            <span className={`mono-ui text-[10px] text-forest transition-transform ${showTelemetry ? 'rotate-90' : ''}`}>&#9654;</span>
           </button>
           {showTelemetry && (
             <div className="bg-surface/10 narvo-border-b px-4 py-3 space-y-3 max-h-60 overflow-y-auto custom-scroll">
               {/* Trending */}
               <div className="flex flex-wrap gap-1">
                 {['#ECONOMY', '#SOLAR_GRID', '#AI_SYNTH', '#ENERGY', '#TECH'].map(tag => (
-                  <span key={tag} className="narvo-border px-1.5 py-0.5 mono-ui text-[7px] text-content">{tag}</span>
+                  <span key={tag} className="narvo-border px-1.5 py-0.5 mono-ui text-[9px] text-content">{tag}</span>
                 ))}
               </div>
               {/* Source Matrix Mini */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="mono-ui text-[8px] text-forest font-bold">SOURCE_MATRIX</span>
-                  <span className="mono-ui text-[7px] text-primary font-bold">{getTotalSources()} FEEDS</span>
+                  <span className="mono-ui text-[10px] text-forest font-bold">SOURCE_MATRIX</span>
+                  <span className="mono-ui text-[9px] text-primary font-bold">{getTotalSources()} FEEDS</span>
                 </div>
                 {(() => {
                   const hs = getHealthSummary();
@@ -299,7 +299,7 @@ const DashboardPage = () => {
                     </div>
                   );
                 })()}
-                <div className="flex items-center gap-3 mono-ui text-[7px]">
+                <div className="flex items-center gap-3 mono-ui text-[9px]">
                   <span className="text-forest">LOCAL: {getLocalSources()}</span>
                   <span className="text-forest">CONTINENTAL: {getContinentalSources()}</span>
                   <span className="text-forest">INTL: {getInternationalSources()}</span>
@@ -307,7 +307,7 @@ const DashboardPage = () => {
               </div>
               {/* Node Health Mini */}
               {metrics && (
-                <div className="flex items-center gap-3 mono-ui text-[7px] text-forest">
+                <div className="flex items-center gap-3 mono-ui text-[9px] text-forest">
                   <span>ARTICLES: <span className="text-primary">{metrics.totalArticles || 0}</span></span>
                   <span>RSS: <span className="text-primary">{metrics.rssFeeds || 0}</span></span>
                   <span>PODCASTS: <span className="text-primary">{metrics.totalPodcasts || 0}</span></span>
@@ -342,7 +342,7 @@ const DashboardPage = () => {
                     initial="hidden"
                     animate="show"
                   >
-                    <span className="mono-ui text-[10px] md:text-xs text-primary block mb-4 font-bold tracking-[0.2em]">{'//'} {t('dashboard.featured_transmission')}</span>
+                    <span className="mono-ui text-[12px] md:text-xs text-primary block mb-4 font-bold tracking-[0.2em]">{'//'} {t('dashboard.featured_transmission')}</span>
                     <article
                       className="narvo-border bg-surface/50 group relative overflow-hidden flex flex-col md:flex-row min-h-[280px] md:min-h-[320px] cursor-pointer"
                       onClick={() => navigate(`/news/${featured.id}`)}
@@ -357,13 +357,13 @@ const DashboardPage = () => {
                         />
                         <div className="absolute inset-0 bg-gradient-to-r from-background-dark/80 to-transparent" />
                         <div className="absolute top-4 left-4 flex gap-2">
-                          <span className="bg-primary text-background-dark font-mono text-[9px] md:text-[10px] font-bold px-2 py-0.5 uppercase">Feature</span>
+                          <span className="bg-primary text-background-dark font-mono text-[11px] md:text-[12px] font-bold px-2 py-0.5 uppercase">Feature</span>
                           <TruthTag storyId={featured.id} compact />
                         </div>
                       </div>
                       <div className="flex-1 p-4 md:p-8 flex flex-col justify-between overflow-hidden">
                         <div>
-                          <span className="mono-ui text-[10px] md:text-xs text-forest block mb-2 font-bold tracking-widest">NARRATIVE_NODE {'//'} {featured.category?.toUpperCase()}</span>
+                          <span className="mono-ui text-[12px] md:text-xs text-forest block mb-2 font-bold tracking-widest">NARRATIVE_NODE {'//'} {featured.category?.toUpperCase()}</span>
                           <h2 className="font-display text-xl md:text-3xl font-bold uppercase tracking-tight text-content mb-2 md:mb-4 leading-none group-hover:text-primary transition-colors line-clamp-3">
                             {featured.title}
                           </h2>
@@ -420,8 +420,8 @@ const DashboardPage = () => {
                   animate="show"
                 >
                   <div className="flex items-center justify-between border-b border-forest/30 pb-2">
-                    <span className="mono-ui text-[10px] md:text-xs text-forest font-bold tracking-[0.2em]">{'//'} {t('dashboard.synthesized_streams')}</span>
-                    <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase">Nodes: {String(stream.length).padStart(2, '0')}</span>
+                    <span className="mono-ui text-[12px] md:text-xs text-forest font-bold tracking-[0.2em]">{'//'} {t('dashboard.synthesized_streams')}</span>
+                    <span className="mono-ui text-[11px] md:text-[12px] text-forest/50 uppercase">Nodes: {String(stream.length).padStart(2, '0')}</span>
                   </div>
 
                   <motion.div variants={cardVariants} className="narvo-border bg-surface/20 divide-y divide-forest/10">
@@ -445,19 +445,19 @@ const DashboardPage = () => {
                         <div className="flex-1 flex flex-col gap-2 md:gap-3 min-w-0">
                           <div className="flex flex-wrap justify-between items-start gap-2">
                             <div className="flex items-center gap-2 md:gap-3">
-                              <span className="bg-forest/20 text-primary mono-ui text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 border border-forest/30">SOURCE:{item.source?.toUpperCase().replace(/\s/g, '_').slice(0, 15)}</span>
+                              <span className="bg-forest/20 text-primary mono-ui text-[11px] md:text-[12px] px-1.5 md:px-2 py-0.5 border border-forest/30">SOURCE:{item.source?.toUpperCase().replace(/\s/g, '_').slice(0, 15)}</span>
                               {item.aggregator && (
-                                <span className="bg-primary/10 text-primary mono-ui text-[8px] px-1.5 py-0.5 border border-primary/30" data-testid={`aggregator-badge-${item.id}`}>
+                                <span className="bg-primary/10 text-primary mono-ui text-[10px] px-1.5 py-0.5 border border-primary/30" data-testid={`aggregator-badge-${item.id}`}>
                                   {item.aggregator === 'mediastack' ? 'MEDIASTACK' : 'NEWSDATA'}
                                 </span>
                               )}
-                              <span className="mono-ui text-[9px] md:text-[10px] text-forest/50">{timeAgo(idx)}</span>
+                              <span className="mono-ui text-[11px] md:text-[12px] text-forest/50">{timeAgo(idx)}</span>
                               <TruthTag storyId={item.id} compact />
                             </div>
                             <div className="flex gap-1.5 md:gap-2">
-                              {!item.tags?.length && <TagPill tag={item.category || 'GENERAL'} className="text-[8px] md:text-[9px] border-forest/20 px-1 md:px-1.5" />}
+                              {!item.tags?.length && <TagPill tag={item.category || 'GENERAL'} className="text-[10px] md:text-[11px] border-forest/20 px-1 md:px-1.5" />}
                               {item.tags?.slice(0, 2).map((tag, i) => (
-                                <TagPill key={i} tag={tag} className="text-[8px] md:text-[9px] border-forest/20 px-1 md:px-1.5" />
+                                <TagPill key={i} tag={tag} className="text-[10px] md:text-[11px] border-forest/20 px-1 md:px-1.5" />
                               ))}
                             </div>
                           </div>
@@ -470,7 +470,7 @@ const DashboardPage = () => {
                           <div className="flex items-center gap-4 md:gap-6 pt-1">
                             <button
                               onClick={(e) => { e.stopPropagation(); playTrack(item); }}
-                              className="mono-ui text-[10px] md:text-xs text-primary flex items-center gap-2 hover:text-content transition-colors"
+                              className="mono-ui text-[12px] md:text-xs text-primary flex items-center gap-2 hover:text-content transition-colors"
                               data-testid={`play-btn-${item.id}`}
                             >
                               <Pulse weight="bold" className="w-4 h-4 text-forest" />
@@ -518,7 +518,7 @@ const DashboardPage = () => {
                   <button
                     onClick={loadMore}
                     disabled={loadingMore}
-                    className="w-full h-11 md:h-12 narvo-border bg-surface/10 mono-ui text-[10px] md:text-xs text-forest hover:bg-surface hover:text-primary transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                    className="w-full h-11 md:h-12 narvo-border bg-surface/10 mono-ui text-[12px] md:text-xs text-forest hover:bg-surface hover:text-primary transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                     data-testid="load-more-btn"
                   >
                     {loadingMore ? (
@@ -547,25 +547,25 @@ const DashboardPage = () => {
           {/* Weather */}
           <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-2 opacity-20"><CloudSun weight="fill" className="w-8 h-8" /></div>
-            <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">REGIONAL_ENV</span>
+            <span className="mono-ui text-[12px] text-forest block mb-3 font-bold tracking-widest">REGIONAL_ENV</span>
             <div className="flex items-end justify-between">
               <div>
                 <span className="font-display text-3xl font-bold text-content tracking-tighter">28°C</span>
-                <span className="mono-ui text-[10px] text-forest block mt-1">LAGOS, NIGERIA</span>
+                <span className="mono-ui text-[12px] text-forest block mt-1">LAGOS, NIGERIA</span>
               </div>
               <div className="text-right">
-                <span className="mono-ui text-[10px] text-primary font-bold">HUM: 62%</span>
-                <span className="mono-ui text-[10px] text-forest block">WIND: 12km/h</span>
+                <span className="mono-ui text-[12px] text-primary font-bold">HUM: 62%</span>
+                <span className="mono-ui text-[12px] text-forest block">WIND: 12km/h</span>
               </div>
             </div>
           </div>
 
           {/* Trending Tags */}
           <div>
-            <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">{t('dashboard.trending')}</span>
+            <span className="mono-ui text-[12px] text-forest block mb-3 font-bold tracking-widest">{t('dashboard.trending')}</span>
             <div className="flex flex-wrap gap-1.5">
               {['#ECONOMY', '#SOLAR_GRID', '#AI_SYNTH', '#ENERGY', '#TECH'].map(tag => (
-                <span key={tag} className="narvo-border px-2 py-1 mono-ui text-[9px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">
+                <span key={tag} className="narvo-border px-2 py-1 mono-ui text-[11px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">
                   {tag}
                 </span>
               ))}
@@ -576,8 +576,8 @@ const DashboardPage = () => {
           <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden" data-testid="source-breakdown-widget">
             <div className="absolute top-0 right-0 p-2 opacity-20"><Broadcast weight="fill" className="w-8 h-8" /></div>
             <div className="flex items-center justify-between mb-2">
-              <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">SOURCE_MATRIX</span>
-              <span className="mono-ui text-[9px] text-primary font-bold">{getTotalSources()} FEEDS</span>
+              <span className="mono-ui text-[12px] text-forest font-bold tracking-widest">SOURCE_MATRIX</span>
+              <span className="mono-ui text-[11px] text-primary font-bold">{getTotalSources()} FEEDS</span>
             </div>
 
             {/* Health summary bar */}
@@ -596,7 +596,7 @@ const DashboardPage = () => {
                     {r > 0 && <div className="bg-red-500 transition-all" style={{ width: `${(r / total) * 100}%` }} />}
                     {u > 0 && <div className="bg-forest/30 transition-all" style={{ width: `${(u / total) * 100}%` }} />}
                   </div>
-                  <div className="flex items-center gap-3 mb-3 mono-ui text-[8px]">
+                  <div className="flex items-center gap-3 mb-3 mono-ui text-[10px]">
                     <span className="flex items-center gap-1 text-emerald-500"><span className="w-1.5 h-1.5 bg-emerald-500 inline-block" />{g}</span>
                     <span className="flex items-center gap-1 text-amber-500"><span className="w-1.5 h-1.5 bg-amber-500 inline-block" />{a}</span>
                     <span className="flex items-center gap-1 text-red-500"><span className="w-1.5 h-1.5 bg-red-500 inline-block" />{r}</span>
@@ -624,11 +624,11 @@ const DashboardPage = () => {
                   <summary className="flex items-center justify-between cursor-pointer py-1.5 list-none">
                     <div className="flex items-center gap-2">
                       <span className={`w-2 h-2 ${regionHealthCounts.red ? 'bg-red-500' : regionHealthCounts.amber ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse`} />
-                      <span className="mono-ui text-[10px] text-content font-bold">{region.label}</span>
+                      <span className="mono-ui text-[12px] text-content font-bold">{region.label}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="mono-ui text-[10px] font-bold text-forest">{region.count}</span>
-                      <span className="mono-ui text-[8px] text-forest group-open:rotate-90 transition-transform">&#9654;</span>
+                      <span className="mono-ui text-[12px] font-bold text-forest">{region.count}</span>
+                      <span className="mono-ui text-[10px] text-forest group-open:rotate-90 transition-transform">&#9654;</span>
                     </div>
                   </summary>
                   <div className="pl-4 pt-1 pb-1 space-y-0.5">
@@ -637,7 +637,7 @@ const DashboardPage = () => {
                       const dotColor = h?.status === 'green' ? 'bg-emerald-500' : h?.status === 'amber' ? 'bg-amber-500' : h?.status === 'red' ? 'bg-red-500' : 'bg-forest/30';
                       const latency = h?.latency_ms > 0 ? `${h.latency_ms}ms` : '';
                       return (
-                        <div key={i} className="flex items-center gap-1.5 mono-ui text-[8px] text-forest/80" data-testid={`source-health-${src.name.replace(/\s/g, '-').toLowerCase()}`}>
+                        <div key={i} className="flex items-center gap-1.5 mono-ui text-[10px] text-forest/80" data-testid={`source-health-${src.name.replace(/\s/g, '-').toLowerCase()}`}>
                           <span className={`w-1.5 h-1.5 shrink-0 ${dotColor}`} />
                           <span className="truncate">{src.name}</span>
                           {latency && <span className="ml-auto text-forest/40 shrink-0">{latency}</span>}
@@ -651,7 +651,7 @@ const DashboardPage = () => {
 
             {/* Aggregator APIs */}
             <div className="mt-2 pt-2 border-t border-forest/20" data-testid="aggregator-counts">
-              <span className="mono-ui text-[9px] text-forest font-bold tracking-widest block mb-1.5">AGGREGATOR_APIs</span>
+              <span className="mono-ui text-[11px] text-forest font-bold tracking-widest block mb-1.5">AGGREGATOR_APIs</span>
               {[
                 { name: 'Mediastack', key: 'mediastack' },
                 { name: 'NewsData.io', key: 'newsdata' },
@@ -660,7 +660,7 @@ const DashboardPage = () => {
                 const configured = status?.configured;
                 const cached = status?.cached_count || 0;
                 return (
-                  <div key={agg.key} className="flex items-center justify-between py-0.5 mono-ui text-[8px]" data-testid={`aggregator-${agg.key}`}>
+                  <div key={agg.key} className="flex items-center justify-between py-0.5 mono-ui text-[10px]" data-testid={`aggregator-${agg.key}`}>
                     <div className="flex items-center gap-1.5">
                       <span className={`w-1.5 h-1.5 ${configured ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
                       <span className="text-forest/80">{agg.name}</span>
@@ -672,13 +672,13 @@ const DashboardPage = () => {
             </div>
 
             <div className="mt-2 pt-2 border-t border-forest/20 flex items-center justify-between">
-              <span className="mono-ui text-[8px] text-primary flex items-center gap-1">
+              <span className="mono-ui text-[10px] text-primary flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-primary animate-pulse" />
                 LIVE_AGGREGATION
               </span>
               <button
                 onClick={() => { refreshHealth(); }}
-                className="mono-ui text-[7px] text-forest/50 hover:text-primary transition-colors cursor-pointer"
+                className="mono-ui text-[9px] text-forest/50 hover:text-primary transition-colors cursor-pointer"
                 data-testid="refresh-health-btn"
               >
                 REFRESH
@@ -688,7 +688,7 @@ const DashboardPage = () => {
 
           {/* Regional Health */}
           <div>
-            <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">NODE_HEALTH</span>
+            <span className="mono-ui text-[12px] text-forest block mb-3 font-bold tracking-widest">NODE_HEALTH</span>
             <div className="space-y-3">
               {[
                 { name: 'LAGOS', pct: 98, color: 'bg-primary' },
@@ -697,7 +697,7 @@ const DashboardPage = () => {
                 { name: 'JHB', pct: 76, color: 'bg-forest' },
               ].map(node => (
                 <div key={node.name} className="space-y-1">
-                  <div className="flex justify-between mono-ui text-[10px]">
+                  <div className="flex justify-between mono-ui text-[12px]">
                     <span className="text-content">{node.name}_NODE</span>
                     <span className={`${node.color === 'bg-primary' ? 'text-primary' : 'text-forest'} font-bold`}>{node.pct}%</span>
                   </div>
@@ -710,11 +710,11 @@ const DashboardPage = () => {
           {/* Metrics */}
           <div className="grid grid-cols-2 gap-[1px] narvo-border bg-forest">
             <div className="bg-background-dark p-3 flex flex-col justify-between h-20">
-              <span className="mono-ui text-[9px] text-forest">LISTENERS</span>
+              <span className="mono-ui text-[11px] text-forest">LISTENERS</span>
               <span className="font-display text-2xl font-bold text-content tracking-tighter">{metrics?.total_listeners || '14.2K'}</span>
             </div>
             <div className="bg-background-dark p-3 flex flex-col justify-between h-20">
-              <span className="mono-ui text-[9px] text-forest">SOURCES</span>
+              <span className="mono-ui text-[11px] text-forest">SOURCES</span>
               <span className="font-display text-2xl font-bold text-primary tracking-tighter">{metrics?.total_sources || '7'}</span>
             </div>
           </div>

@@ -27,7 +27,7 @@ const TruthTag = ({ storyId, compact = false }) => {
 
   if (loading) {
     return (
-      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 mono-ui text-[7px] md:text-[8px] text-forest border border-forest/30 font-bold">
+      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 mono-ui text-[9px] md:text-[10px] text-forest border border-forest/30 font-bold">
         <CircleNotch className="w-3 h-3 animate-spin" />
         {!compact && 'VERIFYING...'}
       </span>
@@ -43,7 +43,7 @@ const TruthTag = ({ storyId, compact = false }) => {
   if (compact) {
     return (
       <span
-        className={`inline-flex items-center gap-1 px-1.5 py-0.5 mono-ui text-[7px] font-bold ${config.color} ${config.bg} ${config.border} border`}
+        className={`inline-flex items-center gap-1 px-1.5 py-0.5 mono-ui text-[9px] font-bold ${config.color} ${config.bg} ${config.border} border`}
         data-testid={`truth-tag-${storyId}`}
         title={`${config.label} (${confidence}%) — ${source}`}
       >
@@ -61,10 +61,10 @@ const TruthTag = ({ storyId, compact = false }) => {
       <Icon className={`w-4 h-4 ${config.color}`} weight={status === 'PENDING' ? 'regular' : 'bold'} />
       <div className="flex flex-col gap-0.5 min-w-0">
         <div className="flex items-center gap-2">
-          <span className={`mono-ui text-[9px] font-bold ${config.color}`}>{config.label}</span>
-          <span className="mono-ui text-[7px] text-forest/60">{confidence}%</span>
+          <span className={`mono-ui text-[11px] font-bold ${config.color}`}>{config.label}</span>
+          <span className="mono-ui text-[9px] text-forest/60">{confidence}%</span>
         </div>
-        <span className="mono-ui text-[7px] text-forest truncate">{source}</span>
+        <span className="mono-ui text-[9px] text-forest truncate">{source}</span>
       </div>
     </div>
   );

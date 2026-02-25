@@ -68,7 +68,7 @@ const ServerErrorPage = () => {
                   key={idx}
                   className={`p-6 bg-background-dark/95 space-y-2 hover:bg-red-500/10 transition-colors ${idx > 0 ? 'border-l border-red-500/30' : ''}`}
                 >
-                  <span className="mono-ui text-[8px] text-forest font-bold tracking-widest">{metric.label}</span>
+                  <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">{metric.label}</span>
                   <div className={`flex items-center gap-3 ${metric.color} font-display text-xl md:text-2xl font-bold`}>
                     <Icon className="w-5 h-5 md:w-6 md:h-6" />
                     <span className="whitespace-nowrap">{metric.value}</span>
@@ -107,7 +107,7 @@ const ServerErrorPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="h-12 narvo-border-t border-red-500/30 bg-background-dark/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold relative z-10">
+      <footer className="h-12 narvo-border-t border-red-500/30 bg-background-dark/40 flex items-center justify-between px-8 mono-ui text-[11px] text-forest font-bold relative z-10">
         <span>NARVO_PROTOCOL: V2.6 // EMERGENCY_MODE</span>
         <span>SYSTEM_STATUS: <span className="text-red-500 animate-pulse">CRITICAL</span></span>
       </footer>

@@ -146,12 +146,12 @@ const SettingsPage = () => {
       <div className="p-6 md:p-10 narvo-border-b">
         <div className="flex items-center gap-3 mb-2">
           <span className="w-2 h-2 bg-primary animate-pulse" />
-          <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold">CONTROL_CENTER_ACTIVE</span>
+          <span className="mono-ui text-[11px] md:text-[12px] text-primary font-bold">CONTROL_CENTER_ACTIVE</span>
         </div>
         <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-content uppercase tracking-tight">
           {t('settings.title')}
         </h1>
-        <p className="mono-ui text-[10px] md:text-[11px] text-forest mt-2">
+        <p className="mono-ui text-[12px] md:text-[13px] text-forest mt-2">
           CONFIGURE_BROADCAST_PARAMETERS // MANAGE_SYSTEM_PROTOCOLS
         </p>
       </div>
@@ -164,7 +164,7 @@ const SettingsPage = () => {
             <div className="narvo-border bg-surface/10 p-6 md:p-8 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl" />
               <div className="relative z-10">
-                <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] block mb-4">
+                <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] block mb-4">
                   AUTHENTICATED_OPERATOR
                 </span>
                 <div className="flex items-center gap-4 md:gap-6">
@@ -177,14 +177,14 @@ const SettingsPage = () => {
                     <span className="text-content block font-display font-bold text-lg md:text-xl truncate">
                       {user.email}
                     </span>
-                    <span className="mono-ui text-[9px] md:text-[10px] text-forest block mt-1">
+                    <span className="mono-ui text-[11px] md:text-[12px] text-forest block mt-1">
                       OPERATOR_ID: {user.id?.slice(0, 20)}...
                     </span>
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="px-2 py-0.5 bg-primary/20 text-primary mono-ui text-[8px] font-bold">
+                      <span className="px-2 py-0.5 bg-primary/20 text-primary mono-ui text-[10px] font-bold">
                         PREMIUM
                       </span>
-                      <span className="px-2 py-0.5 bg-forest/20 text-forest mono-ui text-[8px] font-bold">
+                      <span className="px-2 py-0.5 bg-forest/20 text-forest mono-ui text-[10px] font-bold">
                         VERIFIED
                       </span>
                     </div>
@@ -196,7 +196,7 @@ const SettingsPage = () => {
 
           {/* Theme Toggle */}
           <div className="space-y-4">
-            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+            <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
               APPEARANCE_MODE
             </h2>
             <div className="narvo-border bg-surface/5 p-5 md:p-6">
@@ -210,14 +210,14 @@ const SettingsPage = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">THEME_MODE</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">SWITCH BETWEEN DARK AND LIGHT INTERFACE</p>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest">SWITCH BETWEEN DARK AND LIGHT INTERFACE</p>
                 </div>
                 <button
                   onClick={handleThemeToggle}
                   className="flex items-center gap-3 px-4 py-3 narvo-border bg-surface/10 hover:bg-primary/10 hover:border-primary transition-all"
                   data-testid="settings-theme-toggle"
                 >
-                  <span className="mono-ui text-[10px] text-primary font-bold">{theme === 'dark' ? 'DARK' : 'LIGHT'}</span>
+                  <span className="mono-ui text-[12px] text-primary font-bold">{theme === 'dark' ? 'DARK' : 'LIGHT'}</span>
                   <div className="w-12 h-6 bg-background-dark narvo-border relative">
                     <div 
                       className={`absolute top-1 w-4 h-4 bg-primary transition-all ${theme === 'dark' ? 'left-1' : 'left-6'}`}
@@ -230,7 +230,7 @@ const SettingsPage = () => {
 
           {/* Interface Language Selector */}
           <div className="space-y-4">
-            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+            <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
               INTERFACE_LANGUAGE
             </h2>
             <div className="narvo-border bg-surface/5 p-5 md:p-6">
@@ -240,7 +240,7 @@ const SettingsPage = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">{t('settings.language')}</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">CONTROLS_UI_TEXT_AND_MENUS — NOT_AUDIO_BROADCAST</p>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest">CONTROLS_UI_TEXT_AND_MENUS — NOT_AUDIO_BROADCAST</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 items-center">
@@ -248,7 +248,7 @@ const SettingsPage = () => {
                   <button
                     key={lang.code}
                     onClick={() => handleLanguageChange(lang.code)}
-                    className={`px-4 py-2 mono-ui text-[10px] font-bold transition-all ${
+                    className={`px-4 py-2 mono-ui text-[12px] font-bold transition-all ${
                       i18n.language === lang.code
                         ? 'bg-primary text-background-dark'
                         : 'narvo-border text-forest hover:text-content hover:border-forest'
@@ -259,7 +259,7 @@ const SettingsPage = () => {
                   </button>
                 ))}
               </div>
-              <p className="mono-ui text-[7px] md:text-[8px] text-forest/50 mt-4">
+              <p className="mono-ui text-[9px] md:text-[10px] text-forest/50 mt-4">
                 TO_CHANGE_AUDIO_NARRATION_LANGUAGE → SYSTEM_SETTINGS / BROADCAST_LANGUAGE
               </p>
             </div>
@@ -267,7 +267,7 @@ const SettingsPage = () => {
 
           {/* Notifications */}
           <div className="space-y-4">
-            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+            <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
               PUSH_NOTIFICATIONS
             </h2>
             <NotificationToggle />
@@ -276,7 +276,7 @@ const SettingsPage = () => {
 
           {/* Interest Matrix */}
           <div className="space-y-4" data-testid="interest-matrix-section">
-            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+            <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
               INTEREST_MATRIX
             </h2>
             <div className="narvo-border bg-surface/5 p-5 md:p-6">
@@ -286,10 +286,10 @@ const SettingsPage = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">COGNITIVE_INTEREST_GRID</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">MAP YOUR INTERESTS FOR ACCURATE NEWS DELIVERY</p>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest">MAP YOUR INTERESTS FOR ACCURATE NEWS DELIVERY</p>
                 </div>
                 {interestsSaving && (
-                  <span className="mono-ui text-[8px] text-primary animate-pulse">SYNCING...</span>
+                  <span className="mono-ui text-[10px] text-primary animate-pulse">SYNCING...</span>
                 )}
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3">
@@ -306,17 +306,17 @@ const SettingsPage = () => {
                       }`}
                       data-testid={`interest-${cat.id}`}
                     >
-                      <span className={`mono-ui text-[10px] md:text-[11px] font-bold block mb-1 ${active ? 'text-background-dark' : 'text-content'}`}>
+                      <span className={`mono-ui text-[12px] md:text-[13px] font-bold block mb-1 ${active ? 'text-background-dark' : 'text-content'}`}>
                         {cat.label}
                       </span>
-                      <span className={`mono-ui text-[7px] md:text-[8px] leading-relaxed block ${active ? 'text-background-dark/70' : 'text-forest/60'}`}>
+                      <span className={`mono-ui text-[9px] md:text-[10px] leading-relaxed block ${active ? 'text-background-dark/70' : 'text-forest/60'}`}>
                         {cat.desc}
                       </span>
                     </button>
                   );
                 })}
               </div>
-              <p className="mono-ui text-[7px] md:text-[8px] text-forest/50 mt-4">
+              <p className="mono-ui text-[9px] md:text-[10px] text-forest/50 mt-4">
                 {interests.length > 0
                   ? `${interests.length} CATEGORIES ACTIVE — FEED PRIORITIZATION ENGAGED`
                   : 'NO CATEGORIES SELECTED — ALL NEWS DELIVERED'}
@@ -327,7 +327,7 @@ const SettingsPage = () => {
           {/* Settings Sections */}
           {settingsSections.map((section, sectionIdx) => (
             <div key={sectionIdx} className="space-y-4">
-              <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+              <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
                 {section.title}
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -349,12 +349,12 @@ const SettingsPage = () => {
                       <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase mb-1 group-hover:text-primary transition-colors">
                         {item.label}
                       </h3>
-                      <p className="mono-ui text-[8px] md:text-[9px] text-forest leading-relaxed">
+                      <p className="mono-ui text-[10px] md:text-[11px] text-forest leading-relaxed">
                         {item.desc}
                       </p>
                       <div className="mt-3 flex items-center gap-2">
                         <span className="w-1.5 h-1.5 bg-primary rounded-full" />
-                        <span className="mono-ui text-[7px] md:text-[8px] text-primary font-bold">
+                        <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold">
                           {item.status}
                         </span>
                       </div>
@@ -367,7 +367,7 @@ const SettingsPage = () => {
 
           {/* System Stats */}
           <div className="space-y-4">
-            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+            <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
               SYSTEM_DIAGNOSTICS
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
@@ -376,10 +376,10 @@ const SettingsPage = () => {
                 return (
                   <div key={idx} className="narvo-border bg-surface/5 p-4 md:p-5">
                     <Icon className="w-4 h-4 text-forest mb-3" />
-                    <span className="mono-ui text-[7px] md:text-[8px] text-forest block mb-1">
+                    <span className="mono-ui text-[9px] md:text-[10px] text-forest block mb-1">
                       {stat.label}
                     </span>
-                    <span className="mono-ui text-[11px] md:text-xs text-primary font-bold">
+                    <span className="mono-ui text-[13px] md:text-xs text-primary font-bold">
                       {stat.value}
                     </span>
                   </div>
@@ -390,7 +390,7 @@ const SettingsPage = () => {
 
           {/* Tour Guide */}
           <div className="space-y-4">
-            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+            <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
               GUIDED_TOUR
             </h2>
             <div className="narvo-border bg-surface/5 p-5 md:p-6">
@@ -400,11 +400,11 @@ const SettingsPage = () => {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">REPLAY_TOUR</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">WALK THROUGH NARVO'S KEY FEATURES AGAIN</p>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest">WALK THROUGH NARVO'S KEY FEATURES AGAIN</p>
                 </div>
                 <button
                   onClick={openTourGuide}
-                  className="px-4 py-2.5 bg-primary text-background-dark mono-ui text-[9px] font-bold hover:bg-white transition-all flex items-center gap-2"
+                  className="px-4 py-2.5 bg-primary text-background-dark mono-ui text-[11px] font-bold hover:bg-white transition-all flex items-center gap-2"
                   data-testid="replay-tour-btn"
                 >
                   <Compass weight="bold" className="w-3.5 h-3.5" />
@@ -416,10 +416,10 @@ const SettingsPage = () => {
 
           {/* Haptic Alert Demo */}
           <div className="space-y-4">
-            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+            <h2 className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
               NOTIFICATION_TEST_PANEL
             </h2>
-            <p className="mono-ui text-[9px] text-forest/70 mb-4">
+            <p className="mono-ui text-[11px] text-forest/70 mb-4">
               Test haptic alert patterns for different system events
             </p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -429,7 +429,7 @@ const SettingsPage = () => {
                 data-testid="test-sync-success"
               >
                 <Bell weight="fill" className="w-4 h-4 text-primary mb-2" />
-                <span className="mono-ui text-[9px] text-primary font-bold block">SYNC_SUCCESS</span>
+                <span className="mono-ui text-[11px] text-primary font-bold block">SYNC_SUCCESS</span>
               </button>
               <button 
                 onClick={() => showAlert('BREAKING_NEWS')}
@@ -437,7 +437,7 @@ const SettingsPage = () => {
                 data-testid="test-breaking-news"
               >
                 <Lightning weight="fill" className="w-4 h-4 text-red-500 mb-2" />
-                <span className="mono-ui text-[9px] text-red-500 font-bold block">BREAKING_NEWS</span>
+                <span className="mono-ui text-[11px] text-red-500 font-bold block">BREAKING_NEWS</span>
               </button>
               <button 
                 onClick={() => showAlert('BOOKMARK_ADDED')}
@@ -445,7 +445,7 @@ const SettingsPage = () => {
                 data-testid="test-bookmark"
               >
                 <Bell weight="fill" className="w-4 h-4 text-forest mb-2" />
-                <span className="mono-ui text-[9px] text-forest font-bold block">BOOKMARK_ADDED</span>
+                <span className="mono-ui text-[11px] text-forest font-bold block">BOOKMARK_ADDED</span>
               </button>
               <button 
                 onClick={() => showAlert('NETWORK_ERROR')}
@@ -453,14 +453,14 @@ const SettingsPage = () => {
                 data-testid="test-network-error"
               >
                 <Bell weight="fill" className="w-4 h-4 text-red-400 mb-2" />
-                <span className="mono-ui text-[9px] text-red-400 font-bold block">NETWORK_ERROR</span>
+                <span className="mono-ui text-[11px] text-red-400 font-bold block">NETWORK_ERROR</span>
               </button>
             </div>
           </div>
 
           {/* Version + Logout */}
           <div className="pt-6 md:pt-8 border-t border-forest/20">
-            <p className="mono-ui text-[8px] text-forest/50 text-center mb-4">
+            <p className="mono-ui text-[10px] text-forest/50 text-center mb-4">
               {t('settings.version')}
             </p>
             <button 
