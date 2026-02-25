@@ -433,43 +433,75 @@ const DashboardPage = () => {
           {/* Source Breakdown Widget */}
           <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden" data-testid="source-breakdown-widget">
             <div className="absolute top-0 right-0 p-2 opacity-20"><Broadcast weight="fill" className="w-8 h-8" /></div>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2">
               <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">SOURCE_MATRIX</span>
               <span className="mono-ui text-[9px] text-primary font-bold">{getTotalSources()} FEEDS</span>
             </div>
 
-            {/* Proportion bar */}
-            <div className="flex h-1.5 w-full mb-4 gap-px">
-              <div className="bg-primary transition-all" style={{ width: `${(getLocalSources() / (getTotalSources() || 1)) * 100}%` }} />
-              <div className="bg-amber-500 transition-all" style={{ width: `${(getContinentalSources() / (getTotalSources() || 1)) * 100}%` }} />
-              <div className="bg-forest transition-all" style={{ width: `${(getInternationalSources() / (getTotalSources() || 1)) * 100}%` }} />
-            </div>
+            {/* Health summary bar */}
+            {(() => {
+              const hs = getHealthSummary();
+              const total = hs?.total || getTotalSources() || 1;
+              const g = hs?.green || 0;
+              const a = hs?.amber || 0;
+              const r = hs?.red || 0;
+              const u = total - g - a - r;
+              return (
+                <>
+                  <div className="flex h-1.5 w-full mb-1 gap-px" data-testid="health-bar">
+                    {g > 0 && <div className="bg-emerald-500 transition-all" style={{ width: `${(g / total) * 100}%` }} />}
+                    {a > 0 && <div className="bg-amber-500 transition-all" style={{ width: `${(a / total) * 100}%` }} />}
+                    {r > 0 && <div className="bg-red-500 transition-all" style={{ width: `${(r / total) * 100}%` }} />}
+                    {u > 0 && <div className="bg-forest/30 transition-all" style={{ width: `${(u / total) * 100}%` }} />}
+                  </div>
+                  <div className="flex items-center gap-3 mb-3 mono-ui text-[8px]">
+                    <span className="flex items-center gap-1 text-emerald-500"><span className="w-1.5 h-1.5 bg-emerald-500 inline-block" />{g}</span>
+                    <span className="flex items-center gap-1 text-amber-500"><span className="w-1.5 h-1.5 bg-amber-500 inline-block" />{a}</span>
+                    <span className="flex items-center gap-1 text-red-500"><span className="w-1.5 h-1.5 bg-red-500 inline-block" />{r}</span>
+                    {u > 0 && <span className="flex items-center gap-1 text-forest/50"><span className="w-1.5 h-1.5 bg-forest/30 inline-block" />{u}</span>}
+                  </div>
+                </>
+              );
+            })()}
 
             {/* Region groups */}
             {[
-              { key: 'local', label: 'LOCAL_NG', count: getLocalSources(), color: 'primary', dot: 'bg-primary' },
-              { key: 'continental', label: 'CONTINENTAL_AF', count: getContinentalSources(), color: 'amber-500', dot: 'bg-amber-500' },
-              { key: 'international', label: 'INTERNATIONAL', count: getInternationalSources(), color: 'forest', dot: 'bg-forest' },
+              { key: 'local', label: 'LOCAL_NG', count: getLocalSources() },
+              { key: 'continental', label: 'CONTINENTAL_AF', count: getContinentalSources() },
+              { key: 'international', label: 'INTERNATIONAL', count: getInternationalSources() },
             ].map(region => {
               const regionSources = getSourcesByRegion(region.key);
+              const regionHealthCounts = regionSources.reduce((acc, src) => {
+                const h = getHealthForSource(src.name);
+                const s = h?.status || 'unknown';
+                acc[s] = (acc[s] || 0) + 1;
+                return acc;
+              }, {});
               return (
                 <details key={region.key} className="group mb-2" data-testid={`source-region-${region.key}`}>
                   <summary className="flex items-center justify-between cursor-pointer py-1.5 list-none">
                     <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 ${region.dot} animate-pulse`} />
+                      <span className={`w-2 h-2 ${regionHealthCounts.red ? 'bg-red-500' : regionHealthCounts.amber ? 'bg-amber-500' : 'bg-emerald-500'} animate-pulse`} />
                       <span className="mono-ui text-[10px] text-content font-bold">{region.label}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={`mono-ui text-[10px] font-bold text-${region.color}`}>{region.count}</span>
+                      <span className="mono-ui text-[10px] font-bold text-forest">{region.count}</span>
                       <span className="mono-ui text-[8px] text-forest group-open:rotate-90 transition-transform">&#9654;</span>
                     </div>
                   </summary>
-                  <div className="pl-4 pt-1 pb-1 flex flex-wrap gap-x-1 gap-y-0.5">
-                    {regionSources.map((src, i) => (
-                      <span key={i} className="mono-ui text-[8px] text-forest/80 after:content-['\00b7'] after:mx-1 after:text-forest/30 last:after:content-['']">
-                        {src.name}
-                      </span>
-                    ))}
+                  <div className="pl-4 pt-1 pb-1 space-y-0.5">
+                    {regionSources.map((src, i) => {
+                      const h = getHealthForSource(src.name);
+                      const dotColor = h?.status === 'green' ? 'bg-emerald-500' : h?.status === 'amber' ? 'bg-amber-500' : h?.status === 'red' ? 'bg-red-500' : 'bg-forest/30';
+                      const latency = h?.latency_ms > 0 ? `${h.latency_ms}ms` : '';
+                      return (
+                        <div key={i} className="flex items-center gap-1.5 mono-ui text-[8px] text-forest/80" data-testid={`source-health-${src.name.replace(/\s/g, '-').toLowerCase()}`}>
+                          <span className={`w-1.5 h-1.5 shrink-0 ${dotColor}`} />
+                          <span className="truncate">{src.name}</span>
+                          {latency && <span className="ml-auto text-forest/40 shrink-0">{latency}</span>}
+                        </div>
+                      );
+                    })}
                   </div>
                 </details>
               );
@@ -480,7 +512,13 @@ const DashboardPage = () => {
                 <span className="w-1.5 h-1.5 bg-primary animate-pulse" />
                 LIVE_AGGREGATION
               </span>
-              <span className="mono-ui text-[7px] text-forest/50">UPDATED_LIVE</span>
+              <button
+                onClick={() => { refreshHealth(); }}
+                className="mono-ui text-[7px] text-forest/50 hover:text-primary transition-colors cursor-pointer"
+                data-testid="refresh-health-btn"
+              >
+                REFRESH
+              </button>
             </div>
           </div>
 
