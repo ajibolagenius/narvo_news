@@ -184,3 +184,61 @@ async def get_trending_topics() -> Dict:
         "topics": [{"name": kw.title(), "count": f"{cnt * 100}+"} for kw, cnt in top_keywords][:5],
         "updated_at": datetime.now(timezone.utc).isoformat()
     }
+
+
+def get_content_sources() -> Dict:
+    """Get metadata about all content sources"""
+    local_sources = [f for f in RSS_FEEDS if f.get("region") == "local"]
+    intl_sources = [f for f in RSS_FEEDS if f.get("region") == "international"]
+    
+    categories = {}
+    for feed in RSS_FEEDS:
+        cat = feed.get("category", "General")
+        categories[cat] = categories.get(cat, 0) + 1
+    
+    return {
+        "total_sources": len(RSS_FEEDS),
+        "local_sources": len(local_sources),
+        "international_sources": len(intl_sources),
+        "categories": categories,
+        "sources": [
+            {
+                "name": f["source"],
+                "category": f.get("category", "General"),
+                "region": f.get("region", "local"),
+                "url": f["url"].split("/feed")[0].split("/rss")[0]  # Clean URL
+            }
+            for f in RSS_FEEDS
+        ],
+        "broadcast_sources": [
+            # TV Stations
+            {"name": "Channels TV", "type": "TV", "region": "local", "url": "channelstv.com"},
+            {"name": "TVC News", "type": "TV", "region": "local", "url": "tvcnews.tv"},
+            {"name": "Arise News", "type": "TV", "region": "local", "url": "arise.tv"},
+            {"name": "NTA", "type": "TV", "region": "local", "url": "nta.ng"},
+            {"name": "AIT", "type": "TV", "region": "local", "url": "ait.live"},
+            {"name": "CNN", "type": "TV", "region": "international", "url": "cnn.com"},
+            {"name": "BBC News", "type": "TV", "region": "international", "url": "bbc.com"},
+            {"name": "Sky News", "type": "TV", "region": "international", "url": "sky.com"},
+            # Radio Stations
+            {"name": "Radio Nigeria", "type": "Radio", "region": "local", "url": "radionigeria.gov.ng"},
+            {"name": "Cool FM", "type": "Radio", "region": "local", "url": "coolfm.ng"},
+            {"name": "Wazobia FM", "type": "Radio", "region": "local", "url": "wazobiafm.com"},
+            {"name": "Nigeria Info FM", "type": "Radio", "region": "local", "url": "nigeriainfo.fm"},
+            {"name": "Beat FM", "type": "Radio", "region": "local", "url": "thebeat99.com"},
+            {"name": "Brila FM", "type": "Radio", "region": "local", "url": "brila.net"},
+            {"name": "BBC World Service", "type": "Radio", "region": "international", "url": "bbc.co.uk"},
+            {"name": "NPR", "type": "Radio", "region": "international", "url": "npr.org"},
+            {"name": "Voice of America", "type": "Radio", "region": "international", "url": "voanews.com"},
+        ],
+        "verification_apis": [
+            {"name": "Google Fact Check", "status": "active", "capability": "ClaimSearch API, ClaimReview Schema"},
+            {"name": "ClaimBuster", "status": "planned", "capability": "AI-powered claim-worthiness detection"},
+            {"name": "MyAIFactChecker", "status": "planned", "capability": "Africa-focused AI verification"},
+            {"name": "Dubawa", "status": "reference", "capability": "Local authority fact-checking data"},
+        ],
+        "aggregator_apis": [
+            {"name": "Mediastack", "status": "planned", "capability": "REST API with Nigeria filtering"},
+            {"name": "NewsData.io", "status": "planned", "capability": "Global and local news monitoring"},
+        ]
+    }
