@@ -11,6 +11,114 @@ import TruthTag from '../components/TruthTag';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
+const MobileMetadata = ({ news, readTime, relatedNews, isBookmarked, toggleBookmark, addToQueue, shareStory, navigate, showAlert, t, formatPublishedDate }) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="lg:hidden mt-8 narvo-border" data-testid="mobile-article-metadata">
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="w-full p-4 flex items-center justify-between bg-surface/10 hover:bg-surface/20 transition-colors"
+        data-testid="mobile-metadata-toggle"
+      >
+        <span className="mono-ui text-[10px] text-forest font-bold tracking-widest uppercase">{t('news_detail.article_metadata')}</span>
+        {open ? <CaretUp weight="bold" className="w-4 h-4 text-forest" /> : <CaretDown weight="bold" className="w-4 h-4 text-forest" />}
+      </button>
+      {open && (
+        <div className="p-4 space-y-5 narvo-border-t">
+          {/* Verification */}
+          <div className="narvo-border bg-primary/5 p-3 border-primary/30">
+            <span className="mono-ui text-[9px] text-forest block mb-2 font-bold tracking-widest">{t('news_detail.verification_status')}</span>
+            <div className="flex items-center justify-between">
+              <TruthTag storyId={news.id} />
+              <span className="mono-ui text-[8px] text-forest">DUBAWA_AI</span>
+            </div>
+          </div>
+          {/* Signal Metadata */}
+          <div className="narvo-border bg-surface/20 p-3">
+            <span className="mono-ui text-[9px] text-forest block mb-2 font-bold tracking-widest">{t('news_detail.signal_metadata')}</span>
+            <div className="space-y-2">
+              {[
+                [t('news_detail.category'), news.category?.toUpperCase() || 'GENERAL', true],
+                [t('news_detail.source'), news.source?.toUpperCase() || 'UNKNOWN', false],
+                [t('news_detail.region'), news.region?.toUpperCase() || 'AFRICA', false],
+                [t('news_detail.read_time'), `${readTime} MIN`, true],
+                [t('news_detail.ai_synthesis'), news.narrative ? t('news_detail.complete') : t('news_detail.pending'), true],
+              ].map(([label, value, isPrimary], i) => (
+                <div key={i} className="flex justify-between mono-ui text-[9px]">
+                  <span className="text-forest">{label}</span>
+                  <span className={isPrimary ? 'text-primary font-bold' : 'text-content'}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Quick Actions */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => { addToQueue(news); showAlert({ type: 'sync', title: 'QUEUE_UPDATED', message: 'Added to playlist queue', code: 'Q_ADD', duration: 2000 }); }}
+              className="flex-1 narvo-border py-2 mono-ui text-[9px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              data-testid="mobile-queue-btn"
+            >
+              <Queue weight="bold" className="w-3 h-3" />
+              QUEUE
+            </button>
+            <button
+              onClick={shareStory}
+              className="flex-1 narvo-border py-2 mono-ui text-[9px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              data-testid="mobile-share-btn"
+            >
+              <ShareNetwork weight="bold" className="w-3 h-3" />
+              SHARE
+            </button>
+            <button
+              onClick={toggleBookmark}
+              className={`flex-1 narvo-border py-2 mono-ui text-[9px] flex items-center justify-center gap-2 transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary hover:border-primary'}`}
+              data-testid="mobile-bookmark-btn"
+            >
+              <BookmarkSimple weight={isBookmarked(news.id) ? 'fill' : 'regular'} className="w-3 h-3" />
+              {isBookmarked(news.id) ? t('dashboard.saved') : t('dashboard.save')}
+            </button>
+          </div>
+          {/* Tags */}
+          {news.tags?.length > 0 && (
+            <div>
+              <span className="mono-ui text-[9px] text-forest block mb-3 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
+              <div className="flex flex-wrap gap-1.5">
+                {news.tags.map((tag, i) => (
+                  <span key={i} className="narvo-border px-1.5 py-1 mono-ui text-[8px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#{tag.toUpperCase()}</span>
+                ))}
+              </div>
+            </div>
+          )}
+          {/* Related Stories */}
+          {relatedNews.length > 0 && (
+            <div>
+              <span className="mono-ui text-[9px] text-forest block mb-3 font-bold tracking-widest">{t('news_detail.related_transmissions')}</span>
+              <div className="space-y-2">
+                {relatedNews.map((item) => (
+                  <div
+                    key={item.id}
+                    className="narvo-border p-3 cursor-pointer hover:bg-surface/40 transition-colors group"
+                    onClick={() => navigate(`/news/${item.id}`)}
+                    data-testid={`mobile-related-${item.id}`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="mono-ui text-[8px] text-primary">{item.source}</span>
+                      <TruthTag storyId={item.id} compact />
+                    </div>
+                    <h4 className="text-xs text-content font-display font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                      {item.title}
+                    </h4>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const NewsDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
