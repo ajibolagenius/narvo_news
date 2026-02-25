@@ -524,6 +524,34 @@ async def refresh_sources_health(background_tasks: BackgroundTasks):
     background_tasks.add_task(run_health_check)
     return {"status": "started", "message": "Health check initiated"}
 
+# ── Aggregator Endpoints ──────────────────────────────────────────────
+
+@app.get("/api/aggregators/status")
+async def aggregators_status():
+    """Get status of programmatic aggregator integrations"""
+    from services.aggregator_service import get_aggregator_status
+    return get_aggregator_status()
+
+@app.get("/api/aggregators/fetch")
+async def fetch_aggregators(keywords: str = Query("Nigeria Africa", description="Search keywords")):
+    """Fetch news from all programmatic aggregators (Mediastack + NewsData.io)"""
+    from services.aggregator_service import fetch_all_aggregators
+    return await fetch_all_aggregators(keywords)
+
+@app.get("/api/aggregators/mediastack")
+async def fetch_mediastack_news(keywords: str = Query("Nigeria Africa"), limit: int = Query(20, ge=1, le=50)):
+    """Fetch news from Mediastack API"""
+    from services.aggregator_service import fetch_mediastack
+    articles = await fetch_mediastack(keywords, limit)
+    return {"count": len(articles), "articles": articles}
+
+@app.get("/api/aggregators/newsdata")
+async def fetch_newsdata_news(query: str = Query("Nigeria"), limit: int = Query(20, ge=1, le=50)):
+    """Fetch news from NewsData.io API"""
+    from services.aggregator_service import fetch_newsdata
+    articles = await fetch_newsdata(query, limit)
+    return {"count": len(articles), "articles": articles}
+
 @app.get("/api/trending")
 async def get_trending():
     """Get trending tags and topics based on recent news"""
