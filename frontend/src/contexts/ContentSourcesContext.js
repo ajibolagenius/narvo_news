@@ -50,6 +50,7 @@ export const ContentSourcesProvider = ({ children }) => {
   const getTotalSources = useCallback(() => sources?.total_sources || 0, [sources]);
   const getLocalSources = useCallback(() => sources?.local_sources || 0, [sources]);
   const getInternationalSources = useCallback(() => sources?.international_sources || 0, [sources]);
+  const getContinentalSources = useCallback(() => sources?.continental_sources || 0, [sources]);
   const getBroadcastSources = useCallback(() => sources?.broadcast_sources || [], [sources]);
   const getVerificationAPIs = useCallback(() => sources?.verification_apis || [], [sources]);
   const getCategories = useCallback(() => sources?.categories || {}, [sources]);
@@ -69,6 +70,7 @@ export const ContentSourcesProvider = ({ children }) => {
       getTotalSources,
       getLocalSources,
       getInternationalSources,
+      getContinentalSources,
       getBroadcastSources,
       getVerificationAPIs,
       getCategories,
