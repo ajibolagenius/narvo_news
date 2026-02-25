@@ -997,6 +997,9 @@ async def get_metrics():
     from services.news_service import get_content_sources as get_sources
     sources_data = get_sources()
     
+    from services.aggregator_service import get_aggregator_status
+    agg_status = get_aggregator_status()
+
     return {
         "listeners_today": "14.2k",
         "sources_online": sources_data.get("total_sources", 23),
@@ -1008,7 +1011,8 @@ async def get_metrics():
         "signal_strength": "98%",
         "network_load": "42%",
         "broadcast_sources": len(sources_data.get("broadcast_sources", [])),
-        "verification_apis": len(sources_data.get("verification_apis", []))
+        "verification_apis": len(sources_data.get("verification_apis", [])),
+        "aggregators": agg_status,
     }
 
 # Morning Briefing Cache
