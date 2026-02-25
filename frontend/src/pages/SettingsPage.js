@@ -271,6 +271,7 @@ const SettingsPage = () => {
               PUSH_NOTIFICATIONS
             </h2>
             <NotificationToggle />
+            <DailyDigest />
           </div>
 
           {/* Interest Matrix */}
