@@ -1,9 +1,27 @@
 # Translation Service - Multi-language translation using Gemini
 import os
+import re as _re
 from typing import Dict, Optional
 from datetime import datetime
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+
+# ── Sanitizer: strip stage directions / sound-effect text from AI output ──
+_STAGE_DIRECTION_PATTERNS = [
+    _re.compile(r'\[.*?\]'),
+    _re.compile(r'\(.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\)', _re.IGNORECASE),
+    _re.compile(r'\*.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\*', _re.IGNORECASE),
+    _re.compile(r'(?i)^\s*(?:sound of|sounds? of|sfx:?).*$', _re.MULTILINE),
+    _re.compile(r'(?i)^\s*(?:\(|\*).*?(?:music|jingle|theme|fade|transition).*?(?:\)|\*)\s*$', _re.MULTILINE),
+]
+
+def _sanitize(text: str) -> str:
+    if not text:
+        return text
+    result = text
+    for p in _STAGE_DIRECTION_PATTERNS:
+        result = p.sub('', result)
+    return _re.sub(r'\n{3,}', '\n\n', result).strip()
 
 # Supported languages with authentic native names and TTS voice recommendations
 SUPPORTED_LANGUAGES = {
