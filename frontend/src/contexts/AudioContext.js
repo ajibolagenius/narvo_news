@@ -500,6 +500,7 @@ export const AudioProvider = ({ children }) => {
       broadcastLanguage,
       voiceModel,
       playbackRate,
+      settingsLoaded,
       setVolume,
       toggleMute,
       setAutoPlay,
