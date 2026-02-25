@@ -68,21 +68,18 @@ const SystemGearSixPage = () => {
           alert_volume: settingsToSave.alertVolume,
           data_limit: settingsToSave.dataLimit / 1000,
           bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
-          broadcast_language: settingsToSave.broadcastLanguage,
           aggregator_mediastack: settingsToSave.aggregatorMediastack,
           aggregator_newsdata: settingsToSave.aggregatorNewsdata,
         }),
       });
       if (res.ok) {
-        setBroadcastLanguage(settingsToSave.broadcastLanguage);
-        console.log('[Settings] Auto-saved broadcast_language:', settingsToSave.broadcastLanguage);
         return true;
       }
     } catch (err) {
       console.error('[Settings] Auto-save failed:', err);
     }
     return false;
-  }, [user?.id, setBroadcastLanguage]);
+  }, [user?.id]);
 
   const updateSetting = (key, value) => {
     const newSettings = { ...settings, [key]: value };
