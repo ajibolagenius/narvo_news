@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { X, ArrowRight, ArrowLeft, Broadcast, MagnifyingGlass, GearSix, Headphones, Waveform } from '@phosphor-icons/react';
 
 const TOUR_STEPS = [
