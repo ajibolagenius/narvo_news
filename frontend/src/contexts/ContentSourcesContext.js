@@ -71,12 +71,21 @@ export const ContentSourcesProvider = ({ children }) => {
     return (sources?.sources || []).filter(s => s.region === region);
   }, [sources]);
 
+  const getHealthForSource = useCallback((name) => {
+    if (!health?.sources) return null;
+    return health.sources.find(s => s.name === name) || null;
+  }, [health]);
+
+  const getHealthSummary = useCallback(() => health, [health]);
+
   return (
     <ContentSourcesContext.Provider value={{
       sources,
+      health,
       loading,
       error,
       refreshSources: fetchSources,
+      refreshHealth: fetchHealth,
       getTotalSources,
       getLocalSources,
       getInternationalSources,
@@ -86,6 +95,8 @@ export const ContentSourcesProvider = ({ children }) => {
       getCategories,
       getSourcesByCategory,
       getSourcesByRegion,
+      getHealthForSource,
+      getHealthSummary,
     }}>
       {children}
     </ContentSourcesContext.Provider>
