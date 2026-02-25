@@ -70,6 +70,12 @@ const DiscoverPage = () => {
       .then(setTrendingTopics)
       .catch(console.error);
 
+    // Fetch podcast categories
+    fetch(`${API_URL}/api/podcasts/categories`)
+      .then(res => res.json())
+      .then(setPodcastCategories)
+      .catch(console.error);
+
     // Fetch aggregator wire
     fetch(`${API_URL}/api/aggregators/fetch?keywords=Nigeria+Africa`)
       .then(res => res.json())
