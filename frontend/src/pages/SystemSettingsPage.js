@@ -33,7 +33,22 @@ const SystemGearSixPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { showAlert } = useHapticAlert();
-  const [settings, setGearSix] = useState(DEFAULT_SETTINGS);
+  const [settings, setGearSix] = useState(() => {
+    const cached = readLocal();
+    if (cached) {
+      return {
+        highContrast: cached.high_contrast ?? DEFAULT_SETTINGS.highContrast,
+        interfaceScale: (cached.interface_scale || 'DEFAULT').toUpperCase().replace('%', '').replace('100', 'DEFAULT'),
+        hapticSync: cached.haptic_sync ?? DEFAULT_SETTINGS.hapticSync,
+        alertVolume: cached.alert_volume ?? DEFAULT_SETTINGS.alertVolume,
+        dataLimit: Math.round((cached.data_limit ?? 2.4) * 1000),
+        bandwidthPriority: (cached.bandwidth_priority || 'streaming').toUpperCase(),
+        aggregatorMediastack: cached.aggregator_mediastack ?? DEFAULT_SETTINGS.aggregatorMediastack,
+        aggregatorNewsdata: cached.aggregator_newsdata ?? DEFAULT_SETTINGS.aggregatorNewsdata,
+      };
+    }
+    return DEFAULT_SETTINGS;
+  });
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingGearSix, setLoadingGearSix] = useState(true);
