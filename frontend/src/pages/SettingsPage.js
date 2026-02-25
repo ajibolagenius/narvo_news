@@ -10,6 +10,19 @@ import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 import { openTourGuide } from '../components/TourGuideModal';
 
+const API_URL = process.env.REACT_APP_BACKEND_URL;
+
+const INTEREST_CATEGORIES = [
+  { id: 'politics', label: 'POLITICS', desc: 'Government, elections, policy' },
+  { id: 'economy', label: 'ECONOMY', desc: 'Markets, trade, finance' },
+  { id: 'tech', label: 'TECH', desc: 'Innovation, startups, digital' },
+  { id: 'sports', label: 'SPORTS', desc: 'Football, athletics, leagues' },
+  { id: 'health', label: 'HEALTH', desc: 'Medical, wellness, disease' },
+  { id: 'general', label: 'GENERAL', desc: 'Broad coverage, breaking news' },
+  { id: 'culture', label: 'CULTURE', desc: 'Arts, music, Nollywood' },
+  { id: 'security', label: 'SECURITY', desc: 'Defense, conflict, peace' },
+];
+
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
