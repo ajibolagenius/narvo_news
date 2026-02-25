@@ -38,6 +38,7 @@ const AccessibilityPage = lazy(() => import('./pages/AccessibilityPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ServerErrorPage = lazy(() => import('./pages/ServerErrorPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ToolsPage = lazy(() => import('./pages/ToolsPage'));
 // Admin Pages
 const OperationHubPage = lazy(() => import('./pages/admin/OperationHubPage'));
 const CurationConsolePage = lazy(() => import('./pages/admin/CurationConsolePage'));
@@ -70,6 +71,7 @@ function App() {
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<LandingPage />} />
+                <Route path="/tools" element={<ToolsPage />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
