@@ -1,14 +1,28 @@
 # Aggregator service for Mediastack and NewsData.io
 import os
+import asyncio
 import aiohttp
 import hashlib
+import time
 from datetime import datetime, timezone
 from typing import List, Dict
 
 MEDIASTACK_KEY = os.environ.get("MEDIASTACK_API_KEY", "")
 NEWSDATA_KEY = os.environ.get("NEWSDATA_API_KEY", "")
 
-_aggregator_cache: Dict = {"mediastack": [], "newsdata": [], "last_fetched": None}
+# Cache with TTL
+CACHE_TTL = 600  # 10 minutes
+_aggregator_cache: Dict = {
+    "mediastack": [],
+    "newsdata": [],
+    "last_fetched": None,
+    "last_fetched_ts": 0,
+}
+_refresh_lock = False
+
+
+def _cache_is_stale() -> bool:
+    return (time.monotonic() - _aggregator_cache["last_fetched_ts"]) > CACHE_TTL
 
 
 async def fetch_mediastack(keywords: str = "Nigeria Africa", limit: int = 20) -> List[Dict]:
@@ -45,14 +59,12 @@ async def fetch_mediastack(keywords: str = "Nigeria Africa", limit: int = 20) ->
                             "tags": [],
                             "aggregator": "mediastack",
                         })
-                    _aggregator_cache["mediastack"] = results
-                    _aggregator_cache["last_fetched"] = datetime.now(timezone.utc).isoformat()
                     return results
                 else:
                     print(f"[Mediastack] Error: HTTP {resp.status}")
     except Exception as e:
         print(f"[Mediastack] Error: {e}")
-    return _aggregator_cache.get("mediastack", [])
+    return []
 
 
 async def fetch_newsdata(query: str = "Nigeria", limit: int = 20) -> List[Dict]:
@@ -89,27 +101,53 @@ async def fetch_newsdata(query: str = "Nigeria", limit: int = 20) -> List[Dict]:
                             "tags": a.get("keywords", [])[:5] if a.get("keywords") else [],
                             "aggregator": "newsdata",
                         })
-                    _aggregator_cache["newsdata"] = results
-                    _aggregator_cache["last_fetched"] = datetime.now(timezone.utc).isoformat()
                     return results
                 else:
                     print(f"[NewsData] Error: HTTP {resp.status}")
     except Exception as e:
         print(f"[NewsData] Error: {e}")
-    return _aggregator_cache.get("newsdata", [])
+    return []
+
+
+async def refresh_cache() -> Dict:
+    """Refresh the aggregator cache. Called by background task."""
+    global _refresh_lock
+    if _refresh_lock:
+        return _aggregator_cache
+    _refresh_lock = True
+    try:
+        ms_task = fetch_mediastack("Nigeria Africa", 20)
+        nd_task = fetch_newsdata("Nigeria", 20)
+        ms_results, nd_results = await asyncio.gather(ms_task, nd_task)
+        _aggregator_cache["mediastack"] = ms_results
+        _aggregator_cache["newsdata"] = nd_results
+        _aggregator_cache["last_fetched"] = datetime.now(timezone.utc).isoformat()
+        _aggregator_cache["last_fetched_ts"] = time.monotonic()
+        print(f"[Aggregator] Cache refreshed: {len(ms_results)} mediastack, {len(nd_results)} newsdata")
+    finally:
+        _refresh_lock = False
+    return _aggregator_cache
 
 
 async def fetch_all_aggregators(keywords: str = "Nigeria Africa") -> Dict:
-    """Fetch from all programmatic aggregators."""
-    import asyncio
-    ms_task = fetch_mediastack(keywords)
-    nd_task = fetch_newsdata(keywords.split()[0] if keywords else "Nigeria")
-    ms_results, nd_results = await asyncio.gather(ms_task, nd_task)
+    """Fetch from all programmatic aggregators. Uses cache if fresh."""
+    if not _cache_is_stale() and (_aggregator_cache["mediastack"] or _aggregator_cache["newsdata"]):
+        ms = _aggregator_cache["mediastack"]
+        nd = _aggregator_cache["newsdata"]
+    else:
+        ms_task = fetch_mediastack(keywords)
+        nd_task = fetch_newsdata(keywords.split()[0] if keywords else "Nigeria")
+        ms, nd = await asyncio.gather(ms_task, nd_task)
+        _aggregator_cache["mediastack"] = ms
+        _aggregator_cache["newsdata"] = nd
+        _aggregator_cache["last_fetched"] = datetime.now(timezone.utc).isoformat()
+        _aggregator_cache["last_fetched_ts"] = time.monotonic()
     return {
-        "mediastack": {"count": len(ms_results), "articles": ms_results},
-        "newsdata": {"count": len(nd_results), "articles": nd_results},
-        "total": len(ms_results) + len(nd_results),
-        "last_fetched": _aggregator_cache.get("last_fetched"),
+        "mediastack": {"count": len(ms), "articles": ms},
+        "newsdata": {"count": len(nd), "articles": nd},
+        "total": len(ms) + len(nd),
+        "last_fetched": _aggregator_cache["last_fetched"],
+        "cached": not _cache_is_stale(),
     }
 
 
@@ -125,6 +163,8 @@ def get_aggregator_status() -> Dict:
             "cached_count": len(_aggregator_cache.get("newsdata", [])),
         },
         "last_fetched": _aggregator_cache.get("last_fetched"),
+        "cache_ttl_seconds": CACHE_TTL,
+        "cache_stale": _cache_is_stale(),
     }
 
 
@@ -152,11 +192,34 @@ def normalize_to_news_items(articles: List[Dict]) -> List[Dict]:
     return items
 
 
-async def get_normalized_aggregator_news(keywords: str = "Nigeria Africa") -> List[Dict]:
-    """Fetch from all aggregators and return normalized news items."""
-    result = await fetch_all_aggregators(keywords)
-    all_articles = (
-        result.get("mediastack", {}).get("articles", []) +
-        result.get("newsdata", {}).get("articles", [])
-    )
+async def get_normalized_aggregator_news(sources: List[str] = None) -> List[Dict]:
+    """Get cached aggregator news as normalized items. Optionally filter by source."""
+    # Use cache if fresh, else refresh
+    if _cache_is_stale() or not (_aggregator_cache["mediastack"] or _aggregator_cache["newsdata"]):
+        await refresh_cache()
+
+    all_articles = []
+    if sources is None or "mediastack" in sources:
+        all_articles.extend(_aggregator_cache.get("mediastack", []))
+    if sources is None or "newsdata" in sources:
+        all_articles.extend(_aggregator_cache.get("newsdata", []))
+
     return normalize_to_news_items(all_articles)
+
+
+def search_cached_aggregators(query: str, sources: List[str] = None) -> List[Dict]:
+    """Search through cached aggregator articles."""
+    q = query.lower()
+    results = []
+    all_articles = []
+    if sources is None or "mediastack" in sources:
+        all_articles.extend(_aggregator_cache.get("mediastack", []))
+    if sources is None or "newsdata" in sources:
+        all_articles.extend(_aggregator_cache.get("newsdata", []))
+
+    for a in all_articles:
+        title_match = q in (a.get("title") or "").lower()
+        summary_match = q in (a.get("summary") or "").lower()
+        if title_match or summary_match:
+            results.append(a)
+    return normalize_to_news_items(results)
