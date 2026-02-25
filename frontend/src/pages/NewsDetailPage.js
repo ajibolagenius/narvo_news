@@ -158,17 +158,30 @@ const NewsDetailPage = () => {
     }).catch(() => navigate('/dashboard'));
   }, [id, navigate]);
 
-  // Auto-play audio when news loads
+  const [autoplayReady, setAutoplayReady] = useState(false);
+
+  // Pre-generate TTS audio as soon as news loads (cache warming)
   useEffect(() => {
-    if (news && !loading && !hasAutoPlayed.current) {
+    if (!news || loading) return;
+    const text = (news.narrative || news.summary || news.title || '').slice(0, 500);
+    if (!text) return;
+    
+    fetch(`${API_URL}/api/tts/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice_id: 'emma', language: 'en' }),
+    })
+      .then(() => setAutoplayReady(true))
+      .catch(() => setAutoplayReady(true)); // still allow manual play
+  }, [news, loading]);
+
+  // Auto-play once TTS is pre-cached
+  useEffect(() => {
+    if (autoplayReady && news && !hasAutoPlayed.current) {
       hasAutoPlayed.current = true;
-      // Small delay to ensure UI is ready and user has interacted with page
-      const timer = setTimeout(() => {
-        playTrack(news);
-      }, 800);
-      return () => clearTimeout(timer);
+      playTrack(news);
     }
-  }, [news, loading, playTrack]);
+  }, [autoplayReady, news, playTrack]);
 
   const toggleBookmark = () => {
     if (isBookmarked(news.id)) {
