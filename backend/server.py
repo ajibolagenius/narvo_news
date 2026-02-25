@@ -555,6 +555,23 @@ async def get_regions():
         {"id": "continental", "name": "Continental", "icon": "AF"},
     ]
 
+
+@app.get("/api/sound-themes")
+async def list_sound_themes():
+    """Get available broadcast sound themes"""
+    from services.sound_themes_service import get_sound_themes
+    return get_sound_themes()
+
+@app.get("/api/sound-themes/{theme_id}")
+async def get_sound_theme_detail(theme_id: str):
+    """Get a specific sound theme with full audio parameters"""
+    from services.sound_themes_service import get_sound_theme
+    theme = get_sound_theme(theme_id)
+    if not theme:
+        raise HTTPException(status_code=404, detail="Theme not found")
+    return theme
+
+
 @app.get("/api/categories")
 async def get_categories():
     """Get news categories"""
