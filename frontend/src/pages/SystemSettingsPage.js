@@ -147,6 +147,7 @@ const SystemGearSixPage = () => {
       bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
       aggregator_mediastack: settingsToSave.aggregatorMediastack,
       aggregator_newsdata: settingsToSave.aggregatorNewsdata,
+      sound_theme: settingsToSave.soundTheme || 'narvo_classic',
     };
     cacheToLocal(payload);
     try {
