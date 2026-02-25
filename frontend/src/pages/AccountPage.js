@@ -75,7 +75,7 @@ const AccountPage = () => {
         </div>
 
         {/* Alerts Panel */}
-        <div className="w-full lg:w-[350px] xl:w-[400px] p-6 md:p-10 flex flex-col gap-6 md:gap-8 narvo-border-t lg:border-t-0">
+        <div className="w-full lg:w-[350px] xl:w-[400px] p-4 md:p-10 flex flex-col gap-6 md:gap-8 narvo-border-t lg:border-t-0 min-w-0">
           <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold flex items-center gap-3 tracking-[0.2em]">
             <Bell className="w-4 h-4" />
             {t('account.system_alerts')}
