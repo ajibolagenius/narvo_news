@@ -179,8 +179,19 @@ const DesktopPlayer = () => {
           </div>
         </div>
 
-        {/* Right — volume + queue */}
-        <div className="flex items-center gap-3 w-[200px] justify-end shrink-0">
+        {/* Right — speed + volume + queue */}
+        <div className="flex items-center gap-3 w-[240px] justify-end shrink-0">
+          <button
+            onClick={cycleSpeed}
+            className={`px-2 py-1 font-mono text-[10px] font-bold border transition-colors ${
+              playbackRate !== 1
+                ? 'text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]'
+                : 'text-[rgb(var(--color-text-secondary))] border-[rgb(var(--color-border))] hover:text-[rgb(var(--color-text-primary))] hover:border-[rgb(var(--color-text-secondary))]'
+            }`}
+            data-testid="speed-control"
+          >
+            {playbackRate}x
+          </button>
           <div className="relative flex items-center" ref={volRef}>
             <button onClick={toggleMute} onMouseEnter={() => setShowVol(true)} className="text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))] p-1.5" data-testid="volume-btn">
               {isMuted || volume === 0 ? <SpeakerSlash weight="fill" className="w-4 h-4" /> : <SpeakerHigh weight="fill" className="w-4 h-4" />}
