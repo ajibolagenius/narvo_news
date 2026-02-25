@@ -61,7 +61,7 @@ function App() {
       <DownloadQueueProvider>
       <BreakingNewsProvider>
         <HapticAlertProvider>
-          <Router>
+          <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <DownloadQueueIndicator />
             <Suspense fallback={<PageLoader />}>
               <Routes>
