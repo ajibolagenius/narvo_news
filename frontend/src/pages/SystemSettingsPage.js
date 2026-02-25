@@ -6,15 +6,6 @@ import { useHapticAlert } from '../components/HapticAlerts';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-// Supported broadcast languages with authentic native names
-const BROADCAST_LANGUAGES = [
-  { code: 'en', name: 'English', native: 'English', description: 'INTERNATIONAL', sample: 'Welcome to Narvo. Your trusted source for African news.' },
-  { code: 'pcm', name: 'Naijá', native: 'Naijá Tok', description: 'PIDGIN_NAIJA', sample: 'Welcome to Narvo. Your trusted source for African news.' },
-  { code: 'yo', name: 'Yorùbá', native: 'Èdè Yorùbá', description: 'ÌLÚ_YORÙBÁ', sample: 'Welcome to Narvo. Your trusted source for African news.' },
-  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'AREWACIN_NAJERIYA', sample: 'Welcome to Narvo. Your trusted source for African news.' },
-  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'ALA_IGBO', sample: 'Welcome to Narvo. Your trusted source for African news.' },
-];
-
 const DEFAULT_SETTINGS = {
   highContrast: true,
   interfaceScale: 'DEFAULT',
@@ -22,8 +13,6 @@ const DEFAULT_SETTINGS = {
   alertVolume: 65,
   dataLimit: 2400,
   bandwidthPriority: 'STREAMING',
-  pushNotifications: false,
-  broadcastLanguage: 'en',
   aggregatorMediastack: true,
   aggregatorNewsdata: true,
 };
@@ -31,17 +20,11 @@ const DEFAULT_SETTINGS = {
 const SystemGearSixPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { setBroadcastLanguage } = useAudio();
   const { showAlert } = useHapticAlert();
   const [settings, setGearSix] = useState(DEFAULT_SETTINGS);
   const [hasChanges, setHasChanges] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loadingGearSix, setLoadingGearSix] = useState(true);
-  const [notificationStatus, setNotificationStatus] = useState('default');
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [previewPlaying, setPreviewPlaying] = useState(null); // lang code currently playing
-  const [previewLoading, setPreviewLoading] = useState(null); // lang code currently loading
-  const previewAudioRef = useRef(null);
 
   const playVoicePreview = async (e, lang) => {
     e.stopPropagation();
