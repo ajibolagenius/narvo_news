@@ -430,19 +430,19 @@ const SystemGearSixPage = () => {
               { key: 'aggregatorMediastack', label: 'MEDIASTACK', desc: 'GLOBAL_NEWS_API — AFRICAN_MARKET_FOCUS', badge: 'LIVE' },
               { key: 'aggregatorNewsdata', label: 'NEWSDATA.IO', desc: 'NIGERIAN_NEWS_API — LOCAL_SOURCE_PRIORITY', badge: 'LIVE' },
             ].map(agg => (
-              <div key={agg.key} className="p-4 md:p-8 flex items-center justify-between hover:bg-surface/5 transition-colors">
-                <div className="flex items-center gap-4 md:gap-6">
-                  <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
-                    <Lightning weight={settings[agg.key] ? 'fill' : 'regular'} className="w-5 h-5 md:w-6 md:h-6" />
+              <div key={agg.key} className="p-4 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-surface/5 transition-colors">
+                <div className="flex items-center gap-3 md:gap-6">
+                  <div className="w-8 h-8 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary shrink-0">
+                    <Lightning weight={settings[agg.key] ? 'fill' : 'regular'} className="w-4 h-4 md:w-6 md:h-6" />
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-0.5 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{agg.label}</h3>
+                      <h3 className="mono-ui text-[10px] md:text-[12px] text-content font-bold">{agg.label}</h3>
                       <span className={`mono-ui text-[7px] font-bold px-1.5 py-0.5 ${
                         settings[agg.key] ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-surface/20 text-forest/50 border border-forest/20'
                       }`}>{settings[agg.key] ? agg.badge : 'OFF'}</span>
                     </div>
-                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{agg.desc}</p>
+                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold break-words">{agg.desc}</p>
                   </div>
                 </div>
                 <button
