@@ -24,8 +24,6 @@ const SettingsPage = () => {
     navigate('/');
   };
 
-  const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
-
   const settingsSections = [
     {
       title: t('settings.profile_management'),
