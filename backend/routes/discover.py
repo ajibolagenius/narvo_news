@@ -30,7 +30,7 @@ async def list_podcasts(
     sort: str = Query("latest", regex="^(latest|popular)$")
 ):
     """Get curated podcast episodes"""
-    return get_podcasts(limit=limit, sort=sort)
+    return await get_podcasts(limit=limit, sort=sort)
 
 
 @router.get("/podcasts/{podcast_id}")
