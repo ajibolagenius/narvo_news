@@ -66,6 +66,7 @@ function App() {
       <BreakingNewsProvider>
         <HapticAlertProvider>
           <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <a href="#main-content" className="skip-link">Skip to main content</a>
             <DownloadQueueIndicator />
             <TourGuideModal />
             <Suspense fallback={<PageLoader />}>
