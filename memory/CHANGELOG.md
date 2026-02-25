@@ -4,6 +4,21 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P23] — Feb 25, 2026
+### Added
+- **Speed Control** — Playback speed button (0.75x / 1x / 1.25x / 1.5x / 2x) on both desktop and mobile audio players. Click to cycle through speeds. Active speed highlighted in primary color.
+- **PWA Enhancements** — Fixed all installability issues:
+  - Replaced inline SVG icon with proper PNG icons (192x192 + 512x512, both `any` and `maskable` purpose)
+  - Added screenshots: `form_factor: "wide"` for desktop, `form_factor: "narrow"` for mobile
+  - Updated index.html icon and apple-touch-icon references
+- **Additional Podcast Sources** — Expanded from 5 to 10 RSS feeds: TED Talks Daily, BBC Global News Podcast, NPR Up First, On Purpose with Jay Shetty, How I Built This
+- **Mobile UI Polish** — Increased bottom padding (`pb-32`) across all 11 pages to account for mini-player + bottom nav on mobile (was `pb-20`, content was being cut off)
+
+### Tested
+- Testing agent iteration_47: Backend 100% (10/10), Frontend 100% (14/14 features verified). PWA icons validated as proper PNG files, speed control cycles correctly, mobile mini-player + expanded modal both verified at 375px viewport.
+
+---
+
 ## [P22] — Feb 25, 2026
 ### Fixed — Core Audio Issues
 - **Voice consistency** — AudioContext now fetches `voice_model` from user settings on init. Was hardcoded `'onyx'` (stale OpenAI ID). All TTS calls across home feed, discover, briefing, and news detail now use the user's selected voice.
