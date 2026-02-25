@@ -36,6 +36,39 @@ const SettingsPage = () => {
     (local) => ({ interface_language: local.interface_language, theme: local.theme })
   );
 
+  const [interests, setInterests] = React.useState([]);
+  const [interestsSaving, setInterestsSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    const userId = user?.id || 'guest';
+    fetch(`${API_URL}/api/settings/${userId}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.interests?.length) setInterests(data.interests);
+      })
+      .catch(() => {});
+  }, [user?.id]);
+
+  const toggleInterest = useCallback((catId) => {
+    setInterests(prev => {
+      const next = prev.includes(catId)
+        ? prev.filter(i => i !== catId)
+        : [...prev, catId];
+      // Auto-save
+      setInterestsSaving(true);
+      const userId = user?.id || 'guest';
+      fetch(`${API_URL}/api/settings/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ interests: next }),
+      }).finally(() => {
+        setInterestsSaving(false);
+        showAlert({ type: 'sync', title: 'INTERESTS_UPDATED', message: `${next.length} categories selected`, code: 'INT_OK', duration: 2000 });
+      });
+      return next;
+    });
+  }, [user?.id, showAlert]);
+
   const handleLanguageChange = useCallback((code) => {
     i18n.changeLanguage(code);
     updateSetting('interface_language', code);
