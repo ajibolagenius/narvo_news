@@ -10,11 +10,12 @@ Narvo is a **Broadcast-Grade News Platform** that delivers AI-produced narrative
 
 ### V2 Broadcast Features
 - **The Broadcast Loop**: A radio-like continuous stream of prioritized news stories.
+- **Native Language Translation**: Real-time synthesis and translation into local dialects.
 - **Broadcast Paraphrasing**: Narrative-driven content synthesis using Google Gemini.
-- **The Truth Tag**: A metadata layer providing transparency on AI synthesis and source verification (Dubawa).
-- **Regional Voice Studio**: Selection of high-fidelity, culturally accurate voices (Pidgin, Hausa, Yoruba, Igbo).
-- **Swiss Grid Feed**: A rigid, precision-engineered layout optimized for high-density information scanning.
-- **Predictive Station Sync**: Automated morning pre-caching of full audio broadcasts.
+- **The Truth Tag**: Transparency on AI synthesis, translation, and source verification.
+- **Regional Voice Studio**: Selection of high-fidelity, culturally accurate voices.
+- **Swiss Grid Feed**: A rigid, precision-engineered layout for high-density information.
+- **Predictive Station Sync**: Automated morning pre-caching of localized audio broadcasts.
 
 ---
 
@@ -28,11 +29,14 @@ We utilize a single repository for both Mobile (React Native) and Web (Next.js),
 |-------|------------|-----------|
 | **Core** | React Native + Next.js | Unified Monorepo. Maximum code reuse. |
 | **Backend** | Supabase (Postgres + Auth) | Robust relational base with real-time capabilities. |
-| **AI Layer** | Google Gemini 1.5 Pro | Advanced narrative synthesis and reasoning. |
+| **AI Layer** | Google Gemini 1.5 Pro | Advanced narrative synthesis and **multilingual translation**. |
 | **Vector DB** | pgvector (Supabase) | Historical context for RAG and news continuity. |
-| **Audio** | ElevenLabs / MiniMax | Professional-grade broadcast voice synthesis. |
+| **Audio** | ElevenLabs / MiniMax | Professional-grade broadcast voice synthesis in multiple languages. |
 | **STT** | Whisper (OpenAI) | Transcription of live broadcast inputs. |
 | **Fact-Check** | Dubawa API | Real-time verification and source mapping. |
+| **Icons** | Phosphoricons | Main functional icon library (1.5px stroke). |
+| **Motion** | GSAP + Motion (Framer) | Precision technical and reactive animations. |
+| **Smooth Scroll** | Lenis | Momentum-based scrolling experience. |
 
 ---
 
@@ -41,14 +45,14 @@ We utilize a single repository for both Mobile (React Native) and Web (Next.js),
 ### 1. Multi-Stream Ingestion Logic
 - **Structured Feeds**: RSS parsing with automated content cleaning.
 - **Live Broadcasts**: Real-time audio capture and transcription via Whisper.
-- **Video Intelligence**: YouTube API integration for extracting key narratives from visual media.
+- **Video Intelligence**: YouTube API integration for extracting narratives.
 
-### 2. The Contextual RAG & Truth Tag Lifecycle
+### 2. The Contextual RAG, Translation & Truth Tag Lifecycle
 1. **Extraction**: Automated pulling of raw facts and quotes.
-2. **Retrieval**: System fetches historical context from the Vector DB to ensure continuity.
-3. **Synthesis**: Gemini recasts content into a **Broadcast Narrative** (not a summary).
+2. **Retrieval**: System fetches historical context from the Vector DB.
+3. **Synthesis & Translation**: Gemini recasts content into a **Broadcast Narrative** and simultaneously **translates** it into the target native language.
 4. **Verification**: Cross-referencing with Dubawa data to assign a **Truth Score**.
-5. **Truth Tag Generation**: Producing the transparent metadata explaining the AI's "editorial" decisions.
+5. **Truth Tag Generation**: Producing metadata explaining editorial and translation decisions.
 
 ### 3. Predictive Pre-caching Engine (The 5:00 AM Sync)
 To ensure near-zero latency and offline reliability, the platform predicts user routines. At **5:00 AM local time**, the system:

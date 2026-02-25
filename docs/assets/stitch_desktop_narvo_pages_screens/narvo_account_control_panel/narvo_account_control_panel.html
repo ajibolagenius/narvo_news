@@ -1,293 +1,413 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Account Control Panel</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Account Control Panel</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#628141", // Forest Green
-                        "accent": "#EBD5AB", // Sand/Beige
-                        "background-dark": "#1B211A", // Deep Matte Charcoal
-                        "panel-dark": "#1f261e", 
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
                     borderRadius: {
-                        "DEFAULT": "0px",
-                        "none": "0px",
-                        "sm": "0px",
-                        "md": "0px",
-                        "lg": "0px",
-                        "full": "9999px"
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
                     },
-                    boxShadow: {
-                        "none": "none",
-                    }
                 },
             },
         }
     </script>
-<style>.grid-border-r {
-            border-right: 1px solid #628141;
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        .grid-border-b {
+
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .narvo-border {
+            border: 1px solid #628141;
+        }
+
+        .narvo-border-b {
             border-bottom: 1px solid #628141;
         }
-        .grid-border-l {
-            border-left: 1px solid #628141;
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
         }
-        .grid-border-t {
+
+        .narvo-border-t {
             border-top: 1px solid #628141;
-        }.hover-cell:hover {
+        }
+
+        .hover-cell:hover {
             background-color: #EBD5AB;
             color: #1B211A;
         }
+
         .hover-cell:hover * {
-            color: #1B211A;
-            border-color: #1B211A;
+            color: #1B211A !important;
+            border-color: #1B211A !important;
         }
-        .hover-cell:hover .material-symbols-outlined {
-            color: #1B211A;
-        }.technical-grid {
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+
+        .technical-grid {
             background-size: 20px 20px;
             background-image:
-                linear-gradient(to right, #628141 1px, transparent 1px),
-                linear-gradient(to bottom, #628141 1px, transparent 1px);
-            opacity: 0.2;
-        }button {
-            box-shadow: none !important;
+                linear-gradient(to right, rgba(98, 129, 65, 0.2) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(98, 129, 65, 0.2) 1px, transparent 1px);
         }
     </style>
 </head>
-<body class="bg-background-dark text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden selection:bg-accent selection:text-background-dark">
-<header class="w-full grid-border-b bg-background-dark relative z-10">
-<div class="w-full flex justify-between items-stretch">
-<div class="flex items-center gap-3 px-6 py-4 grid-border-r w-[320px] shrink-0">
-<div class="size-6 text-primary">
-<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_6_319)">
-<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
-</g>
-<defs>
-<clipPath id="clip0_6_319"><rect fill="white" height="48" width="48"></rect></clipPath>
-</defs>
-</svg>
-</div>
-<h1 class="text-xl font-bold tracking-tight uppercase text-white">Narvo</h1>
-</div>
-<div class="flex flex-1 justify-between items-center px-6">
-<nav class="hidden md:flex gap-8 text-sm font-medium tracking-wide">
-<a class="text-accent" href="#">Overview</a>
-<a class="text-slate-400 hover:text-accent transition-colors" href="#">Billing</a>
-<a class="text-slate-400 hover:text-accent transition-colors" href="#">Notifications</a>
-<a class="text-slate-400 hover:text-accent transition-colors" href="#">Security</a>
-</nav>
-<div class="flex items-center gap-6">
-<span class="font-mono text-xs text-primary hidden sm:block">SYS.STATUS: ONLINE</span>
-<span class="font-mono text-xs text-slate-400 hidden sm:block" id="datetime">2023-10-27 14:32:01</span>
-<div class="size-8 rounded-full bg-slate-700 bg-center bg-cover border border-primary" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCXZguyeA7sBdmA7Bbu5tDw0e1IYP8MZy5WxOMciBldorG28Umymo_mtyURdKvds8ShyaN-KJ7Sq75JBAFe-lJg_LxJZo-zASVChdWnKaHy4ArWDevoFyWCrS4y6WidQJjUk6s08jHSM_Bq3jhjxDdWuJ3uH-LE95ehtZp2FmQmnHLoLa54mVhL95cubSEzkLFvcEKkFXc_1a06thQlZfu93GICWvVJk62zY1OVWjXhYuD53XW2gRYYaa6q5JGQMirLLtg4jUBSaBI");'></div>
-</div>
-</div>
-</div>
-</header>
-<main class="flex-1 w-full flex flex-col lg:flex-row bg-background-dark">
-<aside class="w-full lg:w-[320px] shrink-0 grid-border-r grid-border-b lg:grid-border-b-0 flex flex-col bg-background-dark">
-<div class="p-8 grid-border-b flex flex-col gap-6 hover-cell transition-colors group">
-<div class="flex justify-between items-start">
-<div class="size-20 bg-transparent border border-primary flex items-center justify-center text-3xl font-bold text-white group-hover:text-background-dark group-hover:border-background-dark">
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header Navigation -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-identification-card text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> ACCOUNT_CONTROL
+                </h1>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 h-full">
+                <a href="#"
+                    class="text-primary text-[10px] mono-ui font-bold border-b-2 border-primary py-5">OVERVIEW</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">BILLING</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">SECURITY</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">ALERTS</a>
+            </nav>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="hidden md:flex flex-col items-end mono-ui text-[9px] text-forest">
+                <span>IDENTITY_SYNC: <span class="text-primary font-bold">STABLE</span></span>
+                <span>SEC_LAYER: <span class="text-primary font-bold">AES_256</span></span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="mono-ui text-[9px] text-slate-400 hidden sm:block" id="datetime">2026-02-24 00:11:33</span>
+                <div
+                    class="h-10 w-10 narvo-border bg-surface flex items-center justify-center font-display font-bold text-sm text-primary cursor-pointer hover:bg-forest transition-colors">
+                    AV</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <!-- Sidebar Navigation & Profile -->
+        <aside
+            class="w-full lg:w-[320px] shrink-0 narvo-border-r flex flex-col bg-background-dark overflow-y-auto custom-scroll">
+            <div class="p-8 narvo-border-b flex flex-col gap-6 hover-cell transition-all group cursor-pointer">
+                <div class="flex justify-between items-start">
+                    <div
+                        class="size-24 narvo-border flex items-center justify-center text-4xl font-bold text-white group-hover:text-background-dark group-hover:border-background-dark transition-colors">
                         AV
                     </div>
-<span class="inline-flex items-center justify-center px-3 py-1 bg-accent text-background-dark text-xs font-bold uppercase tracking-wider rounded-none group-hover:bg-background-dark group-hover:text-accent">
-                        Verified
+                    <span
+                        class="px-3 py-1 bg-primary text-background-dark text-[9px] mono-ui font-bold group-hover:bg-background-dark group-hover:text-primary transition-colors">
+                        VERIFIED_NODE
                     </span>
-</div>
-<div>
-<h2 class="text-2xl font-bold leading-none mb-2 group-hover:text-background-dark">Alex Vance</h2>
-<p class="text-primary font-mono text-sm group-hover:text-background-dark">ID: 994-282-11</p>
-<p class="text-slate-400 text-sm mt-1 group-hover:text-background-dark">Senior Editor</p>
-</div>
-</div>
-<div class="flex-1 flex flex-col">
-<div class="p-6 grid-border-b hover-cell transition-colors group">
-<div class="flex justify-between items-center mb-2">
-<label class="text-xs uppercase tracking-widest text-slate-500 font-bold group-hover:text-background-dark transition-colors">Email Address</label>
-<span class="material-symbols-outlined text-base text-slate-600 cursor-pointer hover:text-white group-hover:text-background-dark">edit</span>
-</div>
-<div class="font-mono text-sm text-slate-200 group-hover:text-background-dark">alex.vance@narvo.net</div>
-</div>
-<div class="p-6 grid-border-b hover-cell transition-colors group">
-<div class="flex justify-between items-center mb-2">
-<label class="text-xs uppercase tracking-widest text-slate-500 font-bold group-hover:text-background-dark transition-colors">Region</label>
-<span class="material-symbols-outlined text-base text-slate-600 cursor-pointer hover:text-white group-hover:text-background-dark">edit</span>
-</div>
-<div class="font-mono text-sm text-slate-200 group-hover:text-background-dark">Zurich, CH</div>
-</div>
-<div class="p-6 grid-border-b hover-cell transition-colors group">
-<div class="flex justify-between items-center mb-2">
-<label class="text-xs uppercase tracking-widest text-slate-500 font-bold group-hover:text-background-dark transition-colors">Language</label>
-<span class="material-symbols-outlined text-base text-slate-600 cursor-pointer hover:text-white group-hover:text-background-dark">edit</span>
-</div>
-<div class="font-mono text-sm text-slate-200 group-hover:text-background-dark">English (US), German</div>
-</div>
-<div class="mt-auto p-6 flex flex-col gap-3">
-<button class="w-full py-3 px-4 bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-accent hover:text-background-dark transition-colors flex items-center justify-center gap-2 rounded-none shadow-none">
-<span class="material-symbols-outlined text-lg">shield</span>
-                        Security Settings
+                </div>
+                <div class="space-y-1">
+                    <h2 class="font-display text-2xl font-bold text-white group-hover:text-background-dark">Alex Vance
+                    </h2>
+                    <p class="mono-ui text-[11px] text-forest group-hover:text-background-dark font-bold">ID: 994-282-11
+                    </p>
+                    <p class="mono-ui text-[10px] text-slate-400 group-hover:text-background-dark font-bold uppercase">
+                        Senior Editor // Abuja Hub</p>
+                </div>
+            </div>
+
+            <div class="flex-1 flex flex-col">
+                <div class="p-6 narvo-border-b hover-cell transition-all group cursor-pointer">
+                    <div class="flex justify-between items-center mb-1">
+                        <label
+                            class="mono-ui text-[9px] text-forest font-bold group-hover:text-background-dark transition-colors">EMAIL_ADDRESS</label>
+                        <i class="ph ph-note-pencil text-forest group-hover:text-background-dark"></i>
+                    </div>
+                    <div class="mono-ui text-[11px] text-white font-bold group-hover:text-background-dark">
+                        alex.vance@narvo.net</div>
+                </div>
+
+                <div class="p-6 narvo-border-b hover-cell transition-all group cursor-pointer">
+                    <div class="flex justify-between items-center mb-1">
+                        <label
+                            class="mono-ui text-[9px] text-forest font-bold group-hover:text-background-dark transition-colors">GEOGRAPHIC_REGION</label>
+                        <i class="ph ph-map-pin text-forest group-hover:text-background-dark"></i>
+                    </div>
+                    <div class="mono-ui text-[11px] text-white font-bold group-hover:text-background-dark">Lagos, NG
+                    </div>
+                </div>
+
+                <div class="p-6 narvo-border-b hover-cell transition-all group cursor-pointer">
+                    <div class="flex justify-between items-center mb-1">
+                        <label
+                            class="mono-ui text-[9px] text-forest font-bold group-hover:text-background-dark transition-colors">PRIMARY_LANG</label>
+                        <i class="ph ph-translate text-forest group-hover:text-background-dark"></i>
+                    </div>
+                    <div class="mono-ui text-[11px] text-white font-bold group-hover:text-background-dark">English (US),
+                        Yoruba</div>
+                </div>
+
+                <div class="mt-auto p-8 space-y-4">
+                    <button
+                        class="w-full py-4 bg-primary text-background-dark mono-ui text-[11px] font-bold hover:bg-white transition-all flex items-center justify-center gap-3">
+                        <i class="ph ph-shield-check text-lg"></i>
+                        <span>SECURITY_PROTOCOL</span>
                     </button>
-<button class="w-full py-3 px-4 border border-primary text-primary font-bold text-sm uppercase tracking-wider hover:bg-primary hover:text-white transition-colors rounded-none shadow-none">
-                        Log Out
+                    <button
+                        class="w-full py-4 narvo-border text-primary mono-ui text-[11px] font-bold hover:bg-forest hover:text-white transition-all">
+                        SYSTEM_LOGOUT
                     </button>
-</div>
-</div>
-</aside>
-<section class="flex-1 flex flex-col bg-background-dark">
-<div class="grid-border-b h-auto lg:h-1/2 min-h-[300px] flex flex-col lg:flex-row">
-<div class="flex-1 p-8 grid-border-r border-r-0 lg:border-r hover-cell transition-colors relative overflow-hidden group">
-<div class="absolute top-0 right-0 p-4 opacity-10 pointer-events-none group-hover:opacity-5">
-<span class="material-symbols-outlined text-[120px] text-primary group-hover:text-background-dark">broadcast_on_personal</span>
-</div>
-<div class="relative z-10 h-full flex flex-col justify-between">
-<div>
-<div class="flex items-center gap-2 mb-6">
-<span class="size-2 bg-accent rounded-full animate-pulse group-hover:bg-background-dark"></span>
-<span class="text-xs font-mono text-accent uppercase group-hover:text-background-dark">System Active</span>
-</div>
-<h3 class="text-xs uppercase tracking-widest text-slate-500 font-bold mb-2 group-hover:text-background-dark">Current Subscription</h3>
-<p class="text-4xl lg:text-5xl font-bold text-white tracking-tight leading-none mb-4 group-hover:text-background-dark">
-                                Premium<br/>Broadcast
-                            </p>
-<div class="inline-flex items-center px-2 py-1 border border-accent text-accent font-mono text-xs group-hover:border-background-dark group-hover:text-background-dark">
-                                [PLAN_ID: PRM-BC-24]
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content -->
+        <section class="flex-1 flex flex-col overflow-y-auto custom-scroll">
+            <!-- Upper Section: Subscription & Alerts -->
+            <div class="narvo-border-b flex flex-col lg:flex-row h-auto lg:h-[400px]">
+                <div
+                    class="flex-1 p-10 narvo-border-r border-r-0 lg:border-r hover-cell transition-all group relative overflow-hidden group">
+                    <div class="absolute -top-10 -right-10 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <i class="ph ph-broadcast text-[280px] text-primary group-hover:text-background-dark"></i>
+                    </div>
+                    <div class="relative z-10 h-full flex flex-col justify-between">
+                        <div class="space-y-6">
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="size-2 bg-primary rounded-none animate-pulse group-hover:bg-background-dark"></span>
+                                <span
+                                    class="mono-ui text-[10px] text-primary font-bold uppercase group-hover:text-background-dark">Stream_Active</span>
                             </div>
-</div>
-<div class="mt-8 flex gap-4">
-<button class="px-6 py-2 bg-transparent border border-white hover:bg-white hover:text-background-dark text-white text-sm font-medium transition-all group-hover:border-background-dark group-hover:text-background-dark group-hover:hover:bg-background-dark group-hover:hover:text-accent shadow-none">
-                                Manage Plan
+                            <div class="space-y-2">
+                                <h3
+                                    class="mono-ui text-[10px] text-forest font-bold uppercase group-hover:text-background-dark tracking-widest">
+                                    CURRENT_PLAN</h3>
+                                <p
+                                    class="font-display text-5xl lg:text-7xl font-bold text-white uppercase leading-none group-hover:text-background-dark">
+                                    Premium<br />Broadcast
+                                </p>
+                            </div>
+                            <div
+                                class="inline-flex px-3 py-1 border border-primary text-primary mono-ui text-[10px] font-bold group-hover:border-background-dark group-hover:text-background-dark">
+                                [PROTO_ID: PRM-BC-26]
+                            </div>
+                        </div>
+                        <div class="flex gap-6">
+                            <button
+                                class="px-8 py-3 bg-transparent border border-white text-white mono-ui text-[11px] font-bold hover:bg-white hover:text-background-dark transition-all group-hover:border-background-dark group-hover:text-background-dark hover:group-hover:bg-background-dark hover:group-hover:text-primary">
+                                MANAGE_PLAN
                             </button>
-<button class="px-6 py-2 text-slate-400 hover:text-white text-sm font-medium transition-colors group-hover:text-background-dark/70 group-hover:hover:text-background-dark shadow-none">
-                                View Invoices
+                            <button
+                                class="px-4 py-3 text-slate-400 mono-ui text-[11px] font-bold hover:text-white transition-colors group-hover:text-background-dark">
+                                VIEW_INVOICES
                             </button>
-</div>
-</div>
-</div>
-<div class="w-full lg:w-1/3 p-8 bg-background-dark flex flex-col gap-4">
-<h3 class="text-xs uppercase tracking-widest text-slate-500 font-bold flex items-center gap-2">
-<span class="material-symbols-outlined text-sm">notifications</span>
-                        System Alerts
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-full lg:w-[400px] p-10 flex flex-col gap-8">
+                    <h3 class="mono-ui text-[10px] text-forest font-bold flex items-center gap-3 tracking-[0.2em]">
+                        <i class="ph ph-bell-ringing"></i>
+                        SYSTEM_ALERTS
                     </h3>
-<div class="flex flex-col gap-3">
-<div class="p-4 border border-primary bg-background-dark relative hover:bg-slate-800/50 transition-colors">
-<div class="absolute top-0 left-0 w-1 h-full bg-accent"></div>
-<p class="text-sm font-medium text-accent mb-1">New Feature Available</p>
-<p class="text-xs text-slate-400 leading-relaxed">Advanced analytics dashboard is now live for premium users.</p>
-<p class="text-[10px] font-mono text-slate-600 mt-2 text-right">Today, 09:00 AM</p>
-</div>
-<div class="p-4 border border-primary/30 bg-background-dark hover:border-primary transition-colors">
-<p class="text-sm font-medium text-white mb-1">Scheduled Maintenance</p>
-<p class="text-xs text-slate-400 leading-relaxed">Broadcast servers will undergo maintenance on Nov 1st.</p>
-<p class="text-[10px] font-mono text-slate-600 mt-2 text-right">Yesterday</p>
-</div>
-</div>
-</div>
-</div>
-<div class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-<div class="p-8 grid-border-r grid-border-b lg:grid-border-b-0 hover-cell transition-colors flex flex-col justify-between min-h-[200px] group">
-<div class="flex justify-between items-start">
-<h3 class="text-xs uppercase tracking-widest text-slate-500 font-bold group-hover:text-background-dark">Broadcast Hours</h3>
-<span class="material-symbols-outlined text-slate-600 group-hover:text-background-dark">schedule</span>
-</div>
-<div>
-<span class="font-mono text-5xl font-medium text-white block mb-1 group-hover:text-background-dark">142.5</span>
-<div class="flex items-center gap-2 text-xs">
-<span class="text-accent font-mono group-hover:text-background-dark">+12%</span>
-<span class="text-slate-500 group-hover:text-background-dark">vs last month</span>
-</div>
-</div>
-<div class="w-full h-1 bg-slate-800 mt-6 relative overflow-hidden group-hover:bg-background-dark/20">
-<div class="absolute top-0 left-0 h-full w-[70%] bg-accent group-hover:bg-background-dark"></div>
-</div>
-</div>
-<div class="p-8 grid-border-r grid-border-b lg:grid-border-b-0 hover-cell transition-colors flex flex-col justify-between min-h-[200px] group">
-<div class="flex justify-between items-start">
-<h3 class="text-xs uppercase tracking-widest text-slate-500 font-bold group-hover:text-background-dark">Stories Consumed</h3>
-<span class="material-symbols-outlined text-slate-600 group-hover:text-background-dark">article</span>
-</div>
-<div>
-<span class="font-mono text-5xl font-medium text-white block mb-1 group-hover:text-background-dark">892</span>
-<div class="flex items-center gap-2 text-xs">
-<span class="text-slate-400 font-mono group-hover:text-background-dark">avg 24/day</span>
-</div>
-</div>
-<div class="flex items-end gap-1 h-8 mt-4 opacity-50 group-hover:opacity-100">
-<div class="w-1 bg-slate-700 h-[40%] group-hover:bg-background-dark"></div>
-<div class="w-1 bg-slate-700 h-[60%] group-hover:bg-background-dark"></div>
-<div class="w-1 bg-slate-700 h-[30%] group-hover:bg-background-dark"></div>
-<div class="w-1 bg-slate-700 h-[80%] group-hover:bg-background-dark"></div>
-<div class="w-1 bg-slate-700 h-[50%] group-hover:bg-background-dark"></div>
-<div class="w-1 bg-accent h-[90%] group-hover:bg-background-dark"></div>
-<div class="w-1 bg-slate-700 h-[70%] group-hover:bg-background-dark"></div>
-</div>
-</div>
-<div class="p-0 grid-border-b lg:grid-border-b-0 relative group min-h-[200px] hover-cell transition-colors bg-background-dark">
-<div class="absolute inset-0 technical-grid pointer-events-none"></div>
-<div class="absolute inset-0 p-8 flex items-center justify-center opacity-30 group-hover:opacity-10 transition-opacity">
-<div class="w-full h-full border border-primary/50 relative flex items-center justify-center">
-<div class="absolute top-0 left-1/2 -translate-x-1/2 w-px h-full bg-primary/30"></div>
-<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-px bg-primary/30"></div>
-<div class="size-2 bg-accent rounded-full animate-ping"></div>
-<div class="absolute size-32 border border-primary/30 rounded-full"></div>
-<div class="absolute size-48 border border-primary/20 rounded-full border-dashed"></div>
-</div>
-</div>
-<div class="relative z-10 p-8 h-full flex flex-col justify-between">
-<div class="flex justify-between items-start">
-<h3 class="text-xs uppercase tracking-widest text-slate-400 font-bold group-hover:text-background-dark">Primary Region</h3>
-<span class="material-symbols-outlined text-slate-500 group-hover:text-background-dark">public</span>
-</div>
-<div class="mt-auto">
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-accent text-lg group-hover:text-background-dark">location_on</span>
-<span class="text-2xl font-bold text-white group-hover:text-background-dark">Zurich, CH</span>
-</div>
-<div class="flex gap-2 font-mono text-[10px] text-accent group-hover:text-background-dark">
-<span>LAT: 47.3769</span>
-<span>LON: 8.5417</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-</main>
-<footer class="border-t border-primary bg-background-dark py-2 px-6 flex justify-between items-center text-[10px] uppercase tracking-widest text-slate-500">
-<div>Narvo Platform v2.4.1</div>
-<div class="flex gap-4">
-<span class="hover:text-accent cursor-pointer transition-colors">Terms</span>
-<span class="hover:text-accent cursor-pointer transition-colors">Privacy</span>
-<span class="hover:text-accent cursor-pointer transition-colors">Support</span>
-</div>
-</footer>
-<script>
-        // Simple script to update time for that "dashboard" feel
+                    <div class="space-y-4">
+                        <div
+                            class="p-6 narvo-border bg-primary/5 relative hover:bg-forest/10 transition-colors cursor-pointer group">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-primary"></div>
+                            <p class="mono-ui text-[11px] text-primary font-bold mb-2">NEW_FEATURE: HUB_ANALYTICS</p>
+                            <p class="mono-ui text-[9px] text-forest leading-relaxed">ADVANCED_TRANSMISSION_METRICS ARE
+                                NOW LIVE FOR PREMIUM ENTITIES.</p>
+                            <p class="mono-ui text-[8px] text-slate-500 mt-4 text-right">09:12_UTC</p>
+                        </div>
+                        <div
+                            class="p-6 narvo-border border-forest/30 bg-surface/5 hover:border-forest transition-colors cursor-pointer group">
+                            <p class="mono-ui text-[11px] text-white font-bold mb-2">MAINTENANCE_DOWNTIME</p>
+                            <p class="mono-ui text-[9px] text-forest leading-relaxed">REGION_LAGOS NODES WILL UNDERGO
+                                ENCRYPTION UPDATES ON FEB 28.</p>
+                            <p class="mono-ui text-[8px] text-slate-500 mt-4 text-right">24H_AGO</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Section: Metrics -->
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-3">
+                <!-- Metric 1 -->
+                <div
+                    class="p-10 narvo-border-r narvo-border-b md:border-b-0 hover-cell transition-all flex flex-col justify-between group cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <h3
+                            class="mono-ui text-[10px] text-forest font-bold tracking-widest group-hover:text-background-dark">
+                            BROADCAST_HOURS</h3>
+                        <i class="ph ph-timer text-forest text-xl group-hover:text-background-dark"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <span
+                            class="font-display text-6xl font-bold text-white block group-hover:text-background-dark transition-colors">142.5</span>
+                        <div class="flex items-center gap-2 mono-ui text-[9px] font-bold">
+                            <span class="text-primary group-hover:text-background-dark">+12.4%</span>
+                            <span class="text-forest group-hover:text-background-dark opacity-70">VS_PREV_CYCLE</span>
+                        </div>
+                    </div>
+                    <div class="w-full h-1 bg-forest/20 mt-8 relative group-hover:bg-background-dark/20">
+                        <div
+                            class="absolute top-0 left-0 h-full w-[70%] bg-primary group-hover:bg-background-dark transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metric 2 -->
+                <div
+                    class="p-10 narvo-border-r narvo-border-b md:border-b-0 hover-cell transition-all flex flex-col justify-between group cursor-pointer">
+                    <div class="flex justify-between items-start">
+                        <h3
+                            class="mono-ui text-[10px] text-forest font-bold tracking-widest group-hover:text-background-dark">
+                            SIGNALS_PROCESSED</h3>
+                        <i class="ph ph-waveform text-forest text-xl group-hover:text-background-dark"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <span
+                            class="font-display text-6xl font-bold text-white block group-hover:text-background-dark transition-colors">892</span>
+                        <div class="flex items-center gap-2 mono-ui text-[9px] font-bold">
+                            <span
+                                class="text-forest group-hover:text-background-dark opacity-70">AVG_28_PER_ROTATION</span>
+                        </div>
+                    </div>
+                    <div class="flex items-end gap-1 h-12 mt-8 opacity-40 group-hover:opacity-80 transition-all">
+                        <div class="flex-1 bg-forest h-[40%] group-hover:bg-background-dark"></div>
+                        <div class="flex-1 bg-forest h-[60%] group-hover:bg-background-dark"></div>
+                        <div class="flex-1 bg-forest h-[30%] group-hover:bg-background-dark"></div>
+                        <div class="flex-1 bg-forest h-[80%] group-hover:bg-background-dark"></div>
+                        <div class="flex-1 bg-primary h-[100%] group-hover:bg-background-dark"></div>
+                        <div class="flex-1 bg-forest h-[50%] group-hover:bg-background-dark"></div>
+                        <div class="flex-1 bg-forest h-[70%] group-hover:bg-background-dark"></div>
+                    </div>
+                </div>
+
+                <!-- Region Status -->
+                <div
+                    class="p-10 relative group hover-cell transition-all bg-background-dark cursor-pointer overflow-hidden">
+                    <div class="absolute inset-0 technical-grid opacity-10 group-hover:opacity-0 transition-opacity">
+                    </div>
+                    <div class="relative z-10 h-full flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <h3
+                                class="mono-ui text-[10px] text-forest font-bold tracking-widest group-hover:text-background-dark">
+                                PRIMARY_REGION_STATUS</h3>
+                            <i
+                                class="ph ph-globe-hemisphere-west text-forest text-xl group-hover:text-background-dark"></i>
+                        </div>
+                        <div class="mt-auto space-y-4">
+                            <div class="flex items-center gap-4">
+                                <i
+                                    class="ph ph-map-pin text-primary text-4xl group-hover:text-background-dark transition-colors"></i>
+                                <div class="space-y-1">
+                                    <h4
+                                        class="font-display text-3xl font-bold text-white group-hover:text-background-dark uppercase leading-none transition-colors">
+                                        Lagos, NG</h4>
+                                    <div
+                                        class="flex gap-4 mono-ui text-[9px] text-primary font-bold group-hover:text-background-dark">
+                                        <span>LAT: 6.5244</span>
+                                        <span>LON: 3.3792</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="narvo-border border-forest/30 p-3 bg-surface/10 group-hover:border-background-dark transition-all">
+                                <div
+                                    class="flex justify-between mono-ui text-[8px] text-forest font-bold group-hover:text-background-dark">
+                                    <span>HUB_LOAD</span>
+                                    <span>24%</span>
+                                </div>
+                                <div class="w-full h-[2px] bg-forest/20 mt-2">
+                                    <div class="w-[24%] h-full bg-primary group-hover:bg-background-dark"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Global Telemetry Footer -->
+    <footer class="h-10 border-t border-forest/30 bg-background-dark flex items-center justify-between px-6 shrink-0">
+        <div class="flex items-center gap-8 mono-ui text-[9px] text-forest font-bold">
+            <div class="flex items-center gap-2">
+                <div class="size-2 bg-primary"></div>
+                <span>NODE_SYNC: NOMINAL</span>
+            </div>
+            <span>PLATFORM_V: 2.6.0_STABLE</span>
+            <div class="flex gap-4">
+                <span class="hover:text-primary transition-colors cursor-pointer">TERMS</span>
+                <span class="hover:text-primary transition-colors cursor-pointer">PRIVACY</span>
+                <span class="hover:text-primary transition-colors cursor-pointer">DOCS</span>
+            </div>
+        </div>
+        <div class="mono-ui text-[9px] text-forest font-bold">
+            SESSION_TOKEN: NVR-ST-99428211
+        </div>
+    </footer>
+
+    <script>
         function updateTime() {
             const now = new Date();
             const timeString = now.toISOString().replace('T', ' ').substring(0, 19);
             const el = document.getElementById('datetime');
-            if(el) el.innerText = timeString;
+            if (el) el.innerText = timeString;
         }
         setInterval(updateTime, 1000);
         updateTime();
     </script>
+</body>
 
-</body></html>
+</html>

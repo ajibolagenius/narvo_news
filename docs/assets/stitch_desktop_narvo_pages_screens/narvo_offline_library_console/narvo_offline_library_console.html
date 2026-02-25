@@ -1,253 +1,337 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Narvo Offline Library Console</title>
-<link href="https://fonts.googleapis.com" rel="preconnect"/>
-<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NARVO | Offline Library Console</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Phosphoricons CDN -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#628141", // Changed to Forest Green for some primary uses to match strict grid if needed, but requests says 'replace soft green highlights with strict 1px Forest Green grid'.
-                        "accent-green": "#13ec5b", // Keeping original primary for active states if needed, but let's look at specific requests.
-                        "forest-green": "#628141", // UPDATED: Strict Forest Green
-                        "sand": "#EBD5AB", // UPDATED: Sand/Beige
-                        "background-light": "#f6f8f6",
-                        "background-dark": "#1B211A", // UPDATED: Deep Matte Charcoal
-                        "charcoal-light": "#232a22",
+                        "primary": "#EBD5AB",
+                        "forest": "#628141",
+                        "background-dark": "#1B211A",
+                        "surface": "#242B23",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"],
-                        "mono": ["JetBrains Mono", "monospace"],
+                        "body": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
                     },
-                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                    borderRadius: {
+                        "none": "0",
+                        "DEFAULT": "0",
+                        "sm": "0",
+                        "md": "0",
+                        "lg": "0",
+                        "xl": "0",
+                        "full": "0",
+                    },
                 },
             },
         }
     </script>
-</head>
-<body class="bg-background-dark text-slate-100 font-display min-h-screen flex flex-col antialiased selection:bg-forest-green selection:text-sand">
-<header class="border-b border-forest-green sticky top-0 z-50 bg-background-dark/95 backdrop-blur-sm">
-<div class="px-6 md:px-12 flex h-16 items-center justify-between">
-<div class="flex items-center gap-4 text-white">
-<div class="size-6 text-sand">
-<span class="material-symbols-outlined !text-[24px]">graphic_eq</span>
-</div>
-<h2 class="text-lg font-bold tracking-tight uppercase font-display">NARVO</h2>
-<div class="h-4 w-px bg-forest-green mx-2 hidden sm:block"></div>
-<span class="text-sm text-slate-400 font-mono tracking-widest hidden sm:block">OFFLINE_CONSOLE_V2.4</span>
-</div>
-<nav class="hidden md:flex items-center gap-8">
-<a class="text-sm font-medium hover:text-sand transition-colors text-slate-400 font-mono" href="#">Broadcasts</a>
-<a class="text-sm font-medium text-sand font-mono" href="#">Offline Library</a>
-<a class="text-sm font-medium hover:text-sand transition-colors text-slate-400 font-mono" href="#">Settings</a>
-</nav>
-<div class="flex items-center gap-3">
-<button class="p-2 text-slate-500 hover:text-sand transition-colors">
-<span class="material-symbols-outlined !text-[20px]">search</span>
-</button>
-<div class="h-4 w-px bg-forest-green mx-1"></div>
-<button class="flex items-center justify-center size-8 rounded bg-forest-green/20 text-sand hover:bg-forest-green/40 transition-colors border border-forest-green">
-<span class="material-symbols-outlined !text-[20px]">account_circle</span>
-</button>
-</div>
-</div>
-</header>
-<main class="flex-1 px-6 md:px-12 py-8 max-w-[1400px] mx-auto w-full flex flex-col gap-8">
-<section class="flex flex-col gap-6">
-<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-<div>
-<div class="flex items-center gap-2 mb-2">
-<span class="material-symbols-outlined text-sand !text-[16px]">folder_open</span>
-<span class="text-xs font-mono uppercase text-slate-400 tracking-wider">Local Storage</span>
-</div>
-<h1 class="text-4xl font-bold tracking-tight text-white uppercase font-display">Cached Archives</h1>
-</div>
-<div class="flex flex-col items-end gap-1 font-mono">
-<span class="text-xs text-sand uppercase tracking-wider">Capacity Limit</span>
-<span class="text-sm text-white">12.4 GB <span class="text-slate-500">/ 50.0 GB</span></span>
-</div>
-</div>
-<div class="relative w-full h-3 border border-forest-green mt-2 p-[1px]">
-<div class="h-full bg-sand w-[24.8%]"></div>
-</div>
-<div class="relative w-full h-4">
-<div class="absolute top-0 left-0 text-[10px] font-mono text-slate-600">0%</div>
-<div class="absolute top-0 left-[24.8%] text-[10px] font-mono text-sand -translate-x-1/2">24.8%</div>
-<div class="absolute top-0 right-0 text-[10px] font-mono text-slate-600">100%</div>
-</div>
-</section>
-<section class="flex flex-wrap items-center justify-between gap-4 py-4 border-b border-forest-green">
-<div class="flex items-center gap-4">
-<button class="flex items-center gap-2 px-4 py-2 bg-transparent border border-forest-green hover:bg-forest-green/20 text-xs font-mono uppercase tracking-wider text-white transition-all rounded-none group">
-<span class="material-symbols-outlined !text-[16px] group-hover:text-sand">filter_list</span>
-                Filter
-            </button>
-<div class="h-4 w-px bg-forest-green"></div>
-<div class="flex gap-2">
-<button class="px-3 py-1 text-xs font-mono text-background-dark bg-sand rounded-none">All</button>
-<button class="px-3 py-1 text-xs font-mono text-slate-400 hover:text-sand transition-colors">Audio</button>
-<button class="px-3 py-1 text-xs font-mono text-slate-400 hover:text-sand transition-colors">Transcripts</button>
-</div>
-</div>
-<div class="flex items-center gap-3">
-<button class="text-xs font-mono text-slate-400 hover:text-red-400 uppercase tracking-wider flex items-center gap-1 transition-colors">
-<span class="material-symbols-outlined !text-[14px]">delete_sweep</span>
-                Clear Cache
-            </button>
-</div>
-</section>
-<section class="flex flex-col w-full overflow-x-auto border border-forest-green">
-<div class="grid grid-cols-12 gap-4 px-4 py-3 border-b border-forest-green bg-charcoal-light/50 text-xs font-mono uppercase tracking-wider text-slate-400 sticky top-0">
-<div class="col-span-1 flex items-center justify-center">Type</div>
-<div class="col-span-5 md:col-span-4">File Identification</div>
-<div class="col-span-2 md:col-span-2 text-right">Duration</div>
-<div class="col-span-2 md:col-span-2 text-right">Size</div>
-<div class="col-span-2 md:col-span-2 text-right hidden md:block">Cached Date</div>
-<div class="col-span-2 md:col-span-1 text-right md:text-center">Actions</div>
-</div>
-<div class="group grid grid-cols-12 gap-4 px-4 py-4 border-b border-forest-green items-center hover:bg-charcoal-light transition-colors cursor-pointer font-mono">
-<div class="col-span-1 flex items-center justify-center text-sand">
-<span class="material-symbols-outlined">graphic_eq</span>
-</div>
-<div class="col-span-5 md:col-span-4 flex flex-col justify-center">
-<span class="text-sm font-medium text-white group-hover:text-sand transition-colors">Morning_Briefing_Ep402.wav</span>
-<span class="text-[10px] text-slate-500 uppercase tracking-wide mt-1 font-mono">Global Markets • Politics</span>
-</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">14:22</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">24.5 MB</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-500 hidden md:block">2023-10-24</div>
-<div class="col-span-2 md:col-span-1 flex items-center justify-end md:justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-white hover:text-sand"><span class="material-symbols-outlined !text-[20px]">play_arrow</span></button>
-<button class="text-white hover:text-red-400"><span class="material-symbols-outlined !text-[18px]">delete</span></button>
-</div>
-</div>
-<div class="group grid grid-cols-12 gap-4 px-4 py-4 border-b border-forest-green items-center hover:bg-charcoal-light transition-colors cursor-pointer font-mono">
-<div class="col-span-1 flex items-center justify-center text-slate-500">
-<span class="material-symbols-outlined">mic</span>
-</div>
-<div class="col-span-5 md:col-span-4 flex flex-col justify-center">
-<span class="text-sm font-medium text-white group-hover:text-sand transition-colors">Interview_Sen_Doe_Raw.mp3</span>
-<span class="text-[10px] text-slate-500 uppercase tracking-wide mt-1 font-mono">Raw Footage • Unedited</span>
-</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">45:10</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">62.1 MB</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-500 hidden md:block">2023-10-23</div>
-<div class="col-span-2 md:col-span-1 flex items-center justify-end md:justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-white hover:text-sand"><span class="material-symbols-outlined !text-[20px]">play_arrow</span></button>
-<button class="text-white hover:text-red-400"><span class="material-symbols-outlined !text-[18px]">delete</span></button>
-</div>
-</div>
-<div class="group relative grid grid-cols-12 gap-4 px-4 py-4 border-b border-forest-green items-center bg-sand/5 cursor-pointer font-mono">
-<div class="absolute left-0 top-0 bottom-0 w-[2px] bg-sand"></div>
-<div class="col-span-1 flex items-center justify-center text-sand animate-pulse">
-<span class="material-symbols-outlined">volume_up</span>
-</div>
-<div class="col-span-5 md:col-span-4 flex flex-col justify-center">
-<span class="text-sm font-medium text-sand">Tech_Crunch_Update_v2.wav</span>
-<span class="text-[10px] text-sand/70 uppercase tracking-wide mt-1 font-mono">Technology • AI</span>
-</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-sand">05:30</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-sand">8.2 MB</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-sand/70 hidden md:block">2023-10-23</div>
-<div class="col-span-2 md:col-span-1 flex items-center justify-end md:justify-center gap-2">
-<button class="text-sand hover:text-white"><span class="material-symbols-outlined !text-[20px]">pause</span></button>
-<button class="text-sand/70 hover:text-red-400"><span class="material-symbols-outlined !text-[18px]">delete</span></button>
-</div>
-</div>
-<div class="group grid grid-cols-12 gap-4 px-4 py-4 border-b border-forest-green items-center hover:bg-charcoal-light transition-colors cursor-pointer font-mono">
-<div class="col-span-1 flex items-center justify-center text-slate-500">
-<span class="material-symbols-outlined">description</span>
-</div>
-<div class="col-span-5 md:col-span-4 flex flex-col justify-center">
-<span class="text-sm font-medium text-white group-hover:text-sand transition-colors">Climate_Report_2023_Abstract.txt</span>
-<span class="text-[10px] text-slate-500 uppercase tracking-wide mt-1 font-mono">Document • Transcript</span>
-</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">--:--</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">142 KB</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-500 hidden md:block">2023-10-22</div>
-<div class="col-span-2 md:col-span-1 flex items-center justify-end md:justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-white hover:text-sand"><span class="material-symbols-outlined !text-[20px]">visibility</span></button>
-<button class="text-white hover:text-red-400"><span class="material-symbols-outlined !text-[18px]">delete</span></button>
-</div>
-</div>
-<div class="group grid grid-cols-12 gap-4 px-4 py-4 border-b border-forest-green items-center hover:bg-charcoal-light transition-colors cursor-pointer font-mono">
-<div class="col-span-1 flex items-center justify-center text-red-400">
-<span class="material-symbols-outlined">warning</span>
-</div>
-<div class="col-span-5 md:col-span-4 flex flex-col justify-center">
-<span class="text-sm font-medium text-slate-400 group-hover:text-sand transition-colors italic">corrupted_segment_x89.tmp</span>
-<span class="text-[10px] text-red-400/80 uppercase tracking-wide mt-1 font-mono">Download Interrupted</span>
-</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-500">00:00</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-500">0 KB</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-600 hidden md:block">2023-10-21</div>
-<div class="col-span-2 md:col-span-1 flex items-center justify-end md:justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-sand hover:text-white"><span class="material-symbols-outlined !text-[20px]">refresh</span></button>
-<button class="text-white hover:text-red-400"><span class="material-symbols-outlined !text-[18px]">delete</span></button>
-</div>
-</div>
-<div class="group grid grid-cols-12 gap-4 px-4 py-4 items-center hover:bg-charcoal-light transition-colors cursor-pointer font-mono">
-<div class="col-span-1 flex items-center justify-center text-slate-500">
-<span class="material-symbols-outlined">graphic_eq</span>
-</div>
-<div class="col-span-5 md:col-span-4 flex flex-col justify-center">
-<span class="text-sm font-medium text-white group-hover:text-sand transition-colors">Evening_Roundup_Live.wav</span>
-<span class="text-[10px] text-slate-500 uppercase tracking-wide mt-1 font-mono">Breaking News • Live</span>
-</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">28:15</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-300">42.8 MB</div>
-<div class="col-span-2 md:col-span-2 text-right text-sm text-slate-500 hidden md:block">2023-10-20</div>
-<div class="col-span-2 md:col-span-1 flex items-center justify-end md:justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-<button class="text-white hover:text-sand"><span class="material-symbols-outlined !text-[20px]">play_arrow</span></button>
-<button class="text-white hover:text-red-400"><span class="material-symbols-outlined !text-[18px]">delete</span></button>
-</div>
-</div>
-</section>
-<div class="flex items-center justify-between pt-4 text-xs font-mono text-slate-500 uppercase tracking-wider">
-<span>Showing 1-6 of 24 items</span>
-<div class="flex gap-4">
-<button class="hover:text-white disabled:opacity-50" disabled="">Previous</button>
-<span class="text-sand">1</span>
-<button class="hover:text-white">2</button>
-<button class="hover:text-white">3</button>
-<button class="hover:text-white">Next</button>
-</div>
-</div>
-</main>
-<div class="sticky bottom-0 w-full border-t border-forest-green bg-charcoal-light/95 backdrop-blur-md px-6 md:px-12 py-3 flex items-center justify-between gap-6 z-40">
-<div class="flex items-center gap-4 min-w-0">
-<button class="size-8 rounded-full bg-sand text-background-dark flex items-center justify-center hover:bg-white transition-colors">
-<span class="material-symbols-outlined !text-[20px]">pause</span>
-</button>
-<div class="flex flex-col min-w-0">
-<span class="text-xs font-mono text-sand uppercase tracking-wider truncate">Now Playing</span>
-<span class="text-sm font-bold text-white truncate font-mono">Tech_Crunch_Update_v2.wav</span>
-</div>
-</div>
-<div class="hidden md:flex flex-1 mx-8 items-center gap-3">
-<span class="text-xs font-mono text-slate-400">01:12</span>
-<div class="h-[2px] bg-forest-green flex-1 relative group cursor-pointer">
-<div class="absolute left-0 top-0 bottom-0 bg-sand w-[22%] group-hover:bg-white transition-colors"></div>
-</div>
-<span class="text-xs font-mono text-slate-400">05:30</span>
-</div>
-<div class="flex items-center gap-4 text-slate-400">
-<span class="material-symbols-outlined !text-[18px] hover:text-white cursor-pointer">volume_up</span>
-<span class="material-symbols-outlined !text-[18px] hover:text-white cursor-pointer">playlist_play</span>
-<div class="h-3 w-px bg-forest-green"></div>
-<div class="flex items-center gap-1">
-<div class="size-2 rounded-full bg-sand animate-pulse"></div>
-<span class="text-[10px] font-mono uppercase tracking-widest hidden sm:block">System Nominal</span>
-</div>
-</div>
-</div>
+    <style>
+        body {
+            background-color: #1B211A;
+            color: #F2F2F2;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
 
-</body></html>
+        .mono-ui {
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .narvo-border {
+            border: 1px solid #628141;
+        }
+
+        .narvo-border-r {
+            border-right: 1px solid #628141;
+        }
+
+        .narvo-border-l {
+            border-left: 1px solid #628141;
+        }
+
+        .narvo-border-b {
+            border-bottom: 1px solid #628141;
+        }
+
+        .narvo-border-t {
+            border-top: 1px solid #628141;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1B211A;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #628141;
+        }
+    </style>
+</head>
+
+<body
+    class="h-screen overflow-hidden flex flex-col bg-background-dark selection:bg-primary selection:text-background-dark">
+    <!-- Top Header Navigation -->
+    <header class="h-16 flex items-center justify-between px-6 narvo-border-b bg-background-dark z-20 shrink-0">
+        <div class="flex items-center gap-12">
+            <div class="flex items-center gap-4">
+                <i class="ph ph-hard-drive text-primary text-2xl"></i>
+                <h1 class="font-display text-xl tracking-tight font-bold text-white uppercase text-nowrap">
+                    NARVO <span class="text-forest font-light mx-2">//</span> OFFLINE_LIBRARY
+                </h1>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 h-full">
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">BROADCASTS</a>
+                <a href="#"
+                    class="text-primary text-[10px] mono-ui font-bold border-b-2 border-primary py-5">LOCAL_ARCHIVES</a>
+                <a href="#"
+                    class="text-forest hover:text-white text-[10px] mono-ui font-bold transition-colors">TRANSCRIPTS</a>
+            </nav>
+        </div>
+
+        <div class="flex items-center gap-6">
+            <div class="hidden md:flex flex-col items-end mono-ui text-[9px] text-forest">
+                <span>LOCAL_SYNC: <span class="text-primary font-bold">STABLE</span></span>
+                <span>DISK_MODE: <span class="text-primary font-bold">R/W</span></span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="h-2 w-2 bg-primary animate-pulse"></div>
+                <span class="mono-ui text-[9px] text-primary font-bold">OFFLINE_READY</span>
+            </div>
+            <div
+                class="h-10 w-10 narvo-border bg-surface flex items-center justify-center cursor-pointer hover:bg-forest transition-colors">
+                <i class="ph ph-user text-primary"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 overflow-y-auto custom-scroll p-10 space-y-12 max-w-7xl mx-auto w-full">
+        <!-- Storage Header -->
+        <section class="space-y-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-primary">
+                        <i class="ph ph-folder-open text-lg"></i>
+                        <span class="mono-ui text-[10px] font-bold tracking-[0.2em]">LOCAL_STORAGE_INDEX</span>
+                    </div>
+                    <h2 class="font-display text-5xl font-bold uppercase tracking-tight text-white leading-none">
+                        Cached <span class="text-primary">Archives.</span>
+                    </h2>
+                </div>
+                <div class="flex flex-col items-end mono-ui text-[10px]">
+                    <span class="text-forest tracking-wider mb-2 font-bold">CAPACITY_LIMIT</span>
+                    <div class="text-white text-lg">
+                        12.4 GB <span class="text-forest">/ 50.0 GB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="relative w-full h-3 narvo-border p-[1px] bg-surface/20">
+                <div class="h-full bg-primary w-[24.8%]"></div>
+            </div>
+            <div class="flex justify-between mono-ui text-[9px] text-forest font-bold">
+                <span>00.0%</span>
+                <span class="text-primary">24.8% // ACTIVE_USAGE</span>
+                <span>100.0%</span>
+            </div>
+        </section>
+
+        <!-- Command Bar -->
+        <section class="flex flex-wrap items-center justify-between gap-6 py-6 narvo-border-b border-forest/30">
+            <div class="flex items-center gap-4">
+                <button
+                    class="flex items-center gap-3 narvo-border px-6 py-2 mono-ui text-[10px] font-bold text-white hover:bg-primary hover:text-background-dark transition-all group">
+                    <i class="ph ph-funnel"></i>
+                    <span>FILTER</span>
+                </button>
+                <div class="h-4 w-px bg-forest/30"></div>
+                <div class="flex items-center gap-2">
+                    <button
+                        class="px-4 py-1.5 mono-ui text-[10px] font-bold bg-primary text-background-dark">ALL</button>
+                    <button
+                        class="px-4 py-1.5 mono-ui text-[10px] font-bold text-forest hover:text-white transition-colors">AUDIO</button>
+                    <button
+                        class="px-4 py-1.5 mono-ui text-[10px] font-bold text-forest hover:text-white transition-colors">TEXT</button>
+                </div>
+            </div>
+            <button
+                class="flex items-center gap-2 mono-ui text-[10px] font-bold text-forest hover:text-primary transition-colors">
+                <i class="ph ph-trash"></i>
+                <span>CLEAR_LOCAL_CACHE</span>
+            </button>
+        </section>
+
+        <!-- File Table -->
+        <section class="narvo-border bg-surface/5">
+            <!-- Table Header -->
+            <div
+                class="grid grid-cols-12 gap-6 px-6 py-4 narvo-border-b bg-surface/30 mono-ui text-[10px] text-forest font-bold">
+                <div class="col-span-1 text-center">SIG</div>
+                <div class="col-span-11 md:col-span-5">FILE_IDENTIFIER</div>
+                <div class="col-span-2 hidden md:block text-right">DURATION</div>
+                <div class="col-span-2 hidden md:block text-right">STORAGE_SIZE</div>
+                <div class="col-span-2 text-right">ACTION</div>
+            </div>
+
+            <!-- Table Rows -->
+            <div class="divide-y divide-forest/10">
+                <!-- Row 1 -->
+                <div
+                    class="grid grid-cols-12 gap-6 px-6 py-5 items-center hover:bg-surface/20 transition-colors group cursor-pointer">
+                    <div class="col-span-1 flex justify-center text-primary">
+                        <i class="ph ph-waveform-slash text-xl"></i>
+                    </div>
+                    <div class="col-span-11 md:col-span-5 flex flex-col gap-1 min-w-0">
+                        <span
+                            class="mono-ui text-[11px] text-white font-bold truncate group-hover:text-primary transition-colors">Morning_Briefing_Ep402.wav</span>
+                        <span class="mono-ui text-[9px] text-forest truncate tracking-widest">GLOBAL_MARKETS // POLITICS
+                            // HUB_CENTER_02</span>
+                    </div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-forest">14:22</div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-forest">24.5 MB</div>
+                    <div
+                        class="col-span-2 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="text-white hover:text-primary"><i class="ph ph-play-fill text-xl"></i></button>
+                        <button class="text-white hover:text-primary"><i class="ph ph-trash text-lg"></i></button>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div
+                    class="grid grid-cols-12 gap-6 px-6 py-5 items-center hover:bg-surface/20 transition-colors group cursor-pointer">
+                    <div class="col-span-1 flex justify-center text-forest">
+                        <i class="ph ph-microphone text-xl"></i>
+                    </div>
+                    <div class="col-span-11 md:col-span-5 flex flex-col gap-1 min-w-0">
+                        <span
+                            class="mono-ui text-[11px] text-white font-bold truncate group-hover:text-primary transition-colors">Interview_Sen_Doe_Raw.mp3</span>
+                        <span class="mono-ui text-[9px] text-forest truncate tracking-widest">RAW_FOOTAGE // UNEDITED //
+                            AB_LOCAL_01</span>
+                    </div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-forest">45:10</div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-forest">62.1 MB</div>
+                    <div
+                        class="col-span-2 flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="text-white hover:text-primary"><i class="ph ph-play-fill text-xl"></i></button>
+                        <button class="text-white hover:text-primary"><i class="ph ph-trash text-lg"></i></button>
+                    </div>
+                </div>
+
+                <!-- Active Row -->
+                <div class="grid grid-cols-12 gap-6 px-6 py-5 items-center bg-primary/5 relative overflow-hidden">
+                    <div class="absolute left-0 top-0 bottom-0 w-[2px] bg-primary"></div>
+                    <div class="col-span-1 flex justify-center text-primary animate-pulse">
+                        <i class="ph ph-speaker-high text-xl"></i>
+                    </div>
+                    <div class="col-span-11 md:col-span-5 flex flex-col gap-1 min-w-0">
+                        <span
+                            class="mono-ui text-[11px] text-primary font-bold truncate">Tech_Crunch_Update_v2.wav</span>
+                        <span class="mono-ui text-[9px] text-primary/70 truncate tracking-widest">TECHNOLOGY // AI_CORE
+                            // SYNC_ACTIVE</span>
+                    </div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-primary">05:30</div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-primary">8.2 MB</div>
+                    <div class="col-span-2 flex items-center justify-end gap-3">
+                        <button class="text-primary hover:text-white"><i class="ph ph-pause-fill text-xl"></i></button>
+                        <button class="text-primary/50 hover:text-white"><i class="ph ph-trash text-lg"></i></button>
+                    </div>
+                </div>
+
+                <!-- Incomplete Row -->
+                <div
+                    class="grid grid-cols-12 gap-6 px-6 py-5 items-center opacity-40 hover:opacity-100 transition-opacity group cursor-not-allowed">
+                    <div class="col-span-1 flex justify-center text-primary/50">
+                        <i class="ph ph-warning-octagon text-xl"></i>
+                    </div>
+                    <div class="col-span-11 md:col-span-5 flex flex-col gap-1 min-w-0">
+                        <span class="mono-ui text-[11px] text-white italic truncate">corrupted_segment_x89.tmp</span>
+                        <span class="mono-ui text-[9px] text-primary/70 truncate tracking-widest">DOWNLOAD_INTERRUPTED
+                            // DATA_BREACH_SUSPECTED</span>
+                    </div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-forest">--:--</div>
+                    <div class="col-span-2 hidden md:block text-right mono-ui text-[10px] text-forest">0 KB</div>
+                    <div class="col-span-2 flex items-center justify-end gap-3">
+                        <button class="text-white hover:text-primary"><i
+                                class="ph ph-arrows-clockwise text-xl"></i></button>
+                        <button class="text-white hover:text-primary"><i class="ph ph-trash text-lg"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-between pt-4 mono-ui text-[10px] text-forest font-bold">
+            <span>SHOWING: 1-6 // TOTAL: 24_ITEMS</span>
+            <div class="flex items-center gap-6">
+                <button class="opacity-30 cursor-not-allowed">PREV_SIGNAL</button>
+                <div class="flex gap-4">
+                    <span class="text-primary underline underline-offset-4 decoration-2">01</span>
+                    <button class="hover:text-white transition-colors">02</button>
+                    <button class="hover:text-white transition-colors">03</button>
+                </div>
+                <button class="text-white hover:text-primary transition-colors">NEXT_SIGNAL</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Playback Footer Strip -->
+    <footer
+        class="h-14 bg-surface/30 narvo-border-t flex items-center justify-between px-6 shrink-0 relative z-20 backdrop-blur-md">
+        <div class="flex items-center gap-6 min-w-0">
+            <button
+                class="size-10 bg-primary text-background-dark flex items-center justify-center hover:bg-white transition-colors">
+                <i class="ph ph-pause-fill text-2xl"></i>
+            </button>
+            <div class="flex flex-col min-w-0">
+                <span class="mono-ui text-[9px] text-primary font-bold tracking-widest">TRANSMITTING_LOCAL_CACHE</span>
+                <span class="mono-ui text-[11px] text-white font-bold truncate">Tech_Crunch_Update_v2.wav</span>
+            </div>
+        </div>
+
+        <div class="hidden md:flex flex-1 mx-12 items-center gap-4">
+            <span class="mono-ui text-[10px] text-forest">01:12</span>
+            <div class="h-[2px] bg-forest/30 flex-1 relative group cursor-pointer">
+                <div class="absolute left-0 top-0 bottom-0 bg-primary w-[22%] group-hover:bg-white transition-colors">
+                </div>
+            </div>
+            <span class="mono-ui text-[10px] text-white">05:30</span>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-4 text-forest">
+                <i class="ph ph-speaker-high text-xl hover:text-primary cursor-pointer"></i>
+                <i class="ph ph-playlist text-xl hover:text-primary cursor-pointer"></i>
+            </div>
+            <div class="h-6 w-px bg-forest/30 hidden sm:block"></div>
+            <div class="flex items-center gap-3">
+                <div class="size-2 bg-primary animate-pulse"></div>
+                <span class="mono-ui text-[10px] text-primary font-bold hidden sm:block">SYSTEM_NOMINAL</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

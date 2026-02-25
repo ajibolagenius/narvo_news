@@ -12,7 +12,10 @@ This document serves as the central repository for all user-facing text for the 
 | `cta_play` | [Oya, Play] | Play action with local flavor. |
 | `status_processing` | [PROCESSING SIGNAL...] | Technical instrument loading state. |
 | `status_syncing` | [SYNCING TO STATION...] | Pre-caching/Update state. |
+| `status_translating` | [TRANSLATING SIGNAL...] | Real-time translation process. |
 | `truth_tag_label` | [TRUTH TAG: {score}%] | Transparency/Verification label. |
+| `lang_select_title` | [Select Native Tongue] | Language selection header. |
+| `lang_label_native` | [{lang}: Broadcast Primary] | Selected language indicator. |
 
 ---
 
