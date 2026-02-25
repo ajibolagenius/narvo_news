@@ -121,6 +121,26 @@ const DiscoverPage = () => {
     playTrack({ id: podcast.id, title: podcast.title, summary: podcast.description });
   };
 
+  // Search handler with debounce
+  const searchTimeoutRef = useRef(null);
+  const handlePodcastSearch = (q) => {
+    setPodcastSearch(q);
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+    if (!q.trim()) return;
+    searchTimeoutRef.current = setTimeout(() => {
+      setPodcastLoading(true);
+      fetch(`${API_URL}/api/podcasts/search?q=${encodeURIComponent(q)}&limit=10`)
+        .then(res => res.json())
+        .then(data => { setPodcasts(data); checkCachedPodcasts(data); setPodcastLoading(false); })
+        .catch(() => setPodcastLoading(false));
+    }, 500);
+  };
+
+  // Filter podcasts by category
+  const displayedPodcasts = podcastCategory === 'all'
+    ? podcasts
+    : podcasts.filter(p => (p.category || '').toLowerCase() === podcastCategory);
+
   // Check if a podcast is currently in the download queue
   const isInQueue = (podcastId) => {
     return queue.some(item => item.id === podcastId && item.status !== 'complete' && item.status !== 'failed');
