@@ -98,6 +98,13 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 
 ### Bug Fixes (Feb 25, 2025)
 - **AudioContext broadcast_language fetch** - Fixed hardcoded 'guest' user ID in AudioContext.js. Now uses actual user ID from AuthContext, re-fetches when user changes.
+- **Broadcast language auto-save toast** - Added confirmation toast ("Now broadcasting in [Language]") on /system page when broadcast language auto-saves.
+
+### P6 Features - Content Sources & Backend Tests (Feb 25, 2025)
+- **Expanded RSS Feeds** - Added 16 new sources (39 total): Naija News, TVC News, Arise News, VOA Africa, NPR, Sky News, BBC World Service, Africanews, The Africa Report, Mail & Guardian, Nation Africa, News24, Daily Monitor Uganda, The Standard Kenya, The Citizen Tanzania, Sky Sports Football.
+- **New "continental" region** - African continental sources now tracked separately from local (Nigeria) and international.
+- **Backend Test Suite** - Created `/app/backend/tests/test_services.py` with 19 integration tests covering: content sources, news endpoints, settings CRUD, translation, fact-check, metrics, and health.
+- **Dubawa removed** - Removed from verification APIs per user request.
 
 ## Supported Languages
 
