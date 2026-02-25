@@ -4,6 +4,23 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P22] — Feb 25, 2026
+### Fixed — Core Audio Issues
+- **Voice consistency** — AudioContext now fetches `voice_model` from user settings on init. Was hardcoded `'onyx'` (stale OpenAI ID). All TTS calls across home feed, discover, briefing, and news detail now use the user's selected voice.
+- **Audio stopping midway** — NewsDetailPage pre-generation was truncating text to 500 chars (`.slice(0, 500)`). Now sends full text up to 4000 chars, matching AudioContext behavior.
+- **VoiceStudioPage** — Apply button now sets `voiceModel` in AudioContext alongside `broadcastLanguage`, so voice changes take effect immediately without page reload.
+
+### Added — Features
+- **Redesigned Audio Player** — Complete rewrite of `AudioPlayerBar.js`:
+  - **Desktop**: Thin progress line at top, animated waveform bars when playing, inline volume slider, cleaner 3-column layout (track info / controls+scrubber / volume+queue).
+  - **Mobile**: Mini-player bar (above bottom nav) with track title + play/pause. Tappable to expand into full-screen modal with waveform visualizer, large controls, scrubber, volume slider, queue info.
+- **Additional Podcast Sources** — Expanded from 5 to 10 RSS feeds: added TED Talks Daily, BBC Global News Podcast, NPR Up First, On Purpose with Jay Shetty, How I Built This.
+
+### Tested
+- Testing agent iteration_46: Backend 100% (10/10), Frontend 100% (12/12). Voice persistence, TTS generation, desktop/mobile player UI, queue panel, podcasts all verified.
+
+---
+
 ## [P21] — Feb 25, 2026
 ### Fixed
 - **INTEREST_MATRIX dual toast** — Moved state update outside React setter to prevent double render + double toast firing.
