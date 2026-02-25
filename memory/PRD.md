@@ -98,6 +98,10 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Feature: Tour Guide Modal** — 5-step modal for first-time users (localStorage 'narvo_tour_completed'). Covers LIVE_FEED, SOURCE_FILTER, DISCOVER, SEARCH, SYSTEM_SETTINGS. Triggers on login, register, and guest entry via custom event. Replay button on /settings page.
 - **Feature: Cinematic Audio** — Broadcast-grade Tone.js audio effects scoped to briefing section only. Master chain: compressor + reverb. Intro (bass + rising chord + bright stab + noise sweep), section divider (bell + sweep), outro (descending chord + bass + shimmer). SFX toggle on briefing page.
 
+### P14 - AI Text Sanitization (Feb 25, 2026)
+- **AI Output Sanitizer** — Regex-based post-processor strips stage directions, sound descriptions, and production cues from all AI-generated text. Patterns: `[bracketed]`, `(music/sound cues)`, `*asterisked cues*`, `Sound of...` lines. Applied to: narrative generation, briefing scripts, translations, and narrated translations.
+- **Hardened System Prompts** — All 4 AI generation functions (generate_narrative, generate_briefing_script, translate_text, translate_and_narrate) now include explicit CRITICAL RULES forbidding sound effects, stage directions, and non-verbal descriptions.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
