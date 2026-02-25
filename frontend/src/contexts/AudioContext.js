@@ -23,8 +23,9 @@ export const AudioProvider = ({ children }) => {
   const [autoPlay, setAutoPlay] = useState(true);
   const [error, setError] = useState(null);
   const [broadcastLanguage, setBroadcastLanguage] = useState('en');
+  const [voiceModel, setVoiceModel] = useState('emma');
 
-  // Fetch user's language preference
+  // Fetch user's voice + language preference
   const fetchLanguagePreference = useCallback(async () => {
     const userId = user?.id || 'guest';
     try {
@@ -32,13 +33,15 @@ export const AudioProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         if (data.broadcast_language) {
-          console.log('[AudioContext] Fetched broadcast_language:', data.broadcast_language, 'for user:', userId);
           setBroadcastLanguage(data.broadcast_language);
-          return data.broadcast_language;
         }
+        if (data.voice_model) {
+          setVoiceModel(data.voice_model);
+        }
+        return data.broadcast_language || 'en';
       }
     } catch (err) {
-      console.log('[AudioContext] Using default language: en');
+      console.log('[AudioContext] Using default voice/language');
     }
     return 'en';
   }, [user?.id]);
