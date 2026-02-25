@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useHapticAlert } from '../components/HapticAlerts';
+import { useSettings } from '../hooks/useSettings';
 import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon, Compass } from '@phosphor-icons/react';
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
@@ -15,6 +16,24 @@ const SettingsPage = () => {
   const { user, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { showAlert } = useHapticAlert();
+
+  const { updateSetting } = useSettings(
+    { interface_language: 'en', theme: 'dark' },
+    (api) => ({ interface_language: api.interface_language || 'en', theme: api.theme || 'dark' }),
+    (local) => ({ interface_language: local.interface_language, theme: local.theme })
+  );
+
+  const handleLanguageChange = useCallback((code) => {
+    i18n.changeLanguage(code);
+    updateSetting('interface_language', code);
+    showAlert({ type: 'sync', title: 'LANGUAGE_CHANGED', message: `Interface set to ${code.toUpperCase()}`, code: 'LANG_OK', duration: 3000 });
+  }, [i18n, updateSetting, showAlert]);
+
+  const handleThemeToggle = useCallback(() => {
+    toggleTheme();
+    const newTheme = theme === 'dark' ? 'light' : 'dark';
+    updateSetting('theme', newTheme);
+  }, [toggleTheme, theme, updateSetting]);
 
   const handleLogout = async () => {
     try {
