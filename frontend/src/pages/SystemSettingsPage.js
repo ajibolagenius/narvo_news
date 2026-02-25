@@ -5,6 +5,18 @@ import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
+const LS_KEY = 'narvo_settings_cache';
+
+const cacheToLocal = (payload) => {
+  try {
+    const existing = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    localStorage.setItem(LS_KEY, JSON.stringify({ ...existing, ...payload }));
+  } catch { /* ignore */ }
+};
+
+const readLocal = () => {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch { return null; }
+};
 
 const DEFAULT_SETTINGS = {
   highContrast: true,
