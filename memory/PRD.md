@@ -106,6 +106,12 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Backend Test Suite** - Created `/app/backend/tests/test_services.py` with 19 integration tests covering: content sources, news endpoints, settings CRUD, translation, fact-check, metrics, and health.
 - **Dubawa removed** - Removed from verification APIs per user request.
 
+### P7 Features - Dashboard Source Breakdown Widget (Feb 25, 2025)
+- **SOURCE_MATRIX widget** - Visual source breakdown in Dashboard telemetry sidebar showing all 39 feeds grouped by region.
+- **Proportion bar** — Color-coded bar (green/local, amber/continental, dark/international) showing feed distribution.
+- **Expandable regions** — LOCAL_NG (20), CONTINENTAL_AF (8), INTERNATIONAL (11) — click to expand and see individual source names.
+- **Live status indicators** — Pulsing dots per region and LIVE_AGGREGATION footer.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
