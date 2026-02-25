@@ -10,6 +10,7 @@ import { ContentSourcesProvider } from './contexts/ContentSourcesContext';
 import { HapticAlertProvider } from './components/HapticAlerts';
 import { BreakingNewsProvider } from './components/BreakingNews';
 import DownloadQueueIndicator from './components/DownloadQueueIndicator';
+import { TourGuideModal } from './components/TourGuideModal';
 import LoadingScreen from './components/LoadingScreen';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
@@ -65,6 +66,7 @@ function App() {
         <HapticAlertProvider>
           <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <DownloadQueueIndicator />
+            <TourGuideModal />
             <Suspense fallback={<PageLoader />}>
               <Routes>
                 <Route path="/" element={<LandingPage />} />
