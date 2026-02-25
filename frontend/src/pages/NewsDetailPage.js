@@ -569,7 +569,7 @@ const NewsDetailPage = () => {
               <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
               <div className="flex flex-wrap gap-1.5 xl:gap-2">
                 {news.tags.map((tag, i) => (
-                  <span key={i} className="narvo-border px-1.5 xl:px-2 py-1 mono-ui text-[8px] xl:text-[9px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#{tag.toUpperCase()}</span>
+                  <TagPill key={i} tag={tag} className="xl:px-2 xl:text-[9px]" />
                 ))}
               </div>
             </div>
