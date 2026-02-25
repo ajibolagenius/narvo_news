@@ -293,6 +293,28 @@ const DashboardPage = () => {
                     <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase">Nodes: {String(stream.length).padStart(2, '0')}</span>
                   </div>
 
+                  {/* Source Filter Toggle */}
+                  <div className="flex items-center gap-1" data-testid="source-filter-toggle">
+                    {[
+                      { key: 'all', label: 'ALL_SOURCES' },
+                      { key: 'rss', label: 'RSS_ONLY' },
+                      { key: 'aggregators', label: 'AGGREGATORS' },
+                    ].map(f => (
+                      <button
+                        key={f.key}
+                        onClick={() => setSourceFilter(f.key)}
+                        className={`mono-ui text-[8px] md:text-[9px] font-bold px-2.5 py-1 transition-all ${
+                          sourceFilter === f.key
+                            ? 'bg-primary text-background-dark'
+                            : 'narvo-border text-forest hover:text-content'
+                        }`}
+                        data-testid={`filter-${f.key}`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
                   <motion.div variants={cardVariants} className="narvo-border bg-surface/20 divide-y divide-forest/10">
                     {stream.map((item, idx) => (
                       <motion.article
