@@ -31,7 +31,7 @@ const DEFAULT_SETTINGS = {
 const SystemGearSixPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const { setBroadcastLanguage, refreshLanguagePreference } = useAudio();
+  const { setBroadcastLanguage } = useAudio();
   const { showAlert } = useHapticAlert();
   const [settings, setGearSix] = useState(DEFAULT_SETTINGS);
   const [hasChanges, setHasChanges] = useState(false);
