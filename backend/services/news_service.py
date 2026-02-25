@@ -210,6 +210,7 @@ def get_content_sources() -> Dict:
     """Get metadata about all content sources"""
     local_sources = [f for f in RSS_FEEDS if f.get("region") == "local"]
     intl_sources = [f for f in RSS_FEEDS if f.get("region") == "international"]
+    continental_sources = [f for f in RSS_FEEDS if f.get("region") == "continental"]
     
     categories = {}
     for feed in RSS_FEEDS:
@@ -220,13 +221,14 @@ def get_content_sources() -> Dict:
         "total_sources": len(RSS_FEEDS),
         "local_sources": len(local_sources),
         "international_sources": len(intl_sources),
+        "continental_sources": len(continental_sources),
         "categories": categories,
         "sources": [
             {
                 "name": f["source"],
                 "category": f.get("category", "General"),
                 "region": f.get("region", "local"),
-                "url": f["url"].split("/feed")[0].split("/rss")[0]  # Clean URL
+                "url": f["url"].split("/feed")[0].split("/rss")[0]
             }
             for f in RSS_FEEDS
         ],
@@ -255,7 +257,6 @@ def get_content_sources() -> Dict:
             {"name": "Google Fact Check", "status": "active", "capability": "ClaimSearch API, ClaimReview Schema"},
             {"name": "ClaimBuster", "status": "planned", "capability": "AI-powered claim-worthiness detection"},
             {"name": "MyAIFactChecker", "status": "planned", "capability": "Africa-focused AI verification"},
-            {"name": "Dubawa", "status": "reference", "capability": "Local authority fact-checking data"},
         ],
         "aggregator_apis": [
             {"name": "Mediastack", "status": "planned", "capability": "REST API with Nigeria filtering"},
