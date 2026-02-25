@@ -6,6 +6,7 @@ import { AudioProvider } from './contexts/AudioContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LenisProvider } from './contexts/LenisProvider';
 import { DownloadQueueProvider } from './contexts/DownloadQueueContext';
+import { ContentSourcesProvider } from './contexts/ContentSourcesContext';
 import { HapticAlertProvider } from './components/HapticAlerts';
 import { BreakingNewsProvider } from './components/BreakingNews';
 import DownloadQueueIndicator from './components/DownloadQueueIndicator';
