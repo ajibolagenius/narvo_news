@@ -301,6 +301,14 @@ Style Guidelines:
 - Extract 2-3 key takeaways as bullet points
 - Maintain journalistic objectivity
 
+CRITICAL RULES — NEVER include any of the following:
+- Sound effect descriptions (e.g. "Sound of music fades", "upbeat jingle plays")
+- Stage directions or production cues (e.g. "[pause]", "(dramatic music)", "*sigh*")
+- Meta-commentary about the broadcast itself (e.g. "And now for the next story")
+- Filler phrases like "Stay tuned" or "More on this after the break"
+- Any text inside brackets, parentheses, or asterisks that describes sounds, music, or actions
+Write ONLY the actual spoken news content — every word must be substantive reporting.
+
 Respond in JSON format:
 {
   "narrative": "The broadcast narrative text...",
@@ -1092,10 +1100,18 @@ async def generate_briefing_script(stories: List[dict]) -> str:
 Requirements:
 - Open with a brief greeting
 - Cover each story in 2-3 sentences
-- Use smooth transitions
+- Use smooth transitions between stories
 - End with a short sign-off
 - Keep it under 500 words
-- Plain text only, no markdown"""
+- Plain text only, no markdown
+
+CRITICAL RULES — NEVER include any of the following:
+- Sound effect descriptions (e.g. "Sound of music fades", "upbeat jingle", "theme music plays")
+- Stage directions or production cues (e.g. "[pause]", "(transition music)", "[SFX]")
+- Descriptions of non-verbal actions (e.g. "*shuffles papers*", "(clears throat)")
+- Text inside brackets, parentheses, or asterisks that describes sounds, moods, or actions
+- Filler like "Stay tuned", "After these messages", "More after the break"
+Write ONLY spoken words. Every sentence must deliver news content. The audio production is handled separately."""
         ).with_model("gemini", "gemini-2.0-flash")
         
         user_message = UserMessage(
