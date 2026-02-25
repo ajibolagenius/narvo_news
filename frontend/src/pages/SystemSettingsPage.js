@@ -126,6 +126,12 @@ const SystemGearSixPage = () => {
     setSaving(false);
   };
 
+  const handleReset = () => {
+    setGearSix(DEFAULT_SETTINGS);
+    setHasChanges(true);
+    showAlert({ type: 'sync', title: t('alerts.settings_reset'), message: t('alerts.settings_reset_msg'), code: 'RESET_OK' });
+  };
+
   if (loadingGearSix) {
     return (
       <main className="flex-1 overflow-y-auto custom-scroll flex items-center justify-center bg-background-dark" data-testid="system-settings-page">
