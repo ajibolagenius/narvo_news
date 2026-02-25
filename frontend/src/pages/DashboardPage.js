@@ -56,21 +56,55 @@ const DashboardPage = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
   const [sourceFilter, setSourceFilter] = useState('all'); // 'all' | 'rss' | 'aggregators'
+  const [userAggPrefs, setUserAggPrefs] = useState(null);
   const { playTrack, addToQueue } = useAudio();
   const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${API_URL}/api/news?limit=50&include_aggregators=true`).then(r => r.json()),
-      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
-    ]).then(([newsData, metricsData]) => {
-      setNews(newsData);
-      setMetrics(metricsData);
-      setLoading(false);
-      if (newsData.length <= 10) setAllLoaded(true);
-    }).catch(() => setLoading(false));
+    // Fetch user aggregator preferences first, then news with those prefs
+    fetch(`${API_URL}/api/settings/guest`).then(r => r.json())
+      .then(settings => {
+        const ms = settings.aggregator_mediastack !== false;
+        const nd = settings.aggregator_newsdata !== false;
+        setUserAggPrefs({ mediastack: ms, newsdata: nd });
+
+        // Build aggregator_sources param from user prefs
+        const enabledSources = [ms && 'mediastack', nd && 'newsdata'].filter(Boolean).join(',');
+        const aggParam = enabledSources ? `&aggregator_sources=${enabledSources}` : '';
+
+        return Promise.all([
+          fetch(`${API_URL}/api/news?limit=50&include_aggregators=true${aggParam}`).then(r => r.json()),
+          fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
+        ]);
+      })
+      .then(([newsData, metricsData]) => {
+        // Deduplicate: prefer RSS over aggregator for same title
+        const seen = new Map();
+        const deduped = [];
+        for (const item of newsData) {
+          const key = (item.title || '').toLowerCase().trim().slice(0, 60);
+          if (!key) { deduped.push(item); continue; }
+          const existing = seen.get(key);
+          if (!existing) {
+            seen.set(key, item);
+            deduped.push(item);
+          } else if (item.aggregator && !existing.aggregator) {
+            // RSS already in, skip aggregator duplicate
+          } else if (!item.aggregator && existing.aggregator) {
+            // Replace aggregator with RSS
+            const idx = deduped.indexOf(existing);
+            if (idx !== -1) deduped[idx] = item;
+            seen.set(key, item);
+          }
+        }
+        setNews(deduped);
+        setMetrics(metricsData);
+        setLoading(false);
+        if (deduped.length <= 10) setAllLoaded(true);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   const featured = news[0];
