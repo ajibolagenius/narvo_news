@@ -8,11 +8,11 @@ import Skeleton from '../components/Skeleton';
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const LANG_META = {
+  yo:  { native: 'Yoruba',        region: 'ILU_YORUBA' },
   en:  { native: 'English',       region: 'INTERNATIONAL' },
-  pcm: { native: 'Naija Tok',     region: 'PIDGIN_NAIJA' },
-  yo:  { native: 'Ede Yoruba',    region: 'ILU_YORUBA' },
-  ha:  { native: 'Harshen Hausa', region: 'AREWACIN_NAJERIYA' },
-  ig:  { native: 'Asusu Igbo',    region: 'ALA_IGBO' },
+  ha:  { native: 'Hausa',         region: 'AREWACIN_NAJERIYA' },
+  ig:  { native: 'Igbo',          region: 'ALA_IGBO' },
+  pcm: { native: 'Pidgin',        region: 'PIDGIN_NAIJA' },
 };
 
 const VoiceStudioPage = () => {
