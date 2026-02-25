@@ -29,7 +29,7 @@ const OperationHubPage = () => {
       setMetrics(metricsData);
       setAlerts(alertsData);
       setStreams(streamsData);
-      setLastUpdate(new Date().toISOString().slice(11, 19));
+      setLastUpdate(new Date().toLocaleTimeString('en-GB', { hour12: false }));
       setLoading(false);
     } catch (err) {
       console.error('Failed to fetch admin data:', err);

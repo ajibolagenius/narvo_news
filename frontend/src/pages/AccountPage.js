@@ -24,7 +24,7 @@ const AccountPage = () => {
   }, []);
 
   const alerts = [
-    { id: 1, type: 'feature', title: 'NEW_FEATURE: HUB_ANALYTICS', desc: 'ADVANCED_TRANSMISSION_METRICS ARE NOW LIVE FOR PREMIUM ENTITIES.', time: '09:12_UTC', priority: true },
+    { id: 1, type: 'feature', title: 'NEW_FEATURE: HUB_ANALYTICS', desc: 'ADVANCED_TRANSMISSION_METRICS ARE NOW LIVE FOR PREMIUM ENTITIES.', time: new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' }), priority: true },
     { id: 2, type: 'maintenance', title: 'MAINTENANCE_DOWNTIME', desc: 'REGION_LAGOS NODES WILL UNDERGO ENCRYPTION UPDATES ON FEB 28.', time: '24H_AGO', priority: false },
   ];
 
