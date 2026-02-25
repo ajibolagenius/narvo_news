@@ -512,6 +512,28 @@ const DashboardPage = () => {
               );
             })}
 
+            {/* Aggregator APIs */}
+            <div className="mt-2 pt-2 border-t border-forest/20" data-testid="aggregator-counts">
+              <span className="mono-ui text-[9px] text-forest font-bold tracking-widest block mb-1.5">AGGREGATOR_APIs</span>
+              {[
+                { name: 'Mediastack', key: 'mediastack' },
+                { name: 'NewsData.io', key: 'newsdata' },
+              ].map(agg => {
+                const status = metrics?.aggregators?.[agg.key];
+                const configured = status?.configured;
+                const cached = status?.cached_count || 0;
+                return (
+                  <div key={agg.key} className="flex items-center justify-between py-0.5 mono-ui text-[8px]" data-testid={`aggregator-${agg.key}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`w-1.5 h-1.5 ${configured ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
+                      <span className="text-forest/80">{agg.name}</span>
+                    </div>
+                    <span className={`font-bold ${cached > 0 ? 'text-primary' : 'text-forest/40'}`}>{cached > 0 ? `${cached} articles` : configured ? 'READY' : 'OFF'}</span>
+                  </div>
+                );
+              })}
+            </div>
+
             <div className="mt-2 pt-2 border-t border-forest/20 flex items-center justify-between">
               <span className="mono-ui text-[8px] text-primary flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-primary animate-pulse" />
