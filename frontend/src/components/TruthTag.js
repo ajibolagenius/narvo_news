@@ -1,107 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Warning, Question, XCircle, CircleNotch } from '@phosphor-icons/react';
+import { ShieldCheck, ShieldWarning, Question, CircleNotch } from '@phosphor-icons/react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
-// Cache for fact-check results to avoid duplicate API calls
-const factCheckCache = new Map();
+const STATUS_MAP = {
+  VERIFIED: { icon: ShieldCheck, color: 'text-green-400', bg: 'bg-green-400/10', border: 'border-green-400/30', label: 'VERIFIED' },
+  DISPUTED: { icon: ShieldWarning, color: 'text-red-400', bg: 'bg-red-400/10', border: 'border-red-400/30', label: 'DISPUTED' },
+  UNVERIFIED: { icon: Question, color: 'text-yellow-400', bg: 'bg-yellow-400/10', border: 'border-yellow-400/30', label: 'UNVERIFIED' },
+  PENDING: { icon: CircleNotch, color: 'text-forest', bg: 'bg-forest/10', border: 'border-forest/30', label: 'CHECKING...' },
+};
 
 const TruthTag = ({ storyId, compact = false }) => {
-  const [factCheck, setFactCheck] = useState(null);
+  const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFactCheck = async () => {
-      // Check cache first
-      if (factCheckCache.has(storyId)) {
-        setFactCheck(factCheckCache.get(storyId));
+    if (!storyId) { setLoading(false); return; }
+    fetch(`${API_URL}/api/factcheck/story/${storyId}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data) setResult(data);
         setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API_URL}/api/factcheck/${storyId}`);
-        const data = await res.json();
-        factCheckCache.set(storyId, data);
-        setFactCheck(data);
-      } catch (err) {
-        console.error('Failed to fetch fact-check:', err);
-      }
-      setLoading(false);
-    };
-
-    fetchFactCheck();
+      })
+      .catch(() => setLoading(false));
   }, [storyId]);
 
   if (loading) {
-    return compact ? (
-      <CircleNotch className="w-3 h-3 text-forest animate-spin" />
-    ) : (
-      <div className="flex items-center gap-1 mono-ui text-[8px] text-forest">
+    return (
+      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 mono-ui text-[7px] md:text-[8px] text-forest border border-forest/30 font-bold">
         <CircleNotch className="w-3 h-3 animate-spin" />
-        <span>VERIFYING...</span>
-      </div>
+        {!compact && 'VERIFYING...'}
+      </span>
     );
   }
 
-  if (!factCheck) return null;
-
-  const statusConfig = {
-    VERIFIED: {
-      icon: CheckCircle,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
-      borderColor: 'border-primary/30',
-      label: 'VERIFIED',
-    },
-    UNVERIFIED: {
-      icon: Question,
-      color: 'text-forest',
-      bgColor: 'bg-forest/10',
-      borderColor: 'border-forest/30',
-      label: 'UNVERIFIED',
-    },
-    DISPUTED: {
-      icon: Warning,
-      color: 'text-yellow-500',
-      bgColor: 'bg-yellow-500/10',
-      borderColor: 'border-yellow-500/30',
-      label: 'DISPUTED',
-    },
-    FALSE: {
-      icon: XCircle,
-      color: 'text-red-500',
-      bgColor: 'bg-red-500/10',
-      borderColor: 'border-red-500/30',
-      label: 'FALSE',
-    },
-  };
-
-  const config = statusConfig[factCheck.status] || statusConfig.UNVERIFIED;
+  const status = result?.status || 'UNVERIFIED';
+  const config = STATUS_MAP[status] || STATUS_MAP.UNVERIFIED;
   const Icon = config.icon;
+  const source = result?.source || 'UNKNOWN';
+  const confidence = result?.confidence || 0;
 
   if (compact) {
     return (
-      <div 
-        className={`flex items-center gap-1 px-1.5 py-0.5 border ${config.borderColor} ${config.bgColor} ${config.color}`}
-        title={`${factCheck.status}: ${factCheck.confidence}% confidence`}
+      <span
+        className={`inline-flex items-center gap-1 px-1.5 py-0.5 mono-ui text-[7px] font-bold ${config.color} ${config.bg} ${config.border} border`}
         data-testid={`truth-tag-${storyId}`}
+        title={`${config.label} (${confidence}%) — ${source}`}
       >
-        <Icon className="w-3 h-3" />
-        <span className="mono-ui text-[7px] md:text-[8px] font-bold">{factCheck.confidence}%</span>
-      </div>
+        <Icon className="w-3 h-3" weight={status === 'PENDING' ? 'regular' : 'bold'} />
+        {config.label}
+      </span>
     );
   }
 
   return (
-    <div 
-      className={`flex items-center gap-2 px-2 py-1 border ${config.borderColor} ${config.bgColor} ${config.color}`}
-      title={factCheck.explanation}
+    <div
+      className={`flex items-center gap-2 p-2 ${config.bg} border ${config.border}`}
       data-testid={`truth-tag-${storyId}`}
     >
-      <Icon className="w-3.5 h-3.5" />
-      <span className="mono-ui text-[8px] md:text-[9px] font-bold">{config.label}</span>
-      <span className="mono-ui text-[7px] md:text-[8px] opacity-70">{factCheck.confidence}%</span>
+      <Icon className={`w-4 h-4 ${config.color}`} weight={status === 'PENDING' ? 'regular' : 'bold'} />
+      <div className="flex flex-col gap-0.5 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className={`mono-ui text-[9px] font-bold ${config.color}`}>{config.label}</span>
+          <span className="mono-ui text-[7px] text-forest/60">{confidence}%</span>
+        </div>
+        <span className="mono-ui text-[7px] text-forest truncate">{source}</span>
+      </div>
     </div>
   );
 };
