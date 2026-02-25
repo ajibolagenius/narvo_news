@@ -29,10 +29,7 @@ const MobileMetadata = ({ news, readTime, relatedNews, isBookmarked, toggleBookm
           {/* Verification */}
           <div className="narvo-border bg-primary/5 p-3 border-primary/30">
             <span className="mono-ui text-[9px] text-forest block mb-2 font-bold tracking-widest">{t('news_detail.verification_status')}</span>
-            <div className="flex items-center justify-between">
-              <TruthTag storyId={news.id} />
-              <span className="mono-ui text-[8px] text-forest">DUBAWA_AI</span>
-            </div>
+            <TruthTag storyId={news.id} />
           </div>
           {/* Signal Metadata */}
           <div className="narvo-border bg-surface/20 p-3">
