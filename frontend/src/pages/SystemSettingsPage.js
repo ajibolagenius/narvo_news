@@ -414,6 +414,53 @@ const SystemGearSixPage = () => {
           </div>
         </section>
 
+        {/* Aggregator Sources */}
+        <section className="space-y-6 md:space-y-8" data-testid="aggregator-preferences">
+          <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
+              NEWS_AGGREGATORS
+            </h2>
+            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+              PROGRAMMATIC_FEED_SOURCES
+            </span>
+          </div>
+
+          <div className="narvo-border divide-y divide-forest/30">
+            {[
+              { key: 'aggregatorMediastack', label: 'MEDIASTACK', desc: 'GLOBAL_NEWS_API — AFRICAN_MARKET_FOCUS', badge: 'LIVE' },
+              { key: 'aggregatorNewsdata', label: 'NEWSDATA.IO', desc: 'NIGERIAN_NEWS_API — LOCAL_SOURCE_PRIORITY', badge: 'LIVE' },
+            ].map(agg => (
+              <div key={agg.key} className="p-4 md:p-8 flex items-center justify-between hover:bg-surface/5 transition-colors">
+                <div className="flex items-center gap-4 md:gap-6">
+                  <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
+                    <Lightning weight={settings[agg.key] ? 'fill' : 'regular'} className="w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{agg.label}</h3>
+                      <span className={`mono-ui text-[7px] font-bold px-1.5 py-0.5 ${
+                        settings[agg.key] ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-surface/20 text-forest/50 border border-forest/20'
+                      }`}>{settings[agg.key] ? agg.badge : 'OFF'}</span>
+                    </div>
+                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{agg.desc}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => updateSetting(agg.key, !settings[agg.key])}
+                  className={`w-12 h-6 narvo-border relative transition-all ${
+                    settings[agg.key] ? 'bg-primary' : 'bg-surface/20'
+                  }`}
+                  data-testid={`toggle-${agg.key}`}
+                >
+                  <span className={`absolute top-0.5 w-5 h-5 bg-background-dark transition-all ${
+                    settings[agg.key] ? 'left-6' : 'left-0.5'
+                  }`} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* 03: Notification Engine */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
