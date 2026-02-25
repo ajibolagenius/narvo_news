@@ -269,39 +269,6 @@ const SystemGearSixPage = () => {
           </div>
 
           <div className="narvo-border divide-y divide-forest/30">
-            {/* Push Notifications for Breaking News */}
-            <div className="p-4 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-surface/5 transition-colors group">
-              <div className="flex items-center gap-3 md:gap-6">
-                <div className="w-8 h-8 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary shrink-0">
-                  {isSubscribed ? <BellRinging className="w-4 h-4 md:w-6 md:h-6" /> : <BellSlash className="w-4 h-4 md:w-6 md:h-6" />}
-                </div>
-                <div className="space-y-0.5 min-w-0">
-                  <h3 className="mono-ui text-[10px] md:text-[12px] text-content font-bold">BREAKING_NEWS_ALERTS</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold break-words">
-                    {notificationStatus === 'denied' 
-                      ? 'PERMISSION_BLOCKED_IN_BROWSER' 
-                      : 'RECEIVE_PUSH_NOTIFICATIONS_FOR_URGENT_NEWS'
-                    }
-                  </p>
-                  {!isPushSupported() && (
-                    <p className="mono-ui text-[7px] text-red-400">NOT_SUPPORTED_IN_THIS_BROWSER</p>
-                  )}
-                </div>
-              </div>
-              <button 
-                onClick={handleToggleNotifications}
-                disabled={notificationStatus === 'denied' || !isPushSupported()}
-                className={`w-12 h-6 md:w-14 md:h-7 narvo-border transition-all relative shrink-0 self-end sm:self-auto ${
-                  isSubscribed ? 'bg-primary' : 'bg-surface/30'
-                } ${(notificationStatus === 'denied' || !isPushSupported()) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                data-testid="toggle-push-notifications"
-              >
-                <div className={`absolute top-0.5 w-5 h-5 md:w-6 md:h-6 bg-white transition-all ${
-                  isSubscribed ? 'right-0.5' : 'left-0.5'
-                }`} />
-              </button>
-            </div>
-            
             {/* Haptic Sync */}
             <div className="p-4 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-surface/5 transition-colors group">
               <div className="flex items-center gap-3 md:gap-6">
