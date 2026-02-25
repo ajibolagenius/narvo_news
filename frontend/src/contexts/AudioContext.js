@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { playBriefingIntro, playBriefingOutro } from '../lib/cinematicAudio';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const AudioContext = createContext({});
@@ -159,11 +158,6 @@ export const AudioProvider = ({ children }) => {
     audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
-      // Play briefing outro for briefing tracks
-      const isBriefing = currentTrack?.id?.startsWith('briefing') || currentTrack?.type === 'briefing';
-      if (isBriefing) {
-        playBriefingOutro().catch(() => {});
-      }
       // Auto-play next with smooth transition
       if (autoPlay) {
         playNextSmooth();
@@ -328,12 +322,6 @@ export const AudioProvider = ({ children }) => {
     
     // Play the audio
     audio.src = trackUrl;
-    
-    // Play briefing intro chime for briefing tracks
-    const isBriefing = track.id?.startsWith('briefing') || track.type === 'briefing';
-    if (isBriefing) {
-      try { await playBriefingIntro(); } catch (e) { /* audio context may not be ready */ }
-    }
     
     // Attempt to play - may fail due to autoplay policy
     try {
