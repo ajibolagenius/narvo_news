@@ -165,7 +165,7 @@ const SettingsPage = () => {
                   <p className="mono-ui text-[8px] md:text-[9px] text-forest">SWITCH BETWEEN DARK AND LIGHT INTERFACE</p>
                 </div>
                 <button
-                  onClick={toggleTheme}
+                  onClick={handleThemeToggle}
                   className="flex items-center gap-3 px-4 py-3 narvo-border bg-surface/10 hover:bg-primary/10 hover:border-primary transition-all"
                   data-testid="settings-theme-toggle"
                 >
