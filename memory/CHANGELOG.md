@@ -4,6 +4,29 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P17] — Feb 25, 2026
+### Fixed — Bug Fixes & UI Refactoring
+- **Mobile Overflow** — Added `overflow-x-hidden` to Account and System Settings pages; reduced mobile padding on Account page subscription panel. No horizontal scroll at 375px.
+- **NARVO Text on Mobile** — Removed `hidden sm:block` from header h1 so "NARVO" is always visible.
+- **Push Notifications Removed** — Removed non-functional PUSH_NOTIFICATIONS toggle from System Settings page.
+
+### Changed — Settings Refactoring
+- **Broadcast Language Moved** — Migrated BROADCAST_LANGUAGE section (with voice preview) from System Settings to Voice Studio page.
+- **Voice Selector Removed from Briefing** — Removed voice selection dropdown from Morning Briefing header for cleaner UI.
+
+### Added — Accessibility (WCAG 2.1 AA)
+- **CSS Variables** — Added `--color-text-dim-accessible`, `--touch-target-min`, `--line-height-body/heading`, `--focus-outline-width/style/color/offset` to `:root` and `[data-theme='light']`.
+- **Focus Styles** — `:focus-visible` outline using design tokens (2px solid, 2px offset).
+- **Skip Link** — "Skip to main content" link in App.js, styled with `.skip-link` class.
+- **Reduced Motion** — `@media (prefers-reduced-motion: reduce)` disables all animations.
+- **Mobile Article Metadata** — Collapsible `ARTICLE_METADATA` section on News Detail page for mobile (data-testid: `mobile-article-metadata`).
+
+### Tested
+- Testing agent iteration_41: 10/10 tests passed (100%).
+
+---
+
+
 ## [P16] — Feb 25, 2026
 ### Fixed — Mobile Parity
 - **Dashboard Telemetry Drawer** — Collapsible TELEMETRY section on mobile (xl:hidden) with trending tags, SOURCE_MATRIX health bar, LOCAL/CONTINENTAL/INTL source counts, and article/podcast metrics
