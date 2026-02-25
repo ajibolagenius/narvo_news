@@ -14,6 +14,11 @@ PODCAST_FEEDS = [
     {"url": "https://feeds.simplecast.com/54nAGcIl", "category": "Technology", "fallback_title": "The Vergecast"},
     {"url": "https://feeds.megaphone.fm/HSW7835457691", "category": "Science", "fallback_title": "Stuff You Should Know"},
     {"url": "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/A91018A4-EA4F-4130-BF55-AE270180C327/44710ECC-10BB-48D1-93C7-AE270180C33E/podcast.rss", "category": "Finance", "fallback_title": "Planet Money"},
+    {"url": "https://feeds.megaphone.fm/GLT1412515089", "category": "Culture", "fallback_title": "TED Talks Daily"},
+    {"url": "https://rss.art19.com/global-news-podcast", "category": "News", "fallback_title": "BBC Global News Podcast"},
+    {"url": "https://feeds.npr.org/510289/podcast.xml", "category": "News", "fallback_title": "NPR Up First"},
+    {"url": "https://feeds.megaphone.fm/ESP4810498498", "category": "Health", "fallback_title": "On Purpose with Jay Shetty"},
+    {"url": "https://feeds.simplecast.com/l2i9YnTd", "category": "Business", "fallback_title": "How I Built This"},
 ]
 
 # In-memory cache
