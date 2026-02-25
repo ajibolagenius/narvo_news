@@ -119,6 +119,12 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Per-source health dots** — Each source in expanded regions shows colored dot + latency in ms.
 - **Region-level indicator** — Region dot reflects worst status in that group.
 - **REFRESH button** — Manual re-check trigger at widget bottom.
+- **Periodic auto-refresh** — Backend runs health check every 5 minutes. Frontend polls every 5 minutes via setInterval.
+
+### P9 Features - TTS Voice Gender Mapping (Feb 25, 2025)
+- **Voice-to-gender mapping**: English (onyx/Emeka, male), Pidgin (echo/Tunde, male), Yorùbá (nova/Adùnní, female), Hausa (shimmer/Halima, female), Igbo (alloy/Adaeze, female).
+- Updated across: translation_service.py, server.py VOICES, user_service.py VOICE_PROFILES.
+- All voice names use authentic Nigerian names.
 
 ## Supported Languages
 
