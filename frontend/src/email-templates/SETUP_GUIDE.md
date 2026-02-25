@@ -1,6 +1,18 @@
 # Supabase Email Template Configuration for Narvo
 
-## How to Apply These Templates
+> **Status: APPLIED** — All 4 email templates have been applied to the Supabase Dashboard.
+> Google OAuth provider is configured and working.
+
+## Templates Applied
+
+| Template | Subject | Status |
+|----------|---------|--------|
+| Confirmation | `NARVO // Verify Your Access` | Applied |
+| Password Reset | `NARVO // Access Key Recovery` | Applied |
+| Magic Link | `NARVO // Instant Access Link` | Applied |
+| Invite | `NARVO // You've Been Invited` | Applied |
+
+## How to Update These Templates
 
 1. Go to your **Supabase Dashboard** → **Authentication** → **Email Templates**
 2. For each template type, paste the corresponding HTML below
@@ -138,14 +150,16 @@
 
 ## Supabase Dashboard Setup
 
-### Enable Google OAuth:
-1. Go to **Supabase Dashboard** → **Authentication** → **Providers**
-2. Enable **Google**
-3. Add your Google OAuth Client ID and Secret from [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
-4. Add redirect URL: `https://strekawvjpyjlahmsatw.supabase.co/auth/v1/callback`
+### Google OAuth: CONFIGURED
+- Provider enabled in Supabase Dashboard → Authentication → Providers → Google
+- Google OAuth Client ID and Secret configured
+- Redirect URL: `https://strekawvjpyjlahmsatw.supabase.co/auth/v1/callback`
+- Code: `signInWithGoogle()` in `AuthContext.js` uses `REACT_APP_BACKEND_URL` for redirect
+
+### URL Configuration: CONFIGURED
+- **Site URL**: `https://narvo-news-engine.preview.emergentagent.com`
+- **Redirect URLs**: `https://narvo-news-engine.preview.emergentagent.com/**`
 
 ### General Auth Settings:
-- **Site URL**: Set to your production URL
-- **Redirect URLs**: Add your production and preview URLs
-- **Email confirmations**: Enable for production (optional for development)
-- **Minimum password length**: 6 characters
+- Email confirmations: Enabled
+- Minimum password length: 6 characters
