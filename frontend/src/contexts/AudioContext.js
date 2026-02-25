@@ -159,6 +159,11 @@ export const AudioProvider = ({ children }) => {
     audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
+      // Play briefing outro for briefing tracks
+      const isBriefing = currentTrack?.id?.startsWith('briefing') || currentTrack?.type === 'briefing';
+      if (isBriefing) {
+        playBriefingOutro().catch(() => {});
+      }
       // Auto-play next with smooth transition
       if (autoPlay) {
         playNextSmooth();
