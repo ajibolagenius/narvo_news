@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch } from '@phosphor-icons/react';
+import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch, Broadcast, Rss, Globe } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
 import { useDownloadQueue } from '../contexts/DownloadQueueContext';
+import { useContentSources } from '../contexts/ContentSourcesContext';
 import { isAudioCached } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
@@ -20,6 +21,7 @@ const DiscoverPage = () => {
   const [cachedPodcasts, setCachedPodcasts] = useState({});
   const { playTrack } = useAudio();
   const { addToQueue, addSingleToQueue, queue, isProcessing } = useDownloadQueue();
+  const { sources, getTotalSources, getLocalSources, getInternationalSources, getBroadcastSources } = useContentSources();
   
   // Radio state
   const [radioStations, setRadioStations] = useState([]);
@@ -522,6 +524,96 @@ const DiscoverPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Content Sources Section */}
+        <section className="narvo-border-t bg-surface/5">
+          <div className="p-4 md:p-8 narvo-border-b bg-surface/10">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Broadcast className="w-5 h-5 text-primary" />
+                <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">CONTENT_SOURCES</h3>
+              </div>
+              <div className="flex items-center gap-4 mono-ui text-[9px]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-primary animate-pulse" />
+                  <span className="text-primary font-bold">{getTotalSources()} ACTIVE_FEEDS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[1px] bg-forest/20">
+            {/* RSS Feeds */}
+            <div className="bg-background-dark p-4 md:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Rss className="w-4 h-4 text-primary" />
+                <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">RSS_FEEDS</span>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
+                  <span className="mono-ui text-[10px] text-content">LOCAL_NG</span>
+                  <span className="mono-ui text-sm text-primary font-bold">{getLocalSources()}</span>
+                </div>
+                <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
+                  <span className="mono-ui text-[10px] text-content">INTERNATIONAL</span>
+                  <span className="mono-ui text-sm text-primary font-bold">{getInternationalSources()}</span>
+                </div>
+                <div className="mono-ui text-[8px] text-forest/60 mt-2">
+                  {sources?.sources?.slice(0, 5).map(s => s.name).join(' • ') || 'Loading...'}
+                </div>
+              </div>
+            </div>
+
+            {/* Broadcast Sources */}
+            <div className="bg-background-dark p-4 md:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Radio className="w-4 h-4 text-primary" />
+                <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">BROADCAST_RELAY</span>
+              </div>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
+                  <span className="mono-ui text-[10px] text-content">TV_STATIONS</span>
+                  <span className="mono-ui text-sm text-primary font-bold">
+                    {getBroadcastSources().filter(s => s.type === 'TV').length}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
+                  <span className="mono-ui text-[10px] text-content">RADIO_STATIONS</span>
+                  <span className="mono-ui text-sm text-primary font-bold">
+                    {getBroadcastSources().filter(s => s.type === 'Radio').length}
+                  </span>
+                </div>
+                <div className="mono-ui text-[8px] text-forest/60 mt-2">
+                  {getBroadcastSources().slice(0, 4).map(s => s.name).join(' • ') || 'Loading...'}
+                </div>
+              </div>
+            </div>
+
+            {/* Verification APIs */}
+            <div className="bg-background-dark p-4 md:p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Globe className="w-4 h-4 text-primary" />
+                <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">VERIFICATION_API</span>
+              </div>
+              <div className="space-y-2">
+                {sources?.verification_apis?.map((api, idx) => (
+                  <div key={idx} className="flex items-center justify-between narvo-border p-2 bg-surface/10">
+                    <span className="mono-ui text-[9px] text-content">{api.name}</span>
+                    <span className={`mono-ui text-[8px] px-1.5 py-0.5 ${
+                      api.status === 'active' ? 'bg-primary/20 text-primary' : 'bg-forest/20 text-forest'
+                    }`}>
+                      {api.status?.toUpperCase()}
+                    </span>
+                  </div>
+                )) || (
+                  <div className="text-center p-4">
+                    <span className="mono-ui text-[9px] text-forest">Loading APIs...</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   );

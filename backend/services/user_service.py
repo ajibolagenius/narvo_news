@@ -114,13 +114,14 @@ def update_settings(user_id: str, settings: Dict) -> Dict:
     return {"status": "updated"}
 
 
-# Voice profiles with authentic Nigerian names
+# Voice profiles with authentic Nigerian names and gender mapping
+# English/Pidgin = Male voices, Yoruba/Hausa/Igbo = Female voices
 VOICE_PROFILES = [
-    {"id": "nova", "name": "Nova", "accent": "English", "language": "en", "description": "Clear, professional international voice"},
-    {"id": "onyx", "name": "Onyx", "accent": "Naijá", "language": "pcm", "description": "Strong, authoritative Naijá voice"},
-    {"id": "echo", "name": "Olúwásẹ̀un", "accent": "Yorùbá", "language": "yo", "description": "Warm, melodic Yorùbá voice"},
-    {"id": "alloy", "name": "Abubakar", "accent": "Hausa", "language": "ha", "description": "Calm, dignified Hausa voice"},
-    {"id": "shimmer", "name": "Chinyere", "accent": "Igbo", "language": "ig", "description": "Bright, expressive Igbo voice"},
+    {"id": "onyx", "name": "Emeka", "accent": "English", "language": "en", "gender": "male", "description": "Deep, authoritative English voice"},
+    {"id": "echo", "name": "Tunde", "accent": "Naijá", "language": "pcm", "gender": "male", "description": "Warm, confident Naijá voice"},
+    {"id": "nova", "name": "Adùnní", "accent": "Yorùbá", "language": "yo", "gender": "female", "description": "Clear, melodic Yorùbá voice"},
+    {"id": "shimmer", "name": "Halima", "accent": "Hausa", "language": "ha", "gender": "female", "description": "Bright, dignified Hausa voice"},
+    {"id": "alloy", "name": "Adaeze", "accent": "Igbo", "language": "ig", "gender": "female", "description": "Warm, expressive Igbo voice"},
 ]
 
 
