@@ -4,6 +4,24 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P18] — Feb 25, 2026
+### Changed — UI Redesigns
+- **Account Page** — Full redesign with MetricCard grid (broadcast hours, signals processed, region), system alerts section, proper visual hierarchy, no mobile overflow.
+- **Voice Studio** — Merged broadcast language + voice matrix into unified VOICE_MATRIX card grid. Each card shows voice name, accent, native language, region tag, status badge, voice preview, and signal status. Applying a model sets both voice AND broadcast language.
+- **News Detail Mobile** — Article metadata section now defaults to OPEN (expanded) on mobile.
+
+### Added — Features
+- **Persistent Settings** — All settings pages (Account, Voices, System, Accessibility, Settings) now sync to both localStorage (instant load) and MongoDB (background sync). Created shared `useSettings` hook.
+- **Audio Optimization** — Server-side TTS caching in MongoDB `tts_cache` collection (content-hash keyed). Frontend audio pre-fetching via `useAudioPrefetch` hook (loads top 3 articles during idle time).
+- **Full Podcast Functionality** — Added search bar, 8 category filters (Geopolitics, Technology, Urban, etc.), and expandable episode detail panels on Discover page. New backend endpoints: `/api/podcasts/categories`, `/api/podcasts/search`.
+- **Clickable Hashtags** — Created reusable `TagPill` and `HashtagText` components. All tags in Dashboard cards, News Detail sidebar, and mobile metadata are now clickable, navigating to `/search?q={tag}`.
+
+### Tested
+- Testing agent iteration_42: Backend 100% (7/7), Frontend 92% (12/13 verified). All features working.
+
+---
+
+
 ## [P17] — Feb 25, 2026
 ### Fixed — Bug Fixes & UI Refactoring
 - **Mobile Overflow** — Added `overflow-x-hidden` to Account and System Settings pages; reduced mobile padding on Account page subscription panel. No horizontal scroll at 375px.
