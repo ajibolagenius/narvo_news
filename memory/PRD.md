@@ -52,184 +52,110 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 │       │   ├── audioCache.js       # IndexedDB blob storage
 │       │   └── notificationService.js  # Push notification service
 │       └── pages/
-│           ├── DiscoverPage.js     # "Download All" batch feature
-│           ├── OfflinePage.js      # Cached content management
-│           └── SystemSettingsPage.js # Language selection + notifications
+│           ├── SettingsPage.js       # Interface language (i18n) selector
+│           ├── SystemSettingsPage.js  # Broadcast/TTS language selector
+│           ├── DiscoverPage.js       # "Download All" batch feature
+│           └── OfflinePage.js        # Cached content management
 └── memory/
     └── PRD.md
 ```
 
-## All Features Complete (Feb 24, 2025)
+## All Features Complete
 
 ### Core Features
-- ✅ Dashboard with news feed, images, animations
-- ✅ Audio player with queue management
-- ✅ On-demand TTS generation
-- ✅ Search, Saved, Morning Briefing pages
-- ✅ Discover page with podcasts & radio
-- ✅ Offline page with cached content
+- Dashboard with news feed, images, animations
+- Audio player with queue management
+- On-demand TTS generation
+- Search, Saved, Morning Briefing pages
+- Discover page with podcasts & radio
+- Offline page with cached content
 
 ### P1 Features (Complete)
-- ✅ **Podcast audio download** - Backend proxy + blob storage
-- ✅ **Offline playback** - From IndexedDB cache
-- ✅ **Dashboard scrolling** - Fixed flex container layout
+- **Podcast audio download** - Backend proxy + blob storage
+- **Offline playback** - From IndexedDB cache
+- **Dashboard scrolling** - Fixed flex container layout
 
 ### P2 Features (Complete)
-- ✅ **Service Worker PWA** - Network-first caching
-- ✅ **Backend modularization** - 6 route modules, 11 services
+- **Service Worker PWA** - Network-first caching
+- **Backend modularization** - 6 route modules, 11 services
 
 ### P3 Features (Complete)
-- ✅ **Background sync** - IndexedDB queue + sync event
-- ✅ **Push notifications** - Breaking news alerts toggle in Settings
-- ✅ **Download all podcasts** - Batch download with progress
-- ✅ **Global Download Queue Indicator** - Floating UI showing download progress across pages
+- **Background sync** - IndexedDB queue + sync event
+- **Push notifications** - Breaking news alerts toggle in Settings
+- **Download all podcasts** - Batch download with progress
+- **Global Download Queue Indicator** - Floating UI showing download progress across pages
 
-### P4 Features - NEW (Feb 24, 2025)
-- ✅ **Background Audio Playback** - Media Session API for lock screen controls
-- ✅ **Multi-Language Translation** - 5 languages (English, Pidgin, Yoruba, Hausa, Igbo)
-- ✅ **Google Fact Check API** - Real API with mock fallback
-- ✅ **Language Settings UI** - System Settings page with language selection
+### P4 Features (Complete)
+- **Background Audio Playback** - Media Session API for lock screen controls
+- **Multi-Language Translation** - 5 languages (English, Pidgin, Yoruba, Hausa, Igbo)
+- **Google Fact Check API** - Real API with mock fallback
+- **Language Settings UI** - System Settings page with language selection
+
+### P5 Features - Language Selector Differentiation (Complete - Feb 25, 2025)
+- **Interface Language Selector (/settings)** - Compact pill-style buttons for 7 i18n languages (English, Francais, Yoruba, Hausa, Igbo, Pidgin, Kiswahili). Controls UI text/menus only. Section labeled "INTERFACE_LANGUAGE".
+- **Broadcast Language Selector (/system)** - Rich card grid for 5 TTS languages with native names and ON_AIR badge. Controls audio narration language. Section labeled "BROADCAST_LANGUAGE" with subtitle "AUDIO_TRANSLATION_ENGINE".
+- Cross-references between pages guide users to the correct selector.
 
 ## Supported Languages
+
+### Interface Languages (i18n - /settings page)
+| Code | Label | Region |
+|------|-------|--------|
+| en | English | GLOBAL |
+| fr | Francais | WEST_AFRICA |
+| yo | Yoruba | NIGERIA |
+| ha | Hausa | NIGERIA |
+| ig | Igbo | NIGERIA |
+| pcm | Pidgin | WEST_AFRICA |
+| sw | Kiswahili | EAST_AFRICA |
+
+### Broadcast Languages (TTS - /system page)
 | Code | Name | Native Name | Voice |
 |------|------|-------------|-------|
 | en | English | English | nova |
-| pcm | Nigerian Pidgin | Naija | onyx |
-| yo | Yoruba | Èdè Yorùbá | echo |
+| pcm | Naija | Naija Tok | onyx |
+| yo | Yoruba | Ede Yoruba | echo |
 | ha | Hausa | Harshen Hausa | alloy |
-| ig | Igbo | Asụsụ Igbo | shimmer |
-
-## Key Components
-
-### Download Queue Context & Indicator (Feb 24, 2025)
-```javascript
-// DownloadQueueContext.js - Manages global download state
-const { addToQueue, addSingleToQueue, queue, isProcessing, clearAll } = useDownloadQueue();
-
-// DownloadQueueIndicator.js - Floating UI at bottom-right
-// Shows: DOWNLOADING... / DOWNLOADS_COMPLETE / {n} FAILED
-// Progress: completed/total count, percentage ring, pending count
-// Expandable: Shows individual items with progress bars
-// Actions: CLEAR_COMPLETED, CLEAR_ALL
-```
-
-### Service Worker (sw.js)
-```javascript
-// Background sync
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-offline-actions') {
-    event.waitUntil(processOfflineQueue());
-  }
-});
-
-// Push notifications
-self.addEventListener('push', (event) => {
-  event.waitUntil(
-    self.registration.showNotification(data.title, options)
-  );
-});
-```
-
-### Notification Service
-```javascript
-export async function subscribeToPush() {
-  const subscription = await registration.pushManager.subscribe({...});
-  return subscription;
-}
-
-export function queueOfflineAction(actionType, payload) {
-  navigator.serviceWorker.controller.postMessage({
-    type: 'QUEUE_OFFLINE_ACTION',
-    action: { actionType, payload }
-  });
-}
-```
-
-### Download All Podcasts
-```javascript
-// Now uses DownloadQueueContext for global state management
-const handleDownloadAll = async () => {
-  const items = podcastsToDownload.map(podcast => ({
-    id: podcast.id,
-    audioUrl: `${API_URL}/api/podcasts/${podcast.id}/audio`,
-    title: podcast.title,
-    source: podcast.episode,
-    duration: podcast.duration,
-    type: 'podcast'
-  }));
-  addToQueue(items); // Queue handles sequential processing
-};
-```
+| ig | Igbo | Asusu Igbo | shimmer |
 
 ## API Endpoints
 
-### Translation (NEW)
-- `GET /api/translate/languages` → List 5 supported languages
-- `GET /api/translate/quick?text=...&lang=pcm` → Quick translation
-- `POST /api/translate/text` → Full translation with metadata
-- `POST /api/translate/narrate` → Translate + broadcast narrative
+### Translation
+- `GET /api/translate/languages` - List 5 supported languages
+- `GET /api/translate/quick?text=...&lang=pcm` - Quick translation
+- `POST /api/translate/text` - Full translation with metadata
+- `POST /api/translate/narrate` - Translate + broadcast narrative
 
-### Fact-Check (NEW)
-- `GET /api/factcheck/search?query=...` → Search Google Fact Check API
-- `GET /api/factcheck/verify?claim=...` → Get verdict & confidence
-- `POST /api/factcheck/analyze` → Keyword-based quick analysis
+### Fact-Check
+- `GET /api/factcheck/search?query=...` - Search Google Fact Check API
+- `GET /api/factcheck/verify?claim=...` - Get verdict & confidence
+- `POST /api/factcheck/analyze` - Keyword-based quick analysis
 
 ### Podcast Audio Proxy
-- `GET /api/podcasts/{id}/audio` → Streams audio (CORS-safe)
+- `GET /api/podcasts/{id}/audio` - Streams audio (CORS-safe)
 
 ### Offline Storage
-- `POST /api/offline/save` → Save article
-- `GET /api/offline/articles` → List saved
-- `DELETE /api/offline/articles/{id}` → Remove
+- `POST /api/offline/save` - Save article
+- `GET /api/offline/articles` - List saved
+- `DELETE /api/offline/articles/{id}` - Remove
 
-## Test Results
+### Content Sources
+- `GET /api/content-sources` - Returns metadata for all news sources
+- `GET /api/metrics` - System metrics including total_sources count
 
-### Translation API ✓
-```
-/api/translate/quick?text=The government announced&lang=pcm
-Response: "Oya, tori don land! Di goment don drop new rules dem..."
-```
-
-### Fact-Check API ✓
-```
-/api/factcheck/verify?claim=COVID vaccine is safe
-Response: {verdict: "MISLEADING", confidence: 71, source: "MOCK_FACTCHECK"}
-```
-
-### Podcast Download ✓
-```
-IndexedDB: [{id: 'ep089', hasBlob: true, size: 10222911}]
-Playing cached audio: "Tech Horizons: Quantum Synthesis" 00:01 / 07:05
-```
-
-### Service Worker ✓
-```
-Service Worker: {active: 'activated'}
-```
-
-### Push Notifications ✓
-- Toggle visible in System Settings
-- Shows "PERMISSION_BLOCKED_IN_BROWSER" when denied
-- BellRinging/BellSlash icons based on state
-
-## Bug Fixes Applied
-1. Dashboard scrolling - Fragment → flex container
-2. Breaking news text - white for light mode
-3. CORS audio - Backend proxy
-4. pauseTrack error - Changed to togglePlay
+### User Settings
+- `GET /api/settings/{user_id}` - Get user settings
+- `POST /api/settings/{user_id}` - Save user settings (includes broadcast_language)
 
 ## Test Reports
-- `/app/test_reports/iteration_26.json` - Global Download Queue Indicator (7/7 tests passed)
-- `/app/test_reports/iteration_27.json` - Translation, Fact-Check, Language Settings (17/17 tests passed)
+- `/app/test_reports/iteration_26.json` - Global Download Queue Indicator (7/7 passed)
+- `/app/test_reports/iteration_27.json` - Translation, Fact-Check, Language Settings (17/17 passed)
+- `/app/test_reports/iteration_28.json` - Language Selector UI Differentiation (11/11 passed)
 
 ## MOCKED APIs
 - **Google Fact Check API** - Uses mock when `GOOGLE_FACT_CHECK_API_KEY` not set in .env
 - Response includes `source: "MOCK_FACTCHECK"` to indicate mock usage
-- To enable real fact-checking: Get FREE API key from Google Cloud Console → Add to backend/.env
 
-## How to Get Google Fact Check API Key (FREE)
-1. Go to https://console.cloud.google.com/
-2. Create a project or select existing
-3. Enable "Fact Check Tools API"
-4. Go to Credentials → Create API Key
-5. Add to `/app/backend/.env`: `GOOGLE_FACT_CHECK_API_KEY=your_key_here`
+## Backlog
+- **P2:** Implement the native mobile application based on performance guidelines
+- **Removed:** Dubawa fact-checking API (removed from backlog per user request)
