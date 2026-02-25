@@ -163,6 +163,7 @@ const SystemGearSixPage = () => {
         bandwidthPriority: (cached.bandwidth_priority || 'streaming').toUpperCase(),
         aggregatorMediastack: cached.aggregator_mediastack ?? DEFAULT_SETTINGS.aggregatorMediastack,
         aggregatorNewsdata: cached.aggregator_newsdata ?? DEFAULT_SETTINGS.aggregatorNewsdata,
+        soundTheme: cached.sound_theme || 'narvo_classic',
       };
     }
     return DEFAULT_SETTINGS;
