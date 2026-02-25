@@ -167,7 +167,7 @@ Write ONLY the rewritten text, no explanations.""" + _no_sfx_rule
         user_message = UserMessage(text=f"Translate this news:\n\n{text}")
         response = await chat.send_message(user_message)
         
-        translated_text = response.strip()
+        translated_text = _sanitize(response.strip())
         
         return {
             "success": True,
