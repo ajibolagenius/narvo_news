@@ -117,7 +117,7 @@ async def refresh_cache() -> Dict:
     _refresh_lock = True
     try:
         ms_task = fetch_mediastack("Nigeria Africa", 20)
-        nd_task = fetch_newsdata("Nigeria", 20)
+        nd_task = fetch_newsdata("Nigeria", 10)  # NewsData.io free plan caps at 10
         ms_results, nd_results = await asyncio.gather(ms_task, nd_task)
         _aggregator_cache["mediastack"] = ms_results
         _aggregator_cache["newsdata"] = nd_results
