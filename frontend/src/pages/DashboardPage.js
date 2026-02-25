@@ -74,7 +74,12 @@ const DashboardPage = () => {
   }, []);
 
   const featured = news[0];
-  const stream = news.slice(1, visibleCount + 1);
+  const filteredNews = news.slice(1).filter(item => {
+    if (sourceFilter === 'rss') return !item.aggregator;
+    if (sourceFilter === 'aggregators') return !!item.aggregator;
+    return true;
+  });
+  const stream = filteredNews.slice(0, visibleCount);
 
   const loadMore = () => {
     setLoadingMore(true);
