@@ -173,15 +173,9 @@ Narvo meets **WCAG 2.1 Level AA** for contrast, spacing, and focus. Use the toke
 - **Text dim (dark mode):** Use `#A3A3A3` on `#1B211A` for placeholder/secondary dim text (meets 4.5:1). Keep `#808080` only for large text or decorative elements.
 - **Text dim (light mode):** Use `#525252` on `#FFFFFF` for body-equivalent dim text (≥4.5:1); `#808080` is acceptable for large labels only.
 
+Use the token **`--color-text-dim-accessible`** (defined in §4 Design Tokens). It resolves to the correct value per theme: dark in `:root`, light in `[data-theme='light']`. No separate `-dark` / `-light` variables exist.
+
 **Semantic category colors (e.g. Finance, Urgent, Tech):** When used as **text** on `#1B211A` or `#FFFFFF`, verify each pair in [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/). Use for tags/labels with sufficient contrast or pair with a contrasting background; do not use low-contrast category color as the only differentiator.
-
-**Concrete tokens to add:**
-
-```css
-/* Accessibility-adjusted text (use for body or small text) */
---color-text-dim-accessible-dark: #A3A3A3;   /* on #1B211A ≥ 4.5:1 */
---color-text-dim-accessible-light: #525252;  /* on #FFFFFF ≥ 4.5:1 */
-```
 
 ### 10.2 Spacing & Touch Targets
 
@@ -227,25 +221,16 @@ The design system uses **0px radius** and **1px borders**; focus should remain s
 
 **Do not:** Use `outline: none` or `outline: 0` without replacing with a visible focus style. Use `:focus-visible` so mouse users don’t get a ring unless appropriate (e.g. buttons can show focus on click for confirmation).
 
-**Concrete tokens and example:**
+**Tokens** (defined in §4): `--focus-outline-width`, `--focus-outline-style`, `--focus-outline-color`, `--focus-outline-offset`. The variable **`--focus-outline-color`** is theme-scoped: it is set in `:root` (dark) and overridden in `[data-theme='light']`, so use this single token in your styles.
 
-```css
---focus-outline-width: 2px;
---focus-outline-style: solid;
---focus-outline-color-dark: #EBD5AB;
---focus-outline-color-light: #628141;
---focus-outline-offset: 2px;
-```
+**Example:**
 
 ```css
 /* Example: focus-visible only for keyboard */
 :focus { outline: none; }
 :focus-visible {
-  outline: var(--focus-outline-width) var(--focus-outline-style) var(--focus-outline-color-dark);
+  outline: var(--focus-outline-width) var(--focus-outline-style) var(--focus-outline-color);
   outline-offset: var(--focus-outline-offset);
-}
-[data-theme='light'] :focus-visible {
-  outline-color: var(--focus-outline-color-light);
 }
 ```
 
