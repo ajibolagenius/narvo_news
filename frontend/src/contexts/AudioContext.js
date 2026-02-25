@@ -208,6 +208,14 @@ export const AudioProvider = ({ children }) => {
     }
   }, [isMuted]);
 
+  // Playback speed control
+  const setPlaybackRate = useCallback((rate) => {
+    setPlaybackRateState(rate);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = rate;
+    }
+  }, []);
+
   const toggleMute = useCallback(() => {
     setIsMuted(prev => {
       const newMuted = !prev;
