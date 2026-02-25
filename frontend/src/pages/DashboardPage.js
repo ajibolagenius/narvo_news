@@ -345,7 +345,7 @@ const DashboardPage = () => {
                           <TruthTag storyId={featured.id} compact />
                         </div>
                       </div>
-                      <div className="flex-1 p-5 md:p-8 flex flex-col justify-between">
+                      <div className="flex-1 p-4 md:p-8 flex flex-col justify-between overflow-hidden">
                         <div>
                           <span className="mono-ui text-[10px] md:text-xs text-forest block mb-2 font-bold tracking-widest">NARRATIVE_NODE {'//'} {featured.category?.toUpperCase()}</span>
                           <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-content mb-3 md:mb-4 leading-none group-hover:text-primary transition-colors">
