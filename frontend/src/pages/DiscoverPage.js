@@ -323,34 +323,64 @@ const DiscoverPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3">
           {/* Podcast Matrix (always visible on lg, controlled by tab on mobile) */}
           <div className={`lg:col-span-2 lg:narvo-border-r h-full ${mobileTab !== 'podcasts' ? 'hidden lg:block' : ''}`}>
-            <div className="flex items-center justify-between p-4 md:p-8 narvo-border-b bg-surface/10 sticky top-0 z-10 backdrop-blur-md">
-              <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
-              <div className="flex items-center gap-2 md:gap-4">
-                {/* Download All Button */}
-                {podcasts.some(p => p.audio_url && !cachedPodcasts[p.id] && !isInQueue(p.id)) && (
+            <div className="flex flex-col gap-3 p-4 md:p-8 narvo-border-b bg-surface/10 sticky top-0 z-10 backdrop-blur-md">
+              <div className="flex items-center justify-between">
+                <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
+                <div className="flex items-center gap-2 md:gap-4">
+                  {podcasts.some(p => p.audio_url && !cachedPodcasts[p.id] && !isInQueue(p.id)) && (
+                    <button
+                      onClick={handleDownloadAll}
+                      disabled={isProcessing}
+                      className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold narvo-border ${isProcessing ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
+                      data-testid="download-all-btn"
+                    >
+                      <CloudArrowDown className="w-3 h-3" />
+                      <span className="hidden sm:inline">DOWNLOAD ALL</span>
+                    </button>
+                  )}
+                  <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
+                    <button 
+                      onClick={() => { setPodcastSort('latest'); setPodcastSearch(''); }}
+                      className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+                    >
+                      {t('discover.latest')}
+                    </button>
+                    <button 
+                      onClick={() => { setPodcastSort('popular'); setPodcastSearch(''); }}
+                      className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
+                    >
+                      {t('discover.popular')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {/* Search + Category Filters */}
+              <div className="flex flex-col sm:flex-row gap-2">
+                <div className="relative flex-1">
+                  <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-forest" />
+                  <input
+                    type="text"
+                    value={podcastSearch}
+                    onChange={(e) => handlePodcastSearch(e.target.value)}
+                    placeholder="SEARCH_EPISODES..."
+                    className="w-full h-8 pl-8 pr-3 narvo-border bg-background-dark mono-ui text-[9px] text-content placeholder:text-forest/40 focus:border-primary focus:outline-none"
+                    data-testid="podcast-search-input"
+                  />
+                </div>
+                <div className="flex gap-1 overflow-x-auto custom-scroll pb-1">
                   <button
-                    onClick={handleDownloadAll}
-                    disabled={isProcessing}
-                    className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold narvo-border ${isProcessing ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
-                    data-testid="download-all-btn"
-                  >
-                    <CloudArrowDown className="w-3 h-3" />
-                    <span>DOWNLOAD ALL</span>
-                  </button>
-                )}
-                <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
-                  <button 
-                    onClick={() => setPodcastSort('latest')}
-                    className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
-                  >
-                    {t('discover.latest')}
-                  </button>
-                  <button 
-                    onClick={() => setPodcastSort('popular')}
-                    className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
-                  >
-                    {t('discover.popular')}
-                  </button>
+                    onClick={() => setPodcastCategory('all')}
+                    className={`px-2 py-1 mono-ui text-[8px] font-bold whitespace-nowrap shrink-0 ${podcastCategory === 'all' ? 'bg-primary text-background-dark' : 'narvo-border text-forest hover:text-content'}`}
+                    data-testid="podcast-cat-all"
+                  >ALL</button>
+                  {podcastCategories.map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setPodcastCategory(cat.id)}
+                      className={`px-2 py-1 mono-ui text-[8px] font-bold whitespace-nowrap shrink-0 ${podcastCategory === cat.id ? 'bg-primary text-background-dark' : 'narvo-border text-forest hover:text-content'}`}
+                      data-testid={`podcast-cat-${cat.id}`}
+                    >{cat.name.toUpperCase()}</button>
+                  ))}
                 </div>
               </div>
             </div>
