@@ -168,9 +168,12 @@ class TestMetricsEndpoint:
             aggs = data['aggregators']
             print(f"✓ Aggregator metrics present:")
             for name, status in aggs.items():
-                configured = status.get('configured', False)
-                cached = status.get('cached_count', 0)
-                print(f"  - {name}: configured={configured}, cached={cached}")
+                if isinstance(status, dict):
+                    configured = status.get('configured', False)
+                    cached = status.get('cached_count', 0)
+                    print(f"  - {name}: configured={configured}, cached={cached}")
+                else:
+                    print(f"  - {name}: {status}")
         else:
             print("✓ Metrics endpoint working (no aggregator section)")
 
