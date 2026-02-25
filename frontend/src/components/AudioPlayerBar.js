@@ -241,9 +241,15 @@ const MobilePlayer = () => {
     currentTrack, isPlaying, isLoading, currentTime, duration,
     togglePlay, seek, playNext, playPrev,
     queue, queueIndex, volume, isMuted, setVolume, toggleMute,
+    playbackRate, setPlaybackRate,
   } = useAudio();
   const [expanded, setExpanded] = useState(false);
   const progress = duration ? (currentTime / duration) * 100 : 0;
+
+  const cycleSpeed = () => {
+    const idx = SPEED_OPTIONS.indexOf(playbackRate);
+    setPlaybackRate(SPEED_OPTIONS[(idx + 1) % SPEED_OPTIONS.length]);
+  };
 
   if (!currentTrack) return null;
 
