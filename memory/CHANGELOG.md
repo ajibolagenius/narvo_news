@@ -4,7 +4,21 @@ All notable changes to this project are documented in this file.
 
 ---
 
-## [P19] — Feb 25, 2026
+## [P20] — Feb 25, 2026
+### Fixed — Critical Backend Crash
+- **IndentationError Fix** — Push notification endpoints were incorrectly inserted inside `generate_briefing_script()` function body, causing the entire backend to crash on startup. Moved endpoints to proper top-level location.
+- **Voice/Language Mismatch** — `/api/voices` was returning old OpenAI voice IDs (onyx, echo, nova, shimmer, alloy) because `routes/user.py` had a competing endpoint using stale `user_service.py` data. Updated `user_service.py` to delegate to `yarngpt_service.py` for voice profiles.
+- **Autoplay Double-Fetch** — News detail page was making TWO TTS requests (pre-generate + playTrack). Now saves pre-generated `audio_url` and passes it directly to `forcePlayTrack`, eliminating the redundant call.
+
+### Added — Features
+- **Interest Matrix** — 8-category selectable interest grid on Settings page (`/settings`). Categories: Politics, Economy, Tech, Sports, Health, General, Culture, Security. Auto-saves to MongoDB via existing settings system.
+- **UserSettings Model** — Added `interests` (List[str]) and `sound_theme` (str) fields to the Pydantic model for proper validation and merge-save.
+
+### Tested
+- Testing agent iteration_44: Backend 100% (11/11), Frontend 100% (all UI features verified via Playwright). All endpoints working, no crashes.
+
+---
+
 ### Changed — Remove Mock Data / Real Logic
 - **Metrics** — `/api/metrics` now returns real data from MongoDB: `stories_processed` (news_cache count), `broadcast_hours` (TTS cache * 0.04), `network_load` (computed from story count). No more hardcoded "14.2k" or "342".
 - **System Alerts** — New `/api/system-alerts` endpoint returns real alerts based on aggregator cache staleness, cached story counts, TTS cache status.
