@@ -324,6 +324,12 @@ export const AudioProvider = ({ children }) => {
     // Play the audio
     audio.src = trackUrl;
     
+    // Play briefing intro chime for briefing tracks
+    const isBriefing = track.id?.startsWith('briefing') || track.type === 'briefing';
+    if (isBriefing) {
+      try { await playBriefingIntro(); } catch (e) { /* audio context may not be ready */ }
+    }
+    
     // Attempt to play - may fail due to autoplay policy
     try {
       await audio.play();
