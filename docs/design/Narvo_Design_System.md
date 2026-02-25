@@ -1,67 +1,34 @@
-# Narvo Design System
+# Narvo Design System (Revised)
 
-## 1. Design Philosophy: The Technical Instrument
-Narvo is not a traditional news aggregator; it is a **Broadcast-Grade News Platform**. The design philosophy is centered on transforming fragmented data into a professional, high-fidelity narrative experience. We treat information as a signal to be engineered, processed, and delivered with precision.
+## Source
+This document was uploaded by the user on Feb 25, 2026. Saved from: Narvo_Design_System.md
 
-- **Instrument, Not App:** The UI should feel like a precision-engineered broadcast studio console or a technical workstation.
-- **Signal Over Noise:** Every pixel must serve a functional purpose. We prioritize clarity, scannability, and journalistic authority.
-- **Broadcast Authority:** The aesthetic reflects the gravity and reliability of a premium news broadcast entity.
+## Key Changes Applied (Feb 2026)
+1. **Accessibility CSS Variables** added to index.css:
+   - `--color-text-dim-accessible` (dark: #A3A3A3, light: #525252)
+   - `--touch-target-min: 48px`
+   - `--line-height-body: 1.5`
+   - `--focus-outline-width/style/color/offset`
+2. **Focus Styles**: `:focus-visible` outline using design tokens
+3. **Skip Link**: "Skip to main content" link in App.js
+4. **Reduced Motion**: `@media (prefers-reduced-motion: reduce)` disables animations
+5. **Light Mode**: Theme-scoped token overrides for focus and dim-accessible colors
 
-## 2. Design Principles
-- **Strict Minimalism:** Stripping away visual bloat to focus on high-fidelity content. If an element doesn't aid navigation or comprehension, it's removed.
-- **Technical Precision:** Use of rigid grids, 1px borders, and monospaced typography to create an "engineered" feel.
-- **African Cultural Resonance:** Blending Swiss layout precision with localized African elements (e.g., Nigerian Pidgin copy, regional voice accents) to create a "Global-Local" synthesis.
-- **Audio-First Intent:** Design elements provide visual confirmation for audio states, ensuring the UI supports a hands-free, broadcast-centric experience.
+## Design Tokens (CSS Variables)
+See `/app/frontend/src/index.css` for the full implementation.
 
-## 3. Color System (The 10% Rule)
-To maintain extreme minimalism, colors are used sparingly as technical indicators rather than decorative elements.
+## Typography
+- Headers: Space Grotesk
+- Body: Inter  
+- System/Mono: JetBrains Mono
 
-- **Primary (Signal):** `#EBD5AB` (Sand/Beige) - Used for active states, cursors, critical alerts, and "On" switches. Strictly limited to **10%** of screen real estate.
-- **Background (The Anti-light):** `#1B211A` (Deep Matte Charcoal/Green) - The base surface for all views.
-- **Surface (Secondary):** `#242B23` (Muted Green/Grey) - Used for alternating row backgrounds, container surfaces, or depthless cards.
-- **Structural (Border):** `#628141` (Forest Green) - 1px structural grid lines that define the layout.
-- **Text Primary:** `#F2F2F2` (90% White) - High-fidelity content, headers, and primary values.
-- **Text Secondarys/Labels:** `#8BAE66` (Sage Green) or `#808080` (50% Grey) - Metadata, units, timestamps, and utility labels.
+## Color System
+- Primary: #EBD5AB (dark) / #628141 (light)
+- Background: #1B211A (dark) / #FFFFFF (light)
+- Surface: #242B23 (dark) / #EFF3ED (light)
+- Border: #628141 (dark) / #1B211A (light)
 
-## 4. Design Tokens (CSS Variables)
-```css
-:root {
-  --color-primary: #EBD5AB;
-  --color-bg: #1B211A;
-  --color-surface: #242B23;
-  --color-border: #628141;
-  --color-text-primary: #F2F2F2;
-  --color-text-secondary: #8BAE66;
-  --color-text-dim: #808080;
-  
-  --border-width: 1px;
-  --grid-gap: 16px;
-  --radius-none: 0px; /* Rigid squared corners */
-  
-  --font-header: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-}
-```
-
-## 5. Typography
-- **Headers & Numerals:** *Space Grotesk* - Used for impact, data points, and section titles.
-- **UI Body Content:** *Inter* - Optimized for readability in news summaries and article body text.
-- **System Identifiers:** *JetBrains Mono* - Used for labels, timestamps, bracketed commands `[LIKE THIS]`, and technical metadata.
-
-## 6. Components
-- **The Broadcast Loop:** A real-time, radio-like stream interface with pulsing audio indicators.
-- **Technical Cards:** Grid-mapped containers with 1px borders, no shadows, and strict internal alignment.
-- **[Command] Buttons:** Action buttons formatted in brackets to look like terminal or console commands.
-- **The Signal Meter:** Visualizers for audio levels and data synchronization status.
-- **Regional Zoom Toggle:** A technical switch for toggling between City, National, and Continental news feeds.
-
-## 7. Visual Style: The Swiss Grid
-- **Visible Architecture:** Every layout element sits within a visible `1px` border using `--color-border`.
-- **Flat Aesthetic:** No shadows, no gradients, no rounded corners. The design is purely 2D, relying on typography and spatial hierarchy for depth.
-- **Haptic Precision:** UI interactions are paired with subtle, sharp haptic taps to reinforce the "instrument" feel.
-- **Dynamic Grid Breathing:** Grid lines subtly pulse in opacity during audio playback to confirm the system is "live."
-
-## 8. Brand Philosophy & Narrative
-**"The Local Pulse, Refined."**
-Narvo is the bridge between the raw energy of African news and the precision of global engineering. We modernize the narrative by providing a tool that treats local stories with the technical respect they deserve. We don't just "show" news; we **broadcast** it with authority, clarity, and structural beauty.
+## Semantic Category Colors
+Finance (#EBD5AB), Environ (#93C5FD), Tech (#D8B4FE), Urgent (#FCA5A5),
+Politics (#FDBA74), Science (#5EEAD4), Culture (#F472B6), Sports (#FB923C),
+Health (#4ADE80), Security (#94A3B8), Opinion (#A8A29E), Legal (#818CF8)
