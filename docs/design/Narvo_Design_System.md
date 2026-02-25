@@ -66,6 +66,7 @@ Precision is reinforced through **Absolute Sharpness**.
   --color-text-primary: #F2F2F2;
   --color-text-secondary: #8BAE66;
   --color-text-dim: #808080;
+  --color-text-dim-accessible: #A3A3A3; /* WCAG AA on dark bg – use for body/small dim text */
   
   --border-width: 1px;
   --grid-gap: 16px;
@@ -81,6 +82,16 @@ Precision is reinforced through **Absolute Sharpness**.
   --container-padding-mobile: 16px;
   --container-padding-desktop: 32px;
   
+  /* Accessibility (WCAG 2.1 AA) */
+  --touch-target-min: 48px;
+  --touch-target-icon: 48px;
+  --line-height-body: 1.5;
+  --line-height-heading: 1.25;
+  --focus-outline-width: 2px;
+  --focus-outline-style: solid;
+  --focus-outline-color: #EBD5AB;
+  --focus-outline-offset: 2px;
+  
   --font-header: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -94,6 +105,8 @@ Precision is reinforced through **Absolute Sharpness**.
   --color-text-primary: #1B211A;
   --color-text-secondary: #628141;
   --color-text-dim: #808080;
+  --color-text-dim-accessible: #525252; /* WCAG AA on white – use for body/small dim text */
+  --focus-outline-color: #628141;
 }
 ```
 
@@ -134,6 +147,128 @@ Motion in Narvo is not decorative; it is a **Signal of Process**.
 - **Haptic Precision:** UI interactions are paired with subtle, sharp haptic taps to reinforce the "instrument" feel.
 - **Dynamic Grid Breathing:** Grid lines subtly pulse in opacity during audio playback to confirm the system is "live."
 
-## 10. Brand Philosophy & Narrative
+## 10. Accessibility (WCAG 2.1 Level AA)
+
+Narvo meets **WCAG 2.1 Level AA** for contrast, spacing, and focus. Use the tokens and rules below in addition to semantic HTML, keyboard operability, and reduced-motion support.
+
+### 10.1 Color & Contrast
+
+**Requirement:** Normal text ≥ **4.5:1**; large text (≥18px or 14px bold) and UI components ≥ **3:1**. Do not convey information by color alone.
+
+| Context | Foreground | Background | Ratio (approx.) | Pass AA? | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Dark – Body text** | `#F2F2F2` | `#1B211A` | ~14:1 | ✓ | Use for primary copy. |
+| **Dark – Secondary text** | `#8BAE66` | `#1B211A` | ~5.2:1 | ✓ | OK for labels, metadata. |
+| **Dark – Dim / placeholder** | `#808080` | `#1B211A` | ~3.2:1 | ✗ | **Fails** normal text. Use only for non-essential placeholder or large text. |
+| **Dark – Primary (signal)** | `#EBD5AB` | `#1B211A` | ~12:1 | ✓ | Buttons, active states. |
+| **Light – Body text** | `#1B211A` | `#FFFFFF` | ~14:1 | ✓ | Primary copy. |
+| **Light – Secondary text** | `#628141` | `#FFFFFF` | ~4.6:1 | ✓ | Labels, metadata. |
+| **Light – Dim / placeholder** | `#808080` | `#FFFFFF` | ~4.5:1 | ✓ (borderline) | Prefer darker grey for body (see adjusted token below). |
+| **Light – Primary (signal)** | `#628141` | `#FFFFFF` | ~4.6:1 | ✓ | Buttons, links. |
+| **Surface cards (dark)** | `#F2F2F2` | `#242B23` | ~12:1 | ✓ | Text on cards. |
+| **Surface cards (light)** | `#1B211A` | `#EFF3ED` | ~13:1 | ✓ | Text on cards. |
+
+**Adjusted tokens for accessibility (use where contrast fails):**
+
+- **Text dim (dark mode):** Use `#A3A3A3` on `#1B211A` for placeholder/secondary dim text (meets 4.5:1). Keep `#808080` only for large text or decorative elements.
+- **Text dim (light mode):** Use `#525252` on `#FFFFFF` for body-equivalent dim text (≥4.5:1); `#808080` is acceptable for large labels only.
+
+**Semantic category colors (e.g. Finance, Urgent, Tech):** When used as **text** on `#1B211A` or `#FFFFFF`, verify each pair in [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/). Use for tags/labels with sufficient contrast or pair with a contrasting background; do not use low-contrast category color as the only differentiator.
+
+**Concrete tokens to add:**
+
+```css
+/* Accessibility-adjusted text (use for body or small text) */
+--color-text-dim-accessible-dark: #A3A3A3;   /* on #1B211A ≥ 4.5:1 */
+--color-text-dim-accessible-light: #525252;  /* on #FFFFFF ≥ 4.5:1 */
+```
+
+### 10.2 Spacing & Touch Targets
+
+**Requirement:** Interactive targets ≥ **44×44 px** (WCAG 2.2); support **text spacing** override (line height, paragraph/letter/word spacing) without loss of content or functionality.
+
+| Token | Value | Use |
+| :--- | :--- | :--- |
+| **Touch target (minimum)** | **48px** | Min width/height for buttons, links, icon buttons, toggles (aligns to 8pt grid and exceeds 44px). |
+| **Touch target (recommended)** | **48px × 48px** | Default for icon-only controls and mobile primary actions. |
+| **Clickable padding** | **12px** (1.5 units) | Min padding inside a touch target so hit area stays ≥ 48px when combined with font size. |
+
+**Spacing scale (unchanged):** 4, 8, 16, 24, 32, 48, 64 px. Use **48px** or **64px** for interactive control dimensions (e.g. play button, region toggle).
+
+**Text spacing (WCAG 1.4.12):** Ensure content does not break when user applies:
+- Line height ≥ **1.5×** font size (body: use `line-height: 1.5` or `--line-height-body: 1.5`).
+- Paragraph spacing ≥ **2×** font size (e.g. `margin-bottom: 2em` for paragraphs).
+- Letter spacing ≥ **0.12×** font size (avoid negative letter-spacing on body).
+- Word spacing ≥ **0.16×** font size.
+
+**Concrete tokens to add:**
+
+```css
+--touch-target-min: 48px;
+--touch-target-icon: 48px;
+--line-height-body: 1.5;
+--line-height-heading: 1.25;
+```
+
+### 10.3 Focus (Keyboard & Screen Reader)
+
+**Requirement:** All interactive elements must be **keyboard focusable** with a **visible focus indicator** (≥ **3:1** against adjacent colors; minimum **2px** outline/offset).
+
+The design system uses **0px radius** and **1px borders**; focus should remain sharp and technical.
+
+**Default focus ring (recommended):**
+
+| Property | Value | Rationale |
+| :--- | :--- | :--- |
+| **Outline** | `2px solid` | Meets 2px minimum; visible at zoom. |
+| **Outline color (dark)** | `#EBD5AB` (primary) on `#1B211A` | High contrast, on-brand. |
+| **Outline color (light)** | `#628141` (primary) on `#FFFFFF` | Meets 3:1. |
+| **Outline offset** | `2px` | Prevents overlap with 1px border; clear separation. |
+
+**Do not:** Use `outline: none` or `outline: 0` without replacing with a visible focus style. Use `:focus-visible` so mouse users don’t get a ring unless appropriate (e.g. buttons can show focus on click for confirmation).
+
+**Concrete tokens and example:**
+
+```css
+--focus-outline-width: 2px;
+--focus-outline-style: solid;
+--focus-outline-color-dark: #EBD5AB;
+--focus-outline-color-light: #628141;
+--focus-outline-offset: 2px;
+```
+
+```css
+/* Example: focus-visible only for keyboard */
+:focus { outline: none; }
+:focus-visible {
+  outline: var(--focus-outline-width) var(--focus-outline-style) var(--focus-outline-color-dark);
+  outline-offset: var(--focus-outline-offset);
+}
+[data-theme='light'] :focus-visible {
+  outline-color: var(--focus-outline-color-light);
+}
+```
+
+**Skip link:** Provide a “Skip to main content” link that becomes visible on focus (e.g. positioned off-screen, transitions into view on `:focus`). Style with same focus ring and primary/surface colors.
+
+### 10.4 Motion (prefers-reduced-motion)
+
+Respect user preference for reduced motion (WCAG 2.3.3):
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+Keep “Grid Breathing” and other non-essential motion disabled or minimal when `prefers-reduced-motion: reduce` is set.
+
+---
+
+## 11. Brand Philosophy & Narrative
 **"The Local Pulse, Refined."**
 Narvo is the bridge between the raw energy of African news and the precision of global engineering. We modernize the narrative by providing a tool that treats local stories with the technical respect they deserve. We don't just "show" news; we **broadcast** it with authority, clarity, and structural beauty.
