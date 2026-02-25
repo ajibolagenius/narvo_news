@@ -243,6 +243,64 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* Mobile Telemetry Drawer (hidden on xl where sidebar shows) */}
+        <div className="xl:hidden">
+          <button
+            onClick={() => setShowTelemetry(v => !v)}
+            className="w-full h-9 flex items-center justify-between px-4 bg-surface/20 narvo-border-b"
+            data-testid="telemetry-toggle"
+          >
+            <div className="flex items-center gap-2">
+              <Broadcast weight="fill" className="w-3 h-3 text-primary" />
+              <span className="mono-ui text-[8px] text-forest font-bold tracking-widest">TELEMETRY</span>
+              <span className="mono-ui text-[7px] text-primary font-bold">{getTotalSources()} FEEDS</span>
+            </div>
+            <span className={`mono-ui text-[8px] text-forest transition-transform ${showTelemetry ? 'rotate-90' : ''}`}>&#9654;</span>
+          </button>
+          {showTelemetry && (
+            <div className="bg-surface/10 narvo-border-b px-4 py-3 space-y-3 max-h-60 overflow-y-auto custom-scroll">
+              {/* Trending */}
+              <div className="flex flex-wrap gap-1">
+                {['#ECONOMY', '#SOLAR_GRID', '#AI_SYNTH', '#ENERGY', '#TECH'].map(tag => (
+                  <span key={tag} className="narvo-border px-1.5 py-0.5 mono-ui text-[7px] text-content">{tag}</span>
+                ))}
+              </div>
+              {/* Source Matrix Mini */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="mono-ui text-[8px] text-forest font-bold">SOURCE_MATRIX</span>
+                  <span className="mono-ui text-[7px] text-primary font-bold">{getTotalSources()} FEEDS</span>
+                </div>
+                {(() => {
+                  const hs = getHealthSummary();
+                  const total = hs?.total || getTotalSources() || 1;
+                  const g = hs?.green || 0, a = hs?.amber || 0, r = hs?.red || 0;
+                  return (
+                    <div className="flex h-1.5 w-full gap-px mb-1">
+                      {g > 0 && <div className="bg-emerald-500" style={{ width: `${(g / total) * 100}%` }} />}
+                      {a > 0 && <div className="bg-amber-500" style={{ width: `${(a / total) * 100}%` }} />}
+                      {r > 0 && <div className="bg-red-500" style={{ width: `${(r / total) * 100}%` }} />}
+                    </div>
+                  );
+                })()}
+                <div className="flex items-center gap-3 mono-ui text-[7px]">
+                  <span className="text-forest">LOCAL: {getLocalSources()}</span>
+                  <span className="text-forest">CONTINENTAL: {getContinentalSources()}</span>
+                  <span className="text-forest">INTL: {getInternationalSources()}</span>
+                </div>
+              </div>
+              {/* Node Health Mini */}
+              {metrics && (
+                <div className="flex items-center gap-3 mono-ui text-[7px] text-forest">
+                  <span>ARTICLES: <span className="text-primary">{metrics.totalArticles || 0}</span></span>
+                  <span>RSS: <span className="text-primary">{metrics.rssFeeds || 0}</span></span>
+                  <span>PODCASTS: <span className="text-primary">{metrics.totalPodcasts || 0}</span></span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         {/* Feed Content */}
         <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-20 md:pb-8" data-testid="news-feed">
           <div className="max-w-4xl mx-auto flex flex-col gap-8 md:gap-12">
