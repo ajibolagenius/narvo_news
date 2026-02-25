@@ -116,6 +116,8 @@ const SystemGearSixPage = () => {
             dataLimit: Math.round((data.data_limit ?? 2.4) * 1000),
             bandwidthPriority: (data.bandwidth_priority || 'streaming').toUpperCase(),
             broadcastLanguage: data.broadcast_language ?? DEFAULT_SETTINGS.broadcastLanguage,
+            aggregatorMediastack: data.aggregator_mediastack ?? DEFAULT_SETTINGS.aggregatorMediastack,
+            aggregatorNewsdata: data.aggregator_newsdata ?? DEFAULT_SETTINGS.aggregatorNewsdata,
           });
         }
       } catch (err) {
