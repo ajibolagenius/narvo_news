@@ -213,12 +213,12 @@ const DashboardPage = () => {
       {/* Primary Feed */}
       <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0">
         {/* Sub-Header */}
-        <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
-          <div className="flex items-center gap-2 md:gap-3 min-w-0">
-            <span className="mono-ui text-[9px] md:text-xs text-forest shrink-0">CHANNEL: <span className="text-primary">NIGERIA_LGS_01</span></span>
-            <div className="w-2 h-2 bg-primary animate-pulse shrink-0" />
+        <div className="h-10 md:h-14 flex items-center justify-between px-3 md:px-8 bg-surface/30 narvo-border-b shrink-0">
+          <div className="flex items-center gap-1.5 md:gap-3 min-w-0">
+            <span className="mono-ui text-[8px] md:text-xs text-forest shrink-0 truncate max-w-[100px] md:max-w-none"><span className="text-primary">LGS_01</span></span>
+            <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary animate-pulse shrink-0" />
           </div>
-          <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+          <div className="flex items-center gap-1 md:gap-2 shrink-0">
             {/* Source filter tabs */}
             <div className="flex items-center border border-forest/30 p-0.5" data-testid="source-filter-toggle">
               {['all', 'rss', 'aggregators'].map(f => (
