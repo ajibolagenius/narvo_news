@@ -123,6 +123,14 @@ const DashboardPage = () => {
     if (sourceFilter === 'aggregators') return !!item.aggregator;
     return true;
   }).sort((a, b) => {
+    // If user has interests, boost matching stories to the top
+    if (userInterests.length > 0) {
+      const aCat = (a.category || '').toLowerCase();
+      const bCat = (b.category || '').toLowerCase();
+      const aMatch = userInterests.includes(aCat) ? 1 : 0;
+      const bMatch = userInterests.includes(bCat) ? 1 : 0;
+      if (aMatch !== bMatch) return bMatch - aMatch;
+    }
     if (sortOrder === 'oldest') return new Date(a.published || 0) - new Date(b.published || 0);
     return new Date(b.published || 0) - new Date(a.published || 0);
   });
