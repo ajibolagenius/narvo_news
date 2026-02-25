@@ -222,29 +222,26 @@ export const AudioProvider = ({ children }) => {
     const textToSpeak = track.narrative || track.summary || track.title;
     if (!textToSpeak) return null;
     
-    console.log('[AudioContext] Generating TTS with language:', broadcastLanguage);
-    
     try {
       const response = await fetch(`${API_URL}/api/tts/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: textToSpeak.slice(0, 4000),
-          voice_id: 'onyx',
-          language: broadcastLanguage  // Pass user's preferred language
+          voice_id: voiceModel,
+          language: broadcastLanguage
         })
       });
       
       if (!response.ok) throw new Error('TTS generation failed');
       
       const data = await response.json();
-      console.log('[AudioContext] TTS response - language:', data.language, 'translated:', !!data.translated_text);
       return data.audio_url;
     } catch (err) {
       console.error('TTS error:', err);
       return null;
     }
-  }, [broadcastLanguage]);
+  }, [broadcastLanguage, voiceModel]);
 
   // Queue management (defined before playTrack so it's available)
   const addToQueue = useCallback((track) => {
