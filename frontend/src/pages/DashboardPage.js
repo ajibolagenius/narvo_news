@@ -444,9 +444,9 @@ const DashboardPage = () => {
                               <TruthTag storyId={item.id} compact />
                             </div>
                             <div className="flex gap-1.5 md:gap-2">
-                              {!item.tags?.length && <span className="mono-ui text-[8px] md:text-[9px] text-forest border border-forest/20 px-1 md:px-1.5 font-bold">#{item.category?.toUpperCase()}</span>}
+                              {!item.tags?.length && <TagPill tag={item.category || 'GENERAL'} className="text-[8px] md:text-[9px] border-forest/20 px-1 md:px-1.5" />}
                               {item.tags?.slice(0, 2).map((tag, i) => (
-                                <span key={i} className="mono-ui text-[8px] md:text-[9px] text-forest border border-forest/20 px-1 md:px-1.5 font-bold">#{tag.toUpperCase()}</span>
+                                <TagPill key={i} tag={tag} className="text-[8px] md:text-[9px] border-forest/20 px-1 md:px-1.5" />
                               ))}
                             </div>
                           </div>
