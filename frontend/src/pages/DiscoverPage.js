@@ -18,6 +18,10 @@ const DiscoverPage = () => {
   const [mobileTab, setMobileTab] = useState('podcasts'); // 'podcasts' | 'radio'
   const [podcasts, setPodcasts] = useState([]);
   const [podcastLoading, setPodcastLoading] = useState(true);
+  const [podcastSearch, setPodcastSearch] = useState('');
+  const [podcastCategory, setPodcastCategory] = useState('all');
+  const [podcastCategories, setPodcastCategories] = useState([]);
+  const [expandedPodcast, setExpandedPodcast] = useState(null);
   const [trendingTopics, setTrendingTopics] = useState([]);
   const [cachedPodcasts, setCachedPodcasts] = useState({});
   const { playTrack } = useAudio();
