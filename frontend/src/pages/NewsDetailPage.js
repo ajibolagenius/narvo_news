@@ -8,6 +8,7 @@ import { useBookmarks } from '../hooks/useBookmarks';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { ArticleSkeleton } from '../components/Skeleton';
 import TruthTag from '../components/TruthTag';
+import { TagPill } from '../components/HashtagText';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
