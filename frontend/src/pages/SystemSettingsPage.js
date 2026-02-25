@@ -187,6 +187,7 @@ const SystemGearSixPage = () => {
             bandwidthPriority: (data.bandwidth_priority || 'streaming').toUpperCase(),
             aggregatorMediastack: data.aggregator_mediastack ?? DEFAULT_SETTINGS.aggregatorMediastack,
             aggregatorNewsdata: data.aggregator_newsdata ?? DEFAULT_SETTINGS.aggregatorNewsdata,
+            soundTheme: data.sound_theme || 'narvo_classic',
           });
         }
       } catch (err) {
