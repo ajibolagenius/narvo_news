@@ -9,6 +9,7 @@ export const useContentSources = () => useContext(ContentSourcesContext);
 
 export const ContentSourcesProvider = ({ children }) => {
   const [sources, setSources] = useState(null);
+  const [health, setHealth] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -27,7 +28,6 @@ export const ContentSourcesProvider = ({ children }) => {
     } catch (err) {
       console.error('[ContentSources] Error:', err);
       setError(err.message);
-      // Set fallback data
       setSources({
         total_sources: 23,
         local_sources: 17,
@@ -42,9 +42,19 @@ export const ContentSourcesProvider = ({ children }) => {
     }
   }, []);
 
+  const fetchHealth = useCallback(async () => {
+    try {
+      const r = await fetch(`${API_URL}/api/sources/health`);
+      if (r.ok) setHealth(await r.json());
+    } catch (err) {
+      console.error('[ContentSources] Health fetch error:', err);
+    }
+  }, []);
+
   useEffect(() => {
     fetchSources();
-  }, [fetchSources]);
+    fetchHealth();
+  }, [fetchSources, fetchHealth]);
 
   // Helper getters
   const getTotalSources = useCallback(() => sources?.total_sources || 0, [sources]);
