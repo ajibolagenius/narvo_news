@@ -227,7 +227,7 @@ export const AudioProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: textToSpeak.slice(0, 4000),
-          voice_id: 'nova',
+          voice_id: 'onyx',
           language: broadcastLanguage  // Pass user's preferred language
         })
       });
