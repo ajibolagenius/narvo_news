@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
-import { Play, Pause, BookmarkSimple, Translate, ArrowSquareOut, ArrowLeft, Lightbulb, ShareNetwork, Clock, Eye, Broadcast, Queue } from '@phosphor-icons/react';
+import { Play, Pause, BookmarkSimple, Translate, ArrowSquareOut, ArrowLeft, Lightbulb, ShareNetwork, Clock, Eye, Broadcast, Queue, CaretDown, CaretUp } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useHapticAlert } from '../components/HapticAlerts';
