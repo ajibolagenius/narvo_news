@@ -1501,6 +1501,28 @@ async def get_podcasts(
         episodes.sort(key=lambda x: x.duration, reverse=True)
     return episodes[:limit]
 
+@app.get("/api/podcasts/categories")
+async def get_podcast_categories():
+    """Get unique podcast categories"""
+    cats = ["Geopolitics", "Technology", "Urban", "Environment", "Finance", "Health", "Climate", "Culture"]
+    return [{"id": c.lower(), "name": c} for c in cats]
+
+@app.get("/api/podcasts/search")
+async def search_podcast_episodes(q: str = Query("", min_length=1), limit: int = Query(10, ge=1, le=50)):
+    """Search podcasts by title or description"""
+    from services.podcast_service import search_podcasts
+    results = await search_podcasts(q, limit=limit)
+    return results
+
+@app.get("/api/podcasts/{podcast_id}")
+async def get_podcast_detail(podcast_id: str):
+    """Get a specific podcast episode by ID"""
+    from services.podcast_service import get_podcast_by_id
+    ep = get_podcast_by_id(podcast_id)
+    if not ep:
+        raise HTTPException(status_code=404, detail="Podcast not found")
+    return ep
+
 @app.get("/api/discover/trending")
 async def get_trending_topics():
     """Get trending topics and categories for the Discover page"""
