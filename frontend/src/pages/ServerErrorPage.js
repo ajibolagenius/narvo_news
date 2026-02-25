@@ -4,11 +4,11 @@ import { Warning, Desktop, Cpu, HardDrive, Clock, ArrowCounterClockwise, Plus, L
 
 const ServerErrorPage = () => {
   const navigate = useNavigate();
-  const [currentTime, setCurrentTime] = useState(new Date().toISOString().slice(11, 19));
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('en-GB', { hour12: false }));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTime(new Date().toISOString().slice(11, 19));
+      setCurrentTime(new Date().toLocaleTimeString('en-GB', { hour12: false }));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
