@@ -78,6 +78,7 @@ const VoiceStudioPage = () => {
         }),
       });
       setBroadcastLanguage(selectedVoice.language || 'en');
+      setVoiceModel(selectedVoice.id);
       const langInfo = LANG_META[selectedVoice.language] || {};
       showAlert({
         type: 'success',
