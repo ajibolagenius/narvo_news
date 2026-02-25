@@ -92,6 +92,7 @@ function App() {
                   <Route path="/account" element={<AccountPage />} />
                   <Route path="/system" element={<SystemSettingsPage />} />
                   <Route path="/accessibility" element={<AccessibilityPage />} />
+                  <Route path="/history" element={<ListeningHistoryPage />} />
                 </Route>
                 {/* Admin routes with separate layout */}
                 <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
