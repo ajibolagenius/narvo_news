@@ -1,0 +1,83 @@
+// Content Sources Context - Manages source data across the app
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+
+const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+const ContentSourcesContext = createContext({});
+
+export const useContentSources = () => useContext(ContentSourcesContext);
+
+export const ContentSourcesProvider = ({ children }) => {
+  const [sources, setSources] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch content sources on mount
+  const fetchSources = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/sources`);
+      if (response.ok) {
+        const data = await response.json();
+        setSources(data);
+        setError(null);
+      } else {
+        throw new Error('Failed to fetch sources');
+      }
+    } catch (err) {
+      console.error('[ContentSources] Error:', err);
+      setError(err.message);
+      // Set fallback data
+      setSources({
+        total_sources: 23,
+        local_sources: 17,
+        international_sources: 6,
+        categories: {},
+        sources: [],
+        broadcast_sources: [],
+        verification_apis: []
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSources();
+  }, [fetchSources]);
+
+  // Helper getters
+  const getTotalSources = useCallback(() => sources?.total_sources || 0, [sources]);
+  const getLocalSources = useCallback(() => sources?.local_sources || 0, [sources]);
+  const getInternationalSources = useCallback(() => sources?.international_sources || 0, [sources]);
+  const getBroadcastSources = useCallback(() => sources?.broadcast_sources || [], [sources]);
+  const getVerificationAPIs = useCallback(() => sources?.verification_apis || [], [sources]);
+  const getCategories = useCallback(() => sources?.categories || {}, [sources]);
+  const getSourcesByCategory = useCallback((category) => {
+    return (sources?.sources || []).filter(s => s.category === category);
+  }, [sources]);
+  const getSourcesByRegion = useCallback((region) => {
+    return (sources?.sources || []).filter(s => s.region === region);
+  }, [sources]);
+
+  return (
+    <ContentSourcesContext.Provider value={{
+      sources,
+      loading,
+      error,
+      refreshSources: fetchSources,
+      getTotalSources,
+      getLocalSources,
+      getInternationalSources,
+      getBroadcastSources,
+      getVerificationAPIs,
+      getCategories,
+      getSourcesByCategory,
+      getSourcesByRegion,
+    }}>
+      {children}
+    </ContentSourcesContext.Provider>
+  );
+};
+
+export default ContentSourcesContext;
