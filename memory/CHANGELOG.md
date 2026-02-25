@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P16] — Feb 25, 2026
+### Fixed — Mobile Parity
+- **Dashboard Telemetry Drawer** — Collapsible TELEMETRY section on mobile (xl:hidden) with trending tags, SOURCE_MATRIX health bar, LOCAL/CONTINENTAL/INTL source counts, and article/podcast metrics
+- **Dashboard Filter Tabs** — Compact filter bar (ALL/RSS/AGG + NEW/OLD) fits 375px without overflow
+- **Discover Radio Tabs** — PODCASTS/RADIO tab switcher on mobile (lg:hidden) so Radio Garden is accessible without scrolling past all podcasts
+- **System Settings Toggles** — All 5 toggle rows stack vertically on mobile (flex-col sm:flex-row) with toggle aligned right
+- **Sidebar Overlay** — Removed blocking overlay that was intercepting mobile touches
+- **Featured Article** — Title line-clamp-3, reduced padding, overflow-hidden on mobile
+
+---
+
 ## [P15c] — Feb 25, 2026
 ### Fixed
 - **Google OAuth Redirect** — `redirectTo` now uses `REACT_APP_BACKEND_URL` instead of `window.location.origin` to ensure OAuth callback goes to production URL, not localhost.
