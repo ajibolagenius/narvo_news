@@ -286,6 +286,9 @@ const SystemGearSixPage = () => {
           </div>
         </section>
 
+        {/* Broadcast Sound Themes */}
+        <SoundThemesSection settings={settings} updateSetting={updateSetting} />
+
         {/* 03: Notification Engine */}
         <section className="space-y-6 md:space-y-8">
           <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
