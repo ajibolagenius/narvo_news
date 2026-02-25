@@ -271,6 +271,56 @@ const SettingsPage = () => {
             <NotificationToggle />
           </div>
 
+          {/* Interest Matrix */}
+          <div className="space-y-4" data-testid="interest-matrix-section">
+            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+              INTEREST_MATRIX
+            </h2>
+            <div className="narvo-border bg-surface/5 p-5 md:p-6">
+              <div className="flex items-center gap-4 md:gap-6 mb-5">
+                <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-background-dark flex items-center justify-center">
+                  <GridFour className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">COGNITIVE_INTEREST_GRID</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">MAP YOUR INTERESTS FOR ACCURATE NEWS DELIVERY</p>
+                </div>
+                {interestsSaving && (
+                  <span className="mono-ui text-[8px] text-primary animate-pulse">SYNCING...</span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-3">
+                {INTEREST_CATEGORIES.map(cat => {
+                  const active = interests.includes(cat.id);
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => toggleInterest(cat.id)}
+                      className={`narvo-border p-3 md:p-4 text-left transition-all ${
+                        active
+                          ? 'bg-primary text-background-dark border-primary'
+                          : 'bg-surface/5 text-forest hover:bg-surface/20 hover:border-forest'
+                      }`}
+                      data-testid={`interest-${cat.id}`}
+                    >
+                      <span className={`mono-ui text-[10px] md:text-[11px] font-bold block mb-1 ${active ? 'text-background-dark' : 'text-content'}`}>
+                        {cat.label}
+                      </span>
+                      <span className={`mono-ui text-[7px] md:text-[8px] leading-relaxed block ${active ? 'text-background-dark/70' : 'text-forest/60'}`}>
+                        {cat.desc}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mono-ui text-[7px] md:text-[8px] text-forest/50 mt-4">
+                {interests.length > 0
+                  ? `${interests.length} CATEGORIES ACTIVE — FEED PRIORITIZATION ENGAGED`
+                  : 'NO CATEGORIES SELECTED — ALL NEWS DELIVERED'}
+              </p>
+            </div>
+          </div>
+
           {/* Settings Sections */}
           {settingsSections.map((section, sectionIdx) => (
             <div key={sectionIdx} className="space-y-4">
