@@ -103,6 +103,7 @@ function App() {
           </Router>
         </HapticAlertProvider>
       </BreakingNewsProvider>
+      </ContentSourcesProvider>
       </DownloadQueueProvider>
       </AudioProvider>
     </AuthProvider>
