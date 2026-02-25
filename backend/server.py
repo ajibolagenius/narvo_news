@@ -629,60 +629,82 @@ async def search_news(
     skip: int = Query(0, description="Offset for pagination"),
     include_aggregators: bool = Query(True, description="Include aggregator articles in search")
 ):
-    """Search news articles from RSS feeds and aggregators"""
+    """Search news articles from RSS feeds, aggregators, and podcasts"""
     try:
-        # Fetch all RSS news
-        all_news = []
+        query_lower = q.lower()
+        all_items = []
+
+        # 1. Fetch RSS news
         tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for items in results:
             if isinstance(items, list):
-                all_news.extend(items)
-        
-        # Include cached aggregator articles in search
+                all_items.extend(items)
+
+        # 2. Include cached aggregator articles
         if include_aggregators:
             try:
-                from services.aggregator_service import search_cached_aggregators
-                agg_results = search_cached_aggregators(q)
-                all_news.extend(agg_results)
+                from services.aggregator_service import get_normalized_aggregator_news
+                agg_items = await get_normalized_aggregator_news()
+                all_items.extend(agg_items)
             except Exception as e:
-                print(f"[Search] Aggregator search error: {e}")
-        
-        # Search filter
-        query_lower = q.lower()
+                print(f"[Search] Aggregator error: {e}")
+
+        # 3. Include podcasts
+        try:
+            from services.podcast_service import search_podcasts
+            pods = await search_podcasts(q, limit=10)
+            for p in pods:
+                all_items.append({
+                    "id": p.get("id", ""),
+                    "title": p.get("title", ""),
+                    "summary": p.get("description", ""),
+                    "source": p.get("podcast_name", "Podcast"),
+                    "source_url": p.get("audio_url", ""),
+                    "published": p.get("published", ""),
+                    "category": "Podcast",
+                    "region": "Africa",
+                    "tags": [],
+                    "image_url": p.get("image_url"),
+                    "aggregator": "podcast",
+                })
+        except Exception:
+            pass
+
+        # 4. Filter by search query
         filtered = []
-        for item in all_news:
-            title_match = query_lower in item.get("title", "").lower()
-            summary_match = query_lower in item.get("summary", "").lower()
-            
-            # Aggregator items already matched by search_cached_aggregators
-            is_agg = bool(item.get("aggregator"))
-            
-            if (title_match or summary_match) or is_agg:
-                if category and item.get("category", "").lower() != category.lower():
+        for item in all_items:
+            title_match = query_lower in (item.get("title") or "").lower()
+            summary_match = query_lower in (item.get("summary") or "").lower()
+            source_match = query_lower in (item.get("source") or "").lower()
+            tag_match = any(query_lower in t.lower() for t in (item.get("tags") or []))
+
+            if title_match or summary_match or source_match or tag_match:
+                if category and (item.get("category") or "").lower() != category.lower():
                     continue
-                if source and item.get("source", "").lower() != source.lower():
+                if source and (item.get("source") or "").lower() != source.lower():
                     continue
                 filtered.append(item)
-        
-        # Deduplicate by id
+
+        # 5. Deduplicate by id
         seen_ids = set()
         deduped = []
         for item in filtered:
             item_id = item.get("id", "")
-            if item_id not in seen_ids:
-                seen_ids.add(item_id)
-                deduped.append(item)
-        
-        # Sort by relevance (title matches first) then by date
+            if item_id and item_id in seen_ids:
+                continue
+            seen_ids.add(item_id)
+            deduped.append(item)
+
+        # 6. Sort: title matches first, then by date
         deduped.sort(key=lambda x: (
-            query_lower not in x.get("title", "").lower(),
-            x.get("published", "")
+            query_lower not in (x.get("title") or "").lower(),
+            x.get("published") or ""
         ), reverse=True)
-        
+
         total = len(deduped)
         paginated = deduped[skip:skip + limit]
-        
+
         return {
             "results": paginated,
             "total": total,
