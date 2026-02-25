@@ -195,7 +195,7 @@ const ModerationHubPage = () => {
           <span>VERIFIED: <span className="text-primary">{stats?.verified || 0}</span></span>
           <span>PENDING: <span className="text-forest">{stats?.pending || 0}</span></span>
         </div>
-        <span>FACTCHECK_API: <span className="text-primary">{stats?.dubawa_status || 'CHECKING'}</span> {'//'} LAST_SYNC: {stats?.last_sync || '--'}</span>
+        <span>FACTCHECK_API: <span className="text-primary">{stats?.dubawa_status || 'CHECKING'}</span></span>
       </div>
     </main>
   );
