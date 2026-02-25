@@ -37,6 +37,8 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - WCAG 2.1 AA accessibility (skip link, focus-visible, reduced motion)
 - Responsive mobile-first design across all pages
 - News detail autoplay with TTS pre-generation and direct audio URL pass-through
+- Playback speed control (0.75x, 1x, 1.25x, 1.5x, 2x) on desktop and mobile players
+- PWA installability: proper PNG icons, desktop + mobile screenshots
 
 ## Key API Endpoints
 | Endpoint | Method | Description |
