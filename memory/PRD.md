@@ -1,124 +1,112 @@
 # Narvo - Product Requirements Document
 
 ## Overview
-Narvo is a precision-engineered, audio-first news broadcast platform with full PWA support for offline functionality and multi-language translation.
+Narvo is a precision-engineered, audio-first news broadcast platform with full PWA support for offline functionality and multi-language translation. Built for global audiences with a primary focus on African markets.
 
 ## Tech Stack
-- **Frontend**: React, Tailwind CSS, @phosphor-icons/react, framer-motion, Tone.js, Howler.js
-- **Backend**: FastAPI (modularized), Python
-- **Database**: MongoDB
-- **Auth**: Supabase
-- **AI/TTS**: Google Gemini & OpenAI TTS (via Emergent LLM Key)
-- **Translation**: Gemini AI for 5 African languages
+- **Frontend**: React 18, Tailwind CSS, Phosphor Icons, Framer Motion, Tone.js, Howler.js
+- **Backend**: FastAPI (modularized), Python 3.11
+- **Database**: MongoDB (via MONGO_URL)
+- **Auth**: Supabase (Email/Password + Google OAuth)
+- **AI/TTS**: Google Gemini 2.0 Flash & OpenAI TTS (via Emergent LLM Key)
+- **Translation**: Gemini AI for 5 African languages + English
 - **Fact-Checking**: Google Fact Check API (with mock fallback)
-- **News Aggregators**: Mediastack API, NewsData.io API
+- **News Sources**: 39 RSS feeds + Mediastack API + NewsData.io API
 - **PWA**: Service Worker + IndexedDB + Push Notifications + Media Session API
 
 ## Architecture
 ```
 /app/
 ├── backend/
-│   ├── server.py           # Main FastAPI with modular routers
+│   ├── server.py                    # Main FastAPI app, routes, AI generation, sanitizer
 │   ├── routes/
-│   │   ├── discover.py     # Podcasts with audio proxy, trending, radio
-│   │   ├── offline.py      # Offline article storage
-│   │   ├── admin.py        # Admin dashboard metrics & alerts
-│   │   ├── user.py         # User preferences, bookmarks, settings
-│   │   ├── factcheck.py    # Google Fact Check API + mock fallback
-│   │   └── translation.py  # Multi-language translation endpoints
-│   └── services/           # Business logic layer
-│       ├── news_service.py      # RSS feed fetching, news aggregation
-│       ├── podcast_service.py   # Podcast episode management + search
-│       ├── radio_service.py     # Radio Browser API integration
-│       ├── admin_service.py     # System metrics, alerts, moderation
-│       ├── factcheck_service.py # Google Fact Check API integration
-│       ├── translation_service.py # Gemini AI translation (5 languages)
-│       ├── narrative_service.py # AI narrative generation
-│       ├── offline_service.py   # Offline article management
-│       ├── user_service.py      # User data management
-│       ├── tts_service.py       # Text-to-speech generation
-│       ├── briefing_service.py  # Morning briefing generation
-│       └── aggregator_service.py # Mediastack + NewsData.io + cache + dedup
+│   │   ├── discover.py              # Podcasts, trending, radio
+│   │   ├── offline.py               # Offline article storage
+│   │   ├── admin.py                 # Admin dashboard metrics & alerts
+│   │   ├── user.py                  # User preferences, bookmarks, settings
+│   │   ├── factcheck.py             # Google Fact Check API + mock fallback
+│   │   └── translation.py           # Multi-language translation endpoints
+│   ├── services/
+│   │   ├── news_service.py          # RSS feed fetching (39 sources)
+│   │   ├── podcast_service.py       # Podcast episodes + search
+│   │   ├── radio_service.py         # Radio Browser API
+│   │   ├── admin_service.py         # System metrics, alerts
+│   │   ├── factcheck_service.py     # Google Fact Check integration
+│   │   ├── translation_service.py   # Gemini AI translation (5 languages) + sanitizer
+│   │   ├── narrative_service.py     # AI narrative generation
+│   │   ├── offline_service.py       # Offline article management
+│   │   ├── user_service.py          # User data management
+│   │   ├── tts_service.py           # OpenAI text-to-speech
+│   │   ├── briefing_service.py      # Morning briefing generation
+│   │   └── aggregator_service.py    # Mediastack + NewsData.io + cache + dedup
+│   ├── tests/                       # Backend test suite (pytest)
+│   ├── requirements.txt
+│   └── .env                         # MONGO_URL, DB_NAME, API keys
 ├── frontend/
 │   ├── public/
-│   │   ├── sw.js           # Service Worker with background sync + push
-│   │   ├── manifest.json   # PWA manifest
-│   │   └── index.html      # SW registration
+│   │   ├── sw.js                    # Service Worker (background sync + push)
+│   │   ├── manifest.json            # PWA manifest
+│   │   └── index.html               # SW registration
 │   └── src/
 │       ├── contexts/
-│       │   ├── AudioContext.js       # Media Session API + cinematic audio
-│       │   └── DownloadQueueContext.js  # Global download state
+│       │   ├── AuthContext.js        # Supabase auth (email + Google OAuth)
+│       │   ├── AudioContext.js       # Media Session API, playback controls
+│       │   ├── DownloadQueueContext.js # Global download state
+│       │   ├── ContentSourcesContext.js # Feed source management
+│       │   ├── BreakingNewsContext.js   # Breaking news alerts
+│       │   └── LenisProvider.js     # Smooth scroll (disabled, passthrough)
 │       ├── components/
-│       │   ├── TourGuideModal.js  # First-time user tour (5 steps)
-│       │   └── DownloadQueueIndicator.js # Floating download UI
+│       │   ├── TourGuideModal.js    # 5-step tour (event-driven, scoped to dashboard)
+│       │   ├── DashboardSidebar.js  # Sidebar + mobile bottom nav
+│       │   ├── DashboardLayout.js   # Main layout wrapper (h-screen)
+│       │   ├── DownloadQueueIndicator.js # Floating download UI
+│       │   ├── Clock.js             # Local time display (HH:MM:SS)
+│       │   ├── Skeleton.js          # Loading skeleton components
+│       │   ├── BreakingNews.js      # Breaking news banner
+│       │   └── AdminLayout.js       # Admin area layout
 │       ├── lib/
-│       │   ├── audioCache.js       # IndexedDB blob storage
-│       │   ├── cinematicAudio.js   # Tone.js broadcast audio effects
-│       │   └── notificationService.js  # Push notification service
-│       └── pages/
-│           ├── DashboardPage.js    # User prefs + dedup + source filter
-│           ├── SettingsPage.js     # Interface language (i18n) selector
-│           ├── SystemSettingsPage.js # Broadcast/TTS/aggregator settings
-│           ├── DiscoverPage.js     # "Download All" batch feature
-│           └── OfflinePage.js      # Cached content management
-└── memory/
-    └── PRD.md
+│       │   ├── supabase.js          # Supabase client init
+│       │   ├── audioCache.js        # IndexedDB blob storage
+│       │   ├── cinematicAudio.js    # Tone.js broadcast SFX (briefing only)
+│       │   └── notificationService.js # Push notification service
+│       ├── hooks/
+│       │   └── useBookmarks.js      # Bookmark management hook
+│       ├── pages/
+│       │   ├── LandingPage.js       # Public landing page
+│       │   ├── AuthPage.js          # Login/Register + Google OAuth
+│       │   ├── OnboardingPage.js    # New user preferences
+│       │   ├── DashboardPage.js     # Main feed (filter/sort, dedup, prefs)
+│       │   ├── SearchPage.js        # Unified search (RSS + aggregators + podcasts)
+│       │   ├── DiscoverPage.js      # Podcasts, radio, trending
+│       │   ├── MorningBriefingPage.js # Briefing + transcript follow-along
+│       │   ├── SavedPage.js / BookmarksPage.js # Bookmarked articles
+│       │   ├── OfflinePage.js       # Cached content management
+│       │   ├── SettingsPage.js      # Interface language, theme, tour replay
+│       │   ├── SystemSettingsPage.js # Broadcast language, voice, aggregators
+│       │   ├── NewsDetailPage.js    # Article detail + TTS + fact-check
+│       │   ├── VoiceStudioPage.js   # TTS voice preview
+│       │   ├── ToolsPage.js         # Technology credits page
+│       │   ├── AccountPage.js       # User account info
+│       │   ├── AccessibilityPage.js # Accessibility settings
+│       │   ├── ForgotPasswordPage.js # Password recovery
+│       │   ├── NotFoundPage.js      # 404 page
+│       │   ├── ServerErrorPage.js   # 500 page
+│       │   └── admin/               # Admin pages
+│       ├── email-templates/
+│       │   └── SETUP_GUIDE.md       # Narvo-branded Supabase email templates
+│       ├── i18n.js                  # i18next configuration
+│       ├── App.js                   # Route definitions + providers
+│       └── index.css                # Global styles + CSS variables
+├── memory/
+│   ├── PRD.md                       # This file
+│   ├── CHANGELOG.md                 # Implementation history
+│   └── ROADMAP.md                   # Prioritized backlog
+└── test_reports/                    # Testing agent reports (iteration_34-39)
 ```
-
-## All Features Complete
-
-### Core Features
-- Dashboard with news feed, images, animations
-- Audio player with queue management
-- On-demand TTS generation
-- Search, Saved, Morning Briefing pages
-- Discover page with podcasts & radio
-- Offline page with cached content
-
-### P1-P12 Features (All Complete)
-- Podcast audio download, offline playback, dashboard scrolling fix
-- Service Worker PWA, backend modularization
-- Background sync, push notifications, batch download, download queue
-- Background audio, multi-language translation, Google Fact Check, language settings
-- Interface/Broadcast language selector differentiation
-- AudioContext broadcast_language fetch fix, broadcast language toast
-- Expanded RSS feeds (39 total), continental region, backend test suite
-- SOURCE_MATRIX widget with proportion bar and expandable regions
-- Real-time feed health monitoring with auto-refresh
-- TTS voice gender mapping with Nigerian names
-- Voice preview on /system, Mediastack + NewsData.io integration
-- Aggregator feed integration, SOURCE_MATRIX counts, AGGREGATOR_WIRE
-- Aggregator caching (10min TTL), search across aggregators, user prefs
-
-### P13 Features - Bug Fixes & New Features (Feb 25, 2026)
-- **Bug Fix: NewsData.io** — Fixed HTTP 422 by capping request limit to 10 (free plan). Verified working.
-- **Bug Fix: Global Search** — Rewrote /api/search to query RSS feeds, aggregators, and podcasts with deduplication by ID.
-- **Feature: User Prefs → Dashboard** — Dashboard fetches user's aggregator preferences and passes them to /api/news endpoint.
-- **Feature: Title Deduplication** — Client-side deduplication in DashboardPage by normalized title prevents duplicate stories.
-- **Feature: Tour Guide Modal** — 5-step modal for first-time users (localStorage 'narvo_tour_completed'). Covers LIVE_FEED, SOURCE_FILTER, DISCOVER, SEARCH, SYSTEM_SETTINGS. Triggers on login, register, and guest entry via custom event. Replay button on /settings page.
-- **Feature: Cinematic Audio** — Broadcast-grade Tone.js audio effects scoped to briefing section only. Master chain: compressor + reverb. Intro (bass + rising chord + bright stab + noise sweep), section divider (bell + sweep), outro (descending chord + bass + shimmer). SFX toggle on briefing page.
-
-### P14 - AI Text Sanitization (Feb 25, 2026)
-- **AI Output Sanitizer** — Regex-based post-processor strips stage directions, sound descriptions, and production cues from all AI-generated text. Patterns: `[bracketed]`, `(music/sound cues)`, `*asterisked cues*`, `Sound of...` lines. Applied to: narrative generation, briefing scripts, translations, and narrated translations.
-- **Hardened System Prompts** — All 4 AI generation functions (generate_narrative, generate_briefing_script, translate_text, translate_and_narrate) now include explicit CRITICAL RULES forbidding sound effects, stage directions, and non-verbal descriptions.
-
-### P15 - UX Fixes & New Features (Feb 25, 2026)
-- **UTC → Local Time** — Clock.js uses `toLocaleTimeString()`. All pages (Landing, Auth, ForgotPassword, NotFound, ServerError, AdminLayout, OperationHub, Account) now display local time instead of UTC.
-- **Search Aggregator Integration** — SearchPage fully rewritten to use `/api/search` backend endpoint (not client-side). Source type filter (ALL/RSS/AGGREGATOR/PODCAST) + sort (LATEST/RELEVANCE). Backend search endpoint enhanced with `source_type` param and `source_type` field in response.
-- **Dashboard Filter/Sort** — Replaced non-functional FILTERS/SORT buttons with working filter tabs (ALL/RSS/AGG) + sort toggle (NEW/OLD). Removed duplicate source filter.
-- **Briefing Transcript Column** — Desktop: right-side TRANSCRIPT panel with full briefing text + follow-along highlighting (sentence-level tracking based on audio progress). Mobile: collapsible archive toggle + transcript below stories.
-- **Tools/Credits Page** — New `/tools` page listing all 20+ technologies across 6 categories (Core Stack, AI Services, News Aggregation, Audio Engine, Auth & Storage, Infrastructure). Footer link on landing page.
-- **Google OAuth** — Added `signInWithGoogle` to AuthContext via Supabase OAuth. Google button on `/auth` page. Narvo-branded email templates (confirmation, reset, magic link, invite) at `/app/frontend/src/email-templates/SETUP_GUIDE.md`.
-- **Mobile Responsive** — Filter tabs fit 375px viewport. Briefing has mobile archive drawer. Search fully responsive.
-
-### P15b - Nav Order & Scroll Fixes (Feb 25, 2026)
-- **Nav Order** — Briefing route moved before Saved in both sidebar and mobile bottom nav (index 3 vs 4).
-- **Tools Page Scroll** — Changed from flex overflow to `min-h-screen` with document scroll. Fixed `body` CSS from `height: 100%` to `min-height: 100%` and separated `#root` to `min-height: 100%` so standalone pages scroll while DashboardLayout's `h-screen overflow-hidden` still self-contains.
-- **Tour Guide Scope** — Tour modal only auto-shows on dashboard-area pages (not `/tools`, `/`, `/auth`). Uses `useLocation()` to check path.
 
 ## Supported Languages
 
-### Interface Languages (i18n - /settings page)
+### Interface Languages (i18n — /settings page)
 | Code | Label | Region |
 |------|-------|--------|
 | en | English | GLOBAL |
@@ -129,7 +117,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 | pcm | Pidgin | WEST_AFRICA |
 | sw | Kiswahili | EAST_AFRICA |
 
-### Broadcast Languages (TTS - /system page)
+### Broadcast Languages (TTS — /system page)
 | Code | Name | Native Name | Voice |
 |------|------|-------------|-------|
 | en | English | English | nova |
@@ -139,21 +127,32 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 | ig | Igbo | Asusu Igbo | shimmer |
 
 ## Key API Endpoints
-- `GET /api/news` — RSS + optional aggregator news (params: include_aggregators, aggregator_sources)
-- `GET /api/search` — Unified search across RSS, aggregators, podcasts with dedup
-- `GET /api/aggregators/status` — Cache status with TTL
-- `GET /api/aggregators/fetch` — Combined Mediastack + NewsData.io
-- `GET /api/settings/{user_id}` — User settings including aggregator prefs
-- `POST /api/settings/{user_id}` — Save user settings
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/news` | GET | RSS + optional aggregator news (params: include_aggregators, aggregator_sources) |
+| `/api/search` | GET | Unified search (RSS + aggregators + podcasts) with source_type filter & dedup |
+| `/api/aggregators/status` | GET | Cache status with TTL |
+| `/api/aggregators/fetch` | GET | Combined Mediastack + NewsData.io fetch |
+| `/api/briefing/latest` | GET | Latest morning briefing |
+| `/api/briefing/generate` | GET | Generate new briefing (params: voice_id, force_regenerate) |
+| `/api/briefing/history` | GET | Historical briefings |
+| `/api/translate/text` | POST | Translate text to target language |
+| `/api/paraphrase` | POST | Generate broadcast narrative from text |
+| `/api/tts/generate` | POST | Text-to-speech generation |
+| `/api/voices` | GET | Available TTS voices |
+| `/api/settings/{user_id}` | GET/POST | User settings (aggregator prefs, language, etc.) |
+| `/api/health` | GET | Backend health check |
 
-## MOCKED APIs
-- **Google Fact Check API** — Uses mock when `GOOGLE_FACT_CHECK_API_KEY` not set in .env
+## Authentication
+- **Email/Password**: Supabase native auth (signUp, signIn)
+- **Google OAuth**: Supabase OAuth provider (signInWithGoogle) — redirects to production URL
+- **Guest Mode**: localStorage-based (`narvo_guest`) for instant access without account
+- **Email Templates**: Narvo-branded (confirmation, password reset, magic link, invite) — see `/app/frontend/src/email-templates/SETUP_GUIDE.md`
 
-## Test Reports
-- `/app/test_reports/iteration_35.json` — P13 features: All 6 bug fixes + features PASSED (16/16 backend, all frontend verified)
-- `/app/test_reports/iteration_34.json` — P12 aggregator features (22/22 passed)
+## Mocked / Fallback APIs
+- **Google Fact Check API** — Uses mock data when `GOOGLE_FACT_CHECK_API_KEY` not set in `.env`
 
 ## Backlog
-- **P1:** Add backend unit/integration tests for TTS and podcast services
-- **P2:** Implement native mobile application based on performance guidelines
-- **P2:** Allow users to provide their own API keys for services
+- **P1:** Backend unit/integration tests for TTS and podcast services
+- **P2:** Native mobile application based on performance guidelines
+- **P2:** Allow users to provide their own API keys for external services
