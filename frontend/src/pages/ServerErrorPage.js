@@ -4,11 +4,11 @@ import { Warning, Desktop, Cpu, HardDrive, Clock, ArrowCounterClockwise, Plus, L
 
 const ServerErrorPage = () => {
   const navigate = useNavigate();
-  const [currentTime, setCurrentTime] = useState(new Date().toISOString().slice(11, 19));
+  const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('en-GB', { hour12: false }));
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTime(new Date().toISOString().slice(11, 19));
+      setCurrentTime(new Date().toLocaleTimeString('en-GB', { hour12: false }));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -17,7 +17,7 @@ const ServerErrorPage = () => {
     { label: 'SERVER_STATUS', value: 'CRITICAL', icon: Desktop, color: 'text-red-500' },
     { label: 'CPU_LOAD', value: '99.9%', icon: Cpu, color: 'text-red-400' },
     { label: 'MEMORY', value: 'OVERFLOW', icon: HardDrive, color: 'text-red-400' },
-    { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-content' },
+    { label: 'TIMESTAMP_LOCAL', value: currentTime, icon: Clock, color: 'text-content' },
   ];
 
   return (

@@ -34,7 +34,7 @@ const AdminLayout = () => {
             </div>
           </div>
           <div className="mono-ui text-[10px] text-forest font-bold">
-            UTC: {new Date().toISOString().slice(11, 19)}
+            LOCAL: {new Date().toLocaleTimeString('en-GB', { hour12: false })}
           </div>
         </div>
       </header>

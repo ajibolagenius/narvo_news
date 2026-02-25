@@ -86,8 +86,12 @@ html {
   padding: 0;
 }
 
-html, body, #root {
+html {
   height: 100%;
+}
+
+body {
+  min-height: 100%;
   width: 100%;
   background-color: rgb(var(--color-bg));
   color: rgb(var(--color-text-primary));
@@ -96,6 +100,11 @@ html, body, #root {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   scroll-behavior: smooth;
+}
+
+#root {
+  min-height: 100%;
+  width: 100%;
 }
 
 /* Smooth scrolling for all scrollable containers */

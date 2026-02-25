@@ -50,7 +50,7 @@ const LandingPage = () => {
           </nav>
           <div className="flex items-center gap-4">
             <div className="mono-ui text-[11px] bg-forest/20 px-3 py-1 border border-forest text-forest">
-              UTC: <Clock />
+              LOCAL: <Clock />
             </div>
           </div>
         </div>
@@ -228,6 +228,7 @@ const LandingPage = () => {
             <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="#about">STATION_MAP</a></li>
             <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="#tech">CORE_RAG_PROTOCOLS</a></li>
             <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="#why">VOICE_MATRIX</a></li>
+            <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="/tools">TOOLS_AND_STACK</a></li>
           </ul>
         </div>
         <div className="p-6 border-r border-forest">
