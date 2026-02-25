@@ -158,6 +158,8 @@ class VoiceProfile(BaseModel):
     id: str
     name: str
     accent: str
+    language: str
+    gender: str
     description: str
 
 class UserPreferences(BaseModel):
