@@ -4,6 +4,25 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P21] — Feb 25, 2026
+### Fixed
+- **INTEREST_MATRIX dual toast** — Moved state update outside React setter to prevent double render + double toast firing.
+- **Sound theme not loading** — `soundTheme` was saved to backend but not loaded from API response in SystemSettingsPage. Added to both cached state init and API fetch mapping.
+
+### Added
+- **Sound preview in BROADCAST_THEMES** — Each theme card has a speaker icon button that uses Tone.js to synthesize and play the theme's intro notes (FM/AM/Membrane synth based on theme type).
+- **DailyDigest component** — Push notification subscription UI with subscribe/unsubscribe toggle and top 3 stories preview. Integrated into Settings page.
+- **Updated /tools page** — Added YarnGPT (TTS), feedparser (PARSER), httpx (HTTP), Shadcn/UI (COMPONENTS) to the technology stack listing.
+- **Interest-based feed prioritization** — Dashboard sorts news articles, boosting stories matching user's interest categories to the top.
+- **Backend unit tests** — 12 pytest tests for yarngpt_service (5), sound_themes_service (5), factcheck_service (2). All passing.
+- **Settings localStorage sync for interests** — Interest Matrix now saves to both localStorage and MongoDB for instant load + persistence.
+
+### Verified
+- **YarnGPT TTS end-to-end** — All 5 voices (Idera/yo, Emma/en, Zainab/ha, Osagie/ig, Wura/pcm) generate audio successfully. Fallback to OpenAI works for invalid voices.
+- Testing agent iteration_45: Backend 100% (12 unit + 12 API), Frontend 100% (12/12 features verified).
+
+---
+
 ## [P20] — Feb 25, 2026
 ### Fixed — Critical Backend Crash
 - **IndentationError Fix** — Push notification endpoints were incorrectly inserted inside `generate_briefing_script()` function body, causing the entire backend to crash on startup. Moved endpoints to proper top-level location.

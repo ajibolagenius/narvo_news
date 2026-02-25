@@ -68,7 +68,6 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 
 ## Backlog
 - **P1:** Daily digest email notifications
-- **P1:** Backend unit tests for yarngpt_service, factcheck_service
 - **P2:** Additional podcast source discovery
 - **P2:** Native mobile application
 - **P3:** User-provided API keys for external services
