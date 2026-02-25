@@ -126,6 +126,13 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - Updated across: translation_service.py, server.py VOICES, user_service.py VOICE_PROFILES.
 - All voice names use authentic Nigerian names.
 
+### P10 Features - Voice Preview & Aggregator Integrations (Feb 25, 2025)
+- **Voice Preview on /system** — Each broadcast language card has a speaker icon button (bottom-right). Clicking plays a TTS-generated sample ("Welcome to Narvo...") in that language/voice. Shows loading spinner during generation, stop icon during playback.
+- **Mediastack Integration** — Live API fetching African news articles. Endpoint: `GET /api/aggregators/mediastack`.
+- **NewsData.io Integration** — Live API fetching Nigerian news articles. Endpoint: `GET /api/aggregators/newsdata`.
+- **Combined Aggregator Fetch** — `GET /api/aggregators/fetch` returns combined results from both. `GET /api/aggregators/status` shows configuration status.
+- **Extended Backend Tests** — New `test_tts_podcast_aggregator.py` with 16 tests covering TTS voice mapping, podcast endpoints, aggregator APIs, and health regression. Total: 35 tests across 2 test files.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
