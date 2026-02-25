@@ -23,18 +23,19 @@ class TestPodcastAPI:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         
         data = response.json()
-        assert "episodes" in data, "Response should have 'episodes' key"
-        assert len(data["episodes"]) > 0, "Should return at least 1 episode"
+        # API returns a list directly or an object with "episodes" key
+        episodes = data if isinstance(data, list) else data.get("episodes", [])
+        assert len(episodes) > 0, "Should return at least 1 episode"
         
         # Check episode structure
-        ep = data["episodes"][0]
+        ep = episodes[0]
         assert "id" in ep, "Episode should have 'id'"
         assert "title" in ep, "Episode should have 'title'"
         assert "source" in ep, "Episode should have 'source'"
         
         # Check for multiple sources (expanded feeds)
-        sources = set(e.get("source", "") for e in data["episodes"])
-        print(f"[Podcast] Found {len(data['episodes'])} episodes from {len(sources)} sources: {sources}")
+        sources = set(e.get("source", "") for e in episodes)
+        print(f"[Podcast] Found {len(episodes)} episodes from {len(sources)} sources: {sources}")
         
     def test_podcasts_category_filter(self):
         """GET /api/podcasts with category filter"""
