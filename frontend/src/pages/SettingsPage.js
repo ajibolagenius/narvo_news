@@ -199,10 +199,7 @@ const SettingsPage = () => {
                 {LANGUAGES.map(lang => (
                   <button
                     key={lang.code}
-                    onClick={() => {
-                      i18n.changeLanguage(lang.code);
-                      showAlert({ type: 'sync', title: 'LANGUAGE_CHANGED', message: `Interface set to ${lang.label}`, code: 'LANG_OK', duration: 3000 });
-                    }}
+                    onClick={() => handleLanguageChange(lang.code)}
                     className={`px-4 py-2 mono-ui text-[10px] font-bold transition-all ${
                       i18n.language === lang.code
                         ? 'bg-primary text-background-dark'
