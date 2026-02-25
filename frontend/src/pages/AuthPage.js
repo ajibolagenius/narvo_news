@@ -8,7 +8,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const AuthPage = () => {
   const navigate = useNavigate();
-  const { signIn, signUp } = useAuth();
+  const { signIn, signUp, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
