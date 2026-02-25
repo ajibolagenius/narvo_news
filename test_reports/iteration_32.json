@@ -1,0 +1,110 @@
+{
+  "summary": "Iteration 32 Testing Complete - Voice Preview + Aggregator Integrations verified. All 35 backend tests PASSED (test_services.py:19, test_tts_podcast_aggregator.py:16). Frontend: 5 voice preview buttons found and functional on /system page (data-testid='voice-preview-{en,pcm,yo,ha,ig}'). Clicking preview triggers TTS API with loading state. Broadcast language change shows toast 'BROADCAST_UPDATED - NOW BROADCASTING IN {language}'. Dashboard SOURCE_MATRIX widget shows 39 FEEDS, health bar, 3 regions, REFRESH button. Aggregators: Both Mediastack and NewsData.io configured:true, returning articles with correct structure (id, title, source, aggregator).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_services.py",
+    "/app/backend/tests/test_tts_podcast_aggregator.py",
+    "/app/test_reports/pytest/pytest_results_v32.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PASS: SystemSettingsPage.js playVoicePreview() calls /api/tts/generate with language code",
+    "PASS: SystemSettingsPage.js previewAudioRef manages audio playback state",
+    "PASS: SystemSettingsPage.js 5 voice preview buttons with data-testid='voice-preview-{code}'",
+    "PASS: SystemSettingsPage.js previewLoading shows CircleNotch spinner during TTS request",
+    "PASS: SystemSettingsPage.js previewPlaying shows Stop icon when audio is playing",
+    "PASS: aggregator_service.py fetch_mediastack() returns articles with aggregator='mediastack'",
+    "PASS: aggregator_service.py fetch_newsdata() returns articles with aggregator='newsdata'",
+    "PASS: server.py /api/aggregators/status shows configured:true for both APIs",
+    "PASS: server.py /api/tts/generate maps language to correct voice (en→onyx, yo→nova)",
+    "PASS: server.py /api/voices returns 5 voices with gender mapping"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (35/35 tests passed)",
+    "frontend": "100% (all features verified)"
+  },
+  "test_credentials": "Guest mode: Click '[Oya, Play]' button on landing page",
+  "seed_data_creation": "None required",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 32 tested Voice Preview + Aggregator features. Key findings: (1) Voice preview buttons at bottom-right of each language card on /system page (data-testid='voice-preview-{en,pcm,yo,ha,ig}'). (2) Click triggers TTS API call with loading spinner, plays audio on success, shows error toast on failure. (3) /api/aggregators/status returns configured:true for both mediastack and newsdata. (4) /api/aggregators/mediastack and /api/aggregators/newsdata return articles with id, title, source, aggregator fields. (5) TTS voice mapping: en→onyx(male), pcm→echo(male), yo→nova(female), ha→shimmer(female), ig→alloy(female). (6) All 35 backend tests pass (test_services.py + test_tts_podcast_aggregator.py). (7) Previous features still work: health monitoring, source matrix, broadcast language auto-save toast.",
+  "features_tested": {
+    "voice_preview_buttons_exist": {
+      "status": "PASS",
+      "notes": "All 5 voice preview buttons found: voice-preview-en, voice-preview-pcm, voice-preview-yo, voice-preview-ha, voice-preview-ig"
+    },
+    "voice_preview_click_triggers_tts": {
+      "status": "PASS",
+      "notes": "Clicking voice-preview-en button triggers TTS API call"
+    },
+    "voice_preview_loading_state": {
+      "status": "PASS",
+      "notes": "Loading spinner (CircleNotch) shown during TTS request"
+    },
+    "aggregator_status_endpoint": {
+      "status": "PASS",
+      "notes": "GET /api/aggregators/status returns configured:true for both mediastack and newsdata"
+    },
+    "aggregator_mediastack_endpoint": {
+      "status": "PASS",
+      "notes": "GET /api/aggregators/mediastack returns articles with aggregator='mediastack'"
+    },
+    "aggregator_newsdata_endpoint": {
+      "status": "PASS",
+      "notes": "GET /api/aggregators/newsdata returns articles with aggregator='newsdata'"
+    },
+    "aggregator_fetch_combined": {
+      "status": "PASS",
+      "notes": "GET /api/aggregators/fetch returns combined results from both"
+    },
+    "aggregator_article_structure": {
+      "status": "PASS",
+      "notes": "Articles have id, title, source, aggregator fields as required"
+    },
+    "tts_voice_mapping_english_male": {
+      "status": "PASS",
+      "notes": "POST /api/tts/generate with language=en returns voice_id=onyx (male)"
+    },
+    "tts_voice_mapping_yoruba_female": {
+      "status": "PASS",
+      "notes": "POST /api/tts/generate with language=yo returns voice_id=nova (female) with translated_text"
+    },
+    "api_voices_5_voices_gender": {
+      "status": "PASS",
+      "notes": "GET /api/voices returns 5 voices with correct gender mapping"
+    },
+    "backend_tests_35_pass": {
+      "status": "PASS",
+      "notes": "test_services.py (19) + test_tts_podcast_aggregator.py (16) = 35 tests all passed"
+    },
+    "regression_health_monitoring": {
+      "status": "PASS",
+      "notes": "Dashboard SOURCE_MATRIX shows health bar, REFRESH button, 39 FEEDS"
+    },
+    "regression_broadcast_language_toast": {
+      "status": "PASS",
+      "notes": "Changing broadcast language shows 'BROADCAST_UPDATED - NOW BROADCASTING IN YORÙBÁ' toast"
+    },
+    "regression_source_matrix_widget": {
+      "status": "PASS",
+      "notes": "Dashboard shows SOURCE_MATRIX widget with 39 FEEDS, 3 regions (LOCAL_NG:20, CONTINENTAL_AF:8, INTERNATIONAL:11)"
+    }
+  },
+  "screenshots": [
+    ".screenshots/iter32_landing.png - Landing page with [Oya, Play] button",
+    ".screenshots/iter32_system_page.png - System settings page with BROADCAST_LANGUAGE section",
+    ".screenshots/iter32_voice_previews.png - Voice preview buttons visible on language cards",
+    ".screenshots/iter32_voice_preview_clicked.png - After clicking voice preview button",
+    ".screenshots/iter32_language_changed.png - Toast showing 'BROADCAST_UPDATED - NOW BROADCASTING IN YORÙBÁ'",
+    ".screenshots/iter32_dashboard.png - Dashboard with SOURCE_MATRIX widget, health bar, 39 FEEDS"
+  ]
+}

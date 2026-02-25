@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { openTourGuide } from '../components/TourGuideModal';
 import Clock from '../components/Clock';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
@@ -39,6 +40,7 @@ const AuthPage = () => {
               if (prefs.updated_at) {
                 localStorage.setItem('narvo_preferences', JSON.stringify(prefs));
                 navigate('/dashboard');
+                setTimeout(openTourGuide, 2500);
                 return;
               }
             }
@@ -46,6 +48,7 @@ const AuthPage = () => {
         }
         const prefs = localStorage.getItem('narvo_preferences');
         navigate(prefs ? '/dashboard' : '/onboarding');
+        setTimeout(openTourGuide, 2500);
       }
     } catch (err) {
       setError(err.message || 'Authentication failed');

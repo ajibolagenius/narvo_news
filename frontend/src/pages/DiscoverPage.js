@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch, Broadcast, Rss, Globe } from '@phosphor-icons/react';
+import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch, Broadcast, Rss, Globe, Lightning } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
 import { useDownloadQueue } from '../contexts/DownloadQueueContext';
@@ -21,7 +21,7 @@ const DiscoverPage = () => {
   const [cachedPodcasts, setCachedPodcasts] = useState({});
   const { playTrack } = useAudio();
   const { addToQueue, addSingleToQueue, queue, isProcessing } = useDownloadQueue();
-  const { sources, getTotalSources, getLocalSources, getInternationalSources, getBroadcastSources } = useContentSources();
+  const { sources, getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getBroadcastSources } = useContentSources();
   
   // Radio state
   const [radioStations, setRadioStations] = useState([]);
@@ -32,6 +32,7 @@ const DiscoverPage = () => {
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const [radioVolume, setRadioVolume] = useState(0.7);
   const audioRef = useRef(null);
+  const [aggregatorWire, setAggregatorWire] = useState(null);
 
   // Check which podcasts are cached
   const checkCachedPodcasts = async (podcastList) => {
@@ -62,6 +63,12 @@ const DiscoverPage = () => {
     fetch(`${API_URL}/api/discover/trending`)
       .then(res => res.json())
       .then(setTrendingTopics)
+      .catch(console.error);
+
+    // Fetch aggregator wire
+    fetch(`${API_URL}/api/aggregators/fetch?keywords=Nigeria+Africa`)
+      .then(res => res.json())
+      .then(setAggregatorWire)
       .catch(console.error);
   }, []);
   
@@ -525,6 +532,51 @@ const DiscoverPage = () => {
           </div>
         </div>
 
+        {/* Aggregator Wire */}
+        {aggregatorWire && aggregatorWire.total > 0 && (
+          <section className="narvo-border-t bg-surface/5" data-testid="aggregator-wire-section">
+            <div className="p-4 md:p-8 narvo-border-b bg-surface/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Lightning weight="fill" className="w-5 h-5 text-primary" />
+                  <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">AGGREGATOR_WIRE</h3>
+                </div>
+                <div className="flex items-center gap-3 mono-ui text-[9px]">
+                  <span className="text-primary font-bold">{aggregatorWire.total} ARTICLES</span>
+                  <span className="text-forest/50">MEDIASTACK + NEWSDATA</span>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-forest/20">
+              {[...(aggregatorWire.mediastack?.articles || []), ...(aggregatorWire.newsdata?.articles || [])].slice(0, 8).map((article, idx) => (
+                <a
+                  key={article.id || idx}
+                  href={article.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-background-dark p-4 hover:bg-surface/20 transition-colors group block"
+                  data-testid={`aggregator-article-${idx}`}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`mono-ui text-[7px] font-bold px-1.5 py-0.5 ${
+                      article.aggregator === 'mediastack' ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' : 'bg-primary/10 text-primary border border-primary/30'
+                    }`}>
+                      {article.aggregator === 'mediastack' ? 'MEDIASTACK' : 'NEWSDATA'}
+                    </span>
+                    <span className="mono-ui text-[8px] text-forest/50 truncate">{article.source}</span>
+                  </div>
+                  <h4 className="mono-ui text-[10px] md:text-[11px] text-content font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                    {article.title}
+                  </h4>
+                  {article.summary && (
+                    <p className="mt-1 mono-ui text-[8px] text-forest/60 line-clamp-2">{article.summary}</p>
+                  )}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Content Sources Section */}
         <section className="narvo-border-t bg-surface/5">
           <div className="p-4 md:p-8 narvo-border-b bg-surface/10">
@@ -555,11 +607,21 @@ const DiscoverPage = () => {
                   <span className="mono-ui text-sm text-primary font-bold">{getLocalSources()}</span>
                 </div>
                 <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
+                  <span className="mono-ui text-[10px] text-content">CONTINENTAL_AF</span>
+                  <span className="mono-ui text-sm text-primary font-bold">{getContinentalSources()}</span>
+                </div>
+                <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
                   <span className="mono-ui text-[10px] text-content">INTERNATIONAL</span>
                   <span className="mono-ui text-sm text-primary font-bold">{getInternationalSources()}</span>
                 </div>
+                {aggregatorWire && (
+                  <div className="flex justify-between items-center narvo-border p-3 bg-primary/5 border-primary/20">
+                    <span className="mono-ui text-[10px] text-primary">AGGREGATOR_APIs</span>
+                    <span className="mono-ui text-sm text-primary font-bold">{aggregatorWire.total}</span>
+                  </div>
+                )}
                 <div className="mono-ui text-[8px] text-forest/60 mt-2">
-                  {sources?.sources?.slice(0, 5).map(s => s.name).join(' • ') || 'Loading...'}
+                  {sources?.sources?.slice(0, 5).map(s => s.name).join(' · ') || 'Loading...'}
                 </div>
               </div>
             </div>
