@@ -26,16 +26,36 @@ RSS_FEEDS = [
     {"url": "https://techpoint.africa/feed/", "source": "Techpoint Africa", "category": "Tech", "region": "local"},
     {"url": "https://ripplesnigeria.com/feed/", "source": "Ripples Nigeria", "category": "Economy", "region": "local"},
     
+    # === LOCAL (ADDITIONAL) ===
+    {"url": "https://naijanews.com/feed/", "source": "Naija News", "category": "General", "region": "local"},
+    {"url": "https://www.tvcnews.tv/feed/", "source": "TVC News", "category": "General", "region": "local"},
+    {"url": "https://www.arise.tv/feed/", "source": "Arise News", "category": "General", "region": "local"},
+    
     # === INTERNATIONAL ===
     {"url": "https://feeds.bbci.co.uk/news/world/africa/rss.xml", "source": "BBC Africa", "category": "General", "region": "international"},
     {"url": "http://rss.cnn.com/rss/edition_africa.rss", "source": "CNN Africa", "category": "General", "region": "international"},
     {"url": "https://www.aljazeera.com/xml/rss/all.xml", "source": "Al Jazeera", "category": "General", "region": "international"},
     {"url": "https://www.reuters.com/rssFeed/worldNews", "source": "Reuters World", "category": "General", "region": "international"},
     {"url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf", "source": "AllAfrica", "category": "General", "region": "international"},
+    {"url": "https://www.voanews.com/api/z-moeqevi_q", "source": "Voice of America Africa", "category": "General", "region": "international"},
+    {"url": "https://feeds.npr.org/1001/rss.xml", "source": "NPR News", "category": "General", "region": "international"},
+    {"url": "https://feeds.skynews.com/feeds/rss/world.xml", "source": "Sky News World", "category": "General", "region": "international"},
+    {"url": "https://feeds.bbci.co.uk/news/rss.xml", "source": "BBC World Service", "category": "General", "region": "international"},
     
+    # === AFRICAN CONTINENTAL ===
+    {"url": "https://www.africanews.com/feed/", "source": "Africanews", "category": "General", "region": "continental"},
+    {"url": "https://www.theafricareport.com/feed/", "source": "The Africa Report", "category": "General", "region": "continental"},
+    {"url": "https://mg.co.za/feed/", "source": "Mail & Guardian", "category": "General", "region": "continental"},
+    {"url": "https://www.nation.africa/rss.xml", "source": "Nation Africa", "category": "General", "region": "continental"},
+    {"url": "https://www.news24.com/rss", "source": "News24", "category": "General", "region": "continental"},
+    {"url": "https://www.monitor.co.ug/resource/rss/691150", "source": "Daily Monitor Uganda", "category": "General", "region": "continental"},
+    {"url": "https://www.standardmedia.co.ke/rss/headlines.php", "source": "The Standard Kenya", "category": "General", "region": "continental"},
+    {"url": "https://www.citizen.digital/feeds/rss.xml", "source": "The Citizen Tanzania", "category": "General", "region": "continental"},
+
     # === SPORTS ===
     {"url": "https://www.espn.com/espn/rss/soccer/news", "source": "ESPN Soccer", "category": "Sports", "region": "international"},
     {"url": "https://www.goal.com/en-ng/feeds/news", "source": "Goal Nigeria", "category": "Sports", "region": "local"},
+    {"url": "https://www.skysports.com/rss/12040", "source": "Sky Sports Football", "category": "Sports", "region": "international"},
 ]
 
 async def fetch_rss_feed(feed_config: Dict, timeout: int = 10) -> List[Dict]:
