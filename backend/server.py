@@ -1205,50 +1205,6 @@ _briefing_cache = {
 async def generate_briefing_script(stories: List[dict]) -> str:
     """Generate a broadcast script from top stories using Gemini"""
     try:
-
-# ─── Push Notifications ───────────────────────────────────────
-@app.post("/api/notifications/subscribe")
-async def subscribe_push(data: dict = Body(...)):
-    """Store push notification subscription"""
-    endpoint = data.get("endpoint", "")
-    if not endpoint:
-        raise HTTPException(status_code=400, detail="Missing endpoint")
-    db["push_subscriptions"].update_one(
-        {"endpoint": endpoint},
-        {"$set": {**data, "subscribed_at": datetime.now(timezone.utc).isoformat()}},
-        upsert=True
-    )
-    return {"status": "subscribed"}
-
-@app.post("/api/notifications/unsubscribe")
-async def unsubscribe_push(data: dict = Body(...)):
-    """Remove push notification subscription"""
-    endpoint = data.get("endpoint", "")
-    if endpoint:
-        db["push_subscriptions"].delete_one({"endpoint": endpoint})
-    return {"status": "unsubscribed"}
-
-@app.get("/api/notifications/digest")
-async def get_daily_digest():
-    """Get daily digest content for push notification"""
-    # Get today's top stories
-    stories = list(db["news_cache"].find(
-        {},
-        {"_id": 0, "id": 1, "title": 1, "category": 1, "source": 1}
-    ).sort("published", -1).limit(5))
-    
-    # Get briefing status
-    from services.briefing_service import get_latest_briefing
-    briefing = get_latest_briefing()
-    
-    return {
-        "title": "NARVO DAILY DIGEST",
-        "top_stories": stories,
-        "briefing_available": briefing is not None,
-        "generated_at": datetime.now(timezone.utc).isoformat(),
-    }
-
-
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
         # Limit story summaries to reduce processing load
