@@ -161,16 +161,19 @@ const NewsDetailPage = () => {
   const [autoplayReady, setAutoplayReady] = useState(false);
   const pregenAudioUrl = useRef(null);
 
-  // Pre-generate TTS audio as soon as news loads — store the audio_url
+  // Pre-generate TTS audio as soon as news loads AND settings are ready
   useEffect(() => {
-    if (!news || loading) return;
+    if (!news || loading || !settingsLoaded) return;
     const text = news.narrative || news.summary || news.title || '';
     if (!text) return;
+    
+    const vid = voiceModel || 'emma';
+    const lang = broadcastLanguage || 'en';
     
     fetch(`${API_URL}/api/tts/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text.slice(0, 4000), voice_id: voiceModel || 'emma', language: broadcastLanguage || 'en' }),
+      body: JSON.stringify({ text: text.slice(0, 4000), voice_id: vid, language: lang }),
     })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
@@ -178,7 +181,7 @@ const NewsDetailPage = () => {
         setAutoplayReady(true);
       })
       .catch(() => setAutoplayReady(true));
-  }, [news, loading]);
+  }, [news, loading, settingsLoaded, voiceModel, broadcastLanguage]);
 
   // Auto-play once TTS is pre-cached — pass audio_url directly to skip double-fetch
   useEffect(() => {
