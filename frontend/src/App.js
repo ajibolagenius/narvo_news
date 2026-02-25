@@ -74,6 +74,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/tools" element={<ToolsPage />} />
+                <Route path="/history" element={<ListeningHistoryPage />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
