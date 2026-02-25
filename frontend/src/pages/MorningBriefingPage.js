@@ -223,7 +223,7 @@ const MorningBriefingPage = () => {
                   {briefing.stories?.map((story, i) => (
                     <div 
                       key={story.id || i} 
-                      onClick={() => navigate(`/news/${story.id}`)}
+                      onClick={() => { handleSectionDivider(); navigate(`/news/${story.id}`); }}
                       className="p-3 md:p-4 flex gap-2 md:gap-3 hover:bg-surface/40 transition-colors cursor-pointer group"
                       data-testid={`story-${i}`}
                     >
