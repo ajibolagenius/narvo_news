@@ -162,20 +162,13 @@ const NewsDetailPage = () => {
   useEffect(() => {
     if (news && !loading && !hasAutoPlayed.current) {
       hasAutoPlayed.current = true;
-      // Small delay to ensure UI is ready
+      // Small delay to ensure UI is ready and user has interacted with page
       const timer = setTimeout(() => {
         playTrack(news);
-        showAlert({
-          type: 'sync',
-          title: 'AUTO_PLAY_STARTED',
-          message: `Now playing: ${news.title.slice(0, 40)}...`,
-          code: 'PLAY_OK',
-          duration: 3000,
-        });
-      }, 500);
+      }, 800);
       return () => clearTimeout(timer);
     }
-  }, [news, loading, playTrack, showAlert]);
+  }, [news, loading, playTrack]);
 
   const toggleBookmark = () => {
     if (isBookmarked(news.id)) {
