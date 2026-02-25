@@ -1497,10 +1497,6 @@ async def get_podcasts(
         PodcastEpisode(id="ep156", episode="EP. 156", title="African Markets: Digital Currency Surge", duration="28:30", description="How digital currencies are transforming trade across West Africa. From Lagos to Accra, new financial rails are being built.", category="Finance", published="2026-02-10"),
         PodcastEpisode(id="ep340", episode="EP. 340", title="Health Frontiers: Malaria Gene Drive", duration="35:20", description="The controversial gene drive technology that could eradicate malaria. Scientists in Kenya share their latest trial results.", category="Health", published="2026-02-08"),
     ]
-    if sort == "popular":
-        episodes.sort(key=lambda x: x.duration, reverse=True)
-    return episodes[:limit]
-
 @app.get("/api/podcasts/categories")
 async def get_podcast_categories():
     """Get unique podcast categories"""
@@ -1522,6 +1518,10 @@ async def get_podcast_detail(podcast_id: str):
     if not ep:
         raise HTTPException(status_code=404, detail="Podcast not found")
     return ep
+
+    if sort == "popular":
+        episodes.sort(key=lambda x: x.duration, reverse=True)
+    return episodes[:limit]
 
 @app.get("/api/discover/trending")
 async def get_trending_topics():
