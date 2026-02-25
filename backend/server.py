@@ -345,7 +345,8 @@ async def get_news(
     region: Optional[str] = Query(None, description="Filter by region"),
     category: Optional[str] = Query(None, description="Filter by category"),
     limit: int = Query(20, le=50, description="Number of items to return"),
-    include_aggregators: bool = Query(False, description="Include aggregator news")
+    include_aggregators: bool = Query(False, description="Include aggregator news"),
+    aggregator_sources: Optional[str] = Query(None, description="Comma-separated aggregator sources: mediastack,newsdata")
 ):
     """Fetch aggregated news from RSS feeds and optional aggregator APIs"""
     all_news = []
@@ -361,7 +362,8 @@ async def get_news(
     if include_aggregators:
         try:
             from services.aggregator_service import get_normalized_aggregator_news
-            agg_news = await get_normalized_aggregator_news()
+            sources_list = aggregator_sources.split(",") if aggregator_sources else None
+            agg_news = await get_normalized_aggregator_news(sources=sources_list)
             all_news.extend(agg_news)
         except Exception as e:
             print(f"[News] Aggregator fetch error: {e}")
