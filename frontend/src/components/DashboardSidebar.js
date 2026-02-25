@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { 
   SquaresFour, Waveform, BookmarkSimple, MagnifyingGlass, Compass, WifiSlash,
-  GearSix, ShieldCheck, List
+  GearSix, ShieldCheck, List, ClockCounterClockwise
 } from '@phosphor-icons/react';
 import ThemeToggle from './ThemeToggle';
 
@@ -14,6 +14,7 @@ const getNavItems = (t) => [
   { icon: MagnifyingGlass, label: t('nav.search'), path: '/search' },
   { icon: Waveform, label: t('nav.briefing'), path: '/briefing' },
   { icon: BookmarkSimple, label: t('nav.saved'), path: '/saved' },
+  { icon: ClockCounterClockwise, label: 'History', path: '/history' },
   { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
 ];
 
