@@ -111,6 +111,11 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Google OAuth** — Added `signInWithGoogle` to AuthContext via Supabase OAuth. Google button on `/auth` page. Narvo-branded email templates (confirmation, reset, magic link, invite) at `/app/frontend/src/email-templates/SETUP_GUIDE.md`.
 - **Mobile Responsive** — Filter tabs fit 375px viewport. Briefing has mobile archive drawer. Search fully responsive.
 
+### P15b - Nav Order & Scroll Fixes (Feb 25, 2026)
+- **Nav Order** — Briefing route moved before Saved in both sidebar and mobile bottom nav (index 3 vs 4).
+- **Tools Page Scroll** — Changed from flex overflow to `min-h-screen` with document scroll. Fixed `body` CSS from `height: 100%` to `min-height: 100%` and separated `#root` to `min-height: 100%` so standalone pages scroll while DashboardLayout's `h-screen overflow-hidden` still self-contains.
+- **Tour Guide Scope** — Tour modal only auto-shows on dashboard-area pages (not `/tools`, `/`, `/auth`). Uses `useLocation()` to check path.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
