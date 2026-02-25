@@ -121,6 +121,17 @@ const SystemGearSixPage = () => {
       const success = await saveSettings(newSettings);
       if (success) {
         setHasChanges(false);
+        // Show toast when broadcast language changes
+        if (key === 'broadcastLanguage') {
+          const langInfo = BROADCAST_LANGUAGES.find(l => l.code === value);
+          showAlert({
+            type: 'success',
+            title: 'BROADCAST_UPDATED',
+            message: `Now broadcasting in ${langInfo?.name || value}`,
+            code: 'LANG_SAVE',
+            duration: 3000,
+          });
+        }
       }
       setSaving(false);
     }, 1000);
