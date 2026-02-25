@@ -430,6 +430,32 @@ const DashboardPage = () => {
             </div>
           </div>
 
+          {/* Content Sources */}
+          <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-2 opacity-20"><Broadcast weight="fill" className="w-8 h-8" /></div>
+            <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">CONTENT_SOURCES</span>
+            <div className="space-y-2">
+              <div className="flex justify-between mono-ui text-[10px]">
+                <span className="text-content">TOTAL_FEEDS</span>
+                <span className="text-primary font-bold">{getTotalSources()}</span>
+              </div>
+              <div className="flex justify-between mono-ui text-[10px]">
+                <span className="text-forest">LOCAL_NG</span>
+                <span className="text-content">{getLocalSources()}</span>
+              </div>
+              <div className="flex justify-between mono-ui text-[10px]">
+                <span className="text-forest">INTERNATIONAL</span>
+                <span className="text-content">{getInternationalSources()}</span>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-forest/20">
+              <span className="mono-ui text-[8px] text-primary flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-primary animate-pulse" />
+                LIVE_AGGREGATION
+              </span>
+            </div>
+          </div>
+
           {/* Regional Health */}
           <div>
             <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">NODE_HEALTH</span>
