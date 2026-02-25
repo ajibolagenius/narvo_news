@@ -50,7 +50,7 @@ const LandingPage = () => {
           </nav>
           <div className="flex items-center gap-4">
             <div className="mono-ui text-[11px] bg-forest/20 px-3 py-1 border border-forest text-forest">
-              UTC: <Clock />
+              LOCAL: <Clock />
             </div>
           </div>
         </div>
