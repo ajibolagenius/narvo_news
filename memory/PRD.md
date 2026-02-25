@@ -102,6 +102,15 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **AI Output Sanitizer** — Regex-based post-processor strips stage directions, sound descriptions, and production cues from all AI-generated text. Patterns: `[bracketed]`, `(music/sound cues)`, `*asterisked cues*`, `Sound of...` lines. Applied to: narrative generation, briefing scripts, translations, and narrated translations.
 - **Hardened System Prompts** — All 4 AI generation functions (generate_narrative, generate_briefing_script, translate_text, translate_and_narrate) now include explicit CRITICAL RULES forbidding sound effects, stage directions, and non-verbal descriptions.
 
+### P15 - UX Fixes & New Features (Feb 25, 2026)
+- **UTC → Local Time** — Clock.js uses `toLocaleTimeString()`. All pages (Landing, Auth, ForgotPassword, NotFound, ServerError, AdminLayout, OperationHub, Account) now display local time instead of UTC.
+- **Search Aggregator Integration** — SearchPage fully rewritten to use `/api/search` backend endpoint (not client-side). Source type filter (ALL/RSS/AGGREGATOR/PODCAST) + sort (LATEST/RELEVANCE). Backend search endpoint enhanced with `source_type` param and `source_type` field in response.
+- **Dashboard Filter/Sort** — Replaced non-functional FILTERS/SORT buttons with working filter tabs (ALL/RSS/AGG) + sort toggle (NEW/OLD). Removed duplicate source filter.
+- **Briefing Transcript Column** — Desktop: right-side TRANSCRIPT panel with full briefing text + follow-along highlighting (sentence-level tracking based on audio progress). Mobile: collapsible archive toggle + transcript below stories.
+- **Tools/Credits Page** — New `/tools` page listing all 20+ technologies across 6 categories (Core Stack, AI Services, News Aggregation, Audio Engine, Auth & Storage, Infrastructure). Footer link on landing page.
+- **Google OAuth** — Added `signInWithGoogle` to AuthContext via Supabase OAuth. Google button on `/auth` page. Narvo-branded email templates (confirmation, reset, magic link, invite) at `/app/frontend/src/email-templates/SETUP_GUIDE.md`.
+- **Mobile Responsive** — Filter tabs fit 375px viewport. Briefing has mobile archive drawer. Search fully responsive.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
