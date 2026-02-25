@@ -159,8 +159,9 @@ const NewsDetailPage = () => {
   }, [id, navigate]);
 
   const [autoplayReady, setAutoplayReady] = useState(false);
+  const pregenAudioUrl = useRef(null);
 
-  // Pre-generate TTS audio as soon as news loads (cache warming)
+  // Pre-generate TTS audio as soon as news loads — store the audio_url
   useEffect(() => {
     if (!news || loading) return;
     const text = (news.narrative || news.summary || news.title || '').slice(0, 500);
@@ -171,17 +172,24 @@ const NewsDetailPage = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text, voice_id: 'emma', language: 'en' }),
     })
-      .then(() => setAutoplayReady(true))
-      .catch(() => setAutoplayReady(true)); // still allow manual play
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.audio_url) pregenAudioUrl.current = data.audio_url;
+        setAutoplayReady(true);
+      })
+      .catch(() => setAutoplayReady(true));
   }, [news, loading]);
 
-  // Auto-play once TTS is pre-cached
+  // Auto-play once TTS is pre-cached — pass audio_url directly to skip double-fetch
   useEffect(() => {
     if (autoplayReady && news && !hasAutoPlayed.current) {
       hasAutoPlayed.current = true;
-      playTrack(news);
+      const trackWithAudio = pregenAudioUrl.current
+        ? { ...news, url: pregenAudioUrl.current }
+        : news;
+      forcePlayTrack(trackWithAudio);
     }
-  }, [autoplayReady, news, playTrack]);
+  }, [autoplayReady, news, forcePlayTrack]);
 
   const toggleBookmark = () => {
     if (isBookmarked(news.id)) {
