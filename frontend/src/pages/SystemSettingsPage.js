@@ -10,11 +10,11 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Supported broadcast languages with authentic native names
 const BROADCAST_LANGUAGES = [
-  { code: 'en', name: 'English', native: 'English', description: 'INTERNATIONAL' },
-  { code: 'pcm', name: 'Naijá', native: 'Naijá Tok', description: 'PIDGIN_NAIJA' },
-  { code: 'yo', name: 'Yorùbá', native: 'Èdè Yorùbá', description: 'ÌLÚ_YORÙBÁ' },
-  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'AREWACIN_NAJERIYA' },
-  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'ALA_IGBO' },
+  { code: 'en', name: 'English', native: 'English', description: 'INTERNATIONAL', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'pcm', name: 'Naijá', native: 'Naijá Tok', description: 'PIDGIN_NAIJA', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'yo', name: 'Yorùbá', native: 'Èdè Yorùbá', description: 'ÌLÚ_YORÙBÁ', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'AREWACIN_NAJERIYA', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'ALA_IGBO', sample: 'Welcome to Narvo. Your trusted source for African news.' },
 ];
 
 const DEFAULT_SETTINGS = {
