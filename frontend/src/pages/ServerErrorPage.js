@@ -17,7 +17,7 @@ const ServerErrorPage = () => {
     { label: 'SERVER_STATUS', value: 'CRITICAL', icon: Desktop, color: 'text-red-500' },
     { label: 'CPU_LOAD', value: '99.9%', icon: Cpu, color: 'text-red-400' },
     { label: 'MEMORY', value: 'OVERFLOW', icon: HardDrive, color: 'text-red-400' },
-    { label: 'TIMESTAMP_UTC', value: currentTime, icon: Clock, color: 'text-content' },
+    { label: 'TIMESTAMP_LOCAL', value: currentTime, icon: Clock, color: 'text-content' },
   ];
 
   return (
