@@ -58,7 +58,8 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 │       ├── components/
 │       │   ├── TourGuideModal.js    # 5-step tour (event-driven, scoped to dashboard)
 │       │   ├── DashboardSidebar.js  # Sidebar + mobile bottom nav
-│       │   ├── DashboardLayout.js   # Main layout wrapper (h-screen)
+│       │   ├── DashboardLayout.js   # Main layout wrapper (h-screen) + skip-link target
+│       │   ├── DashboardHeader.js   # Header with NARVO text always visible
 │       │   ├── DownloadQueueIndicator.js # Floating download UI
 │       │   ├── Clock.js             # Local time display (HH:MM:SS)
 │       │   ├── Skeleton.js          # Loading skeleton components
@@ -78,30 +79,31 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 │       │   ├── DashboardPage.js     # Main feed (filter/sort, dedup, prefs)
 │       │   ├── SearchPage.js        # Unified search (RSS + aggregators + podcasts)
 │       │   ├── DiscoverPage.js      # Podcasts, radio, trending
-│       │   ├── MorningBriefingPage.js # Briefing + transcript follow-along
+│       │   ├── MorningBriefingPage.js # Briefing + transcript (voice selector removed)
 │       │   ├── SavedPage.js / BookmarksPage.js # Bookmarked articles
 │       │   ├── OfflinePage.js       # Cached content management
 │       │   ├── SettingsPage.js      # Interface language, theme, tour replay
-│       │   ├── SystemSettingsPage.js # Broadcast language, voice, aggregators
-│       │   ├── NewsDetailPage.js    # Article detail + TTS + fact-check
-│       │   ├── VoiceStudioPage.js   # TTS voice preview
+│       │   ├── SystemSettingsPage.js # Display, aggregators, alerts (push notifs + broadcast lang removed)
+│       │   ├── NewsDetailPage.js    # Article detail + TTS + mobile metadata collapsible
+│       │   ├── VoiceStudioPage.js   # TTS voice preview + broadcast language selection
 │       │   ├── ToolsPage.js         # Technology credits page
-│       │   ├── AccountPage.js       # User account info
+│       │   ├── AccountPage.js       # User account info (mobile overflow fixed)
 │       │   ├── AccessibilityPage.js # Accessibility settings
 │       │   ├── ForgotPasswordPage.js # Password recovery
 │       │   ├── NotFoundPage.js      # 404 page
-│       │   ├── ServerErrorPage.js   # 500 page
 │       │   └── admin/               # Admin pages
 │       ├── email-templates/
 │       │   └── SETUP_GUIDE.md       # Narvo-branded Supabase email templates
 │       ├── i18n.js                  # i18next configuration
-│       ├── App.js                   # Route definitions + providers
-│       └── index.css                # Global styles + CSS variables
+│       ├── App.js                   # Route definitions + providers + skip-link
+│       └── index.css                # Global styles + CSS variables + accessibility
+├── docs/
+│   └── design/Narvo_Design_System.md # Revised design system with accessibility
 ├── memory/
 │   ├── PRD.md                       # This file
 │   ├── CHANGELOG.md                 # Implementation history
 │   └── ROADMAP.md                   # Prioritized backlog
-└── test_reports/                    # Testing agent reports (iteration_34-39)
+└── test_reports/                    # Testing agent reports (iteration_34-41)
 ```
 
 ## Supported Languages
@@ -117,7 +119,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 | pcm | Pidgin | WEST_AFRICA |
 | sw | Kiswahili | EAST_AFRICA |
 
-### Broadcast Languages (TTS — /system page)
+### Broadcast Languages (TTS — /voices page)
 | Code | Name | Native Name | Voice |
 |------|------|-------------|-------|
 | en | English | English | nova |
@@ -141,6 +143,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 | `/api/tts/generate` | POST | Text-to-speech generation |
 | `/api/voices` | GET | Available TTS voices |
 | `/api/settings/{user_id}` | GET/POST | User settings (aggregator prefs, language, etc.) |
+| `/api/settings/{user_id}/voice` | GET/POST | Voice-specific settings |
 | `/api/health` | GET | Backend health check |
 
 ## Authentication
@@ -153,6 +156,10 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Google Fact Check API** — Uses mock data when `GOOGLE_FACT_CHECK_API_KEY` not set in `.env`
 
 ## Backlog
-- **P1:** Backend unit/integration tests for TTS and podcast services
-- **P2:** Native mobile application based on performance guidelines
-- **P2:** Allow users to provide their own API keys for external services
+- **P0:** Implement persistent settings logic for all settings pages (account, voices, system, accessibility)
+- **P1:** Optimize audio broadcast loading speed (pre-fetch, cache, stream)
+- **P1:** Implement full podcast functionality on Discover page
+- **P2:** Implement clickable hashtags throughout the app
+- **P2:** Backend unit/integration tests for TTS and podcast services
+- **P3:** Native mobile application based on performance guidelines
+- **P3:** Allow users to provide their own API keys for external services
