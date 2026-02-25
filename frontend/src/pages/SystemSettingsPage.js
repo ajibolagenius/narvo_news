@@ -77,36 +77,76 @@ const SystemGearSixPage = () => {
     fetchGearSix();
   }, [user?.id]);
 
-  const updateSetting = (key, value) => {
-    setGearSix(prev => ({ ...prev, [key]: value }));
-    setHasChanges(true);
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
+  // Auto-save with debounce
+  const autoSaveTimeoutRef = React.useRef(null);
+  
+  const saveSettings = React.useCallback(async (settingsToSave) => {
     const userId = user?.id || 'guest';
     try {
       const res = await fetch(`${API_URL}/api/settings/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          high_contrast: settings.highContrast,
-          interface_scale: settings.interfaceScale === 'DEFAULT' ? '100%' : settings.interfaceScale.toLowerCase(),
-          haptic_sync: settings.hapticSync,
-          alert_volume: settings.alertVolume,
-          data_limit: settings.dataLimit / 1000,
-          bandwidth_priority: settings.bandwidthPriority.toLowerCase(),
-          broadcast_language: settings.broadcastLanguage,
+          high_contrast: settingsToSave.highContrast,
+          interface_scale: settingsToSave.interfaceScale === 'DEFAULT' ? '100%' : settingsToSave.interfaceScale.toLowerCase(),
+          haptic_sync: settingsToSave.hapticSync,
+          alert_volume: settingsToSave.alertVolume,
+          data_limit: settingsToSave.dataLimit / 1000,
+          bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
+          broadcast_language: settingsToSave.broadcastLanguage,
         }),
       });
       if (res.ok) {
-        setHasChanges(false);
-        // Update AudioContext with new language preference immediately (don't wait for refetch)
-        setBroadcastLanguage(settings.broadcastLanguage);
-        console.log('[Settings] Saved and set broadcast_language:', settings.broadcastLanguage);
-        showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
+        setBroadcastLanguage(settingsToSave.broadcastLanguage);
+        console.log('[Settings] Auto-saved broadcast_language:', settingsToSave.broadcastLanguage);
+        return true;
       }
     } catch (err) {
+      console.error('[Settings] Auto-save failed:', err);
+    }
+    return false;
+  }, [user?.id, setBroadcastLanguage]);
+
+  const updateSetting = (key, value) => {
+    const newSettings = { ...settings, [key]: value };
+    setGearSix(newSettings);
+    setHasChanges(true);
+    
+    // Auto-save with 1 second debounce
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    autoSaveTimeoutRef.current = setTimeout(async () => {
+      setSaving(true);
+      const success = await saveSettings(newSettings);
+      if (success) {
+        setHasChanges(false);
+      }
+      setSaving(false);
+    }, 1000);
+  };
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleSave = async () => {
+    // Clear any pending auto-save
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    
+    setSaving(true);
+    const success = await saveSettings(settings);
+    if (success) {
+      setHasChanges(false);
+      showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
+    } else {
       showAlert({ type: 'error', title: 'SAVE_FAILED', message: 'Could not save settings.', code: 'ERR_SAVE' });
     }
     setSaving(false);
