@@ -58,6 +58,9 @@ const VoiceStudioPage = () => {
 
   const selectVoice = (voice) => {
     setSelectedVoice(voice);
+    // Auto-play voice preview on selection
+    const syntheticEvent = { stopPropagation: () => {} };
+    playPreview(syntheticEvent, voice);
   };
 
   const handleApplyModel = async () => {
