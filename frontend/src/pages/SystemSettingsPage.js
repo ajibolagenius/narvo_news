@@ -507,19 +507,19 @@ const SystemGearSixPage = () => {
             </div>
             
             {/* Haptic Sync */}
-            <div className="p-4 md:p-8 flex items-center justify-between hover:bg-surface/5 transition-colors group">
-              <div className="flex items-center gap-4 md:gap-6">
-                <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
-                  <Pulse className="w-5 h-5 md:w-6 md:h-6" />
+            <div className="p-4 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-surface/5 transition-colors group">
+              <div className="flex items-center gap-3 md:gap-6">
+                <div className="w-8 h-8 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary shrink-0">
+                  <Pulse className="w-4 h-4 md:w-6 md:h-6" />
                 </div>
-                <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.haptic_sync')}</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.haptic_sync_desc')}</p>
+                <div className="space-y-0.5 min-w-0">
+                  <h3 className="mono-ui text-[10px] md:text-[12px] text-content font-bold">{t('system_settings.haptic_sync')}</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold break-words">{t('system_settings.haptic_sync_desc')}</p>
                 </div>
               </div>
               <button 
                 onClick={() => updateSetting('hapticSync', !settings.hapticSync)}
-                className={`w-12 h-6 md:w-14 md:h-7 narvo-border transition-all relative ${
+                className={`w-12 h-6 md:w-14 md:h-7 narvo-border transition-all relative shrink-0 self-end sm:self-auto ${
                   settings.hapticSync ? 'bg-primary' : 'bg-surface/30'
                 }`}
                 data-testid="toggle-haptic"
