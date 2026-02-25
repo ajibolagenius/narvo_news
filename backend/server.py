@@ -626,11 +626,12 @@ async def search_news(
     category: str = Query(None, description="Filter by category"),
     source: str = Query(None, description="Filter by source"),
     limit: int = Query(20, le=50, description="Max results"),
-    skip: int = Query(0, description="Offset for pagination")
+    skip: int = Query(0, description="Offset for pagination"),
+    include_aggregators: bool = Query(True, description="Include aggregator articles in search")
 ):
-    """Search news articles from RSS feeds"""
+    """Search news articles from RSS feeds and aggregators"""
     try:
-        # Fetch all news
+        # Fetch all RSS news
         all_news = []
         tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -638,31 +639,49 @@ async def search_news(
             if isinstance(items, list):
                 all_news.extend(items)
         
+        # Include cached aggregator articles in search
+        if include_aggregators:
+            try:
+                from services.aggregator_service import search_cached_aggregators
+                agg_results = search_cached_aggregators(q)
+                all_news.extend(agg_results)
+            except Exception as e:
+                print(f"[Search] Aggregator search error: {e}")
+        
         # Search filter
         query_lower = q.lower()
         filtered = []
         for item in all_news:
-            # Text matching
             title_match = query_lower in item.get("title", "").lower()
             summary_match = query_lower in item.get("summary", "").lower()
             
-            if title_match or summary_match:
-                # Category filter
+            # Aggregator items already matched by search_cached_aggregators
+            is_agg = bool(item.get("aggregator"))
+            
+            if (title_match or summary_match) or is_agg:
                 if category and item.get("category", "").lower() != category.lower():
                     continue
-                # Source filter
                 if source and item.get("source", "").lower() != source.lower():
                     continue
                 filtered.append(item)
         
+        # Deduplicate by id
+        seen_ids = set()
+        deduped = []
+        for item in filtered:
+            item_id = item.get("id", "")
+            if item_id not in seen_ids:
+                seen_ids.add(item_id)
+                deduped.append(item)
+        
         # Sort by relevance (title matches first) then by date
-        filtered.sort(key=lambda x: (
+        deduped.sort(key=lambda x: (
             query_lower not in x.get("title", "").lower(),
             x.get("published", "")
         ), reverse=True)
         
-        total = len(filtered)
-        paginated = filtered[skip:skip + limit]
+        total = len(deduped)
+        paginated = deduped[skip:skip + limit]
         
         return {
             "results": paginated,
