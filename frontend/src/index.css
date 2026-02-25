@@ -91,6 +91,54 @@ html {
 }
 
 /* ===========================================
+   ACCESSIBILITY - WCAG 2.1 Level AA
+   =========================================== */
+
+/* Skip to main content link */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 12px 24px;
+  background: rgb(var(--color-primary));
+  color: rgb(var(--color-bg));
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: top 0.15s linear;
+}
+
+.skip-link:focus {
+  top: 8px;
+}
+
+/* Focus styles - keyboard only */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-outline-width) var(--focus-outline-style) rgb(var(--focus-outline-color));
+  outline-offset: var(--focus-outline-offset);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .breathing-grid {
+    animation: none;
+  }
+}
+
+/* ===========================================
    BASE STYLES
    =========================================== */
 * {
