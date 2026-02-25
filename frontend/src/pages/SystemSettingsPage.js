@@ -512,17 +512,20 @@ const SystemGearSixPage = () => {
           </button>
           <button 
             onClick={handleSave}
-            disabled={!hasChanges || saving}
+            disabled={saving}
             className={`px-6 md:px-10 py-3 md:py-4 mono-ui text-[10px] md:text-[11px] font-bold transition-all flex items-center justify-center gap-2 ${
               hasChanges && !saving
                 ? 'bg-primary text-background-dark hover:bg-white' 
-                : 'bg-forest/30 text-forest cursor-not-allowed'
+                : saving
+                ? 'bg-forest/50 text-forest cursor-wait'
+                : 'bg-forest/30 text-forest'
             }`}
             data-testid="save-config-btn"
           >
             {saving ? <CircleNotch className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
-            {saving ? t('system_settings.saving') : t('system_settings.save_config')}
+            {saving ? 'AUTO_SAVING...' : hasChanges ? t('system_settings.save_config') : 'SAVED'}
           </button>
+          <span className="mono-ui text-[8px] text-forest/60 mt-2">AUTO_SAVE_ENABLED</span>
         </div>
       </div>
     </main>
