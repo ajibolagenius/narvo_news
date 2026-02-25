@@ -26,6 +26,8 @@ const DEFAULT_SETTINGS = {
   bandwidthPriority: 'STREAMING',
   pushNotifications: false,
   broadcastLanguage: 'en',
+  aggregatorMediastack: true,
+  aggregatorNewsdata: true,
 };
 
 const SystemGearSixPage = () => {
