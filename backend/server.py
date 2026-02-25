@@ -938,6 +938,7 @@ async def get_metrics():
         "total_sources": sources_data.get("total_sources", 23),
         "local_sources": sources_data.get("local_sources", 17),
         "international_sources": sources_data.get("international_sources", 6),
+        "continental_sources": sources_data.get("continental_sources", 0),
         "stories_processed": 342,
         "signal_strength": "98%",
         "network_load": "42%",
