@@ -58,6 +58,88 @@ RSS_FEEDS = [
     {"url": "https://www.skysports.com/rss/12040", "source": "Sky Sports Football", "category": "Sports", "region": "international"},
 ]
 
+# ── Feed Health Monitoring ────────────────────────────────────────────
+
+import time
+
+_feed_health: Dict = {}  # { source_name: { status, latency_ms, last_checked } }
+_health_check_running = False
+
+
+async def _ping_feed(session: aiohttp.ClientSession, feed: Dict) -> Dict:
+    """Ping a single feed and return its health status."""
+    name = feed["source"]
+    url = feed["url"]
+    start = time.monotonic()
+    try:
+        async with session.get(url, headers={"User-Agent": "NarvoBot/2.0"}, allow_redirects=True) as resp:
+            latency = int((time.monotonic() - start) * 1000)
+            if resp.status == 200:
+                status = "green" if latency < 5000 else "amber"
+            else:
+                status = "amber"
+            return {"source": name, "status": status, "latency_ms": latency, "http": resp.status}
+    except asyncio.TimeoutError:
+        return {"source": name, "status": "red", "latency_ms": 10000, "http": 0}
+    except Exception:
+        return {"source": name, "status": "red", "latency_ms": -1, "http": 0}
+
+
+async def run_health_check() -> Dict:
+    """Check all feeds concurrently. Returns full health map."""
+    global _feed_health, _health_check_running
+    if _health_check_running:
+        return _feed_health
+    _health_check_running = True
+    now = datetime.now(timezone.utc).isoformat()
+    try:
+        timeout = aiohttp.ClientTimeout(total=8)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            tasks = [_ping_feed(session, f) for f in RSS_FEEDS]
+            results = await asyncio.gather(*tasks)
+        for r in results:
+            _feed_health[r["source"]] = {
+                "status": r["status"],
+                "latency_ms": r["latency_ms"],
+                "http": r["http"],
+                "last_checked": now,
+            }
+    finally:
+        _health_check_running = False
+    return _feed_health
+
+
+def get_feed_health() -> Dict:
+    """Return cached health data with summary stats."""
+    sources = []
+    green = amber = red = 0
+    for feed in RSS_FEEDS:
+        name = feed["source"]
+        h = _feed_health.get(name, {"status": "unknown", "latency_ms": -1, "last_checked": None})
+        entry = {
+            "name": name,
+            "region": feed.get("region", "local"),
+            "status": h["status"] if isinstance(h.get("status"), str) else "unknown",
+            "latency_ms": h.get("latency_ms", -1),
+            "last_checked": h.get("last_checked"),
+        }
+        sources.append(entry)
+        if entry["status"] == "green":
+            green += 1
+        elif entry["status"] == "amber":
+            amber += 1
+        elif entry["status"] == "red":
+            red += 1
+
+    return {
+        "total": len(RSS_FEEDS),
+        "green": green,
+        "amber": amber,
+        "red": red,
+        "unknown": len(RSS_FEEDS) - green - amber - red,
+        "sources": sources,
+    }
+
 async def fetch_rss_feed(feed_config: Dict, timeout: int = 10) -> List[Dict]:
     """Fetch and parse a single RSS feed with error handling"""
     items = []
