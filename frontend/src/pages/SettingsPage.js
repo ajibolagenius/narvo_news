@@ -50,24 +50,25 @@ const SettingsPage = () => {
   }, [user?.id]);
 
   const toggleInterest = useCallback((catId) => {
-    setInterests(prev => {
-      const next = prev.includes(catId)
-        ? prev.filter(i => i !== catId)
-        : [...prev, catId];
-      // Auto-save
-      setInterestsSaving(true);
-      const userId = user?.id || 'guest';
-      fetch(`${API_URL}/api/settings/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ interests: next }),
-      }).finally(() => {
-        setInterestsSaving(false);
-        showAlert({ type: 'sync', title: 'INTERESTS_UPDATED', message: `${next.length} categories selected`, code: 'INT_OK', duration: 2000 });
-      });
-      return next;
-    });
-  }, [user?.id, showAlert]);
+    const next = interests.includes(catId)
+      ? interests.filter(i => i !== catId)
+      : [...interests, catId];
+    setInterests(next);
+    setInterestsSaving(true);
+    const userId = user?.id || 'guest';
+    // Save to both localStorage and MongoDB
+    try {
+      const existing = JSON.parse(localStorage.getItem('narvo_settings_cache') || '{}');
+      localStorage.setItem('narvo_settings_cache', JSON.stringify({ ...existing, interests: next }));
+    } catch { /* ignore */ }
+    fetch(`${API_URL}/api/settings/${userId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ interests: next }),
+    }).then(() => {
+      showAlert({ type: 'sync', title: 'INTERESTS_UPDATED', message: `${next.length} categories selected`, code: 'INT_OK', duration: 2000 });
+    }).catch(() => {}).finally(() => setInterestsSaving(false));
+  }, [interests, user?.id, showAlert]);
 
   const handleLanguageChange = useCallback((code) => {
     i18n.changeLanguage(code);
