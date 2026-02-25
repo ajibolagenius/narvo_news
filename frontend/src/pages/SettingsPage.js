@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useHapticAlert } from '../components/HapticAlerts';
-import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon } from '@phosphor-icons/react';
+import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon, Compass } from '@phosphor-icons/react';
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
+import { openTourGuide } from '../components/TourGuideModal';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
