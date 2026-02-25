@@ -1082,51 +1082,6 @@ FACT_CHECK_KEYWORDS = {
     "viral": ("UNVERIFIED", 40, "Viral content pending fact-check"),
 }
 
-@app.get("/api/factcheck/{story_id}")
-async def check_story_facts(story_id: str):
-    """Get fact-check status for a news story"""
-    # In production, this would call the Dubawa API
-    # For now, return a simulated response based on story_id hash
-    hash_val = int(hashlib.md5(story_id.encode()).hexdigest()[:8], 16)
-    
-    statuses = ["VERIFIED", "VERIFIED", "VERIFIED", "UNVERIFIED", "UNVERIFIED", "DISPUTED"]
-    status = statuses[hash_val % len(statuses)]
-    
-    confidence_map = {"VERIFIED": 90 + (hash_val % 10), "UNVERIFIED": 50 + (hash_val % 30), "DISPUTED": 30 + (hash_val % 20)}
-    
-    return FactCheckResult(
-        status=status,
-        confidence=confidence_map.get(status, 70),
-        source="DUBAWA_AI_V2" if status == "VERIFIED" else "PENDING_REVIEW",
-        explanation=f"Automated fact-check completed. {'Claim verified against trusted sources.' if status == 'VERIFIED' else 'Requires manual verification.' if status == 'UNVERIFIED' else 'Conflicting information detected.'}",
-        checked_at=datetime.now(timezone.utc).isoformat()
-    )
-
-@app.post("/api/factcheck/analyze")
-async def analyze_claim(text: str = Query(..., description="Text to fact-check")):
-    """Analyze a text claim for fact-checking"""
-    text_lower = text.lower()
-    
-    # Check for keywords that suggest verification status
-    for keyword, (status, confidence, explanation) in FACT_CHECK_KEYWORDS.items():
-        if keyword in text_lower:
-            return FactCheckResult(
-                status=status,
-                confidence=confidence,
-                source="DUBAWA_KEYWORD_SCAN",
-                explanation=explanation,
-                checked_at=datetime.now(timezone.utc).isoformat()
-            )
-    
-    # Default response for neutral text
-    return FactCheckResult(
-        status="UNVERIFIED",
-        confidence=50,
-        source="DUBAWA_QUEUE",
-        explanation="Claim queued for verification. No immediate flags detected.",
-        checked_at=datetime.now(timezone.utc).isoformat()
-    )
-
 
 
 @app.get("/api/metrics")
