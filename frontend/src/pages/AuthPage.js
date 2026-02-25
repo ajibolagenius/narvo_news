@@ -40,6 +40,7 @@ const AuthPage = () => {
               if (prefs.updated_at) {
                 localStorage.setItem('narvo_preferences', JSON.stringify(prefs));
                 navigate('/dashboard');
+                setTimeout(openTourGuide, 2500);
                 return;
               }
             }
@@ -47,6 +48,7 @@ const AuthPage = () => {
         }
         const prefs = localStorage.getItem('narvo_preferences');
         navigate(prefs ? '/dashboard' : '/onboarding');
+        setTimeout(openTourGuide, 2500);
       }
     } catch (err) {
       setError(err.message || 'Authentication failed');
