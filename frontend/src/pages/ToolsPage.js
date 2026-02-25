@@ -65,7 +65,7 @@ const ToolsPage = () => {
   const navigate = useNavigate();
 
   return (
-    <main className="flex-1 flex flex-col bg-background-dark overflow-y-auto custom-scroll min-h-0" data-testid="tools-page">
+    <main className="min-h-screen bg-background-dark" data-testid="tools-page">
       {/* Header */}
       <section className="py-8 md:py-16 px-4 md:px-10 narvo-border-b bg-surface/10 relative overflow-hidden shrink-0">
         <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: 'linear-gradient(#628141 1px, transparent 1px), linear-gradient(90deg, #628141 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
@@ -87,7 +87,7 @@ const ToolsPage = () => {
       </section>
 
       {/* Tool Categories */}
-      <div className="p-4 md:p-10 pb-20 md:pb-10 flex-1">
+      <div className="p-4 md:p-10 pb-20 md:pb-10">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {TOOL_CATEGORIES.map((cat) => {
             const Icon = cat.icon;
