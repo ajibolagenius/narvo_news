@@ -140,12 +140,12 @@ class TestSettingsEndpoint:
             "sound_theme": "narvo_classic"
         }
         
-        # Update settings
-        response = requests.put(
+        # Update settings via POST
+        response = requests.post(
             f"{BASE_URL}/api/settings/{test_user_id}",
             json=settings_payload
         )
-        assert response.status_code == 200, f"PUT settings failed: {response.status_code}"
+        assert response.status_code == 200, f"POST settings failed: {response.status_code}"
         
         # Retrieve settings
         response = requests.get(f"{BASE_URL}/api/settings/{test_user_id}")
@@ -163,8 +163,8 @@ class TestSettingsEndpoint:
             "interests": ["health", "economy"]
         }
         
-        # Update settings
-        response = requests.put(
+        # Update settings via POST
+        response = requests.post(
             f"{BASE_URL}/api/settings/{test_user_id}",
             json=settings_payload
         )
