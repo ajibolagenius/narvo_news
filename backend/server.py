@@ -497,6 +497,19 @@ async def get_content_sources():
     from services.news_service import get_content_sources as get_sources
     return get_sources()
 
+@app.get("/api/sources/health")
+async def get_sources_health():
+    """Get real-time health status of all RSS feeds"""
+    from services.news_service import get_feed_health
+    return get_feed_health()
+
+@app.post("/api/sources/health/refresh")
+async def refresh_sources_health(background_tasks: BackgroundTasks):
+    """Trigger a fresh health check of all feeds"""
+    from services.news_service import run_health_check
+    background_tasks.add_task(run_health_check)
+    return {"status": "started", "message": "Health check initiated"}
+
 @app.get("/api/trending")
 async def get_trending():
     """Get trending tags and topics based on recent news"""
