@@ -491,6 +491,12 @@ async def get_categories():
         {"id": "general", "name": "General", "icon": "newspaper"},
     ]
 
+@app.get("/api/sources")
+async def get_content_sources():
+    """Get metadata about all content sources"""
+    from services.news_service import get_content_sources as get_sources
+    return get_sources()
+
 @app.get("/api/trending")
 async def get_trending():
     """Get trending tags and topics based on recent news"""
