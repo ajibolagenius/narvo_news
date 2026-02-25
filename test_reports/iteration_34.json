@@ -1,0 +1,106 @@
+{
+  "summary": "Iteration 34 Testing Complete - 4 New Aggregator Features verified. All 22 backend tests PASSED (test_iteration_34.py). Frontend: Dashboard source filter toggle (ALL_SOURCES/RSS_ONLY/AGGREGATORS) works correctly with 3 buttons visible (data-testid='source-filter-toggle'). System settings page (/system) has NEWS_AGGREGATORS section with Mediastack and NewsData.io toggles. Settings auto-save persists aggregator preferences to /api/settings/guest.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_34.py",
+    "/app/test_reports/pytest/pytest_results_v34.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PASS: aggregator_service.py has CACHE_TTL=600 (10 minutes) with _cache_is_stale() function",
+    "PASS: aggregator_service.py get_aggregator_status() returns cache_ttl_seconds and cache_stale fields",
+    "PASS: server.py /api/news accepts aggregator_sources param for filtering (mediastack,newsdata)",
+    "PASS: server.py /api/search includes aggregator articles via search_cached_aggregators()",
+    "PASS: server.py UserSettings model has aggregator_mediastack and aggregator_newsdata fields",
+    "PASS: DashboardPage.js has source filter toggle with 3 buttons: ALL_SOURCES, RSS_ONLY, AGGREGATORS",
+    "PASS: DashboardPage.js filter toggle uses data-testid='filter-all/rss/aggregators'",
+    "PASS: SystemSettingsPage.js has NEWS_AGGREGATORS section with data-testid='aggregator-preferences'",
+    "PASS: SystemSettingsPage.js has toggle buttons data-testid='toggle-aggregatorMediastack/aggregatorNewsdata'",
+    "PASS: Settings auto-save with 1s debounce persists aggregator preferences",
+    "PASS: Regression - 39 feeds still verified, health monitoring, voice preview intact"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration_34.py"
+  ],
+  "success_rate": {
+    "backend": "100% (22/22 tests passed)",
+    "frontend": "100% (all features verified)"
+  },
+  "test_credentials": "Guest mode: Click '[Oya, Play]' button on landing page",
+  "seed_data_creation": "None required",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 34 tested 4 new aggregator features: (1) Cache TTL - GET /api/aggregators/status returns cache_ttl_seconds:600 and cache_stale boolean. (2) Dashboard filter - source filter toggle between SYNTHESIZED_NEWS_STREAMS header and stream cards has 3 buttons: ALL_SOURCES, RSS_ONLY, AGGREGATORS. Clicking AGGREGATORS shows only articles with aggregator badges (MEDIASTACK/NEWSDATA). (3) Search - GET /api/search?q=Nigeria&include_aggregators=true returns aggregator articles in results. Default is include_aggregators=true. (4) User preferences - GET /api/settings/guest returns aggregator_mediastack and aggregator_newsdata booleans. /system settings page has NEWS_AGGREGATORS section with toggles. Note: NewsData.io toggle is currently OFF (as toggled in test), Mediastack is ON with 10 cached articles.",
+  "features_tested": {
+    "cache_ttl_in_aggregators_status": {
+      "status": "PASS",
+      "notes": "GET /api/aggregators/status returns cache_ttl_seconds:600 and cache_stale boolean"
+    },
+    "news_aggregator_sources_filter": {
+      "status": "PASS",
+      "notes": "GET /api/news?include_aggregators=true&aggregator_sources=mediastack returns only mediastack articles"
+    },
+    "search_with_aggregators": {
+      "status": "PASS",
+      "notes": "GET /api/search?q=Nigeria&include_aggregators=true returns aggregator articles in results"
+    },
+    "dashboard_source_filter_toggle": {
+      "status": "PASS",
+      "notes": "3 buttons visible: ALL_SOURCES, RSS_ONLY, AGGREGATORS with correct data-testid attributes"
+    },
+    "dashboard_aggregators_filter_shows_only_aggregator_articles": {
+      "status": "PASS",
+      "notes": "Clicking AGGREGATORS filter shows 10 articles with aggregator badges"
+    },
+    "dashboard_rss_only_filter_no_aggregator_badges": {
+      "status": "PASS",
+      "notes": "Clicking RSS_ONLY filter shows 0 aggregator badges (correct)"
+    },
+    "system_settings_news_aggregators_section": {
+      "status": "PASS",
+      "notes": "NEWS_AGGREGATORS section at /system with data-testid='aggregator-preferences'"
+    },
+    "system_settings_mediastack_toggle": {
+      "status": "PASS",
+      "notes": "Toggle button present with data-testid='toggle-aggregatorMediastack'"
+    },
+    "system_settings_newsdata_toggle": {
+      "status": "PASS",
+      "notes": "Toggle button present with data-testid='toggle-aggregatorNewsdata'"
+    },
+    "aggregator_preferences_persistence": {
+      "status": "PASS",
+      "notes": "GET /api/settings/guest returns aggregator_mediastack and aggregator_newsdata fields"
+    },
+    "regression_source_matrix": {
+      "status": "PASS",
+      "notes": "Dashboard telemetry sidebar shows SOURCE_MATRIX with 39 FEEDS and AGGREGATOR_APIs section"
+    },
+    "regression_health_monitoring": {
+      "status": "PASS",
+      "notes": "Health bar visible in SOURCE_MATRIX widget"
+    },
+    "regression_voice_preview": {
+      "status": "PASS",
+      "notes": "Voice preview buttons present in /system broadcast language section"
+    },
+    "regression_broadcast_language_toast": {
+      "status": "PASS",
+      "notes": "Broadcast language section visible with ON_AIR indicator"
+    }
+  },
+  "screenshots": [
+    ".screenshots/iter34_dashboard_initial.png - Dashboard with source filter toggle visible",
+    ".screenshots/iter34_aggregators_filter.png - AGGREGATORS filter active with aggregator badges",
+    ".screenshots/iter34_system_aggregators.png - NEWS_AGGREGATORS section with toggles",
+    ".screenshots/iter34_system_initial.png - System settings page top section"
+  ]
+}
