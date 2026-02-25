@@ -473,10 +473,10 @@ async def paraphrase_content(request: ParaphraseRequest):
 
 @app.post("/api/tts/generate", response_model=TTSResponse)
 async def generate_tts(request: TTSRequest):
-    """Generate text-to-speech audio using OpenAI TTS via Emergent, with optional translation and caching"""
+    """Generate TTS audio — YarnGPT primary, OpenAI fallback, with caching"""
     import hashlib
+    from services.yarngpt_service import generate_tts as yarn_generate_tts
     
-    # Generate cache key from text + voice + language
     cache_key = hashlib.md5(f"{request.text[:200]}:{request.voice_id}:{request.language}".encode()).hexdigest()
     
     # Check MongoDB cache first
@@ -491,13 +491,10 @@ async def generate_tts(request: TTSRequest):
         )
     
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
         from services.translation_service import translate_text, SUPPORTED_LANGUAGES
         
-        # Get text to speak - translate if needed
         text_to_speak = request.text
         translated_text = None
-        final_voice = request.voice_id
         
         # Translate if language is not English
         if request.language and request.language != "en" and request.language in SUPPORTED_LANGUAGES:
@@ -510,38 +507,25 @@ async def generate_tts(request: TTSRequest):
             if translation_result.get("success"):
                 text_to_speak = translation_result.get("translated", request.text)
                 translated_text = text_to_speak
-                # Use the recommended voice for this language
-                final_voice = translation_result.get("voice_id", request.voice_id)
         
-        # Map voice_id to OpenAI voice if needed
-        voice = final_voice if final_voice in ["alloy", "ash", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"] else "nova"
-        
-        # Truncate text to 4096 chars (OpenAI limit)
-        text = text_to_speak[:4096] if len(text_to_speak) > 4096 else text_to_speak
-        
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        
-        # Generate speech using tts-1 model
-        audio_bytes = await tts.generate_speech(
-            text=text,
-            model="tts-1",
-            voice=voice,
-            response_format="mp3",
-            speed=1.0
+        # Generate TTS via YarnGPT (primary) with OpenAI fallback
+        audio_url = await yarn_generate_tts(
+            text=text_to_speak,
+            voice_id=request.voice_id,
+            language=request.language or "en"
         )
         
-        # Convert to base64
-        audio_b64 = base64.b64encode(audio_bytes).decode()
-        audio_url = f"data:audio/mpeg;base64,{audio_b64}"
+        if not audio_url:
+            raise Exception("Both YarnGPT and OpenAI TTS failed")
         
-        # Cache the result (TTL managed by MongoDB TTL index if needed)
+        # Cache the result
         db["tts_cache"].update_one(
             {"cache_key": cache_key},
             {"$set": {
                 "cache_key": cache_key,
                 "audio_url": audio_url,
                 "translated_text": translated_text,
-                "voice_id": voice,
+                "voice_id": request.voice_id,
                 "created_at": datetime.now(timezone.utc).isoformat()
             }},
             upsert=True
@@ -551,7 +535,7 @@ async def generate_tts(request: TTSRequest):
             audio_url=audio_url,
             text=request.text,
             translated_text=translated_text,
-            voice_id=voice,
+            voice_id=request.voice_id,
             language=request.language
         )
     except Exception as e:
