@@ -348,7 +348,7 @@ const DashboardPage = () => {
                       <div className="flex-1 p-4 md:p-8 flex flex-col justify-between overflow-hidden">
                         <div>
                           <span className="mono-ui text-[10px] md:text-xs text-forest block mb-2 font-bold tracking-widest">NARRATIVE_NODE {'//'} {featured.category?.toUpperCase()}</span>
-                          <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-content mb-3 md:mb-4 leading-none group-hover:text-primary transition-colors">
+                          <h2 className="font-display text-xl md:text-3xl font-bold uppercase tracking-tight text-content mb-2 md:mb-4 leading-none group-hover:text-primary transition-colors line-clamp-3">
                             {featured.title}
                           </h2>
                           <p className="text-sm md:text-base text-forest font-mono leading-relaxed mb-4 md:mb-6 opacity-80 line-clamp-3">
