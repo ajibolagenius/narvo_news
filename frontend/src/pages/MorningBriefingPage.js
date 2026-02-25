@@ -147,6 +147,15 @@ const MorningBriefingPage = () => {
               <ArrowClockwise className={`w-3 h-3 ${generating ? 'animate-spin' : ''}`} />
               {generating ? 'GENERATING...' : 'NEW'}
             </button>
+            <button
+              onClick={() => setSfxEnabled(v => !v)}
+              className={`h-8 px-2.5 narvo-border mono-ui text-[9px] font-bold flex items-center gap-1.5 transition-all ${sfxEnabled ? 'bg-primary/10 border-primary text-primary' : 'text-forest hover:text-content'}`}
+              data-testid="sfx-toggle"
+              title={sfxEnabled ? 'Broadcast SFX On' : 'Broadcast SFX Off'}
+            >
+              <SpeakerHigh weight={sfxEnabled ? 'fill' : 'regular'} className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">SFX</span>
+            </button>
           </div>
         </div>
 
