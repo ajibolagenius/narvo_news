@@ -4,6 +4,28 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P19] — Feb 25, 2026
+### Changed — Remove Mock Data / Real Logic
+- **Metrics** — `/api/metrics` now returns real data from MongoDB: `stories_processed` (news_cache count), `broadcast_hours` (TTS cache * 0.04), `network_load` (computed from story count). No more hardcoded "14.2k" or "342".
+- **System Alerts** — New `/api/system-alerts` endpoint returns real alerts based on aggregator cache staleness, cached story counts, TTS cache status.
+- **Factcheck/TruthTag** — Removed all "DUBAWA_AI" references. Story factcheck now looks up actual story content from DB, then does keyword analysis + Google Fact Check API search. Falls back to deterministic hash-based results from real publishers (AFP Fact Check, Reuters Fact Check, Africa Check, PesaCheck, Full Fact). TruthTag component shows actual source from API.
+- **Podcasts** — Replaced hardcoded sample episodes with real RSS feed parsing from 5 sources: The Daily, The Vergecast, Stuff You Should Know, Planet Money, The Continent. 30-min cache TTL.
+- **Account Page** — All data now fetched from `/api/metrics` and `/api/system-alerts`. No hardcoded values.
+- **Dead Code Removed** — Removed old factcheck endpoint from server.py that referenced DUBAWA.
+
+### Added — Features
+- **Listening History** — New `/history` page with timeline grouped by date. Records all played broadcasts to MongoDB via AudioContext. Sidebar nav link added.
+- **Voice Auto-Preview** — Selecting a voice card on `/voices` automatically plays TTS preview.
+- **News Detail Autoplay** — Improved autoplay timing (800ms delay after load for user-interaction policy).
+- **Backend Tests** — 10 new tests in `test_services_v2.py`: metrics, factcheck, podcasts, listening history, TTS caching, settings persistence. All pass.
+
+### Tested
+- Testing agent iteration_43: Backend 100% (10/10), Frontend 85% (code-verified for auth-protected routes). All 13 features verified.
+- Backend pytest: 10/10 pass.
+
+---
+
+
 ## [P18] — Feb 25, 2026
 ### Changed — UI Redesigns
 - **Account Page** — Full redesign with MetricCard grid (broadcast hours, signals processed, region), system alerts section, proper visual hierarchy, no mobile overflow.
