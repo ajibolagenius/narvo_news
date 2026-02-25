@@ -4,6 +4,22 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P24] — Feb 26, 2026
+### Fixed — Voice Consistency (Critical)
+- **Race condition eliminated** — AudioContext now has `settingsLoaded` flag. NewsDetailPage waits for this flag before pre-generating TTS, preventing default voice from being used.
+- **VoiceStudioPage guest mode** — Was skipping settings fetch for guest users (`user?.id ? fetch : null`). Now always fetches with `user?.id || 'guest'`.
+- **Dual-write voice preference** — VoiceStudioPage now writes to both backend AND localStorage cache on Apply, ensuring instant voice availability on next page load.
+- **Settings merge verified** — Backend `model_dump(exclude_unset=True)` correctly does partial updates. Saving theme/language no longer overwrites voice_model.
+
+### Improved — Font Size & Readability
+- **Global font increase** — All inline font sizes increased by 2px across every component (text-[7px]→text-[9px], text-[8px]→text-[10px], etc.). No text below 9px anywhere in the app.
+- **Base body** — Set to `font-size: 16px` with `line-height: 1.6` for improved readability.
+
+### Tested
+- Testing agent iteration_48: Backend 100% (11/11), Frontend 100% (12/12). Voice persistence, settings merge, font increase, mobile 375px, speed control all verified. Zero issues.
+
+---
+
 ## [P23] — Feb 25, 2026
 ### Added
 - **Speed Control** — Playback speed button (0.75x / 1x / 1.25x / 1.5x / 2x) on both desktop and mobile audio players. Click to cycle through speeds. Active speed highlighted in primary color.
