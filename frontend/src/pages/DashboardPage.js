@@ -62,7 +62,7 @@ const DashboardPage = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/api/news?limit=50`).then(r => r.json()),
+      fetch(`${API_URL}/api/news?limit=50&include_aggregators=true`).then(r => r.json()),
       fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
     ]).then(([newsData, metricsData]) => {
       setNews(newsData);
