@@ -17,6 +17,27 @@ from supabase import create_client, Client
 from pymongo import MongoClient
 import feedparser
 import httpx
+import re as _re
+
+# ── Sanitizer: strip stage directions / sound-effect text from AI output ──
+_STAGE_DIRECTION_PATTERNS = [
+    _re.compile(r'\[.*?\]'),                       # [Sound of music fades]
+    _re.compile(r'\(.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\)', _re.IGNORECASE),
+    _re.compile(r'\*.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\*', _re.IGNORECASE),
+    _re.compile(r'(?i)^\s*(?:sound of|sounds? of|sfx:?).*$', _re.MULTILINE),
+    _re.compile(r'(?i)^\s*(?:\(|\*).*?(?:music|jingle|theme|fade|transition).*?(?:\)|\*)\s*$', _re.MULTILINE),
+]
+
+def sanitize_ai_text(text: str) -> str:
+    """Remove stage directions, sound descriptions, and production cues from AI-generated text."""
+    if not text:
+        return text
+    result = text
+    for pattern in _STAGE_DIRECTION_PATTERNS:
+        result = pattern.sub('', result)
+    # Collapse multiple blank lines into one
+    result = _re.sub(r'\n{3,}', '\n\n', result)
+    return result.strip()
 
 # Initialize FastAPI
 app = FastAPI(title="Narvo API", version="2.0")
