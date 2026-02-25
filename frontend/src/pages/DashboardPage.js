@@ -62,6 +62,7 @@ const DashboardPage = () => {
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
   const [sortOrder, setSortOrder] = useState('latest');
+  const [showTelemetry, setShowTelemetry] = useState(false);
 
   useEffect(() => {
     // Fetch user aggregator preferences first, then news with those prefs
