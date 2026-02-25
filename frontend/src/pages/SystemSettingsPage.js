@@ -144,7 +144,7 @@ const SystemGearSixPage = () => {
   }
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll flex flex-col items-center bg-background-dark min-h-0" data-testid="system-settings-page">
+    <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll flex flex-col items-center bg-background-dark min-h-0" data-testid="system-settings-page">
       <div className="w-full max-w-4xl p-4 md:p-10 space-y-12 md:space-y-16 pb-32">
         {/* 01: Display & Interface */}
         <section className="space-y-6 md:space-y-8">
