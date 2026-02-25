@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const AudioContext = createContext({});
@@ -6,6 +7,7 @@ const AudioContext = createContext({});
 export const useAudio = () => useContext(AudioContext);
 
 export const AudioProvider = ({ children }) => {
+  const { user } = useAuth();
   const audioRef = useRef(null);
   const fadeIntervalRef = useRef(null);
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -22,14 +24,15 @@ export const AudioProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [broadcastLanguage, setBroadcastLanguage] = useState('en');
 
-  // Fetch user's language preference on mount and when triggered
+  // Fetch user's language preference
   const fetchLanguagePreference = useCallback(async () => {
+    const userId = user?.id || 'guest';
     try {
-      const response = await fetch(`${API_URL}/api/settings/guest`);
+      const response = await fetch(`${API_URL}/api/settings/${userId}`);
       if (response.ok) {
         const data = await response.json();
         if (data.broadcast_language) {
-          console.log('[AudioContext] Fetched language:', data.broadcast_language);
+          console.log('[AudioContext] Fetched broadcast_language:', data.broadcast_language, 'for user:', userId);
           setBroadcastLanguage(data.broadcast_language);
           return data.broadcast_language;
         }
@@ -38,9 +41,9 @@ export const AudioProvider = ({ children }) => {
       console.log('[AudioContext] Using default language: en');
     }
     return 'en';
-  }, []);
+  }, [user?.id]);
 
-  // Fetch on mount
+  // Re-fetch when user changes (login/logout/guest switch)
   useEffect(() => {
     fetchLanguagePreference();
   }, [fetchLanguagePreference]);
