@@ -8,6 +8,7 @@ import { useSettings } from '../hooks/useSettings';
 import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon, Compass, GridFour } from '@phosphor-icons/react';
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
+import DailyDigest from '../components/features/DailyDigest';
 import { openTourGuide } from '../components/TourGuideModal';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
