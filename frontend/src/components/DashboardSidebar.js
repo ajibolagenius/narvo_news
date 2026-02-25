@@ -59,8 +59,8 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
   // Desktop sidebar (collapsible - stays open by default)
   return (
     <>
-      {/* Backdrop on mobile for expanded sidebar */}
-      {open && (
+      {/* Backdrop on mobile only when sidebar slide-out is visible */}
+      {false && open && (
         <div className="md:hidden fixed inset-0 bg-background-dark/50 z-20" onClick={onClose} />
       )}
 
