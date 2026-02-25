@@ -25,11 +25,19 @@ export const AudioProvider = ({ children }) => {
   const [playbackRate, setPlaybackRateState] = useState(1);
   const [broadcastLanguage, setBroadcastLanguage] = useState('en');
   const [voiceModel, setVoiceModel] = useState('emma');
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   // Fetch user's voice + language preference
   const fetchLanguagePreference = useCallback(async () => {
     const userId = user?.id || 'guest';
     try {
+      // Check localStorage cache first for instant load
+      try {
+        const cached = JSON.parse(localStorage.getItem('narvo_settings_cache') || '{}');
+        if (cached.voice_model) setVoiceModel(cached.voice_model);
+        if (cached.broadcast_language) setBroadcastLanguage(cached.broadcast_language);
+      } catch { /* ignore */ }
+
       const response = await fetch(`${API_URL}/api/settings/${userId}`);
       if (response.ok) {
         const data = await response.json();
@@ -39,11 +47,22 @@ export const AudioProvider = ({ children }) => {
         if (data.voice_model) {
           setVoiceModel(data.voice_model);
         }
+        // Cache for next load
+        try {
+          const existing = JSON.parse(localStorage.getItem('narvo_settings_cache') || '{}');
+          localStorage.setItem('narvo_settings_cache', JSON.stringify({
+            ...existing,
+            voice_model: data.voice_model || existing.voice_model,
+            broadcast_language: data.broadcast_language || existing.broadcast_language,
+          }));
+        } catch { /* ignore */ }
+        setSettingsLoaded(true);
         return data.broadcast_language || 'en';
       }
     } catch (err) {
       console.log('[AudioContext] Using default voice/language');
     }
+    setSettingsLoaded(true);
     return 'en';
   }, [user?.id]);
 
