@@ -102,19 +102,19 @@ class TestPodcastFeeds:
 
     def test_podcasts_returns_10_plus_episodes(self):
         """Feature 3: /api/podcasts returns episodes from multiple feeds (should have 10+ episodes)"""
-        response = requests.get(f"{BASE_URL}/api/podcasts?limit=50")
+        response = requests.get(f"{BASE_URL}/api/podcasts?limit=20")
         assert response.status_code == 200, f"Podcasts failed: {response.text}"
         podcasts = response.json()
         
         assert isinstance(podcasts, list), f"Expected list, got: {type(podcasts)}"
         
-        # Should have 10+ episodes with expanded feeds
+        # Should have 10+ episodes with expanded feeds (10 feeds with max 5 episodes each)
         assert len(podcasts) >= 10, f"Expected 10+ episodes, got: {len(podcasts)}"
         print(f"PASS: /api/podcasts returns {len(podcasts)} episodes")
 
     def test_podcasts_have_multiple_sources(self):
         """Verify podcasts come from multiple different sources (new feeds)"""
-        response = requests.get(f"{BASE_URL}/api/podcasts?limit=50")
+        response = requests.get(f"{BASE_URL}/api/podcasts?limit=20")
         assert response.status_code == 200
         podcasts = response.json()
         
