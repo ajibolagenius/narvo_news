@@ -73,7 +73,45 @@ async def factcheck_search(
 async def factcheck_story(story_id: str):
     """
     Get fact-check status for a specific news story.
+    Looks up story content, then does keyword analysis + optional Google Fact Check API search.
     """
+    import os
+    MONGO_URL = os.environ.get("MONGO_URL", "")
+    DB_NAME = os.environ.get("DB_NAME", "narvo")
+    
+    # Try to get actual story content from DB
+    story_text = ""
+    source_name = ""
+    try:
+        from pymongo import MongoClient
+        client = MongoClient(MONGO_URL)
+        db = client[DB_NAME]
+        story = db["news_cache"].find_one({"id": story_id}, {"_id": 0, "title": 1, "summary": 1, "source": 1})
+        if story:
+            story_text = f"{story.get('title', '')} {story.get('summary', '')}"
+            source_name = story.get("source", "")
+    except Exception:
+        pass
+    
+    if story_text:
+        # First try keyword analysis on actual content
+        result = analyze_claim(story_text)
+        # If we have a Google API key, also try the API
+        try:
+            api_result = await search_fact_checks(query=story_text[:200])
+            if api_result.get("claims_found", 0) > 0:
+                result = {
+                    "status": api_result["primary_verdict"] or "UNVERIFIED",
+                    "confidence": api_result["confidence"],
+                    "source": api_result.get("source", "GOOGLE_FACTCHECK"),
+                    "explanation": f"Checked against {api_result['claims_found']} claim(s). Source: {source_name}",
+                    "checked_at": api_result["checked_at"],
+                }
+        except Exception:
+            pass
+        return QuickCheckResponse(**result)
+    
+    # Fallback: deterministic mock based on story_id hash
     result = check_story_facts(story_id)
     return QuickCheckResponse(**result)
 
