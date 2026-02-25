@@ -13,6 +13,8 @@ const fmt = (s) => {
   return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
 };
 
+const SPEED_OPTIONS = [0.75, 1, 1.25, 1.5, 2];
+
 /* ──────────────────────── DESKTOP PLAYER ──────────────────────── */
 const DesktopPlayer = () => {
   const {
@@ -20,11 +22,17 @@ const DesktopPlayer = () => {
     togglePlay, seek, playNext, playPrev,
     queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
     volume, isMuted, setVolume, toggleMute, autoPlay, setAutoPlay,
+    playbackRate, setPlaybackRate,
   } = useAudio();
   const [showQueue, setShowQueue] = useState(false);
   const [showVol, setShowVol] = useState(false);
   const volRef = useRef(null);
   const progress = duration ? (currentTime / duration) * 100 : 0;
+
+  const cycleSpeed = () => {
+    const idx = SPEED_OPTIONS.indexOf(playbackRate);
+    setPlaybackRate(SPEED_OPTIONS[(idx + 1) % SPEED_OPTIONS.length]);
+  };
 
   useEffect(() => {
     const h = (e) => { if (volRef.current && !volRef.current.contains(e.target)) setShowVol(false); };
