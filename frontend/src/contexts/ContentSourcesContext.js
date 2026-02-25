@@ -54,6 +54,9 @@ export const ContentSourcesProvider = ({ children }) => {
   useEffect(() => {
     fetchSources();
     fetchHealth();
+    // Auto-refresh health every 5 minutes
+    const interval = setInterval(fetchHealth, 300000);
+    return () => clearInterval(interval);
   }, [fetchSources, fetchHealth]);
 
   // Helper getters
