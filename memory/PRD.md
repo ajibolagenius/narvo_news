@@ -141,6 +141,12 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Discover CONTENT_SOURCES updated** — Shows LOCAL_NG, CONTINENTAL_AF, INTERNATIONAL, and AGGREGATOR_APIs counts.
 - **Metrics updated** — `/api/metrics` includes aggregator status object.
 
+### P12 Features - Aggregator Caching, Search, Filtering, User Prefs (Feb 25, 2025)
+- **Aggregator cache with TTL** — 10-minute cache TTL. Background task auto-refreshes every 10 min. `/api/aggregators/status` includes `cache_ttl_seconds` and `cache_stale` fields.
+- **Dashboard source filter toggle** — 3-button pill toggle (ALL_SOURCES / RSS_ONLY / AGGREGATORS) above the stream. Filters feed client-side.
+- **Search across aggregators** — `/api/search?include_aggregators=true` (default) includes cached aggregator articles in search results alongside RSS.
+- **User aggregator preferences** — `/system` settings page has NEWS_AGGREGATORS section with toggles for Mediastack and NewsData.io. Preferences saved to user settings (`aggregator_mediastack`, `aggregator_newsdata`). `/api/news` accepts `aggregator_sources` param to filter by enabled aggregators.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
