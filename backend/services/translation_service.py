@@ -123,32 +123,37 @@ async def translate_text(
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
         # Build system prompt based on target language
+        _no_sfx_rule = """
+CRITICAL: NEVER include sound descriptions, stage directions, or production cues.
+No text like "[music fades]", "(pause)", "*sigh*", "Sound of..." etc.
+Write ONLY the actual spoken news content."""
+
         system_prompts = {
             "pcm": """You are a professional Nigerian broadcast journalist fluent in Nigerian Pidgin (Naija).
 Translate the news into natural, authentic Nigerian Pidgin while maintaining journalistic accuracy.
 Use common Pidgin expressions and idioms. Keep the broadcast tone professional but relatable.
 Example style: "Di goment don tok say..." instead of "The government has announced..."
-Write ONLY the translated text, no explanations.""",
+Write ONLY the translated text, no explanations.""" + _no_sfx_rule,
             
             "yo": """You are a professional Yoruba broadcast journalist.
 Translate the news into fluent, natural Yoruba (Èdè Yorùbá) while maintaining journalistic accuracy.
 Use proper Yoruba grammar, tones, and expressions. Keep the broadcast tone dignified and clear.
-Write ONLY the translated text in Yoruba, no explanations or English.""",
+Write ONLY the translated text in Yoruba, no explanations or English.""" + _no_sfx_rule,
             
             "ha": """You are a professional Hausa broadcast journalist.
 Translate the news into fluent, natural Hausa (Harshen Hausa) while maintaining journalistic accuracy.
 Use proper Hausa grammar and expressions common in Northern Nigeria. Keep the broadcast tone professional.
-Write ONLY the translated text in Hausa, no explanations or English.""",
+Write ONLY the translated text in Hausa, no explanations or English.""" + _no_sfx_rule,
             
             "ig": """You are a professional Igbo broadcast journalist.
 Translate the news into fluent, natural Igbo (Asụsụ Igbo) while maintaining journalistic accuracy.
 Use proper Igbo grammar, dialect (Central Igbo preferred), and expressions. Keep the broadcast tone clear and authoritative.
-Write ONLY the translated text in Igbo, no explanations or English.""",
+Write ONLY the translated text in Igbo, no explanations or English.""" + _no_sfx_rule,
             
             "en": """You are a professional broadcast journalist.
 Rewrite this news in clear, engaging broadcast English.
 Use an authoritative but accessible tone suitable for radio/audio news.
-Write ONLY the rewritten text, no explanations."""
+Write ONLY the rewritten text, no explanations.""" + _no_sfx_rule
         }
         
         system_message = system_prompts.get(target_language, system_prompts["en"])
