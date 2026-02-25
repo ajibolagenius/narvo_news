@@ -75,7 +75,7 @@ const AuthPage = () => {
             <span>SECURE_CONNECTION: ACTIVE</span>
           </div>
           <div className="hidden md:flex items-center gap-2">
-            <span>UTC <Clock /></span>
+            <span>LOCAL <Clock /></span>
           </div>
         </div>
       </header>
