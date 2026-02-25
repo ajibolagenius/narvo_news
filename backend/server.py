@@ -333,13 +333,14 @@ async def health_check():
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
-@app.get("/api/news", response_model=List[NewsItem])
+@app.get("/api/news")
 async def get_news(
     region: Optional[str] = Query(None, description="Filter by region"),
     category: Optional[str] = Query(None, description="Filter by category"),
-    limit: int = Query(20, le=50, description="Number of items to return")
+    limit: int = Query(20, le=50, description="Number of items to return"),
+    include_aggregators: bool = Query(False, description="Include aggregator news")
 ):
-    """Fetch aggregated news from RSS feeds"""
+    """Fetch aggregated news from RSS feeds and optional aggregator APIs"""
     all_news = []
     
     # Fetch from all RSS feeds concurrently
@@ -349,11 +350,20 @@ async def get_news(
     for items in results:
         all_news.extend(items)
     
+    # Optionally merge aggregator news
+    if include_aggregators:
+        try:
+            from services.aggregator_service import get_normalized_aggregator_news
+            agg_news = await get_normalized_aggregator_news()
+            all_news.extend(agg_news)
+        except Exception as e:
+            print(f"[News] Aggregator fetch error: {e}")
+    
     # Apply filters
     if region:
-        all_news = [n for n in all_news if n["region"].lower() == region.lower()]
+        all_news = [n for n in all_news if n.get("region", "").lower() == region.lower()]
     if category:
-        all_news = [n for n in all_news if n["category"].lower() == category.lower()]
+        all_news = [n for n in all_news if n.get("category", "").lower() == category.lower()]
     
     # Sort by recency and return
     all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
