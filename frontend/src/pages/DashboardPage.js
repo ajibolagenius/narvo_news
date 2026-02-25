@@ -61,6 +61,7 @@ const DashboardPage = () => {
   const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
+  const [sortOrder, setSortOrder] = useState('latest');
 
   useEffect(() => {
     // Fetch user aggregator preferences first, then news with those prefs
