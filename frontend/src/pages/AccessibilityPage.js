@@ -86,16 +86,18 @@ const AccessibilityPage = () => {
   const handleSave = async () => {
     setSaving(true);
     const userId = user?.id || 'guest';
+    const payload = {
+      display_density: displayDensity,
+      font_scale: fontScale,
+      gestural_swipe: gestures.lateralSwipe,
+      gestural_pinch: gestures.pinchZoom,
+    };
+    cacheToLocal(payload);
     try {
       const res = await fetch(`${API_URL}/api/settings/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          display_density: displayDensity,
-          font_scale: fontScale,
-          gestural_swipe: gestures.lateralSwipe,
-          gestural_pinch: gestures.pinchZoom,
-        }),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         setHasChanges(false);
