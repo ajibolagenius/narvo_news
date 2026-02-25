@@ -398,23 +398,25 @@ const DiscoverPage = () => {
                     <Skeleton variant="text" className="w-1/2 h-4" />
                   </div>
                 ))
-              ) : podcasts.length === 0 ? (
+              ) : displayedPodcasts.length === 0 ? (
                 <div className="col-span-2 p-8 text-center">
                   <EmptyState 
-                    title="NO PODCASTS AVAILABLE"
-                    description="Check back later for new content"
+                    title={podcastSearch ? "NO RESULTS FOUND" : "NO PODCASTS AVAILABLE"}
+                    description={podcastSearch ? `No episodes match "${podcastSearch}"` : "Check back later for new content"}
                   />
                 </div>
               ) : (
-                podcasts.map((podcast) => {
+                displayedPodcasts.map((podcast) => {
                   const inQueue = isInQueue(podcast.id);
                   const isCached = cachedPodcasts[podcast.id];
                   const downloadProgress = getQueueProgress(podcast.id);
+                  const isExpanded = expandedPodcast === podcast.id;
                   
                   return (
                     <article 
                       key={podcast.id}
-                      className="bg-background-dark p-4 md:p-8 flex flex-col gap-4 md:gap-6 hover:bg-surface/40 transition-colors group cursor-pointer border border-transparent hover:border-forest/50"
+                      className={`bg-background-dark p-4 md:p-8 flex flex-col gap-4 md:gap-6 transition-colors group cursor-pointer border border-transparent ${isExpanded ? 'bg-primary/5 border-primary/30 col-span-1 md:col-span-2' : 'hover:bg-surface/40 hover:border-forest/50'}`}
+                      onClick={() => setExpandedPodcast(isExpanded ? null : podcast.id)}
                       data-testid={`podcast-${podcast.id}`}
                     >
                       <div className="flex justify-between items-start">
