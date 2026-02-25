@@ -84,20 +84,22 @@ const SystemGearSixPage = () => {
   
   const saveSettings = React.useCallback(async (settingsToSave) => {
     const userId = user?.id || 'guest';
+    const payload = {
+      high_contrast: settingsToSave.highContrast,
+      interface_scale: settingsToSave.interfaceScale === 'DEFAULT' ? '100%' : settingsToSave.interfaceScale.toLowerCase(),
+      haptic_sync: settingsToSave.hapticSync,
+      alert_volume: settingsToSave.alertVolume,
+      data_limit: settingsToSave.dataLimit / 1000,
+      bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
+      aggregator_mediastack: settingsToSave.aggregatorMediastack,
+      aggregator_newsdata: settingsToSave.aggregatorNewsdata,
+    };
+    cacheToLocal(payload);
     try {
       const res = await fetch(`${API_URL}/api/settings/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          high_contrast: settingsToSave.highContrast,
-          interface_scale: settingsToSave.interfaceScale === 'DEFAULT' ? '100%' : settingsToSave.interfaceScale.toLowerCase(),
-          haptic_sync: settingsToSave.hapticSync,
-          alert_volume: settingsToSave.alertVolume,
-          data_limit: settingsToSave.dataLimit / 1000,
-          bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
-          aggregator_mediastack: settingsToSave.aggregatorMediastack,
-          aggregator_newsdata: settingsToSave.aggregatorNewsdata,
-        }),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         return true;
