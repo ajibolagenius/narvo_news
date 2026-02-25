@@ -351,6 +351,11 @@ Respond in JSON format:
         cleaned = cleaned.strip()
         
         result = json.loads(cleaned)
+        # Sanitize AI output — remove any stage directions / sound cues
+        if "narrative" in result:
+            result["narrative"] = sanitize_ai_text(result["narrative"])
+        if "key_takeaways" in result:
+            result["key_takeaways"] = [sanitize_ai_text(kt) for kt in result["key_takeaways"] if sanitize_ai_text(kt)]
         return result
     except Exception as e:
         print(f"Error generating narrative: {e}")
