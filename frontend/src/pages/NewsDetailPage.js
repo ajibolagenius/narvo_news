@@ -12,7 +12,7 @@ import TruthTag from '../components/TruthTag';
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const MobileMetadata = ({ news, readTime, relatedNews, isBookmarked, toggleBookmark, addToQueue, shareStory, navigate, showAlert, t, formatPublishedDate }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   return (
     <div className="lg:hidden mt-8 narvo-border" data-testid="mobile-article-metadata">
       <button
