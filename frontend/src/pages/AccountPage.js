@@ -33,7 +33,7 @@ const AccountPage = () => {
       {/* Upper Section: Subscription & Alerts */}
       <div className="narvo-border-b flex flex-col lg:flex-row min-h-[300px] lg:min-h-[400px]">
         {/* Subscription Panel */}
-        <div className="flex-1 p-6 md:p-10 lg:narvo-border-r relative overflow-hidden">
+        <div className="flex-1 p-4 md:p-10 lg:narvo-border-r relative overflow-hidden min-w-0">
           <div className="absolute -top-10 -right-10 opacity-5">
             <Broadcast className="w-64 h-64 md:w-72 md:h-72 text-primary" />
           </div>
