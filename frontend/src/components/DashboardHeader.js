@@ -21,7 +21,7 @@ const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
       {/* Logo */}
       <div className="flex items-center gap-2 shrink-0 cursor-pointer" onClick={() => navigate('/dashboard')}>
         <Broadcast weight="fill" className="w-5 h-5 md:w-6 md:h-6 text-[rgb(var(--color-primary))]" />
-        <h1 className="font-display text-base md:text-lg tracking-tight font-bold text-[rgb(var(--color-text-primary))] uppercase hidden sm:block">
+        <h1 className="font-display text-base md:text-lg tracking-tight font-bold text-[rgb(var(--color-text-primary))] uppercase">
           NARVO
         </h1>
       </div>

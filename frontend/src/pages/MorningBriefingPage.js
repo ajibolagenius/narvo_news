@@ -138,16 +138,6 @@ const MorningBriefingPage = () => {
           <span className="mono-ui text-[9px] md:text-xs text-forest">MODULE: <span className="text-primary">MORNING_BRIEFING</span></span>
         </div>
         <div className="flex items-center gap-1.5 md:gap-3">
-          {voices.length > 0 && (
-            <select
-              value={selectedVoice}
-              onChange={(e) => setSelectedVoice(e.target.value)}
-              className="h-7 md:h-8 px-1.5 md:px-2 bg-background-dark narvo-border mono-ui text-[8px] md:text-[9px] text-forest focus:outline-none focus:border-primary"
-              data-testid="voice-selector"
-            >
-              {voices.map(v => <option key={v.id} value={v.id}>{v.name.toUpperCase()}</option>)}
-            </select>
-          )}
           <button
             onClick={generateBriefing}
             disabled={generating}
