@@ -72,7 +72,7 @@ class TestTTS:
 
 class TestPodcast:
     def test_podcasts_list(self, client):
-        r = client.get("/api/discover/podcasts?limit=5")
+        r = client.get("/api/podcasts?limit=5")
         assert r.status_code == 200
         data = r.json()
         assert isinstance(data, list)
