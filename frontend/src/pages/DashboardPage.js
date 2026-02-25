@@ -207,8 +207,6 @@ const DashboardPage = () => {
     return times[idx % times.length];
   };
 
-  const [sortOrder, setSortOrder] = useState('latest'); // 'latest' | 'oldest'
-
   return (
     <div className="flex-1 flex min-h-0">
       {/* Primary Feed */}
