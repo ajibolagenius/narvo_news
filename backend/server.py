@@ -1004,6 +1004,8 @@ class UserSettings(BaseModel):
     aggregator_newsdata: bool = True
     interface_language: str = "en"
     theme: str = "dark"
+    sound_theme: str = "narvo_classic"
+    interests: List[str] = []
 
 @app.get("/api/settings/{user_id}")
 async def get_user_settings(user_id: str):
