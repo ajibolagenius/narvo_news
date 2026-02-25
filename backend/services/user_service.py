@@ -114,17 +114,8 @@ def update_settings(user_id: str, settings: Dict) -> Dict:
     return {"status": "updated"}
 
 
-# Voice profiles with authentic Nigerian names and gender mapping
-# English/Pidgin = Male voices, Yoruba/Hausa/Igbo = Female voices
-VOICE_PROFILES = [
-    {"id": "onyx", "name": "Emeka", "accent": "English", "language": "en", "gender": "male", "description": "Deep, authoritative English voice"},
-    {"id": "echo", "name": "Tunde", "accent": "Naijá", "language": "pcm", "gender": "male", "description": "Warm, confident Naijá voice"},
-    {"id": "nova", "name": "Adùnní", "accent": "Yorùbá", "language": "yo", "gender": "female", "description": "Clear, melodic Yorùbá voice"},
-    {"id": "shimmer", "name": "Halima", "accent": "Hausa", "language": "ha", "gender": "female", "description": "Bright, dignified Hausa voice"},
-    {"id": "alloy", "name": "Adaeze", "accent": "Igbo", "language": "ig", "gender": "female", "description": "Warm, expressive Igbo voice"},
-]
-
-
+# Voice profiles — sourced from YarnGPT service (primary TTS)
 def get_voice_profiles() -> List[Dict]:
-    """Get available voice profiles"""
-    return VOICE_PROFILES
+    """Get available voice profiles from YarnGPT"""
+    from services.yarngpt_service import get_voice_profiles as _yarn_profiles
+    return _yarn_profiles()
