@@ -309,6 +309,11 @@ const DashboardPage = () => {
                           <div className="flex flex-wrap justify-between items-start gap-2">
                             <div className="flex items-center gap-2 md:gap-3">
                               <span className="bg-forest/20 text-primary mono-ui text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 border border-forest/30">SOURCE:{item.source?.toUpperCase().replace(/\s/g, '_').slice(0, 15)}</span>
+                              {item.aggregator && (
+                                <span className="bg-primary/10 text-primary mono-ui text-[8px] px-1.5 py-0.5 border border-primary/30" data-testid={`aggregator-badge-${item.id}`}>
+                                  {item.aggregator === 'mediastack' ? 'MEDIASTACK' : 'NEWSDATA'}
+                                </span>
+                              )}
                               <span className="mono-ui text-[9px] md:text-[10px] text-forest/50">{timeAgo(idx)}</span>
                               <TruthTag storyId={item.id} compact />
                             </div>
