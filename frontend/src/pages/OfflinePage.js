@@ -162,26 +162,26 @@ const OfflinePage = () => {
   const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 space-y-8 md:space-y-12 max-w-7xl mx-auto w-full pb-20 md:pb-10 min-h-0" data-testid="offline-page">
+    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 space-y-8 md:space-y-12 max-w-7xl mx-auto w-full pb-32 md:pb-10 min-h-0" data-testid="offline-page">
       {/* Storage Header */}
       <section className="space-y-6 md:space-y-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-primary">
               <FolderOpen className="w-4 h-4" />
-              <span className="mono-ui text-[9px] md:text-[10px] font-bold tracking-[0.2em]">LOCAL_STORAGE_INDEX</span>
+              <span className="mono-ui text-[11px] md:text-[12px] font-bold tracking-[0.2em]">LOCAL_STORAGE_INDEX</span>
             </div>
             <h2 className="font-display text-3xl md:text-5xl font-bold uppercase tracking-tight text-content leading-none">
               Cached <span className="text-primary">Archives.</span>
             </h2>
             {cacheStats.offlineReady > 0 && (
-              <div className="flex items-center gap-2 text-forest mono-ui text-[9px]">
+              <div className="flex items-center gap-2 text-forest mono-ui text-[11px]">
                 <CheckCircle weight="fill" className="w-3 h-3 text-green-500" />
                 <span>{cacheStats.offlineReady} items ready for offline</span>
               </div>
             )}
           </div>
-          <div className="flex flex-col items-start md:items-end mono-ui text-[9px] md:text-[10px]">
+          <div className="flex flex-col items-start md:items-end mono-ui text-[11px] md:text-[12px]">
             <span className="text-forest tracking-wider mb-1 md:mb-2 font-bold">CAPACITY_LIMIT</span>
             <div className="text-content text-base md:text-lg">
               {cacheStats.formattedSize} <span className="text-forest">/ 50.0 GB</span>
@@ -193,7 +193,7 @@ const OfflinePage = () => {
         <div className="relative w-full h-2 md:h-3 narvo-border p-[1px] bg-surface/20">
           <div className="h-full bg-primary transition-all duration-500" style={{ width: `${Math.min(usagePercent, 100)}%` }} />
         </div>
-        <div className="flex justify-between mono-ui text-[8px] md:text-[9px] text-forest font-bold">
+        <div className="flex justify-between mono-ui text-[10px] md:text-[11px] text-forest font-bold">
           <span>00.0%</span>
           <span className="text-primary">{usagePercent.toFixed(1)}% // ACTIVE_USAGE</span>
           <span>100.0%</span>
@@ -203,7 +203,7 @@ const OfflinePage = () => {
       {/* Command Bar */}
       <section className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 md:gap-6 py-4 md:py-6 narvo-border-b border-forest/30">
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
-          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 mono-ui text-[9px] md:text-[10px] font-bold text-content hover:bg-primary hover:text-background-dark transition-all group">
+          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 mono-ui text-[11px] md:text-[12px] font-bold text-content hover:bg-primary hover:text-background-dark transition-all group">
             <Funnel className="w-4 h-4" />
             <span>FILTER</span>
           </button>
@@ -211,21 +211,21 @@ const OfflinePage = () => {
           <div className="flex items-center gap-1 md:gap-2">
             <button 
               onClick={() => setFilterType('all')}
-              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'all' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
+              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[11px] md:text-[12px] font-bold ${filterType === 'all' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-all"
             >
               ALL ({allItems.length})
             </button>
             <button 
               onClick={() => setFilterType('audio')}
-              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'audio' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
+              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[11px] md:text-[12px] font-bold ${filterType === 'audio' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-audio"
             >
               AUDIO ({cachedItems.length})
             </button>
             <button 
               onClick={() => setFilterType('article')}
-              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[9px] md:text-[10px] font-bold ${filterType === 'article' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
+              className={`px-3 md:px-4 py-1 md:py-1.5 mono-ui text-[11px] md:text-[12px] font-bold ${filterType === 'article' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content transition-colors'}`}
               data-testid="filter-article"
             >
               ARTICLES ({savedArticles.length})
@@ -234,7 +234,7 @@ const OfflinePage = () => {
         </div>
         <button 
           onClick={handleClearAll}
-          className="flex items-center gap-2 mono-ui text-[9px] md:text-[10px] font-bold text-forest hover:text-primary transition-colors"
+          className="flex items-center gap-2 mono-ui text-[11px] md:text-[12px] font-bold text-forest hover:text-primary transition-colors"
           data-testid="clear-cache-btn"
         >
           <Trash className="w-4 h-4" />
@@ -245,7 +245,7 @@ const OfflinePage = () => {
       {/* File Table */}
       <section className="narvo-border bg-surface/5">
         {/* Table Header */}
-        <div className="grid grid-cols-12 gap-3 md:gap-6 px-4 md:px-6 py-3 md:py-4 narvo-border-b bg-surface/30 mono-ui text-[9px] md:text-[10px] text-forest font-bold">
+        <div className="grid grid-cols-12 gap-3 md:gap-6 px-4 md:px-6 py-3 md:py-4 narvo-border-b bg-surface/30 mono-ui text-[11px] md:text-[12px] text-forest font-bold">
           <div className="col-span-1 text-center">SIG</div>
           <div className="col-span-11 md:col-span-5">FILE_IDENTIFIER</div>
           <div className="col-span-2 hidden md:block text-right">DURATION</div>
@@ -298,20 +298,20 @@ const OfflinePage = () => {
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <button 
                     onClick={() => navigate('/dashboard')}
-                    className="h-10 md:h-12 px-5 md:px-6 bg-primary text-background-dark font-bold mono-ui text-[9px] md:text-[10px] hover:bg-white transition-all flex items-center justify-center gap-2"
+                    className="h-10 md:h-12 px-5 md:px-6 bg-primary text-background-dark font-bold mono-ui text-[11px] md:text-[12px] hover:bg-white transition-all flex items-center justify-center gap-2"
                   >
                     <ArrowCounterClockwise className="w-4 h-4" />
                     GO ONLINE
                   </button>
                   <button 
                     onClick={() => navigate('/settings')}
-                    className="h-10 md:h-12 px-5 md:px-6 narvo-border text-primary font-bold mono-ui text-[9px] md:text-[10px] hover:bg-primary hover:text-background-dark transition-all"
+                    className="h-10 md:h-12 px-5 md:px-6 narvo-border text-primary font-bold mono-ui text-[11px] md:text-[12px] hover:bg-primary hover:text-background-dark transition-all"
                   >
                     MANAGE STORAGE
                   </button>
                 </div>
                 
-                <div className="mt-6 pt-4 narvo-border-t flex justify-between items-center text-[7px] md:text-[8px] mono-ui font-bold text-forest">
+                <div className="mt-6 pt-4 narvo-border-t flex justify-between items-center text-[9px] md:text-[10px] mono-ui font-bold text-forest">
                   <span>ERR_CODE: 0x00_CACHE_EMPTY</span>
                   <span>NARVO_SYS_V2.6</span>
                 </div>
@@ -347,19 +347,19 @@ const OfflinePage = () => {
                   </div>
                   
                   <div className="col-span-11 md:col-span-5 flex flex-col gap-1 min-w-0">
-                    <span className={`mono-ui text-[10px] md:text-[11px] font-bold truncate ${isActive ? 'text-primary' : isCorrupted ? 'italic' : 'text-content'} group-hover:text-primary transition-colors`}>
+                    <span className={`mono-ui text-[12px] md:text-[13px] font-bold truncate ${isActive ? 'text-primary' : isCorrupted ? 'italic' : 'text-content'} group-hover:text-primary transition-colors`}>
                       {item.title}
                     </span>
-                    <span className={`mono-ui text-[8px] md:text-[9px] truncate tracking-widest ${isActive ? 'text-primary/70' : 'text-forest'}`}>
+                    <span className={`mono-ui text-[10px] md:text-[11px] truncate tracking-widest ${isActive ? 'text-primary/70' : 'text-forest'}`}>
                       {item.metadata}
                     </span>
                   </div>
                   
-                  <div className={`col-span-2 hidden md:block text-right mono-ui text-[9px] md:text-[10px] ${isActive ? 'text-primary' : 'text-forest'}`}>
+                  <div className={`col-span-2 hidden md:block text-right mono-ui text-[11px] md:text-[12px] ${isActive ? 'text-primary' : 'text-forest'}`}>
                     {formatDuration(item.duration)}
                   </div>
                   
-                  <div className={`col-span-2 hidden md:block text-right mono-ui text-[9px] md:text-[10px] ${isActive ? 'text-primary' : 'text-forest'}`}>
+                  <div className={`col-span-2 hidden md:block text-right mono-ui text-[11px] md:text-[12px] ${isActive ? 'text-primary' : 'text-forest'}`}>
                     {formatSize(item.size)}
                   </div>
                   
@@ -394,7 +394,7 @@ const OfflinePage = () => {
 
       {/* Pagination */}
       {!loading && filteredItems.length > 0 && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 mono-ui text-[9px] md:text-[10px] text-forest font-bold">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 mono-ui text-[11px] md:text-[12px] text-forest font-bold">
           <span>SHOWING: {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, filteredItems.length)} {'// '}TOTAL: {filteredItems.length}_ITEMS</span>
           <div className="flex items-center gap-4 md:gap-6">
             <button 

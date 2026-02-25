@@ -53,34 +53,34 @@ const SavedPage = () => {
   };
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 max-w-7xl mx-auto w-full pb-20 md:pb-10 min-h-0" data-testid="saved-page">
+    <main className="flex-1 overflow-y-auto custom-scroll p-4 md:p-10 max-w-7xl mx-auto w-full pb-32 md:pb-10 min-h-0" data-testid="saved-page">
       {/* Dashboard Header */}
       <section className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 md:gap-6 mb-8 md:mb-12 border-b border-forest/30 pb-6 md:pb-10">
         <div className="space-y-2 md:space-y-4">
           <h2 className="font-display text-4xl md:text-6xl font-bold uppercase tracking-tighter text-content leading-none">
             Saved <span className="text-primary">Stories.</span>
           </h2>
-          <p className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-[0.3em]">
+          <p className="mono-ui text-[11px] md:text-[12px] text-forest font-bold tracking-[0.3em]">
             LIBRARY_ROOT // ARCHIVE_SEGMENT // SYNCED_NODES
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3 md:gap-4">
           <button 
             onClick={selectAll}
-            className="flex items-center gap-2 md:gap-3 bg-primary text-background-dark px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-colors"
+            className="flex items-center gap-2 md:gap-3 bg-primary text-background-dark px-4 md:px-6 py-2 md:py-3 mono-ui text-[12px] md:text-[13px] font-bold hover:bg-white transition-colors"
             data-testid="select-all-btn"
           >
             <CheckSquare className="w-4 h-4" />
             <span>SELECT_ALL</span>
           </button>
-          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold text-content hover:bg-forest transition-colors">
+          <button className="flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[12px] md:text-[13px] font-bold text-content hover:bg-forest transition-colors">
             <Archive className="w-4 h-4" />
             <span>ARCHIVE_X</span>
           </button>
           <button 
             onClick={deleteSelected}
             disabled={selectedIds.length === 0}
-            className={`flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold transition-colors ${
+            className={`flex items-center gap-2 md:gap-3 narvo-border px-4 md:px-6 py-2 md:py-3 mono-ui text-[12px] md:text-[13px] font-bold transition-colors ${
               selectedIds.length > 0 
                 ? 'text-red-400 hover:bg-red-400 hover:text-content' 
                 : 'text-forest/50 cursor-not-allowed'
@@ -136,7 +136,7 @@ const SavedPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => navigate('/dashboard')}
-                className="h-12 md:h-14 px-6 md:px-8 bg-primary text-background-dark font-bold mono-ui text-[10px] md:text-[11px] hover:bg-white transition-all flex items-center justify-center gap-3"
+                className="h-12 md:h-14 px-6 md:px-8 bg-primary text-background-dark font-bold mono-ui text-[12px] md:text-[13px] hover:bg-white transition-all flex items-center justify-center gap-3"
                 data-testid="go-to-feed-btn"
               >
                 <ArrowCounterClockwise className="w-4 h-4 md:w-5 md:h-5" />
@@ -144,14 +144,14 @@ const SavedPage = () => {
               </button>
               <button 
                 onClick={() => navigate('/discover')}
-                className="h-12 md:h-14 px-6 md:px-8 narvo-border text-primary font-bold mono-ui text-[10px] md:text-[11px] hover:bg-primary hover:text-background-dark transition-all"
+                className="h-12 md:h-14 px-6 md:px-8 narvo-border text-primary font-bold mono-ui text-[12px] md:text-[13px] hover:bg-primary hover:text-background-dark transition-all"
               >
                 BROWSE TRENDING
               </button>
             </div>
 
             {/* Footer */}
-            <div className="mt-8 md:mt-10 pt-6 narvo-border-t flex justify-between items-center text-[8px] md:text-[9px] mono-ui font-bold text-forest">
+            <div className="mt-8 md:mt-10 pt-6 narvo-border-t flex justify-between items-center text-[10px] md:text-[11px] mono-ui font-bold text-forest">
               <span>ERR_CODE: 0x00_NO_SAVES</span>
               <span>NARVO_SYS_V2.6</span>
             </div>
@@ -184,7 +184,7 @@ const SavedPage = () => {
               <div className="space-y-4 md:space-y-6">
                 <div className="flex items-center gap-2 md:gap-3">
                   <span className={`w-2 h-2 ${getCategoryColor(item.category)}`} />
-                  <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-widest uppercase">
+                  <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-widest uppercase">
                     {item.source || item.category || 'NEWS_DESK'}
                   </span>
                 </div>
@@ -195,10 +195,10 @@ const SavedPage = () => {
               
               <div className="mt-6 md:mt-8 pt-4 md:pt-6 narvo-border-t flex items-end justify-between">
                 <div className="flex flex-col gap-1">
-                  <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold">
+                  <span className="mono-ui text-[10px] md:text-[11px] text-primary font-bold">
                     {formatTimeAgo(item.saved_at)}
                   </span>
-                  <span className="mono-ui text-[9px] md:text-[10px] text-forest font-bold opacity-70">
+                  <span className="mono-ui text-[11px] md:text-[12px] text-forest font-bold opacity-70">
                     {item.tags?.slice(0, 2).map(t => `#${t.toUpperCase()}`).join(' ') || `#${item.category?.toUpperCase() || 'NEWS'}`}
                   </span>
                 </div>
@@ -210,7 +210,7 @@ const SavedPage = () => {
           {/* Empty Shell for Add */}
           <div className="narvo-border bg-surface/5 flex flex-col items-center justify-center p-6 md:p-8 grayscale opacity-20 border-dashed min-h-[200px]">
             <Bookmark className="w-12 h-12 md:w-16 md:h-16 mb-3 md:mb-4" />
-            <span className="mono-ui text-[9px] md:text-[10px] font-bold tracking-widest text-center">ADD_NEW_STREAM_DOCK</span>
+            <span className="mono-ui text-[11px] md:text-[12px] font-bold tracking-widest text-center">ADD_NEW_STREAM_DOCK</span>
           </div>
         </section>
       )}
@@ -218,7 +218,7 @@ const SavedPage = () => {
       {/* Load More */}
       {bookmarks.length > 6 && (
         <div className="mt-12 md:mt-16 flex justify-center">
-          <button className="mono-ui text-[10px] md:text-[11px] font-bold text-forest hover:text-content transition-all border-b border-dashed border-forest/40 hover:border-white pb-2 tracking-[0.3em]">
+          <button className="mono-ui text-[12px] md:text-[13px] font-bold text-forest hover:text-content transition-all border-b border-dashed border-forest/40 hover:border-white pb-2 tracking-[0.3em]">
             FETCH_ADDITIONAL_TRANSMISSIONS
           </button>
         </div>

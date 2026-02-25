@@ -4,10 +4,24 @@ from fastapi.responses import StreamingResponse
 from typing import List
 import httpx
 
-from services.podcast_service import get_podcasts, get_podcast_by_id, get_podcast_audio_url
+from services.podcast_service import get_podcasts, get_podcast_by_id, get_podcast_audio_url, search_podcasts
 from services.radio_service import get_countries, get_stations
 
 router = APIRouter(prefix="/api", tags=["discover"])
+
+
+@router.get("/podcasts/categories")
+async def get_podcast_categories():
+    """Get unique podcast categories"""
+    cats = ["Geopolitics", "Technology", "Urban", "Environment", "Finance", "Health", "Climate", "Culture"]
+    return [{"id": c.lower(), "name": c} for c in cats]
+
+
+@router.get("/podcasts/search")
+async def search_podcast_episodes(q: str = Query("", min_length=1), limit: int = Query(10, ge=1, le=50)):
+    """Search podcasts by title or description"""
+    results = await search_podcasts(q, limit=limit)
+    return results
 
 
 @router.get("/podcasts")
@@ -16,7 +30,7 @@ async def list_podcasts(
     sort: str = Query("latest", regex="^(latest|popular)$")
 ):
     """Get curated podcast episodes"""
-    return get_podcasts(limit=limit, sort=sort)
+    return await get_podcasts(limit=limit, sort=sort)
 
 
 @router.get("/podcasts/{podcast_id}")

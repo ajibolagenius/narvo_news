@@ -1,20 +1,26 @@
-# Narvo Design System
+# Narvo Design System (Revised)
 
-## 1. Design Philosophy: The Technical Instrument
-Narvo is not a traditional news aggregator; it is a **Broadcast-Grade News Platform**. The design philosophy is centered on transforming fragmented data into a professional, high-fidelity narrative experience. We treat information as a signal to be engineered, processed, and delivered with precision.
+## Source
+This document was uploaded by the user on Feb 25, 2026. Saved from: Narvo_Design_System.md
 
-- **Instrument, Not App:** The UI should feel like a precision-engineered broadcast studio console or a technical workstation.
-- **Signal Over Noise:** Every pixel must serve a functional purpose. We prioritize clarity, scannability, and journalistic authority.
-- **Broadcast Authority:** The aesthetic reflects the gravity and reliability of a premium news broadcast entity.
+## Key Changes Applied (Feb 2026)
+1. **Accessibility CSS Variables** added to index.css:
+   - `--color-text-dim-accessible` (dark: #A3A3A3, light: #525252)
+   - `--touch-target-min: 48px`
+   - `--line-height-body: 1.5`
+   - `--focus-outline-width/style/color/offset`
+2. **Focus Styles**: `:focus-visible` outline using design tokens
+3. **Skip Link**: "Skip to main content" link in App.js
+4. **Reduced Motion**: `@media (prefers-reduced-motion: reduce)` disables animations
+5. **Light Mode**: Theme-scoped token overrides for focus and dim-accessible colors
 
-## 2. Design Principles
-- **Strict Minimalism:** Stripping away visual bloat to focus on high-fidelity content. If an element doesn't aid navigation or comprehension, it's removed.
-- **Technical Precision:** Use of rigid grids, 1px borders, and monospaced typography to create an "engineered" feel.
-- **African Cultural Resonance:** Blending Swiss layout precision with localized African elements (e.g., Nigerian Pidgin copy, regional voice accents) to create a "Global-Local" synthesis.
-- **Audio-First Intent:** Design elements provide visual confirmation for audio states, ensuring the UI supports a hands-free, broadcast-centric experience.
+## Design Tokens (CSS Variables)
+See `/app/frontend/src/index.css` for the full implementation.
 
-## 3. Color System (The 10% Rule)
-To maintain extreme minimalism, colors are used sparingly as technical indicators rather than decorative elements.
+## Typography
+- Headers: Space Grotesk
+- Body: Inter  
+- System/Mono: JetBrains Mono
 
 - **Dark Mode (The Anti-light):** `#1B211A` (Deep Matte Charcoal/Green) - The base surface for all views.
 - **Light Mode (Clean Lab):** `#FFFFFF` (Pure White) - The base surface for a precision-focused light mode.

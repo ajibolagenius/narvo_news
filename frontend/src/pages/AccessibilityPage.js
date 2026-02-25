@@ -6,6 +6,18 @@ import { useHapticAlert } from '../components/HapticAlerts';
 import { ResponsiveTabView } from '../components/ResponsiveTabView';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
+const LS_KEY = 'narvo_settings_cache';
+
+const cacheToLocal = (payload) => {
+  try {
+    const existing = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    localStorage.setItem(LS_KEY, JSON.stringify({ ...existing, ...payload }));
+  } catch { /* ignore */ }
+};
+
+const readLocal = () => {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || 'null'); } catch { return null; }
+};
 
 const DEFAULT_SETTINGS = {
   displayDensity: 'standard',
@@ -19,9 +31,13 @@ const AccessibilityPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { showAlert } = useHapticAlert();
-  const [displayDensity, setDisplayDensity] = useState('standard');
-  const [fontScale, setFontScale] = useState(100);
-  const [gestures, setGestures] = useState({ lateralSwipe: true, pinchZoom: false });
+  const cached = readLocal();
+  const [displayDensity, setDisplayDensity] = useState(cached?.display_density || 'standard');
+  const [fontScale, setFontScale] = useState(cached?.font_scale ?? 100);
+  const [gestures, setGestures] = useState({
+    lateralSwipe: cached?.gestural_swipe ?? true,
+    pinchZoom: cached?.gestural_pinch ?? false,
+  });
   const [voiceCommandsList] = useState([
     { id: 1, command: '"NARVO, OPEN NEWSFEED"', active: true },
     { id: 2, command: '"NARVO, BRIGHTNESS UP"', active: true },
@@ -70,16 +86,18 @@ const AccessibilityPage = () => {
   const handleSave = async () => {
     setSaving(true);
     const userId = user?.id || 'guest';
+    const payload = {
+      display_density: displayDensity,
+      font_scale: fontScale,
+      gestural_swipe: gestures.lateralSwipe,
+      gestural_pinch: gestures.pinchZoom,
+    };
+    cacheToLocal(payload);
     try {
       const res = await fetch(`${API_URL}/api/settings/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          display_density: displayDensity,
-          font_scale: fontScale,
-          gestural_swipe: gestures.lateralSwipe,
-          gestural_pinch: gestures.pinchZoom,
-        }),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         setHasChanges(false);
@@ -116,7 +134,7 @@ const AccessibilityPage = () => {
       icon: <Rows weight="bold" className="w-4 h-4" />,
       content: (
         <div className="space-y-6">
-          <p className="font-mono text-[10px] text-[rgb(var(--color-text-secondary))] leading-relaxed font-bold">
+          <p className="font-mono text-[12px] text-[rgb(var(--color-text-secondary))] leading-relaxed font-bold">
             ADJUST THE INFORMATION DENSITY OF THE BROADCAST GRID.
           </p>
           <div className="space-y-3">
@@ -136,7 +154,7 @@ const AccessibilityPage = () => {
                     displayDensity === option.id ? 'bg-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]' : ''
                   }`} />
                   <h4 className="font-display text-lg font-bold text-[rgb(var(--color-text-primary))] uppercase mb-2">{option.label}</h4>
-                  <p className="font-mono text-[9px] text-[rgb(var(--color-text-secondary))] font-bold">{option.desc}</p>
+                  <p className="font-mono text-[11px] text-[rgb(var(--color-text-secondary))] font-bold">{option.desc}</p>
                 </div>
               </label>
             ))}
@@ -152,7 +170,7 @@ const AccessibilityPage = () => {
         <div className="space-y-6">
           <div className="space-y-4">
             <div className="flex justify-between items-end">
-              <span className="font-mono text-[10px] text-[rgb(var(--color-text-secondary))] font-bold">SCALE_FACTOR</span>
+              <span className="font-mono text-[12px] text-[rgb(var(--color-text-secondary))] font-bold">SCALE_FACTOR</span>
               <span className="font-display text-2xl font-bold text-[rgb(var(--color-primary))] leading-none">{fontScale}%</span>
             </div>
             <div className="relative py-3">
@@ -165,7 +183,7 @@ const AccessibilityPage = () => {
                 onChange={(e) => handleFontScaleChange(parseInt(e.target.value))}
                 data-testid="font-scale-slider"
               />
-              <div className="flex justify-between mt-3 font-mono text-[9px] text-[rgb(var(--color-text-secondary))] font-bold">
+              <div className="flex justify-between mt-3 font-mono text-[11px] text-[rgb(var(--color-text-secondary))] font-bold">
                 <span>75%</span>
                 <span>100%</span>
                 <span>150%</span>
@@ -174,12 +192,12 @@ const AccessibilityPage = () => {
           </div>
 
           <div className="border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/5 p-6 space-y-6 relative overflow-hidden">
-            <div className="absolute top-0 left-0 bg-[rgb(var(--color-border))] px-2 py-1 font-mono text-[8px] text-[rgb(var(--color-text-primary))] font-bold">
+            <div className="absolute top-0 left-0 bg-[rgb(var(--color-border))] px-2 py-1 font-mono text-[10px] text-[rgb(var(--color-text-primary))] font-bold">
               OUTPUT_PREVIEW
             </div>
             <div className="space-y-4 pt-4">
               <div className="space-y-2">
-                <span className="font-mono text-[9px] text-[rgb(var(--color-primary))] font-bold border-l-2 border-[rgb(var(--color-primary))] pl-2 uppercase">
+                <span className="font-mono text-[11px] text-[rgb(var(--color-primary))] font-bold border-l-2 border-[rgb(var(--color-primary))] pl-2 uppercase">
                   HEADLINE // SPACE GROTESK
                 </span>
                 <h4 
@@ -190,7 +208,7 @@ const AccessibilityPage = () => {
                 </h4>
               </div>
               <div className="space-y-2">
-                <span className="font-mono text-[9px] text-[rgb(var(--color-text-secondary))] font-bold border-l-2 border-[rgb(var(--color-text-secondary))] pl-2 uppercase">
+                <span className="font-mono text-[11px] text-[rgb(var(--color-text-secondary))] font-bold border-l-2 border-[rgb(var(--color-text-secondary))] pl-2 uppercase">
                   BODY // JETBRAINS MONO
                 </span>
                 <p 
@@ -205,7 +223,7 @@ const AccessibilityPage = () => {
 
           <div className="border border-[rgb(var(--color-border))] p-3 bg-[rgb(var(--color-primary))]/5 flex gap-3">
             <Info weight="fill" className="w-4 h-4 text-[rgb(var(--color-primary))] shrink-0" />
-            <p className="font-mono text-[9px] text-[rgb(var(--color-text-secondary))] leading-relaxed font-bold">
+            <p className="font-mono text-[11px] text-[rgb(var(--color-text-secondary))] leading-relaxed font-bold">
               FONT SCALING AFFECTS ALL TERMINAL READOUTS.
             </p>
           </div>
@@ -219,7 +237,7 @@ const AccessibilityPage = () => {
       content: (
         <div className="space-y-6">
           <div className="space-y-4">
-            <h4 className="font-mono text-[10px] text-[rgb(var(--color-text-secondary))] font-bold border-b border-[rgb(var(--color-border))] pb-2">
+            <h4 className="font-mono text-[12px] text-[rgb(var(--color-text-secondary))] font-bold border-b border-[rgb(var(--color-border))] pb-2">
               {t('accessibility.gestural_control')}
             </h4>
 
@@ -231,8 +249,8 @@ const AccessibilityPage = () => {
                     <HandPointing weight="bold" className="w-5 h-5" />
                   </div>
                   <div className="space-y-0.5">
-                    <h5 className="font-mono text-[10px] text-[rgb(var(--color-text-primary))] font-bold">{t('accessibility.lateral_swipe')}</h5>
-                    <p className="font-mono text-[9px] text-[rgb(var(--color-text-secondary))]">NAV_DATA_STREAMS</p>
+                    <h5 className="font-mono text-[12px] text-[rgb(var(--color-text-primary))] font-bold">{t('accessibility.lateral_swipe')}</h5>
+                    <p className="font-mono text-[11px] text-[rgb(var(--color-text-secondary))]">NAV_DATA_STREAMS</p>
                   </div>
                 </div>
                 <input 
@@ -251,8 +269,8 @@ const AccessibilityPage = () => {
                     <HandPointing weight="bold" className="w-5 h-5" />
                   </div>
                   <div className="space-y-0.5">
-                    <h5 className="font-mono text-[10px] text-[rgb(var(--color-text-primary))] font-bold">{t('accessibility.pinch_zoom')}</h5>
-                    <p className="font-mono text-[9px] text-[rgb(var(--color-text-secondary))]">EXPAND_MAP_DOCK</p>
+                    <h5 className="font-mono text-[12px] text-[rgb(var(--color-text-primary))] font-bold">{t('accessibility.pinch_zoom')}</h5>
+                    <p className="font-mono text-[11px] text-[rgb(var(--color-text-secondary))]">EXPAND_MAP_DOCK</p>
                   </div>
                 </div>
                 <input 
@@ -268,8 +286,8 @@ const AccessibilityPage = () => {
 
           <div className="space-y-4">
             <div className="flex justify-between items-end border-b border-[rgb(var(--color-border))] pb-2">
-              <h4 className="font-mono text-[10px] text-[rgb(var(--color-text-secondary))] font-bold">{t('accessibility.voice_commands')}</h4>
-              <span className="font-mono text-[9px] text-[rgb(var(--color-primary))] font-bold animate-pulse">LISTENING_V2</span>
+              <h4 className="font-mono text-[12px] text-[rgb(var(--color-text-secondary))] font-bold">{t('accessibility.voice_commands')}</h4>
+              <span className="font-mono text-[11px] text-[rgb(var(--color-primary))] font-bold animate-pulse">LISTENING_V2</span>
             </div>
 
             <div className="space-y-2">
@@ -279,13 +297,13 @@ const AccessibilityPage = () => {
                   className="w-full p-3 border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/5 flex items-center gap-3 hover:bg-[rgb(var(--color-border))]/10 transition-all group"
                 >
                   <Microphone weight="fill" className="w-4 h-4 text-[rgb(var(--color-text-secondary))] group-hover:text-[rgb(var(--color-primary))] transition-colors" />
-                  <span className="font-mono text-[10px] text-[rgb(var(--color-text-primary))] font-bold flex-1 text-left">{cmd.command}</span>
-                  <span className="font-mono text-[8px] text-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary))] px-1.5">ACTIVE</span>
+                  <span className="font-mono text-[12px] text-[rgb(var(--color-text-primary))] font-bold flex-1 text-left">{cmd.command}</span>
+                  <span className="font-mono text-[10px] text-[rgb(var(--color-primary))] border border-[rgb(var(--color-primary))] px-1.5">ACTIVE</span>
                 </button>
               ))}
             </div>
 
-            <button className="w-full py-3 border border-dashed border-[rgb(var(--color-border))] font-mono text-[10px] text-[rgb(var(--color-text-secondary))] font-bold hover:text-[rgb(var(--color-primary))] hover:border-[rgb(var(--color-primary))] transition-all">
+            <button className="w-full py-3 border border-dashed border-[rgb(var(--color-border))] font-mono text-[12px] text-[rgb(var(--color-text-secondary))] font-bold hover:text-[rgb(var(--color-primary))] hover:border-[rgb(var(--color-primary))] transition-all">
               + {t('accessibility.calibrate')}
             </button>
           </div>
@@ -298,13 +316,13 @@ const AccessibilityPage = () => {
     <main className="flex-1 flex flex-col min-h-0 bg-[rgb(var(--color-bg))]" data-testid="accessibility-page">
       {/* Header */}
       <div className="h-12 flex items-center justify-between px-4 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/10 shrink-0">
-        <span className="font-mono text-[10px] text-[rgb(var(--color-text-secondary))] font-bold uppercase">
+        <span className="font-mono text-[12px] text-[rgb(var(--color-text-secondary))] font-bold uppercase">
           MODULE: <span className="text-[rgb(var(--color-primary))]">ACCESSIBILITY</span>
         </span>
         <button 
           onClick={handleSave}
           disabled={!hasChanges || saving}
-          className={`h-8 px-4 font-mono text-[10px] font-bold transition-all flex items-center gap-2 ${
+          className={`h-8 px-4 font-mono text-[12px] font-bold transition-all flex items-center gap-2 ${
             hasChanges && !saving
               ? 'bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg))] hover:bg-white' 
               : 'bg-[rgb(var(--color-surface))] text-[rgb(var(--color-text-dim))] cursor-not-allowed'

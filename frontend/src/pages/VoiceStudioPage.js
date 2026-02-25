@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Waveform, Radio, Prohibit, Check } from '@phosphor-icons/react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Pause, Waveform, Radio, Check, SpeakerHigh, Stop, CircleNotch, Translate } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
@@ -7,37 +7,41 @@ import Skeleton from '../components/Skeleton';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
+const LANG_META = {
+  yo:  { native: 'Yoruba',        region: 'ILU_YORUBA' },
+  en:  { native: 'English',       region: 'INTERNATIONAL' },
+  ha:  { native: 'Hausa',         region: 'AREWACIN_NAJERIYA' },
+  ig:  { native: 'Igbo',          region: 'ALA_IGBO' },
+  pcm: { native: 'Pidgin',        region: 'PIDGIN_NAIJA' },
+};
+
 const VoiceStudioPage = () => {
   const [voices, setVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [previewPlaying, setPreviewPlaying] = useState(false);
-  const [previewTime] = useState('00:14');
-  const [regionFilter, setRegionFilter] = useState('AFRICA');
-  const [dialectFilter, setDialectFilter] = useState('ALL');
-  const { playTrack } = useAudio();
+  const [previewPlaying, setPreviewPlaying] = useState(null);
+  const [previewLoading, setPreviewLoading] = useState(null);
+  const previewAudioRef = useRef(null);
+  const { playTrack, setBroadcastLanguage, setVoiceModel } = useAudio();
   const { user } = useAuth();
   const { showAlert } = useHapticAlert();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const userId = user?.id || 'guest';
         const [voicesRes, settingsRes] = await Promise.all([
           fetch(`${API_URL}/api/voices`),
-          user?.id ? fetch(`${API_URL}/api/settings/${user.id}/voice`) : Promise.resolve(null)
+          fetch(`${API_URL}/api/settings/${userId}`),
         ]);
-        
         const voicesData = await voicesRes.json();
         setVoices(voicesData);
-        
-        if (settingsRes) {
-          const settingsData = await settingsRes.json();
-          const savedVoice = voicesData.find(v => v.id === settingsData.voice_model);
-          if (savedVoice) setSelectedVoice(savedVoice);
-          else if (voicesData.length > 0) setSelectedVoice(voicesData[0]);
-          if (settingsData.voice_region) setRegionFilter(settingsData.voice_region.toUpperCase());
-          if (settingsData.voice_dialect) setDialectFilter(settingsData.voice_dialect.toUpperCase());
+
+        if (settingsRes.ok) {
+          const s = await settingsRes.json();
+          const saved = voicesData.find(v => v.id === s.voice_model);
+          setSelectedVoice(saved || voicesData[0] || null);
         } else if (voicesData.length > 0) {
           setSelectedVoice(voicesData[0]);
         }
@@ -49,202 +53,238 @@ const VoiceStudioPage = () => {
     fetchData();
   }, [user?.id]);
 
+  useEffect(() => {
+    return () => { if (previewAudioRef.current) previewAudioRef.current.pause(); };
+  }, []);
+
+  const selectVoice = (voice) => {
+    setSelectedVoice(voice);
+    // Auto-play voice preview on selection
+    const syntheticEvent = { stopPropagation: () => {} };
+    playPreview(syntheticEvent, voice);
+  };
+
   const handleApplyModel = async () => {
-    if (!selectedVoice || !user?.id) return;
-    
+    if (!selectedVoice) return;
     setSaving(true);
+    const userId = user?.id || 'guest';
     try {
-      await fetch(`${API_URL}/api/settings/${user.id}/voice?voice_model=${selectedVoice.id}&voice_dialect=${dialectFilter.toLowerCase()}&voice_region=${regionFilter.toLowerCase()}`, {
-        method: 'POST'
+      // Save both voice model AND broadcast language in one call
+      await fetch(`${API_URL}/api/settings/${userId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          voice_model: selectedVoice.id,
+          broadcast_language: selectedVoice.language || 'en',
+        }),
       });
-      showAlert('VOICE_CHANGED');
+      // Update AudioContext immediately
+      setBroadcastLanguage(selectedVoice.language || 'en');
+      setVoiceModel(selectedVoice.id);
+      // Cache for instant load next time
+      try {
+        const existing = JSON.parse(localStorage.getItem('narvo_settings_cache') || '{}');
+        localStorage.setItem('narvo_settings_cache', JSON.stringify({
+          ...existing,
+          voice_model: selectedVoice.id,
+          broadcast_language: selectedVoice.language || 'en',
+        }));
+      } catch { /* ignore */ }
+      const langInfo = LANG_META[selectedVoice.language] || {};
+      showAlert({
+        type: 'success',
+        title: 'MODEL_APPLIED',
+        message: `Voice: ${selectedVoice.name} / Language: ${langInfo.native || selectedVoice.language}`,
+        code: 'VOICE_OK',
+        duration: 3000,
+      });
     } catch (err) {
-      showAlert('NETWORK_ERROR');
+      showAlert({ type: 'error', title: 'SAVE_FAILED', message: 'Could not apply voice model.', code: 'ERR_SAVE', duration: 3000 });
     }
     setSaving(false);
   };
 
-  const handlePreview = () => {
-    if (selectedVoice) {
-      playTrack({ 
-        id: `preview-${selectedVoice.id}`, 
-        title: `Voice Preview: ${selectedVoice.name}`,
-        summary: `Testing ${selectedVoice.accent} voice model`
+  const playPreview = async (e, voice) => {
+    e.stopPropagation();
+    if (previewPlaying === voice.id) {
+      if (previewAudioRef.current) { previewAudioRef.current.pause(); previewAudioRef.current = null; }
+      setPreviewPlaying(null);
+      return;
+    }
+    if (previewAudioRef.current) { previewAudioRef.current.pause(); previewAudioRef.current = null; }
+    setPreviewLoading(voice.id);
+    setPreviewPlaying(null);
+    try {
+      const sample = 'Welcome to Narvo. Your trusted source for African news.';
+      const res = await fetch(`${API_URL}/api/tts/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: sample, voice_id: voice.id, language: voice.language || 'en' }),
       });
-      setPreviewPlaying(true);
+      if (!res.ok) throw new Error('TTS failed');
+      const data = await res.json();
+      const audio = new Audio(data.audio_url);
+      previewAudioRef.current = audio;
+      audio.onended = () => { setPreviewPlaying(null); previewAudioRef.current = null; };
+      audio.onerror = () => { setPreviewPlaying(null); previewAudioRef.current = null; };
+      await audio.play();
+      setPreviewPlaying(voice.id);
+    } catch {
+      showAlert({ type: 'warning', title: 'PREVIEW_FAILED', message: 'Could not generate voice preview.', code: 'TTS_ERR', duration: 3000 });
+    } finally {
+      setPreviewLoading(null);
     }
   };
 
-  const getVoiceStatus = (voice) => {
-    if (selectedVoice?.id === voice.id) return { label: 'ACTIVE_MODEL', active: true };
-    return { label: 'STANDBY', active: false };
-  };
+  const isActive = (voice) => selectedVoice?.id === voice.id;
 
   return (
     <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="voice-studio-page">
-      {/* Preview Panel */}
-      <div className="p-6 md:p-8 narvo-border-b bg-background-dark flex flex-col gap-4 md:gap-6 shrink-0">
-        <div className="flex flex-col md:flex-row justify-between md:items-end gap-4">
+      {/* Header */}
+      <div className="p-4 md:p-8 narvo-border-b shrink-0">
+        <div className="flex flex-col md:flex-row justify-between md:items-end gap-3 md:gap-4">
           <div>
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
-              Broadcast_Preview
-            </h2>
-            <div className="flex flex-wrap items-center gap-2 md:gap-4 mt-1">
-              <span className="mono-ui text-[9px] md:text-[10px] text-forest font-bold">NODE: LAG_88_V</span>
-              <span className="mono-ui text-[9px] md:text-[10px] text-forest/40 font-bold hidden sm:inline">•</span>
-              <span className="mono-ui text-[9px] md:text-[10px] text-forest font-bold">FREQ: 48kHz / 32bit</span>
+            <div className="flex items-center gap-2 mb-1">
+              <Translate className="w-4 h-4 text-primary" />
+              <span className="mono-ui text-[10px] md:text-[11px] text-primary font-bold tracking-widest">AUDIO_TRANSLATION_ENGINE</span>
             </div>
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
+              VOICE_MATRIX
+            </h2>
+            <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold mt-1">
+              SELECT_ENTITY_MODEL — SETS_VOICE_AND_BROADCAST_LANGUAGE
+            </p>
           </div>
-          
-          <div className="flex gap-2">
-            <button className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-content hover:bg-forest transition-colors">
-              <SkipBack className="w-5 h-5" />
-            </button>
-            <button 
-              onClick={handlePreview}
-              className="w-10 h-10 md:w-12 md:h-12 bg-primary text-background-dark flex items-center justify-center hover:bg-white transition-colors"
-              data-testid="preview-play-btn"
-            >
-              {previewPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" fill="currentColor" />}
-            </button>
-            <button className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-content hover:bg-forest transition-colors">
-              <SkipForward className="w-5 h-5" />
-            </button>
+          <div className="flex items-center gap-3">
+            <span className="mono-ui text-[10px] text-forest">NODE: LAG_88_V</span>
+            <span className="mono-ui text-[10px] text-forest/40 hidden sm:inline">/</span>
+            <span className="mono-ui text-[10px] text-forest hidden sm:inline">48kHz / 32bit</span>
           </div>
-        </div>
-
-        {/* Waveform Visualization */}
-        <div className="h-14 md:h-16 narvo-border bg-background-dark/40 flex items-center gap-1 px-4 relative overflow-hidden">
-          <div 
-            className="absolute inset-0 opacity-5" 
-            style={{ backgroundImage: 'radial-gradient(#628141 1px, transparent 1px)', backgroundSize: '10px 10px' }}
-          />
-          {/* Visualizer Bars */}
-          {[20, 40, 60, 100, 80, 50, 30, 20, 40, 60, 100, 80, 50, 30, 20].map((h, i) => (
-            <div 
-              key={i} 
-              className={`w-1 transition-all ${i >= 3 && i <= 10 ? 'bg-primary' : 'bg-primary/30'}`}
-              style={{ height: `${h}%`, animationDelay: `${i * 0.1}s` }}
-            />
-          ))}
-          <div className="flex-1 h-px bg-forest opacity-20 ml-2" />
-          <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold absolute right-4 bottom-2 tracking-widest">
-            {previewTime} / 02:30
-          </span>
         </div>
       </div>
 
-      {/* Voice Selection Grid */}
-      <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-20 md:pb-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 md:mb-8">
-          <h3 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em]">
-            VOICE_MATRIX // SELECT_ENTITY_MODEL
-          </h3>
-          <div className="flex flex-wrap gap-2 md:gap-4">
-            <button 
-              onClick={() => setRegionFilter(regionFilter === 'AFRICA' ? 'ALL' : 'AFRICA')}
-              className={`px-3 md:px-4 py-2 narvo-border mono-ui text-[8px] md:text-[9px] font-bold transition-all ${
-                regionFilter === 'AFRICA' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content hover:border-white'
-              }`}
-            >
-              REGION: {regionFilter}
-            </button>
-            <button 
-              onClick={() => setDialectFilter(dialectFilter === 'ALL' ? 'PIDGIN' : 'ALL')}
-              className={`px-3 md:px-4 py-2 narvo-border mono-ui text-[8px] md:text-[9px] font-bold transition-all ${
-                dialectFilter !== 'ALL' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content hover:border-white'
-              }`}
-            >
-              DIALECT: {dialectFilter}
-            </button>
-          </div>
-        </div>
-
+      {/* Scrollable Voice Grid */}
+      <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="narvo-border p-6 md:p-8 flex flex-col gap-4">
-                <Skeleton variant="text" className="w-24 h-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="narvo-border p-5 md:p-6 flex flex-col gap-4">
+                <Skeleton variant="text" className="w-20 h-4" />
                 <Skeleton variant="text" className="w-32 h-8" />
-                <div className="h-20 md:h-24 narvo-border bg-background-dark/20" />
+                <div className="h-16 narvo-border bg-background-dark/20" />
                 <Skeleton variant="text" className="w-full h-4" />
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {voices.map((voice) => {
-              const status = getVoiceStatus(voice);
+              const active = isActive(voice);
+              const lang = LANG_META[voice.language] || { native: voice.language, region: 'UNKNOWN' };
               return (
-                <div 
+                <div
                   key={voice.id}
-                  onClick={() => setSelectedVoice(voice)}
-                  className={`narvo-border p-6 md:p-8 flex flex-col cursor-pointer transition-all ${
-                    status.active 
-                      ? 'border-primary bg-primary/5' 
+                  onClick={() => selectVoice(voice)}
+                  className={`narvo-border p-5 md:p-6 flex flex-col cursor-pointer transition-all relative group ${
+                    active
+                      ? 'border-primary bg-primary/5'
                       : 'hover:border-forest hover:bg-surface/20'
                   }`}
                   data-testid={`voice-card-${voice.id}`}
                 >
-                  <div className="flex justify-between items-start mb-4 md:mb-6">
-                    <div className="space-y-1">
-                      <span className={`mono-ui text-[7px] md:text-[8px] px-2 py-0.5 font-bold ${
-                        status.active 
-                          ? 'bg-primary text-background-dark' 
-                          : 'border border-forest text-forest'
-                      }`}>
-                        {status.label}
-                      </span>
-                      <h4 className="font-display text-xl md:text-2xl font-bold text-content uppercase">
-                        {voice.name.replace(' ', '_')}
-                      </h4>
-                    </div>
-                    {status.active ? (
-                      <Waveform className="w-5 h-5 md:w-6 md:h-6 text-primary" />
-                    ) : (
-                      <Prohibit className="w-5 h-5 md:w-6 md:h-6 text-forest" />
-                    )}
+                  {/* Status Badge + Language Tag */}
+                  <div className="flex items-center justify-between mb-3 md:mb-4">
+                    <span className={`mono-ui text-[9px] md:text-[10px] px-2 py-0.5 font-bold ${
+                      active ? 'bg-primary text-background-dark' : 'border border-forest text-forest'
+                    }`}>
+                      {active ? 'ACTIVE_MODEL' : 'STANDBY'}
+                    </span>
+                    <span className={`mono-ui text-[9px] md:text-[10px] px-2 py-0.5 font-bold ${
+                      active ? 'bg-background-dark text-primary' : 'bg-forest/20 text-forest'
+                    }`} data-testid={`broadcast-lang-${voice.language || 'en'}`}>
+                      {lang.region}
+                    </span>
                   </div>
-                  
-                  <div className="h-20 md:h-24 narvo-border bg-background-dark/20 flex items-center justify-center mb-4 md:mb-6 overflow-hidden relative">
-                    <div 
-                      className="absolute inset-0 opacity-10" 
+
+                  {/* Voice Name */}
+                  <h3 className="font-display text-xl md:text-2xl font-bold text-content uppercase leading-tight">
+                    {voice.name.replace(' ', '_')}
+                  </h3>
+                  <span className="mono-ui text-[11px] md:text-[12px] text-forest mt-1">
+                    {voice.accent} / {lang.native}
+                  </span>
+
+                  {/* Waveform Visualization */}
+                  <div className="h-14 md:h-16 narvo-border bg-background-dark/20 flex items-center justify-center mt-4 mb-4 overflow-hidden relative">
+                    <div
+                      className="absolute inset-0 opacity-10"
                       style={{ backgroundImage: 'linear-gradient(45deg, #628141 25%, transparent 25%, transparent 50%, #628141 50%, #628141 75%, transparent 75%, transparent)', backgroundSize: '20px 20px' }}
                     />
-                    <Radio className="w-8 h-8 text-forest opacity-30" />
+                    {active ? (
+                      <Waveform className="w-8 h-8 text-primary opacity-60" />
+                    ) : (
+                      <Radio className="w-8 h-8 text-forest opacity-30" />
+                    )}
                   </div>
-                  
-                  <div className="flex justify-between items-end narvo-border-t border-forest/30 pt-3 md:pt-4">
-                    <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold uppercase">
-                      Variant: {voice.accent}
-                    </span>
-                    <span className={`mono-ui text-[8px] md:text-[9px] font-bold ${status.active ? 'text-primary' : 'text-forest'}`}>
-                      {status.active ? 'SIGNAL_STABLE' : 'NODE_IDLE'}
-                    </span>
+
+                  {/* Footer: Metadata + Preview */}
+                  <div className="flex items-center justify-between narvo-border-t border-forest/30 pt-3">
+                    <div className="min-w-0">
+                      <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold block truncate">
+                        {voice.description}
+                      </span>
+                      <span className={`mono-ui text-[9px] md:text-[10px] font-bold mt-0.5 block ${active ? 'text-primary' : 'text-forest/50'}`}>
+                        {active ? 'SIGNAL_STABLE' : 'NODE_IDLE'}
+                      </span>
+                    </div>
+                    {/* Voice Preview Button */}
+                    <button
+                      onClick={(e) => playPreview(e, voice)}
+                      className={`w-8 h-8 md:w-9 md:h-9 flex items-center justify-center narvo-border transition-all shrink-0 ml-3 ${
+                        previewPlaying === voice.id
+                          ? 'bg-primary text-background-dark border-primary'
+                          : 'bg-surface/20 text-forest hover:bg-primary hover:text-background-dark hover:border-primary'
+                      }`}
+                      data-testid={`voice-preview-${voice.id}`}
+                    >
+                      {previewLoading === voice.id ? (
+                        <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
+                      ) : previewPlaying === voice.id ? (
+                        <Stop weight="fill" className="w-3.5 h-3.5" />
+                      ) : (
+                        <SpeakerHigh weight="bold" className="w-3.5 h-3.5" />
+                      )}
+                    </button>
                   </div>
                 </div>
               );
             })}
           </div>
         )}
+
+        <p className="mt-6 mono-ui text-[10px] md:text-[11px] text-forest/40">
+          SELECTING_A_MODEL_SETS_BOTH_VOICE_AND_BROADCAST_LANGUAGE — INTERFACE_TEXT_LANGUAGE_IS_SET_IN_SETTINGS
+        </p>
       </div>
 
-      {/* Selected Voice Info Panel */}
+      {/* Apply Bar */}
       {selectedVoice && (
-        <div className="narvo-border-t p-4 md:p-6 bg-surface/10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shrink-0">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-primary/20 flex items-center justify-center">
-              <Check className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+        <div className="narvo-border-t p-4 md:p-6 bg-surface/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 md:w-10 md:h-10 narvo-border bg-primary/20 flex items-center justify-center shrink-0">
+              <Check className="w-4 h-4 md:w-5 md:h-5 text-primary" />
             </div>
-            <div>
-              <span className="text-content font-display font-bold text-sm md:text-base">{selectedVoice.name}</span>
-              <span className="mono-ui text-[8px] md:text-[9px] text-forest block">{selectedVoice.description}</span>
+            <div className="min-w-0">
+              <span className="text-content font-display font-bold text-sm block truncate">{selectedVoice.name}</span>
+              <span className="mono-ui text-[10px] text-forest block truncate">
+                {selectedVoice.accent} / {LANG_META[selectedVoice.language]?.native || selectedVoice.language}
+              </span>
             </div>
           </div>
-          <button 
+          <button
             onClick={handleApplyModel}
             disabled={saving}
-            className="bg-primary text-background-dark px-6 md:px-8 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-all disabled:opacity-50"
+            className="bg-primary text-background-dark px-6 md:px-8 py-2 md:py-3 mono-ui text-[12px] md:text-[13px] font-bold hover:bg-white transition-all disabled:opacity-50 shrink-0 w-full sm:w-auto text-center"
             data-testid="apply-voice-btn"
           >
             {saving ? 'SAVING...' : 'APPLY_MODEL'}

@@ -8,151 +8,68 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Backend**: FastAPI (modularized), Python 3.11
 - **Database**: MongoDB (via MONGO_URL)
 - **Auth**: Supabase (Email/Password + Google OAuth)
-- **AI/TTS**: Google Gemini 2.0 Flash & OpenAI TTS (via Emergent LLM Key)
+- **AI/TTS**: YarnGPT (primary), OpenAI TTS fallback (via Emergent LLM Key), Google Gemini 2.0 Flash
 - **Translation**: Gemini AI for 5 African languages + English
-- **Fact-Checking**: Google Fact Check API (with mock fallback)
+- **Fact-Checking**: Google Fact Check API (with keyword analysis fallback)
 - **News Sources**: 39 RSS feeds + Mediastack API + NewsData.io API
-- **PWA**: Service Worker + IndexedDB + Push Notifications + Media Session API
+- **Podcast Sources**: 5 real RSS feeds (The Daily, The Vergecast, SYSK, Planet Money, The Continent)
+- **PWA**: Service Worker + IndexedDB + Media Session API
 
-## Architecture
-```
-/app/
-├── backend/
-│   ├── server.py                    # Main FastAPI app, routes, AI generation, sanitizer
-│   ├── routes/
-│   │   ├── discover.py              # Podcasts, trending, radio
-│   │   ├── offline.py               # Offline article storage
-│   │   ├── admin.py                 # Admin dashboard metrics & alerts
-│   │   ├── user.py                  # User preferences, bookmarks, settings
-│   │   ├── factcheck.py             # Google Fact Check API + mock fallback
-│   │   └── translation.py           # Multi-language translation endpoints
-│   ├── services/
-│   │   ├── news_service.py          # RSS feed fetching (39 sources)
-│   │   ├── podcast_service.py       # Podcast episodes + search
-│   │   ├── radio_service.py         # Radio Browser API
-│   │   ├── admin_service.py         # System metrics, alerts
-│   │   ├── factcheck_service.py     # Google Fact Check integration
-│   │   ├── translation_service.py   # Gemini AI translation (5 languages) + sanitizer
-│   │   ├── narrative_service.py     # AI narrative generation
-│   │   ├── offline_service.py       # Offline article management
-│   │   ├── user_service.py          # User data management
-│   │   ├── tts_service.py           # OpenAI text-to-speech
-│   │   ├── briefing_service.py      # Morning briefing generation
-│   │   └── aggregator_service.py    # Mediastack + NewsData.io + cache + dedup
-│   ├── tests/                       # Backend test suite (pytest)
-│   ├── requirements.txt
-│   └── .env                         # MONGO_URL, DB_NAME, API keys
-├── frontend/
-│   ├── public/
-│   │   ├── sw.js                    # Service Worker (background sync + push)
-│   │   ├── manifest.json            # PWA manifest
-│   │   └── index.html               # SW registration
-│   └── src/
-│       ├── contexts/
-│       │   ├── AuthContext.js        # Supabase auth (email + Google OAuth)
-│       │   ├── AudioContext.js       # Media Session API, playback controls
-│       │   ├── DownloadQueueContext.js # Global download state
-│       │   ├── ContentSourcesContext.js # Feed source management
-│       │   ├── BreakingNewsContext.js   # Breaking news alerts
-│       │   └── LenisProvider.js     # Smooth scroll (disabled, passthrough)
-│       ├── components/
-│       │   ├── TourGuideModal.js    # 5-step tour (event-driven, scoped to dashboard)
-│       │   ├── DashboardSidebar.js  # Sidebar + mobile bottom nav
-│       │   ├── DashboardLayout.js   # Main layout wrapper (h-screen)
-│       │   ├── DownloadQueueIndicator.js # Floating download UI
-│       │   ├── Clock.js             # Local time display (HH:MM:SS)
-│       │   ├── Skeleton.js          # Loading skeleton components
-│       │   ├── BreakingNews.js      # Breaking news banner
-│       │   └── AdminLayout.js       # Admin area layout
-│       ├── lib/
-│       │   ├── supabase.js          # Supabase client init
-│       │   ├── audioCache.js        # IndexedDB blob storage
-│       │   ├── cinematicAudio.js    # Tone.js broadcast SFX (briefing only)
-│       │   └── notificationService.js # Push notification service
-│       ├── hooks/
-│       │   └── useBookmarks.js      # Bookmark management hook
-│       ├── pages/
-│       │   ├── LandingPage.js       # Public landing page
-│       │   ├── AuthPage.js          # Login/Register + Google OAuth
-│       │   ├── OnboardingPage.js    # New user preferences
-│       │   ├── DashboardPage.js     # Main feed (filter/sort, dedup, prefs)
-│       │   ├── SearchPage.js        # Unified search (RSS + aggregators + podcasts)
-│       │   ├── DiscoverPage.js      # Podcasts, radio, trending
-│       │   ├── MorningBriefingPage.js # Briefing + transcript follow-along
-│       │   ├── SavedPage.js / BookmarksPage.js # Bookmarked articles
-│       │   ├── OfflinePage.js       # Cached content management
-│       │   ├── SettingsPage.js      # Interface language, theme, tour replay
-│       │   ├── SystemSettingsPage.js # Broadcast language, voice, aggregators
-│       │   ├── NewsDetailPage.js    # Article detail + TTS + fact-check
-│       │   ├── VoiceStudioPage.js   # TTS voice preview
-│       │   ├── ToolsPage.js         # Technology credits page
-│       │   ├── AccountPage.js       # User account info
-│       │   ├── AccessibilityPage.js # Accessibility settings
-│       │   ├── ForgotPasswordPage.js # Password recovery
-│       │   ├── NotFoundPage.js      # 404 page
-│       │   ├── ServerErrorPage.js   # 500 page
-│       │   └── admin/               # Admin pages
-│       ├── email-templates/
-│       │   └── SETUP_GUIDE.md       # Narvo-branded Supabase email templates
-│       ├── i18n.js                  # i18next configuration
-│       ├── App.js                   # Route definitions + providers
-│       └── index.css                # Global styles + CSS variables
-├── memory/
-│   ├── PRD.md                       # This file
-│   ├── CHANGELOG.md                 # Implementation history
-│   └── ROADMAP.md                   # Prioritized backlog
-└── test_reports/                    # Testing agent reports (iteration_34-39)
-```
-
-## Supported Languages
-
-### Interface Languages (i18n — /settings page)
-| Code | Label | Region |
-|------|-------|--------|
-| en | English | GLOBAL |
-| fr | Francais | WEST_AFRICA |
-| yo | Yoruba | NIGERIA |
-| ha | Hausa | NIGERIA |
-| ig | Igbo | NIGERIA |
-| pcm | Pidgin | WEST_AFRICA |
-| sw | Kiswahili | EAST_AFRICA |
-
-### Broadcast Languages (TTS — /system page)
-| Code | Name | Native Name | Voice |
-|------|------|-------------|-------|
-| en | English | English | nova |
-| pcm | Naija | Naija Tok | onyx |
-| yo | Yoruba | Ede Yoruba | echo |
-| ha | Hausa | Harshen Hausa | alloy |
-| ig | Igbo | Asusu Igbo | shimmer |
+## Core Features Implemented
+- News dashboard with RSS + aggregator feeds, filtering, sorting, deduplication
+- AI narrative generation (Google Gemini), TTS narration with server-side caching
+- YarnGPT as primary TTS engine with 5 Nigerian-accented voices
+- Morning briefing with transcript follow-along
+- Multi-language broadcast (5 African languages + English)
+- Podcast discovery with real RSS feeds, search, category filters, episode detail expansion
+- Radio streaming with African station browser
+- Supabase authentication (Email/Password + Google OAuth + Guest Mode)
+- User settings persistence (localStorage + MongoDB dual sync)
+- Audio pre-fetching for dashboard articles (idle-time background loading)
+- Clickable hashtag system (TagPill component) throughout dashboard and detail pages
+- Listening History timeline with date grouping and replay
+- Real-time fact-checking with actual publishers (AFP, Reuters, Africa Check, PesaCheck, Full Fact)
+- Real platform metrics from database (stories processed, broadcast hours, network load)
+- Real system alerts from live service status monitoring
+- Interest Matrix — 8 selectable news categories for personalized feed delivery
+- Broadcast Sound Themes — 5 selectable audio branding themes (Narvo Classic, Afrobeats, BBC World, Breaking Alert, Midnight Jazz)
+- Push Notification endpoints (subscribe, unsubscribe, daily digest)
+- WCAG 2.1 AA accessibility (skip link, focus-visible, reduced motion)
+- Responsive mobile-first design across all pages
+- News detail autoplay with TTS pre-generation and direct audio URL pass-through
+- Playback speed control (0.75x, 1x, 1.25x, 1.5x, 2x) on desktop and mobile players
+- Voice preference consistency: settingsLoaded flag prevents race conditions, dual-write to localStorage + MongoDB
+- Enhanced readability: global font-size increase (+2px on all inline sizes), body 16px/1.6
 
 ## Key API Endpoints
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/api/news` | GET | RSS + optional aggregator news (params: include_aggregators, aggregator_sources) |
-| `/api/search` | GET | Unified search (RSS + aggregators + podcasts) with source_type filter & dedup |
-| `/api/aggregators/status` | GET | Cache status with TTL |
-| `/api/aggregators/fetch` | GET | Combined Mediastack + NewsData.io fetch |
+| `/api/news` | GET | RSS + aggregator news |
+| `/api/search` | GET | Unified search with source_type filter |
+| `/api/podcasts` | GET | List real podcast episodes from RSS |
+| `/api/podcasts/categories` | GET | 8 podcast categories |
+| `/api/podcasts/search` | GET | Search episodes by title/description |
+| `/api/podcasts/{id}` | GET | Episode detail by ID |
+| `/api/settings/{user_id}` | GET/POST | User settings (merge save, includes interests & sound_theme) |
+| `/api/tts/generate` | POST | TTS with MongoDB caching (YarnGPT primary, OpenAI fallback) |
+| `/api/factcheck/story/{id}` | GET | Real fact-check with story lookup + keyword analysis |
+| `/api/metrics` | GET | Real platform metrics from DB |
+| `/api/system-alerts` | GET | Real system alerts from live services |
+| `/api/listening-history` | POST | Record a played broadcast |
+| `/api/listening-history/{user_id}` | GET | User's listening history |
 | `/api/briefing/latest` | GET | Latest morning briefing |
-| `/api/briefing/generate` | GET | Generate new briefing (params: voice_id, force_regenerate) |
-| `/api/briefing/history` | GET | Historical briefings |
-| `/api/translate/text` | POST | Translate text to target language |
-| `/api/paraphrase` | POST | Generate broadcast narrative from text |
-| `/api/tts/generate` | POST | Text-to-speech generation |
-| `/api/voices` | GET | Available TTS voices |
-| `/api/settings/{user_id}` | GET/POST | User settings (aggregator prefs, language, etc.) |
-| `/api/health` | GET | Backend health check |
+| `/api/voices` | GET | Available TTS voices (YarnGPT) |
+| `/api/sound-themes` | GET | Available broadcast sound themes |
+| `/api/notifications/subscribe` | POST | Subscribe to push notifications |
+| `/api/notifications/unsubscribe` | POST | Unsubscribe from push notifications |
+| `/api/notifications/digest` | GET | Get daily digest content |
+| `/api/categories` | GET | Available news categories |
 
-## Authentication
-- **Email/Password**: Supabase native auth (signUp, signIn)
-- **Google OAuth**: Supabase OAuth provider (signInWithGoogle) — redirects to production URL
-- **Guest Mode**: localStorage-based (`narvo_guest`) for instant access without account
-- **Email Templates**: Narvo-branded (confirmation, password reset, magic link, invite) — see `/app/frontend/src/email-templates/SETUP_GUIDE.md`
-
-## Mocked / Fallback APIs
-- **Google Fact Check API** — Uses mock data when `GOOGLE_FACT_CHECK_API_KEY` not set in `.env`
+## Backend Tests
+- `/app/backend/tests/test_services_v2.py` — 10 tests covering metrics, factcheck, podcasts, listening history, TTS caching, settings persistence
+- `/app/backend/tests/test_iteration44.py` — 11 tests covering YarnGPT voices, sound themes, notifications, interests, briefing stability
 
 ## Backlog
-- **P1:** Backend unit/integration tests for TTS and podcast services
-- **P2:** Native mobile application based on performance guidelines
-- **P2:** Allow users to provide their own API keys for external services
+- **P2:** Native mobile application
+- **P3:** User-provided API keys for external services
+- **P3:** Analytics dashboard

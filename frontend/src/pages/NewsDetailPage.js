@@ -2,14 +2,120 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Helmet } from 'react-helmet-async';
-import { Play, Pause, BookmarkSimple, Translate, ArrowSquareOut, ArrowLeft, Lightbulb, ShareNetwork, Clock, Eye, Broadcast, Queue } from '@phosphor-icons/react';
+import { Play, Pause, BookmarkSimple, Translate, ArrowSquareOut, ArrowLeft, Lightbulb, ShareNetwork, Clock, Eye, Broadcast, Queue, CaretDown, CaretUp } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { ArticleSkeleton } from '../components/Skeleton';
 import TruthTag from '../components/TruthTag';
+import { TagPill } from '../components/HashtagText';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+
+const MobileMetadata = ({ news, readTime, relatedNews, isBookmarked, toggleBookmark, addToQueue, shareStory, navigate, showAlert, t, formatPublishedDate }) => {
+  const [open, setOpen] = useState(true);
+  return (
+    <div className="lg:hidden mt-8 narvo-border" data-testid="mobile-article-metadata">
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="w-full p-4 flex items-center justify-between bg-surface/10 hover:bg-surface/20 transition-colors"
+        data-testid="mobile-metadata-toggle"
+      >
+        <span className="mono-ui text-[12px] text-forest font-bold tracking-widest uppercase">{t('news_detail.article_metadata')}</span>
+        {open ? <CaretUp weight="bold" className="w-4 h-4 text-forest" /> : <CaretDown weight="bold" className="w-4 h-4 text-forest" />}
+      </button>
+      {open && (
+        <div className="p-4 space-y-5 narvo-border-t">
+          {/* Verification */}
+          <div className="narvo-border bg-primary/5 p-3 border-primary/30">
+            <span className="mono-ui text-[11px] text-forest block mb-2 font-bold tracking-widest">{t('news_detail.verification_status')}</span>
+            <TruthTag storyId={news.id} />
+          </div>
+          {/* Signal Metadata */}
+          <div className="narvo-border bg-surface/20 p-3">
+            <span className="mono-ui text-[11px] text-forest block mb-2 font-bold tracking-widest">{t('news_detail.signal_metadata')}</span>
+            <div className="space-y-2">
+              {[
+                [t('news_detail.category'), news.category?.toUpperCase() || 'GENERAL', true],
+                [t('news_detail.source'), news.source?.toUpperCase() || 'UNKNOWN', false],
+                [t('news_detail.region'), news.region?.toUpperCase() || 'AFRICA', false],
+                [t('news_detail.read_time'), `${readTime} MIN`, true],
+                [t('news_detail.ai_synthesis'), news.narrative ? t('news_detail.complete') : t('news_detail.pending'), true],
+              ].map(([label, value, isPrimary], i) => (
+                <div key={i} className="flex justify-between mono-ui text-[11px]">
+                  <span className="text-forest">{label}</span>
+                  <span className={isPrimary ? 'text-primary font-bold' : 'text-content'}>{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Quick Actions */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => { addToQueue(news); showAlert({ type: 'sync', title: 'QUEUE_UPDATED', message: 'Added to playlist queue', code: 'Q_ADD', duration: 2000 }); }}
+              className="flex-1 narvo-border py-2 mono-ui text-[11px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              data-testid="mobile-queue-btn"
+            >
+              <Queue weight="bold" className="w-3 h-3" />
+              QUEUE
+            </button>
+            <button
+              onClick={shareStory}
+              className="flex-1 narvo-border py-2 mono-ui text-[11px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              data-testid="mobile-share-btn"
+            >
+              <ShareNetwork weight="bold" className="w-3 h-3" />
+              SHARE
+            </button>
+            <button
+              onClick={toggleBookmark}
+              className={`flex-1 narvo-border py-2 mono-ui text-[11px] flex items-center justify-center gap-2 transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary hover:border-primary'}`}
+              data-testid="mobile-bookmark-btn"
+            >
+              <BookmarkSimple weight={isBookmarked(news.id) ? 'fill' : 'regular'} className="w-3 h-3" />
+              {isBookmarked(news.id) ? t('dashboard.saved') : t('dashboard.save')}
+            </button>
+          </div>
+          {/* Tags */}
+          {news.tags?.length > 0 && (
+            <div>
+              <span className="mono-ui text-[11px] text-forest block mb-3 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
+              <div className="flex flex-wrap gap-1.5">
+                {news.tags.map((tag, i) => (
+                  <TagPill key={i} tag={tag} />
+                ))}
+              </div>
+            </div>
+          )}
+          {/* Related Stories */}
+          {relatedNews.length > 0 && (
+            <div>
+              <span className="mono-ui text-[11px] text-forest block mb-3 font-bold tracking-widest">{t('news_detail.related_transmissions')}</span>
+              <div className="space-y-2">
+                {relatedNews.map((item) => (
+                  <div
+                    key={item.id}
+                    className="narvo-border p-3 cursor-pointer hover:bg-surface/40 transition-colors group"
+                    onClick={() => navigate(`/news/${item.id}`)}
+                    data-testid={`mobile-related-${item.id}`}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="mono-ui text-[10px] text-primary">{item.source}</span>
+                      <TruthTag storyId={item.id} compact />
+                    </div>
+                    <h4 className="text-xs text-content font-display font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                      {item.title}
+                    </h4>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const NewsDetailPage = () => {
   const { id } = useParams();
@@ -18,7 +124,7 @@ const NewsDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [relatedNews, setRelatedNews] = useState([]);
   const [readTime, setReadTime] = useState(0);
-  const { playTrack, addToQueue, currentTrack, isPlaying } = useAudio();
+  const { playTrack, forcePlayTrack, addToQueue, currentTrack, isPlaying, voiceModel, broadcastLanguage, settingsLoaded } = useAudio();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
   const { t } = useTranslation();
@@ -52,24 +158,41 @@ const NewsDetailPage = () => {
     }).catch(() => navigate('/dashboard'));
   }, [id, navigate]);
 
-  // Auto-play audio when news loads
+  const [autoplayReady, setAutoplayReady] = useState(false);
+  const pregenAudioUrl = useRef(null);
+
+  // Pre-generate TTS audio as soon as news loads AND settings are ready
   useEffect(() => {
-    if (news && !loading && !hasAutoPlayed.current) {
+    if (!news || loading || !settingsLoaded) return;
+    const text = news.narrative || news.summary || news.title || '';
+    if (!text) return;
+    
+    const vid = voiceModel || 'emma';
+    const lang = broadcastLanguage || 'en';
+    
+    fetch(`${API_URL}/api/tts/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text.slice(0, 4000), voice_id: vid, language: lang }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.audio_url) pregenAudioUrl.current = data.audio_url;
+        setAutoplayReady(true);
+      })
+      .catch(() => setAutoplayReady(true));
+  }, [news, loading, settingsLoaded, voiceModel, broadcastLanguage]);
+
+  // Auto-play once TTS is pre-cached — pass audio_url directly to skip double-fetch
+  useEffect(() => {
+    if (autoplayReady && news && !hasAutoPlayed.current) {
       hasAutoPlayed.current = true;
-      // Small delay to ensure UI is ready
-      const timer = setTimeout(() => {
-        playTrack(news);
-        showAlert({
-          type: 'sync',
-          title: 'AUTO_PLAY_STARTED',
-          message: `Now playing: ${news.title.slice(0, 40)}...`,
-          code: 'PLAY_OK',
-          duration: 3000,
-        });
-      }, 500);
-      return () => clearTimeout(timer);
+      const trackWithAudio = pregenAudioUrl.current
+        ? { ...news, url: pregenAudioUrl.current }
+        : news;
+      forcePlayTrack(trackWithAudio);
     }
-  }, [news, loading, playTrack, showAlert]);
+  }, [autoplayReady, news, forcePlayTrack]);
 
   const toggleBookmark = () => {
     if (isBookmarked(news.id)) {
@@ -184,7 +307,7 @@ const NewsDetailPage = () => {
           <div className="mb-4 md:mb-6 flex items-center justify-between">
             <button 
               onClick={() => navigate('/dashboard')} 
-              className="mono-ui text-[10px] md:text-xs text-forest hover:text-primary flex items-center gap-2 transition-colors" 
+              className="mono-ui text-[12px] md:text-xs text-forest hover:text-primary flex items-center gap-2 transition-colors" 
               data-testid="back-btn"
             >
               <ArrowLeft weight="bold" className="w-4 h-4" />
@@ -199,16 +322,14 @@ const NewsDetailPage = () => {
           <div className="mb-6 md:mb-10">
             <div className="flex flex-wrap items-center gap-3 mb-4 md:mb-6">
               <div className="flex gap-0 narvo-border w-fit">
-                <span className="px-2 md:px-3 py-1 narvo-border-r text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
+                <span className="px-2 md:px-3 py-1 narvo-border-r text-[11px] md:text-[12px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
                   {news.category || 'General'}
                 </span>
                 {news.tags?.slice(0, 1).map((tag, i) => (
-                  <span key={i} className="px-2 md:px-3 py-1 text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
-                    {tag}
-                  </span>
+                  <TagPill key={i} tag={tag} className="border-0 bg-background-dark text-primary text-[11px] md:text-[12px] px-2 md:px-3 py-1 tracking-wider" />
                 ))}
               </div>
-              <div className="flex items-center gap-4 mono-ui text-[9px] md:text-[10px] text-forest">
+              <div className="flex items-center gap-4 mono-ui text-[11px] md:text-[12px] text-forest">
                 <span className="flex items-center gap-1.5">
                   <Clock weight="bold" className="w-3 h-3" />
                   {readTime} MIN READ
@@ -239,7 +360,7 @@ const NewsDetailPage = () => {
               src={news.image_url || "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=1200"}
             />
             <div className="absolute bottom-0 left-0 right-0 p-2 bg-background-dark narvo-border-t w-fit ml-auto">
-              <figcaption className="text-[9px] md:text-[10px] text-primary font-mono uppercase tracking-wider">
+              <figcaption className="text-[11px] md:text-[12px] text-primary font-mono uppercase tracking-wider">
                 FIG 1.0 — {news.source || 'Source'} / {news.category}
               </figcaption>
             </div>
@@ -247,7 +368,7 @@ const NewsDetailPage = () => {
             {isCurrentlyPlaying && (
               <div className="absolute top-4 left-4 flex items-center gap-2 bg-primary px-3 py-1.5">
                 <Broadcast weight="fill" className="w-4 h-4 text-background-dark animate-pulse" />
-                <span className="mono-ui text-[9px] text-background-dark font-bold">NOW_PLAYING</span>
+                <span className="mono-ui text-[11px] text-background-dark font-bold">NOW_PLAYING</span>
               </div>
             )}
           </figure>
@@ -262,7 +383,7 @@ const NewsDetailPage = () => {
               {isCurrentlyPlaying ? <Pause weight="fill" className="w-5 h-5" /> : <Play weight="fill" className="w-5 h-5 ml-0.5" />}
             </button>
             <div className="flex flex-col justify-center flex-1 min-w-0">
-              <span className="text-[9px] md:text-[10px] text-forest font-mono uppercase tracking-widest mb-1">
+              <span className="text-[11px] md:text-[12px] text-forest font-mono uppercase tracking-widest mb-1">
                 {isCurrentlyPlaying ? t('news_detail.now_playing') : t('news_detail.narrative_audio')}
               </span>
               <span className="text-xs md:text-sm text-content font-medium font-display uppercase tracking-wide truncate">
@@ -272,7 +393,7 @@ const NewsDetailPage = () => {
             <div className="flex items-center gap-2 md:gap-3 w-full sm:w-auto sm:ml-auto">
               <button className="hidden md:flex narvo-border px-3 py-1.5 items-center gap-2 hover:bg-forest hover:text-content transition-colors">
                 <Translate weight="bold" className="w-4 h-4 text-primary" />
-                <span className="text-[10px] text-primary font-mono font-bold uppercase tracking-wider">West African English</span>
+                <span className="text-[12px] text-primary font-mono font-bold uppercase tracking-wider">West African English</span>
               </button>
               <button className="md:hidden narvo-border p-2 text-primary">
                 <Translate weight="bold" className="w-4 h-4" />
@@ -326,7 +447,7 @@ const NewsDetailPage = () => {
                     <p className="italic text-primary font-display text-base md:text-xl leading-relaxed mb-2">
                       The narrative isn't just information; it's context. Pull one thread, and the whole story changes.
                     </p>
-                    <cite className="text-[10px] md:text-xs font-mono text-slate-500 not-italic uppercase tracking-widest">— Narvo AI Synthesis</cite>
+                    <cite className="text-[12px] md:text-xs font-mono text-slate-500 not-italic uppercase tracking-widest">— Narvo AI Synthesis</cite>
                   </div>
                 )}
               </React.Fragment>
@@ -337,16 +458,16 @@ const NewsDetailPage = () => {
 
           {/* Source Attribution */}
           <div className="mt-8 md:mt-12 narvo-border bg-surface/20 p-4 md:p-6">
-            <span className="mono-ui text-[9px] md:text-[10px] text-forest block mb-2 md:mb-3 font-bold tracking-widest">{t('news_detail.source_attribution')}</span>
+            <span className="mono-ui text-[11px] md:text-[12px] text-forest block mb-2 md:mb-3 font-bold tracking-widest">{t('news_detail.source_attribution')}</span>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-content font-display font-bold text-sm md:text-base">{news.source}</span>
-                <span className="mono-ui text-[9px] md:text-[10px] text-forest block mt-1">{formatPublishedDate(news.published)}</span>
+                <span className="mono-ui text-[11px] md:text-[12px] text-forest block mt-1">{formatPublishedDate(news.published)}</span>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={shareStory}
-                  className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
+                  className="narvo-border px-3 md:px-4 py-2 mono-ui text-[11px] md:text-[12px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
                   data-testid="share-source-btn"
                 >
                   <ShareNetwork weight="bold" className="w-3 h-3" />
@@ -357,7 +478,7 @@ const NewsDetailPage = () => {
                     href={news.source_url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="narvo-border px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
+                    className="narvo-border px-3 md:px-4 py-2 mono-ui text-[11px] md:text-[12px] text-forest hover:text-primary flex items-center gap-2 transition-colors"
                   >
                     <ArrowSquareOut weight="bold" className="w-3 h-3" />
                     <span>{t('news_detail.original_source')}</span>
@@ -366,45 +487,57 @@ const NewsDetailPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Mobile Article Metadata - visible only on smaller screens */}
+          <MobileMetadata
+            news={news}
+            readTime={readTime}
+            relatedNews={relatedNews}
+            isBookmarked={isBookmarked}
+            toggleBookmark={toggleBookmark}
+            addToQueue={addToQueue}
+            shareStory={shareStory}
+            navigate={navigate}
+            showAlert={showAlert}
+            t={t}
+            formatPublishedDate={formatPublishedDate}
+          />
         </div>
       </section>
 
       {/* Right Sidebar: Related & Metadata - hidden on mobile/tablet */}
       <aside className="w-72 xl:w-80 hidden lg:flex flex-col narvo-border-l bg-background-dark shrink-0" data-testid="detail-sidebar">
         <div className="h-16 xl:h-20 flex items-center px-4 xl:px-6 narvo-border-b bg-surface/10">
-          <span className="mono-ui text-[10px] xl:text-xs font-bold text-forest tracking-widest uppercase">{t('news_detail.article_metadata')}</span>
+          <span className="mono-ui text-[12px] xl:text-xs font-bold text-forest tracking-widest uppercase">{t('news_detail.article_metadata')}</span>
         </div>
         <div className="flex-1 overflow-y-auto p-4 xl:p-6 space-y-6 xl:space-y-8 custom-scroll">
           {/* Truth Tag Display */}
           <div className="narvo-border bg-primary/5 p-3 xl:p-4 border-primary/30">
-            <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">{t('news_detail.verification_status')}</span>
-            <div className="flex items-center justify-between">
-              <TruthTag storyId={news.id} />
-              <span className="mono-ui text-[8px] text-forest">DUBAWA_AI</span>
-            </div>
+            <span className="mono-ui text-[11px] xl:text-[12px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">{t('news_detail.verification_status')}</span>
+            <TruthTag storyId={news.id} />
           </div>
 
           {/* Article Info */}
           <div className="narvo-border bg-surface/20 p-3 xl:p-4">
-            <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">{t('news_detail.signal_metadata')}</span>
+            <span className="mono-ui text-[11px] xl:text-[12px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">{t('news_detail.signal_metadata')}</span>
             <div className="space-y-2 xl:space-y-3">
-              <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
+              <div className="flex justify-between mono-ui text-[11px] xl:text-[12px]">
                 <span className="text-forest">{t('news_detail.category')}</span>
                 <span className="text-primary font-bold">{news.category?.toUpperCase() || 'GENERAL'}</span>
               </div>
-              <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
+              <div className="flex justify-between mono-ui text-[11px] xl:text-[12px]">
                 <span className="text-forest">{t('news_detail.source')}</span>
                 <span className="text-content">{news.source?.toUpperCase() || 'UNKNOWN'}</span>
               </div>
-              <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
+              <div className="flex justify-between mono-ui text-[11px] xl:text-[12px]">
                 <span className="text-forest">{t('news_detail.region')}</span>
                 <span className="text-content">{news.region?.toUpperCase() || 'AFRICA'}</span>
               </div>
-              <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
+              <div className="flex justify-between mono-ui text-[11px] xl:text-[12px]">
                 <span className="text-forest">{t('news_detail.read_time')}</span>
                 <span className="text-primary font-bold">{readTime} MIN</span>
               </div>
-              <div className="flex justify-between mono-ui text-[9px] xl:text-[10px]">
+              <div className="flex justify-between mono-ui text-[11px] xl:text-[12px]">
                 <span className="text-forest">{t('news_detail.ai_synthesis')}</span>
                 <span className="text-primary font-bold">{news.narrative ? t('news_detail.complete') : t('news_detail.pending')}</span>
               </div>
@@ -415,7 +548,7 @@ const NewsDetailPage = () => {
           <div className="flex gap-2">
             <button
               onClick={() => { addToQueue(news); showAlert({ type: 'sync', title: 'QUEUE_UPDATED', message: 'Added to playlist queue', code: 'Q_ADD', duration: 2000 }); }}
-              className="flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              className="flex-1 narvo-border py-2 mono-ui text-[11px] xl:text-[12px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
               data-testid="sidebar-queue-btn"
             >
               <Queue weight="bold" className="w-3 h-3" />
@@ -423,7 +556,7 @@ const NewsDetailPage = () => {
             </button>
             <button
               onClick={shareStory}
-              className="flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
+              className="flex-1 narvo-border py-2 mono-ui text-[11px] xl:text-[12px] text-forest hover:text-primary hover:border-primary flex items-center justify-center gap-2 transition-colors"
               data-testid="sidebar-share-btn"
             >
               <ShareNetwork weight="bold" className="w-3 h-3" />
@@ -431,7 +564,7 @@ const NewsDetailPage = () => {
             </button>
             <button
               onClick={toggleBookmark}
-              className={`flex-1 narvo-border py-2 mono-ui text-[9px] xl:text-[10px] flex items-center justify-center gap-2 transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary hover:border-primary'}`}
+              className={`flex-1 narvo-border py-2 mono-ui text-[11px] xl:text-[12px] flex items-center justify-center gap-2 transition-colors ${isBookmarked(news.id) ? 'text-primary border-primary' : 'text-forest hover:text-primary hover:border-primary'}`}
               data-testid="sidebar-bookmark-btn"
             >
               {<BookmarkSimple weight={isBookmarked(news.id) ? "fill" : "regular"} className="w-3 h-3" />}
@@ -442,10 +575,10 @@ const NewsDetailPage = () => {
           {/* Tags */}
           {news.tags?.length > 0 && (
             <div>
-              <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
+              <span className="mono-ui text-[11px] xl:text-[12px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
               <div className="flex flex-wrap gap-1.5 xl:gap-2">
                 {news.tags.map((tag, i) => (
-                  <span key={i} className="narvo-border px-1.5 xl:px-2 py-1 mono-ui text-[8px] xl:text-[9px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#{tag.toUpperCase()}</span>
+                  <TagPill key={i} tag={tag} className="xl:px-2 xl:text-[11px]" />
                 ))}
               </div>
             </div>
@@ -454,7 +587,7 @@ const NewsDetailPage = () => {
           {/* Related Stories */}
           {relatedNews.length > 0 && (
             <div>
-              <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.related_transmissions')}</span>
+              <span className="mono-ui text-[11px] xl:text-[12px] text-forest block mb-3 xl:mb-4 font-bold tracking-widest">{t('news_detail.related_transmissions')}</span>
               <div className="space-y-2 xl:space-y-3">
                 {relatedNews.map((item) => (
                   <div
@@ -464,7 +597,7 @@ const NewsDetailPage = () => {
                     data-testid={`related-${item.id}`}
                   >
                     <div className="flex items-center gap-2 mb-1 xl:mb-2">
-                      <span className="mono-ui text-[8px] xl:text-[9px] text-primary">{item.source}</span>
+                      <span className="mono-ui text-[10px] xl:text-[11px] text-primary">{item.source}</span>
                       <TruthTag storyId={item.id} compact />
                     </div>
                     <h4 className="text-xs xl:text-sm text-content font-display font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">

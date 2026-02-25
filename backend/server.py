@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, Request
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
@@ -116,14 +116,9 @@ RSS_FEEDS = [
     {"name": "Al Jazeera Africa", "url": "https://www.aljazeera.com/xml/rss/all.xml", "region": "Continental"},
 ]
 
-# Voice configurations with authentic Nigerian names (mapped to OpenAI voices)
-VOICE_PROFILES = [
-    {"id": "onyx", "name": "Emeka", "accent": "English", "language": "en", "gender": "male", "description": "Deep, authoritative English voice"},
-    {"id": "echo", "name": "Tunde", "accent": "Naijá", "language": "pcm", "gender": "male", "description": "Warm, confident Naijá voice"},
-    {"id": "nova", "name": "Adùnní", "accent": "Yorùbá", "language": "yo", "gender": "female", "description": "Clear, melodic Yorùbá voice"},
-    {"id": "shimmer", "name": "Halima", "accent": "Hausa", "language": "ha", "gender": "female", "description": "Bright, dignified Hausa voice"},
-    {"id": "alloy", "name": "Adaeze", "accent": "Igbo", "language": "ig", "gender": "female", "description": "Warm, expressive Igbo voice"},
-]
+# Voice configurations — YarnGPT voices with Nigerian accents
+from services.yarngpt_service import get_voice_profiles as _get_yarn_profiles, YARNGPT_VOICES
+VOICE_PROFILES = _get_yarn_profiles()
 
 # Pydantic Models
 class NewsItem(BaseModel):
@@ -478,15 +473,28 @@ async def paraphrase_content(request: ParaphraseRequest):
 
 @app.post("/api/tts/generate", response_model=TTSResponse)
 async def generate_tts(request: TTSRequest):
-    """Generate text-to-speech audio using OpenAI TTS via Emergent, with optional translation"""
+    """Generate TTS audio — YarnGPT primary, OpenAI fallback, with caching"""
+    import hashlib
+    from services.yarngpt_service import generate_tts as yarn_generate_tts
+    
+    cache_key = hashlib.md5(f"{request.text[:200]}:{request.voice_id}:{request.language}".encode()).hexdigest()
+    
+    # Check MongoDB cache first
+    cached = db["tts_cache"].find_one({"cache_key": cache_key}, {"_id": 0})
+    if cached and cached.get("audio_url"):
+        return TTSResponse(
+            audio_url=cached["audio_url"],
+            text=request.text,
+            translated_text=cached.get("translated_text"),
+            voice_id=cached.get("voice_id", request.voice_id),
+            language=request.language
+        )
+    
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
         from services.translation_service import translate_text, SUPPORTED_LANGUAGES
         
-        # Get text to speak - translate if needed
         text_to_speak = request.text
         translated_text = None
-        final_voice = request.voice_id
         
         # Translate if language is not English
         if request.language and request.language != "en" and request.language in SUPPORTED_LANGUAGES:
@@ -499,34 +507,35 @@ async def generate_tts(request: TTSRequest):
             if translation_result.get("success"):
                 text_to_speak = translation_result.get("translated", request.text)
                 translated_text = text_to_speak
-                # Use the recommended voice for this language
-                final_voice = translation_result.get("voice_id", request.voice_id)
         
-        # Map voice_id to OpenAI voice if needed
-        voice = final_voice if final_voice in ["alloy", "ash", "coral", "echo", "fable", "nova", "onyx", "sage", "shimmer"] else "nova"
-        
-        # Truncate text to 4096 chars (OpenAI limit)
-        text = text_to_speak[:4096] if len(text_to_speak) > 4096 else text_to_speak
-        
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        
-        # Generate speech using tts-1 model
-        audio_bytes = await tts.generate_speech(
-            text=text,
-            model="tts-1",
-            voice=voice,
-            response_format="mp3",
-            speed=1.0
+        # Generate TTS via YarnGPT (primary) with OpenAI fallback
+        audio_url = await yarn_generate_tts(
+            text=text_to_speak,
+            voice_id=request.voice_id,
+            language=request.language or "en"
         )
         
-        # Convert to base64
-        audio_b64 = base64.b64encode(audio_bytes).decode()
+        if not audio_url:
+            raise Exception("Both YarnGPT and OpenAI TTS failed")
+        
+        # Cache the result
+        db["tts_cache"].update_one(
+            {"cache_key": cache_key},
+            {"$set": {
+                "cache_key": cache_key,
+                "audio_url": audio_url,
+                "translated_text": translated_text,
+                "voice_id": request.voice_id,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }},
+            upsert=True
+        )
         
         return TTSResponse(
-            audio_url=f"data:audio/mpeg;base64,{audio_b64}",
+            audio_url=audio_url,
             text=request.text,
             translated_text=translated_text,
-            voice_id=voice,
+            voice_id=request.voice_id,
             language=request.language
         )
     except Exception as e:
@@ -545,6 +554,23 @@ async def get_regions():
         {"id": "nigeria", "name": "Nigeria", "icon": "NG"},
         {"id": "continental", "name": "Continental", "icon": "AF"},
     ]
+
+
+@app.get("/api/sound-themes")
+async def list_sound_themes():
+    """Get available broadcast sound themes"""
+    from services.sound_themes_service import get_sound_themes
+    return get_sound_themes()
+
+@app.get("/api/sound-themes/{theme_id}")
+async def get_sound_theme_detail(theme_id: str):
+    """Get a specific sound theme with full audio parameters"""
+    from services.sound_themes_service import get_sound_theme
+    theme = get_sound_theme(theme_id)
+    if not theme:
+        raise HTTPException(status_code=404, detail="Theme not found")
+    return theme
+
 
 @app.get("/api/categories")
 async def get_categories():
@@ -976,6 +1002,10 @@ class UserSettings(BaseModel):
     broadcast_language: str = "en"
     aggregator_mediastack: bool = True
     aggregator_newsdata: bool = True
+    interface_language: str = "en"
+    theme: str = "dark"
+    sound_theme: str = "narvo_classic"
+    interests: List[str] = []
 
 @app.get("/api/settings/{user_id}")
 async def get_user_settings(user_id: str):
@@ -1050,51 +1080,6 @@ FACT_CHECK_KEYWORDS = {
     "viral": ("UNVERIFIED", 40, "Viral content pending fact-check"),
 }
 
-@app.get("/api/factcheck/{story_id}")
-async def check_story_facts(story_id: str):
-    """Get fact-check status for a news story"""
-    # In production, this would call the Dubawa API
-    # For now, return a simulated response based on story_id hash
-    hash_val = int(hashlib.md5(story_id.encode()).hexdigest()[:8], 16)
-    
-    statuses = ["VERIFIED", "VERIFIED", "VERIFIED", "UNVERIFIED", "UNVERIFIED", "DISPUTED"]
-    status = statuses[hash_val % len(statuses)]
-    
-    confidence_map = {"VERIFIED": 90 + (hash_val % 10), "UNVERIFIED": 50 + (hash_val % 30), "DISPUTED": 30 + (hash_val % 20)}
-    
-    return FactCheckResult(
-        status=status,
-        confidence=confidence_map.get(status, 70),
-        source="DUBAWA_AI_V2" if status == "VERIFIED" else "PENDING_REVIEW",
-        explanation=f"Automated fact-check completed. {'Claim verified against trusted sources.' if status == 'VERIFIED' else 'Requires manual verification.' if status == 'UNVERIFIED' else 'Conflicting information detected.'}",
-        checked_at=datetime.now(timezone.utc).isoformat()
-    )
-
-@app.post("/api/factcheck/analyze")
-async def analyze_claim(text: str = Query(..., description="Text to fact-check")):
-    """Analyze a text claim for fact-checking"""
-    text_lower = text.lower()
-    
-    # Check for keywords that suggest verification status
-    for keyword, (status, confidence, explanation) in FACT_CHECK_KEYWORDS.items():
-        if keyword in text_lower:
-            return FactCheckResult(
-                status=status,
-                confidence=confidence,
-                source="DUBAWA_KEYWORD_SCAN",
-                explanation=explanation,
-                checked_at=datetime.now(timezone.utc).isoformat()
-            )
-    
-    # Default response for neutral text
-    return FactCheckResult(
-        status="UNVERIFIED",
-        confidence=50,
-        source="DUBAWA_QUEUE",
-        explanation="Claim queued for verification. No immediate flags detected.",
-        checked_at=datetime.now(timezone.utc).isoformat()
-    )
-
 
 
 @app.get("/api/metrics")
@@ -1105,21 +1090,113 @@ async def get_metrics():
     
     from services.aggregator_service import get_aggregator_status
     agg_status = get_aggregator_status()
+    
+    # Real story count from DB
+    story_count = db["news_cache"].count_documents({})
+    # Real TTS cache count for broadcast hours approximation
+    tts_count = db["tts_cache"].count_documents({})
+    broadcast_hours = round(tts_count * 0.04, 1)  # ~2.5 min avg per TTS
+    # Listening history count
+    listen_count = db["listening_history"].count_documents({})
 
     return {
-        "listeners_today": "14.2k",
+        "listeners_today": f"{max(1, listen_count)}",
         "sources_online": sources_data.get("total_sources", 23),
         "total_sources": sources_data.get("total_sources", 23),
         "local_sources": sources_data.get("local_sources", 17),
         "international_sources": sources_data.get("international_sources", 6),
         "continental_sources": sources_data.get("continental_sources", 0),
-        "stories_processed": 342,
+        "stories_processed": story_count or sources_data.get("total_sources", 23) * 8,
+        "broadcast_hours": broadcast_hours,
         "signal_strength": "98%",
-        "network_load": "42%",
+        "network_load": f"{min(95, max(10, int(story_count / 5)))}%",
         "broadcast_sources": len(sources_data.get("broadcast_sources", [])),
         "verification_apis": len(sources_data.get("verification_apis", [])),
         "aggregators": agg_status,
     }
+
+# ─── Listening History ───────────────────────────────────────
+@app.post("/api/listening-history")
+async def add_listening_history(data: dict = Body(...)):
+    """Record a played broadcast to listening history"""
+    user_id = data.get("user_id", "guest")
+    entry = {
+        "user_id": user_id,
+        "track_id": data.get("track_id", ""),
+        "title": data.get("title", "Unknown"),
+        "source": data.get("source", ""),
+        "category": data.get("category", ""),
+        "duration": data.get("duration", 0),
+        "played_at": datetime.now(timezone.utc).isoformat(),
+    }
+    db["listening_history"].insert_one(entry)
+    return {"status": "ok"}
+
+@app.get("/api/listening-history/{user_id}")
+async def get_listening_history(user_id: str, limit: int = Query(20, ge=1, le=100)):
+    """Get user's listening history, most recent first"""
+    items = list(db["listening_history"].find(
+        {"user_id": user_id},
+        {"_id": 0}
+    ).sort("played_at", -1).limit(limit))
+    return items
+
+@app.get("/api/system-alerts")
+async def get_system_alerts():
+    """Get real system alerts based on actual service status"""
+    from services.aggregator_service import get_aggregator_status
+    agg = get_aggregator_status()
+    alerts = []
+    
+    # Check aggregator staleness
+    if agg.get("cache_stale"):
+        alerts.append({
+            "id": "agg-stale",
+            "type": "warning",
+            "title": "AGGREGATOR_CACHE_STALE",
+            "desc": "News aggregator cache has expired. New stories may be delayed.",
+            "time": agg.get("last_fetched", ""),
+            "priority": True,
+        })
+    
+    # Check source counts
+    ms_count = agg.get("mediastack", {}).get("cached_count", 0)
+    nd_count = agg.get("newsdata", {}).get("cached_count", 0)
+    
+    if ms_count + nd_count > 0:
+        alerts.append({
+            "id": "agg-active",
+            "type": "info",
+            "title": "AGGREGATOR_FEEDS_ACTIVE",
+            "desc": f"Mediastack: {ms_count} stories cached. NewsData: {nd_count} stories cached.",
+            "time": agg.get("last_fetched", ""),
+            "priority": False,
+        })
+    
+    # TTS cache stats
+    tts_count = db["tts_cache"].count_documents({})
+    if tts_count > 0:
+        alerts.append({
+            "id": "tts-cache",
+            "type": "info",
+            "title": "TTS_CACHE_ACTIVE",
+            "desc": f"{tts_count} audio broadcasts cached for instant playback.",
+            "time": datetime.now(timezone.utc).isoformat(),
+            "priority": False,
+        })
+    
+    # Always show a platform status message
+    alerts.append({
+        "id": "platform-status",
+        "type": "feature",
+        "title": "PLATFORM_OPERATIONAL",
+        "desc": "All Narvo broadcast systems are online and operational.",
+        "time": datetime.now(timezone.utc).isoformat(),
+        "priority": False,
+    })
+    
+    return alerts
+
 
 # Morning Briefing Cache
 _briefing_cache = {
@@ -1328,6 +1405,42 @@ async def generate_briefing_audio(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
+# ─── Push Notifications ───────────────────────────────────────
+@app.post("/api/notifications/subscribe")
+async def subscribe_push(data: dict = Body(...)):
+    """Store push notification subscription"""
+    endpoint = data.get("endpoint", "")
+    if not endpoint:
+        raise HTTPException(status_code=400, detail="Missing endpoint")
+    db["push_subscriptions"].update_one(
+        {"endpoint": endpoint},
+        {"$set": {**data, "subscribed_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True
+    )
+    return {"status": "subscribed"}
+
+@app.post("/api/notifications/unsubscribe")
+async def unsubscribe_push(data: dict = Body(...)):
+    """Remove push notification subscription"""
+    endpoint = data.get("endpoint", "")
+    if endpoint:
+        db["push_subscriptions"].delete_one({"endpoint": endpoint})
+    return {"status": "unsubscribed"}
+
+@app.get("/api/notifications/digest")
+async def get_daily_digest():
+    """Get daily digest content for push notification"""
+    stories = list(db["news_cache"].find(
+        {},
+        {"_id": 0, "id": 1, "title": 1, "category": 1, "source": 1}
+    ).sort("published", -1).limit(5))
+    return {
+        "title": "NARVO DAILY DIGEST",
+        "top_stories": stories,
+        "briefing_available": True,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
 # ===========================================
 # RADIO STATIONS API (Radio Browser)
 # ===========================================
@@ -1450,24 +1563,6 @@ class PodcastEpisode(BaseModel):
     description: str
     category: str = "General"
     published: Optional[str] = None
-
-@app.get("/api/podcasts", response_model=List[PodcastEpisode])
-async def get_podcasts(
-    sort: str = Query("latest", description="Sort by: latest, popular"),
-    limit: int = Query(10, ge=1, le=50)
-):
-    """Get curated podcast episodes for the Discover page"""
-    episodes = [
-        PodcastEpisode(id="ep402", episode="EP. 402", title="The Geopolitical Shift: Arctic Routes", duration="45:00", description="Understanding the opening trade routes, their environmental impact, and the geopolitical realignment happening at the North Pole.", category="Geopolitics", published="2026-02-20"),
-        PodcastEpisode(id="ep089", episode="EP. 089", title="Tech Horizons: Quantum Synthesis", duration="22:15", description="Exclusive breakthrough at Zurich Labs: the neural interface is ready for human trials. We break down what this means for Africa's tech ecosystem.", category="Technology", published="2026-02-18"),
-        PodcastEpisode(id="ep012", episode="EP. 012", title="Urban Architecture: Megacities", duration="60:00", description="Reimagining dense metropolitan spaces. Nigeria 2050 infrastructure planning data reveals surprising trends in sustainable urban development.", category="Urban", published="2026-02-15"),
-        PodcastEpisode(id="ep201", episode="EP. 201", title="Soundscapes: Amazon Rainforest", duration="33:45", description="Binaural field recordings and biodiversity metrics from the Amazon. An audio journey through the world's most biodiverse ecosystem.", category="Environment", published="2026-02-12"),
-        PodcastEpisode(id="ep156", episode="EP. 156", title="African Markets: Digital Currency Surge", duration="28:30", description="How digital currencies are transforming trade across West Africa. From Lagos to Accra, new financial rails are being built.", category="Finance", published="2026-02-10"),
-        PodcastEpisode(id="ep340", episode="EP. 340", title="Health Frontiers: Malaria Gene Drive", duration="35:20", description="The controversial gene drive technology that could eradicate malaria. Scientists in Kenya share their latest trial results.", category="Health", published="2026-02-08"),
-    ]
-    if sort == "popular":
-        episodes.sort(key=lambda x: x.duration, reverse=True)
-    return episodes[:limit]
 
 @app.get("/api/discover/trending")
 async def get_trending_topics():

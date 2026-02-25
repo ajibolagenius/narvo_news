@@ -148,14 +148,14 @@ const AlertItem = ({ alert, onDismiss }) => {
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2 mb-1">
-          <span className={`mono-ui text-[10px] font-bold ${config.textColor}`}>
+          <span className={`mono-ui text-[12px] font-bold ${config.textColor}`}>
             {alert.title}
           </span>
-          <span className="mono-ui text-[8px] text-forest">
+          <span className="mono-ui text-[10px] text-forest">
             [{alert.code}]
           </span>
         </div>
-        <p className="mono-ui text-[9px] text-forest leading-relaxed">
+        <p className="mono-ui text-[11px] text-forest leading-relaxed">
           {alert.message}
         </p>
       </div>

@@ -122,7 +122,7 @@ const SearchPage = () => {
             <h2 className="font-display text-2xl md:text-5xl font-bold uppercase tracking-tight text-content leading-none">
               Global Archive <span className="text-primary">Search.</span>
             </h2>
-            <p className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-[0.2em]">
+            <p className="mono-ui text-[11px] md:text-[12px] text-forest font-bold tracking-[0.2em]">
               RSS_FEEDS + AGGREGATORS + PODCASTS // UNIFIED_QUERY
             </p>
           </div>
@@ -143,18 +143,18 @@ const SearchPage = () => {
                 <X className="w-4 h-4" />
               </button>
             )}
-            <div className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-2 mono-ui text-[10px] text-forest border border-forest/30 px-2 py-1 pointer-events-none">
+            <div className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-2 mono-ui text-[12px] text-forest border border-forest/30 px-2 py-1 pointer-events-none">
               <span className="text-primary">CMD</span>+<span>K</span>
             </div>
           </form>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 md:gap-6">
-            <button className="flex items-center gap-2 md:gap-3 bg-primary text-background-dark px-4 md:px-6 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-colors" data-testid="voice-input-btn">
+            <button className="flex items-center gap-2 md:gap-3 bg-primary text-background-dark px-4 md:px-6 py-2 md:py-3 mono-ui text-[12px] md:text-[13px] font-bold hover:bg-white transition-colors" data-testid="voice-input-btn">
               <Microphone className="w-4 h-4" />
               <span>[ VOICE_INPUT ]</span>
             </button>
             <div className="hidden sm:block h-10 w-px bg-forest/30" />
-            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-forest mono-ui text-[9px] md:text-[10px]">
+            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-forest mono-ui text-[11px] md:text-[12px]">
               <span>POPULAR:</span>
               {popularTags.map(tag => (
                 <button key={tag} onClick={() => setQuery(tag.replace('#', ''))} className="text-primary hover:underline decoration-1 underline-offset-4">
@@ -169,7 +169,7 @@ const SearchPage = () => {
       {/* Results Control Bar */}
       <div className="h-10 md:h-14 flex items-center justify-between px-4 md:px-10 bg-surface/30 narvo-border-b shrink-0">
         <div className="flex items-center gap-2 md:gap-3 overflow-x-auto">
-          <span className="mono-ui text-[8px] md:text-[10px] text-forest shrink-0">
+          <span className="mono-ui text-[10px] md:text-[12px] text-forest shrink-0">
             {isSearchActive ? <>{searching ? 'SEARCHING...' : <>{totalResults} <span className="text-primary">RESULTS</span></>}</> : 'BROWSE'}
           </span>
           <Stack className="w-3 h-3 md:w-4 md:h-4 text-forest hidden sm:block shrink-0" />
@@ -179,7 +179,7 @@ const SearchPage = () => {
               <button
                 key={f}
                 onClick={() => setSourceFilter(f)}
-                className={`px-1.5 md:px-2.5 py-0.5 mono-ui text-[7px] md:text-[9px] font-bold shrink-0 ${sourceFilter === f ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+                className={`px-1.5 md:px-2.5 py-0.5 mono-ui text-[9px] md:text-[11px] font-bold shrink-0 ${sourceFilter === f ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
                 data-testid={`source-filter-${f.toLowerCase()}`}
               >
                 {f}
@@ -191,14 +191,14 @@ const SearchPage = () => {
           <div className="flex items-center gap-0.5 md:gap-1 border border-forest/30 p-0.5 md:p-1">
             <button
               onClick={() => setSortBy('latest')}
-              className={`px-1.5 md:px-3 py-0.5 md:py-1 mono-ui text-[7px] md:text-[9px] font-bold ${sortBy === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+              className={`px-1.5 md:px-3 py-0.5 md:py-1 mono-ui text-[9px] md:text-[11px] font-bold ${sortBy === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
               data-testid="sort-latest"
             >
               LATEST
             </button>
             <button
               onClick={() => setSortBy('relevance')}
-              className={`px-1.5 md:px-3 py-0.5 md:py-1 mono-ui text-[7px] md:text-[9px] ${sortBy === 'relevance' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
+              className={`px-1.5 md:px-3 py-0.5 md:py-1 mono-ui text-[9px] md:text-[11px] ${sortBy === 'relevance' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
               data-testid="sort-relevance"
             >
               RELEVANCE
@@ -208,7 +208,7 @@ const SearchPage = () => {
       </div>
 
       {/* Results Grid */}
-      <div className="p-4 md:p-10 flex-1 pb-20 md:pb-10">
+      <div className="p-4 md:p-10 flex-1 pb-32 md:pb-10">
         {(loading || searching) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-[1px] md:bg-forest/20 md:narvo-border overflow-hidden">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -235,11 +235,11 @@ const SearchPage = () => {
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className={`mono-ui text-[7px] md:text-[9px] ${catStyle.text} border ${catStyle.border} px-1.5 md:px-2 py-0.5 ${catStyle.bg} font-bold uppercase`}>
+                      <span className={`mono-ui text-[9px] md:text-[11px] ${catStyle.text} border ${catStyle.border} px-1.5 md:px-2 py-0.5 ${catStyle.bg} font-bold uppercase`}>
                         {item.category || 'GENERAL'}
                       </span>
                       {isAggregator && (
-                        <span className="mono-ui text-[7px] md:text-[8px] text-primary border border-primary/30 px-1 py-0.5 bg-primary/10 font-bold">AGG</span>
+                        <span className="mono-ui text-[9px] md:text-[10px] text-primary border border-primary/30 px-1 py-0.5 bg-primary/10 font-bold">AGG</span>
                       )}
                       {isUrgent && <div className="w-2 h-2 bg-label-urgent animate-pulse" />}
                     </div>
@@ -254,10 +254,10 @@ const SearchPage = () => {
                   <h4 className="font-display text-sm md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors line-clamp-2">
                     {item.title}
                   </h4>
-                  <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
+                  <p className="text-[12px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-2">
                     {item.summary}
                   </p>
-                  <div className="mt-auto pt-3 md:pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[7px] md:text-[9px] text-forest">
+                  <div className="mt-auto pt-3 md:pt-4 border-t border-forest/10 flex items-center justify-between mono-ui text-[9px] md:text-[11px] text-forest">
                     <div className="flex items-center gap-1 md:gap-2">
                       <Clock className="w-3 h-3" />
                       <span>{formatPublished(item.published)}</span>
@@ -277,13 +277,13 @@ const SearchPage = () => {
               </div>
               <div className="space-y-2">
                 <h3 className="font-display text-xl md:text-2xl font-bold text-content uppercase">NO_RESULTS_FOUND</h3>
-                <p className="mono-ui text-[10px] text-forest">QUERY: "{query.toUpperCase()}" RETURNED_ZERO_MATCHES</p>
+                <p className="mono-ui text-[12px] text-forest">QUERY: "{query.toUpperCase()}" RETURNED_ZERO_MATCHES</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onClick={() => setQuery('')} className="px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all">
+                <button onClick={() => setQuery('')} className="px-6 py-3 bg-primary mono-ui text-[12px] font-bold text-background-dark hover:bg-white transition-all">
                   CLEAR_QUERY
                 </button>
-                <button onClick={() => navigate('/discover')} className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-primary hover:bg-primary hover:text-background-dark transition-all">
+                <button onClick={() => navigate('/discover')} className="px-6 py-3 narvo-border mono-ui text-[12px] font-bold text-primary hover:bg-primary hover:text-background-dark transition-all">
                   BROWSE_DISCOVER
                 </button>
               </div>

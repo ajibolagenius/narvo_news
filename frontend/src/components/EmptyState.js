@@ -84,16 +84,16 @@ const EmptyState = ({
       <div className="flex justify-between items-end pb-4 narvo-border-b relative z-10">
         <div>
           <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">GLOBAL FEED MATRIX</h2>
-          <p className="mono-ui text-[10px] text-forest font-bold mt-1">SECTOR_7 {'//'} NULL_TRANSMISSION</p>
+          <p className="mono-ui text-[12px] text-forest font-bold mt-1">SECTOR_7 {'//'} NULL_TRANSMISSION</p>
         </div>
         <div className="flex gap-4">
-          <button className="px-4 md:px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase">
+          <button className="px-4 md:px-6 py-3 narvo-border mono-ui text-[12px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase">
             <Funnel className="w-4 h-4" />
             <span className="hidden sm:inline">FILTER</span>
           </button>
           <button 
             onClick={handleRefresh}
-            className="px-4 md:px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all flex items-center gap-2 uppercase"
+            className="px-4 md:px-6 py-3 bg-primary mono-ui text-[12px] font-bold text-background-dark hover:bg-white transition-all flex items-center gap-2 uppercase"
           >
             <ArrowCounterClockwise className="w-4 h-4" />
             <span className="hidden sm:inline">RECONNECT</span>
@@ -112,11 +112,11 @@ const EmptyState = ({
                 className={`narvo-border border-dashed p-4 md:p-6 flex flex-col justify-between bg-background-dark/20 ${slot.opacity} hover:opacity-100 transition-opacity min-h-[120px] md:min-h-[150px]`}
               >
                 <div className="flex justify-between items-start">
-                  <span className="mono-ui text-[8px] text-forest font-bold tracking-widest">{slot.id}</span>
+                  <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">{slot.id}</span>
                   <Icon className="w-5 h-5 text-forest" />
                 </div>
                 <div className="flex-1 flex items-center justify-center">
-                  <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold text-center">NO_SIGNAL_DETECTED</span>
+                  <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold text-center">NO_SIGNAL_DETECTED</span>
                 </div>
               </div>
             );
@@ -147,7 +147,7 @@ const EmptyState = ({
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={handleRefresh}
-              className="h-12 md:h-14 px-6 md:px-8 bg-primary text-background-dark font-bold mono-ui text-[10px] md:text-[11px] hover:bg-white transition-all flex items-center justify-center gap-3"
+              className="h-12 md:h-14 px-6 md:px-8 bg-primary text-background-dark font-bold mono-ui text-[12px] md:text-[13px] hover:bg-white transition-all flex items-center justify-center gap-3"
               data-testid="empty-state-refresh-btn"
             >
               <ArrowCounterClockwise className="w-4 h-4 md:w-5 md:h-5" />
@@ -155,7 +155,7 @@ const EmptyState = ({
             </button>
             <button 
               onClick={handleDiagnostics}
-              className="h-12 md:h-14 px-6 md:px-8 narvo-border text-primary font-bold mono-ui text-[10px] md:text-[11px] hover:bg-primary hover:text-background-dark transition-all"
+              className="h-12 md:h-14 px-6 md:px-8 narvo-border text-primary font-bold mono-ui text-[12px] md:text-[13px] hover:bg-primary hover:text-background-dark transition-all"
               data-testid="empty-state-diagnostics-btn"
             >
               {config.secondaryAction}
@@ -163,7 +163,7 @@ const EmptyState = ({
           </div>
 
           {/* Footer */}
-          <div className="mt-8 md:mt-10 pt-6 narvo-border-t flex justify-between items-center text-[8px] md:text-[9px] mono-ui font-bold text-forest">
+          <div className="mt-8 md:mt-10 pt-6 narvo-border-t flex justify-between items-center text-[10px] md:text-[11px] mono-ui font-bold text-forest">
             <span>ERR_CODE: {errorCode || config.errorCode}</span>
             <span>NARVO_SYS_V2.6</span>
           </div>

@@ -39,6 +39,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ServerErrorPage = lazy(() => import('./pages/ServerErrorPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const ToolsPage = lazy(() => import('./pages/ToolsPage'));
+const ListeningHistoryPage = lazy(() => import('./pages/ListeningHistoryPage'));
 // Admin Pages
 const OperationHubPage = lazy(() => import('./pages/admin/OperationHubPage'));
 const CurationConsolePage = lazy(() => import('./pages/admin/CurationConsolePage'));
@@ -66,6 +67,7 @@ function App() {
       <BreakingNewsProvider>
         <HapticAlertProvider>
           <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <a href="#main-content" className="skip-link">Skip to main content</a>
             <DownloadQueueIndicator />
             <TourGuideModal />
             <Suspense fallback={<PageLoader />}>
@@ -90,6 +92,7 @@ function App() {
                   <Route path="/account" element={<AccountPage />} />
                   <Route path="/system" element={<SystemSettingsPage />} />
                   <Route path="/accessibility" element={<AccessibilityPage />} />
+                  <Route path="/history" element={<ListeningHistoryPage />} />
                 </Route>
                 {/* Admin routes with separate layout */}
                 <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>

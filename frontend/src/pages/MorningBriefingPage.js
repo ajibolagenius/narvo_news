@@ -20,8 +20,7 @@ const MorningBriefingPage = () => {
   const [generating, setGenerating] = useState(false);
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
-  const [selectedVoice, setSelectedVoice] = useState('nova');
-  const [voices, setVoices] = useState([]);
+  const [selectedVoice] = useState('nova');
   const [showArchive, setShowArchive] = useState(false);
   const { playTrack, currentTrack, isPlaying, isLoading: audioLoading, currentTime: audioCurrentTime, duration: audioDuration } = useAudio();
   const [sfxEnabled, setSfxEnabled] = useState(true);
@@ -74,11 +73,9 @@ const MorningBriefingPage = () => {
     Promise.all([
       fetch(`${API_URL}/api/briefing/latest`).then(r => r.ok ? r.json() : null).catch(() => null),
       fetch(`${API_URL}/api/briefing/history?limit=10`).then(r => r.json()).catch(() => ({ briefings: [] })),
-      fetch(`${API_URL}/api/voices`).then(r => r.json()).catch(() => [])
-    ]).then(([latestBriefing, historyData, voicesData]) => {
+    ]).then(([latestBriefing, historyData]) => {
       if (latestBriefing) setBriefing(latestBriefing);
       setHistory(historyData.briefings || []);
-      setVoices(voicesData);
       setLoading(false);
       setHistoryLoading(false);
     });
@@ -135,23 +132,13 @@ const MorningBriefingPage = () => {
       <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
         <div className="flex items-center gap-2 md:gap-3">
           <Radio className="w-4 h-4 text-primary" />
-          <span className="mono-ui text-[9px] md:text-xs text-forest">MODULE: <span className="text-primary">MORNING_BRIEFING</span></span>
+          <span className="mono-ui text-[11px] md:text-xs text-forest">MODULE: <span className="text-primary">MORNING_BRIEFING</span></span>
         </div>
         <div className="flex items-center gap-1.5 md:gap-3">
-          {voices.length > 0 && (
-            <select
-              value={selectedVoice}
-              onChange={(e) => setSelectedVoice(e.target.value)}
-              className="h-7 md:h-8 px-1.5 md:px-2 bg-background-dark narvo-border mono-ui text-[8px] md:text-[9px] text-forest focus:outline-none focus:border-primary"
-              data-testid="voice-selector"
-            >
-              {voices.map(v => <option key={v.id} value={v.id}>{v.name.toUpperCase()}</option>)}
-            </select>
-          )}
           <button
             onClick={generateBriefing}
             disabled={generating}
-            className="h-7 md:h-8 px-2 md:px-3 bg-primary text-background-dark mono-ui text-[8px] md:text-[9px] font-bold hover:bg-white transition-all disabled:opacity-50 flex items-center gap-1"
+            className="h-7 md:h-8 px-2 md:px-3 bg-primary text-background-dark mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-all disabled:opacity-50 flex items-center gap-1"
             data-testid="generate-btn"
           >
             <ArrowClockwise className={`w-3 h-3 ${generating ? 'animate-spin' : ''}`} />
@@ -159,7 +146,7 @@ const MorningBriefingPage = () => {
           </button>
           <button
             onClick={() => setSfxEnabled(v => !v)}
-            className={`h-7 md:h-8 px-2 narvo-border mono-ui text-[8px] md:text-[9px] font-bold flex items-center gap-1 transition-all ${sfxEnabled ? 'bg-primary/10 border-primary text-primary' : 'text-forest hover:text-content'}`}
+            className={`h-7 md:h-8 px-2 narvo-border mono-ui text-[10px] md:text-[11px] font-bold flex items-center gap-1 transition-all ${sfxEnabled ? 'bg-primary/10 border-primary text-primary' : 'text-forest hover:text-content'}`}
             data-testid="sfx-toggle"
           >
             <SpeakerHigh weight={sfxEnabled ? 'fill' : 'regular'} className="w-3 h-3" />
@@ -176,8 +163,8 @@ const MorningBriefingPage = () => {
       >
         <div className="flex items-center gap-2">
           <Calendar className="w-3.5 h-3.5 text-primary" />
-          <span className="mono-ui text-[9px] text-forest font-bold">ARCHIVE_LOG</span>
-          <span className="mono-ui text-[7px] text-forest/50">{history.length} ENTRIES</span>
+          <span className="mono-ui text-[11px] text-forest font-bold">ARCHIVE_LOG</span>
+          <span className="mono-ui text-[9px] text-forest/50">{history.length} ENTRIES</span>
         </div>
         {showArchive ? <CaretUp className="w-3 h-3 text-forest" /> : <CaretDown className="w-3 h-3 text-forest" />}
       </button>
@@ -189,15 +176,15 @@ const MorningBriefingPage = () => {
             <button
               key={item.date}
               onClick={() => { loadHistoricalBriefing(item.date); setShowArchive(false); }}
-              className={`w-full p-2.5 text-left narvo-border transition-all text-[9px] ${briefing?.date === item.date ? 'border-primary bg-primary/5' : 'hover:bg-surface/30'}`}
+              className={`w-full p-2.5 text-left narvo-border transition-all text-[11px] ${briefing?.date === item.date ? 'border-primary bg-primary/5' : 'hover:bg-surface/30'}`}
             >
               <div className="flex items-center justify-between">
                 <span className={`mono-ui font-bold ${briefing?.date === item.date ? 'text-primary' : 'text-forest'}`}>
                   {new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                 </span>
-                {item.date === today && <span className="mono-ui text-[7px] text-primary bg-primary/10 px-1 py-0.5">TODAY</span>}
+                {item.date === today && <span className="mono-ui text-[9px] text-primary bg-primary/10 px-1 py-0.5">TODAY</span>}
               </div>
-              <span className="mono-ui text-[8px] text-forest/60">{item.stories?.length || 0} STORIES</span>
+              <span className="mono-ui text-[10px] text-forest/60">{item.stories?.length || 0} STORIES</span>
             </button>
           ))}
         </div>
@@ -206,7 +193,7 @@ const MorningBriefingPage = () => {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col lg:flex-row min-h-0 overflow-hidden">
         {/* Left: Briefing Content */}
-        <section className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-20 md:pb-8 min-w-0">
+        <section className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8 min-w-0">
           <div className="max-w-3xl mx-auto lg:mx-0">
             {loading ? (
               <div className="space-y-6">
@@ -224,17 +211,17 @@ const MorningBriefingPage = () => {
                 <div className="narvo-border bg-surface/50 p-4 md:p-8 mb-4 md:mb-6">
                   <div className="flex items-center gap-2 mb-2 md:mb-3">
                     <span className="w-2 h-2 bg-primary animate-pulse" />
-                    <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold tracking-widest">
+                    <span className="mono-ui text-[11px] md:text-[12px] text-primary font-bold tracking-widest">
                       {briefing.date === today ? 'LIVE_BROADCAST' : 'ARCHIVED_BROADCAST'}
                     </span>
                   </div>
                   <h2 className="font-display text-lg md:text-3xl text-content mb-2 md:mb-3 uppercase tracking-tight">{briefing.title}</h2>
                   <div className="flex flex-wrap items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                    <span className="mono-ui text-[8px] md:text-[10px] text-forest narvo-border px-2 py-0.5 flex items-center gap-1">
+                    <span className="mono-ui text-[10px] md:text-[12px] text-forest narvo-border px-2 py-0.5 flex items-center gap-1">
                       <Clock className="w-3 h-3" />{briefing.duration_estimate}
                     </span>
-                    <span className="mono-ui text-[8px] md:text-[10px] text-forest">{briefing.stories?.length || 0} STORIES</span>
-                    <span className="mono-ui text-[8px] md:text-[10px] text-forest uppercase">VOICE: {briefing.voice_id || 'NOVA'}</span>
+                    <span className="mono-ui text-[10px] md:text-[12px] text-forest">{briefing.stories?.length || 0} STORIES</span>
+                    <span className="mono-ui text-[10px] md:text-[12px] text-forest uppercase">VOICE: {briefing.voice_id || 'NOVA'}</span>
                   </div>
                   <button
                     onClick={handlePlay}
@@ -252,8 +239,8 @@ const MorningBriefingPage = () => {
                 {/* Stories List */}
                 <div className="narvo-border bg-surface/20 divide-y divide-forest/10">
                   <div className="p-3 md:p-4 flex items-center justify-between">
-                    <span className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">STORIES_INCLUDED</span>
-                    <span className="mono-ui text-[7px] md:text-[8px] text-forest/60">{briefing.stories?.length || 0} / 5 SEGMENTS</span>
+                    <span className="mono-ui text-[11px] md:text-[12px] text-forest font-bold tracking-widest">STORIES_INCLUDED</span>
+                    <span className="mono-ui text-[9px] md:text-[10px] text-forest/60">{briefing.stories?.length || 0} / 5 SEGMENTS</span>
                   </div>
                   {briefing.stories?.map((story, i) => (
                     <div
@@ -262,12 +249,12 @@ const MorningBriefingPage = () => {
                       className="p-3 md:p-4 flex gap-2 md:gap-3 hover:bg-surface/40 transition-colors cursor-pointer group"
                       data-testid={`story-${i}`}
                     >
-                      <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold shrink-0">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="mono-ui text-[11px] md:text-[12px] text-primary font-bold shrink-0">{String(i + 1).padStart(2, '0')}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
-                          <span className="mono-ui text-[7px] md:text-[8px] text-forest/60 uppercase">{story.category || 'GENERAL'}</span>
+                          <span className="mono-ui text-[9px] md:text-[10px] text-forest/60 uppercase">{story.category || 'GENERAL'}</span>
                           <span className="text-forest/30">•</span>
-                          <span className="mono-ui text-[7px] md:text-[8px] text-forest/60">{story.source}</span>
+                          <span className="mono-ui text-[9px] md:text-[10px] text-forest/60">{story.source}</span>
                         </div>
                         <span className="text-slate-300 text-xs md:text-sm group-hover:text-primary transition-colors line-clamp-2">{story.title}</span>
                       </div>
@@ -281,15 +268,15 @@ const MorningBriefingPage = () => {
                   <div className="lg:hidden narvo-border bg-surface/10 mt-4">
                     <div className="p-3 narvo-border-b flex items-center gap-2">
                       <TextAlignLeft className="w-3.5 h-3.5 text-primary" />
-                      <span className="mono-ui text-[9px] text-forest font-bold tracking-widest">TRANSCRIPT</span>
-                      {isCurrentBriefingPlaying && <span className="mono-ui text-[7px] text-primary animate-pulse">LIVE</span>}
+                      <span className="mono-ui text-[11px] text-forest font-bold tracking-widest">TRANSCRIPT</span>
+                      {isCurrentBriefingPlaying && <span className="mono-ui text-[9px] text-primary animate-pulse">LIVE</span>}
                     </div>
                     <div className="p-3 max-h-64 overflow-y-auto custom-scroll" ref={transcriptRef}>
                       {sentences.map((sentence, idx) => (
                         <span
                           key={idx}
                           data-sentence={idx}
-                          className={`mono-ui text-[10px] leading-relaxed inline transition-colors duration-300 ${
+                          className={`mono-ui text-[12px] leading-relaxed inline transition-colors duration-300 ${
                             idx === activeSentenceIdx
                               ? 'text-primary font-bold bg-primary/5'
                               : idx < activeSentenceIdx ? 'text-forest/50' : 'text-forest/80'
@@ -308,7 +295,7 @@ const MorningBriefingPage = () => {
                   <Radio className="w-8 h-8 md:w-10 md:h-10 text-forest/30" />
                 </div>
                 <h3 className="font-display text-lg text-content uppercase mb-3">NO_BRIEFING_LOADED</h3>
-                <p className="mono-ui text-[10px] text-forest mb-6">Generate your first morning briefing</p>
+                <p className="mono-ui text-[12px] text-forest mb-6">Generate your first morning briefing</p>
                 <button
                   onClick={generateBriefing}
                   disabled={generating}
@@ -331,13 +318,13 @@ const MorningBriefingPage = () => {
               <div className="h-12 flex items-center justify-between px-4 narvo-border-b bg-surface/20 shrink-0">
                 <div className="flex items-center gap-2">
                   <TextAlignLeft className="w-4 h-4 text-primary" />
-                  <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">TRANSCRIPT</span>
+                  <span className="mono-ui text-[12px] text-forest font-bold tracking-widest">TRANSCRIPT</span>
                 </div>
                 <div className="flex items-center gap-2">
                   {isCurrentBriefingPlaying && (
-                    <span className="mono-ui text-[8px] text-primary bg-primary/10 px-1.5 py-0.5 animate-pulse font-bold">LIVE</span>
+                    <span className="mono-ui text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 animate-pulse font-bold">LIVE</span>
                   )}
-                  <span className="mono-ui text-[8px] text-forest/50">{sentences.length} LINES</span>
+                  <span className="mono-ui text-[10px] text-forest/50">{sentences.length} LINES</span>
                 </div>
               </div>
               <div className="flex-1 overflow-y-auto custom-scroll p-4 xl:p-6" ref={transcriptRef} data-testid="transcript-panel">
@@ -346,7 +333,7 @@ const MorningBriefingPage = () => {
                     <span
                       key={idx}
                       data-sentence={idx}
-                      className={`mono-ui text-[10px] xl:text-[11px] leading-[1.8] inline transition-all duration-300 ${
+                      className={`mono-ui text-[12px] xl:text-[13px] leading-[1.8] inline transition-all duration-300 ${
                         idx === activeSentenceIdx
                           ? 'text-primary font-bold bg-primary/5 px-0.5'
                           : idx < activeSentenceIdx ? 'text-forest/40' : 'text-forest/80'
@@ -362,7 +349,7 @@ const MorningBriefingPage = () => {
             <div className="flex-1 flex items-center justify-center p-8">
               <div className="text-center space-y-3">
                 <TextAlignLeft className="w-10 h-10 text-forest/20 mx-auto" />
-                <p className="mono-ui text-[9px] text-forest/40">TRANSCRIPT WILL APPEAR HERE</p>
+                <p className="mono-ui text-[11px] text-forest/40">TRANSCRIPT WILL APPEAR HERE</p>
               </div>
             </div>
           )}
@@ -372,16 +359,16 @@ const MorningBriefingPage = () => {
             <div className="h-10 flex items-center justify-between px-4 bg-surface/20">
               <div className="flex items-center gap-2">
                 <Calendar className="w-3.5 h-3.5 text-primary" />
-                <span className="mono-ui text-[9px] text-forest font-bold tracking-widest">ARCHIVE_LOG</span>
+                <span className="mono-ui text-[11px] text-forest font-bold tracking-widest">ARCHIVE_LOG</span>
               </div>
-              <span className="mono-ui text-[7px] text-forest/50">{history.length} ENTRIES</span>
+              <span className="mono-ui text-[9px] text-forest/50">{history.length} ENTRIES</span>
             </div>
             <div className="max-h-48 overflow-y-auto custom-scroll p-2 space-y-1">
               {historyLoading ? (
                 Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="w-full h-12" />)
               ) : history.length === 0 ? (
                 <div className="p-3 text-center">
-                  <p className="mono-ui text-[8px] text-forest/50">NO_HISTORY</p>
+                  <p className="mono-ui text-[10px] text-forest/50">NO_HISTORY</p>
                 </div>
               ) : (
                 history.map((item) => (
@@ -394,12 +381,12 @@ const MorningBriefingPage = () => {
                     data-testid={`history-${item.date}`}
                   >
                     <div className="flex items-center justify-between mb-0.5">
-                      <span className={`mono-ui text-[8px] font-bold ${briefing?.date === item.date ? 'text-primary' : 'text-forest'}`}>
+                      <span className={`mono-ui text-[10px] font-bold ${briefing?.date === item.date ? 'text-primary' : 'text-forest'}`}>
                         {new Date(item.date + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                       </span>
-                      {item.date === today && <span className="mono-ui text-[7px] text-primary bg-primary/10 px-1 py-0.5">TODAY</span>}
+                      {item.date === today && <span className="mono-ui text-[9px] text-primary bg-primary/10 px-1 py-0.5">TODAY</span>}
                     </div>
-                    <span className={`mono-ui text-[7px] ${briefing?.date === item.date ? 'text-content' : 'text-forest/60'}`}>
+                    <span className={`mono-ui text-[9px] ${briefing?.date === item.date ? 'text-content' : 'text-forest/60'}`}>
                       {item.stories?.length || 0} STORIES • {item.duration_estimate || '~3 MIN'}
                     </span>
                   </button>

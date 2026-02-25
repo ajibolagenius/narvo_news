@@ -65,13 +65,13 @@ const OnboardingPage = () => {
             NARVO <span className="text-forest font-light mx-2">{'//'}</span> {t('onboarding.setup_console')}
           </h1>
         </div>
-        <div className="mono-ui text-[10px] text-forest">SYSTEM_ACCESS_ID: <span className="text-primary">009-AF-X</span></div>
+        <div className="mono-ui text-[12px] text-forest">SYSTEM_ACCESS_ID: <span className="text-primary">009-AF-X</span></div>
       </header>
 
       <main className="flex-1 grid grid-cols-12 h-full overflow-hidden">
         <section className="col-span-12 md:col-span-3 border-r border-forest h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
-            <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.locale_matrix')}</span>
+            <span className="mono-ui text-[12px] text-forest block mb-2">{t('onboarding.locale_matrix')}</span>
             <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-content">{t('onboarding.regional_node')}</h2>
             <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.regional_desc')}</p>
           </div>
@@ -82,7 +82,7 @@ const OnboardingPage = () => {
                   <label className={`cursor-pointer group flex items-center justify-between p-5 transition-colors ${selectedRegion === region.id ? 'bg-primary text-background-dark' : 'hover:bg-forest/10'}`} data-testid={`region-${region.id}`}>
                     <div className="flex flex-col">
                       <span className="font-display text-lg font-bold uppercase">{region.name}</span>
-                      <span className={`mono-ui text-[10px] ${selectedRegion === region.id ? 'opacity-80' : 'text-forest'}`}>{region.tz} - {region.country}</span>
+                      <span className={`mono-ui text-[12px] ${selectedRegion === region.id ? 'opacity-80' : 'text-forest'}`}>{region.tz} - {region.country}</span>
                     </div>
                     <input type="radio" name="region" checked={selectedRegion === region.id} onChange={() => setSelectedRegion(region.id)} className="hidden" />
                     {selectedRegion === region.id && (
@@ -94,14 +94,14 @@ const OnboardingPage = () => {
             </ul>
           </div>
           <div className="p-4 bg-surface border-t border-forest">
-            <div className="flex justify-between items-center text-forest text-[10px] mono-ui"><span>{t('onboarding.signal_quality')}</span><span className="text-primary">98.4%</span></div>
+            <div className="flex justify-between items-center text-forest text-[12px] mono-ui"><span>{t('onboarding.signal_quality')}</span><span className="text-primary">98.4%</span></div>
             <div className="w-full bg-background-dark h-1 mt-2 border border-forest"><div className="h-full w-[98%] bg-primary" /></div>
           </div>
         </section>
 
         <section className="col-span-12 md:col-span-4 border-r border-forest h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
-            <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.voice_engine')}</span>
+            <span className="mono-ui text-[12px] text-forest block mb-2">{t('onboarding.voice_engine')}</span>
             <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-content">{t('onboarding.vocal_matrix')}</h2>
             <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.voice_desc')}</p>
           </div>
@@ -116,8 +116,8 @@ const OnboardingPage = () => {
                       <path d="M56,96v64a8,8,0,0,1-16,0V96a8,8,0,0,1,16,0ZM88,24a8,8,0,0,0-8,8V224a8,8,0,0,0,16,0V32A8,8,0,0,0,88,24Zm40,32a8,8,0,0,0-8,8V192a8,8,0,0,0,16,0V64A8,8,0,0,0,128,56Z"/>
                     </svg>
                   </div>
-                  <p className="mono-ui text-[10px] opacity-70 mb-4">{voice.desc}</p>
-                  <div className="flex items-center gap-2 text-[10px] mono-ui font-bold">
+                  <p className="mono-ui text-[12px] opacity-70 mb-4">{voice.desc}</p>
+                  <div className="flex items-center gap-2 text-[12px] mono-ui font-bold">
                     <svg className="w-4 h-4" viewBox="0 0 256 256" fill="currentColor"><path d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"/></svg>
                     <span>{t('onboarding.audition_mode')}</span>
                   </div>
@@ -131,13 +131,13 @@ const OnboardingPage = () => {
                 <div key={i} className={`w-1 bg-forest ${i === 4 ? 'bg-primary animate-pulse' : ''}`} style={{ height: `${h}px` }} />
               ))}
             </div>
-            <span className="relative z-10 mono-ui text-[9px] text-forest bg-surface px-2">SIGNAL_ANALYZER // STANDBY</span>
+            <span className="relative z-10 mono-ui text-[11px] text-forest bg-surface px-2">SIGNAL_ANALYZER // STANDBY</span>
           </div>
         </section>
 
         <section className="col-span-12 md:col-span-5 h-full flex flex-col bg-background-dark">
           <div className="p-6 border-b border-forest">
-            <span className="mono-ui text-[10px] text-forest block mb-2">{t('onboarding.interest_matrix_label')}</span>
+            <span className="mono-ui text-[12px] text-forest block mb-2">{t('onboarding.interest_matrix_label')}</span>
             <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-content">{t('onboarding.interest_matrix')}</h2>
             <p className="text-forest text-xs mt-2 leading-relaxed font-mono">{t('onboarding.interest_desc')}</p>
           </div>
@@ -149,7 +149,7 @@ const OnboardingPage = () => {
                   <label key={interest.id} className={`cursor-pointer group relative h-28 flex flex-col justify-between p-3 transition-colors ${isSelected ? 'bg-primary text-background-dark' : 'bg-background-dark hover:bg-forest/10 text-content'}`} data-testid={`interest-${interest.id}`}>
                     <input type="checkbox" checked={isSelected} onChange={() => toggleInterest(interest.id)} className="hidden" />
                     <div className="flex justify-between items-start">
-                      <span className={`mono-ui text-[9px] ${isSelected ? '' : 'text-forest'}`}>{String(idx + 1).padStart(2, '0')}</span>
+                      <span className={`mono-ui text-[11px] ${isSelected ? '' : 'text-forest'}`}>{String(idx + 1).padStart(2, '0')}</span>
                       {isSelected && (
                         <svg className="w-5 h-5" viewBox="0 0 256 256" fill="currentColor"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM181.66,109.66l-72,72a8,8,0,0,1-11.32,0l-32-32a8,8,0,0,1,11.32-11.32L104,164.69l66.34-66.35a8,8,0,0,1,11.32,11.32Z"/></svg>
                       )}
@@ -161,8 +161,8 @@ const OnboardingPage = () => {
             </div>
             <div className="mt-auto pt-8">
               <div className="flex justify-between items-center mb-4">
-                <span className="mono-ui text-[10px] text-forest">SYSTEM_STATUS: <span className="text-primary">INITIAL_LINK_READY</span></span>
-                <span className="mono-ui text-[10px] text-forest">{t('onboarding.calibration_progress')}: {Math.round((selectedInterests.length / interests.length) * 100)}%</span>
+                <span className="mono-ui text-[12px] text-forest">SYSTEM_STATUS: <span className="text-primary">INITIAL_LINK_READY</span></span>
+                <span className="mono-ui text-[12px] text-forest">{t('onboarding.calibration_progress')}: {Math.round((selectedInterests.length / interests.length) * 100)}%</span>
               </div>
               <button onClick={handleComplete} className="w-full bg-primary text-background-dark font-display font-bold text-lg py-5 hover:bg-white active:bg-primary/80 transition-all flex items-center justify-center gap-3" data-testid="complete-onboarding-btn">
                 <span className="uppercase tracking-tighter">{t('onboarding.initialize_feed')}</span>
