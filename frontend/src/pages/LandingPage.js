@@ -228,6 +228,7 @@ const LandingPage = () => {
             <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="#about">STATION_MAP</a></li>
             <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="#tech">CORE_RAG_PROTOCOLS</a></li>
             <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="#why">VOICE_MATRIX</a></li>
+            <li><a className="mono-ui text-[11px] text-slate-400 hover:text-primary transition-colors" href="/tools">TOOLS_AND_STACK</a></li>
           </ul>
         </div>
         <div className="p-6 border-r border-forest">
