@@ -366,6 +366,21 @@ const NewsDetailPage = () => {
               </div>
             </div>
           </div>
+
+          {/* Mobile Article Metadata - visible only on smaller screens */}
+          <MobileMetadata
+            news={news}
+            readTime={readTime}
+            relatedNews={relatedNews}
+            isBookmarked={isBookmarked}
+            toggleBookmark={toggleBookmark}
+            addToQueue={addToQueue}
+            shareStory={shareStory}
+            navigate={navigate}
+            showAlert={showAlert}
+            t={t}
+            formatPublishedDate={formatPublishedDate}
+          />
         </div>
       </section>
 
