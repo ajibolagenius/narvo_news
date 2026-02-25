@@ -312,9 +312,7 @@ const NewsDetailPage = () => {
                   {news.category || 'General'}
                 </span>
                 {news.tags?.slice(0, 1).map((tag, i) => (
-                  <span key={i} className="px-2 md:px-3 py-1 text-[9px] md:text-[10px] font-bold uppercase tracking-wider text-primary bg-background-dark font-mono">
-                    {tag}
-                  </span>
+                  <TagPill key={i} tag={tag} className="border-0 bg-background-dark text-primary text-[9px] md:text-[10px] px-2 md:px-3 py-1 tracking-wider" />
                 ))}
               </div>
               <div className="flex items-center gap-4 mono-ui text-[9px] md:text-[10px] text-forest">
