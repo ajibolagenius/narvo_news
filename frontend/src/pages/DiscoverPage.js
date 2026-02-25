@@ -64,6 +64,12 @@ const DiscoverPage = () => {
       .then(res => res.json())
       .then(setTrendingTopics)
       .catch(console.error);
+
+    // Fetch aggregator wire
+    fetch(`${API_URL}/api/aggregators/fetch?keywords=Nigeria+Africa`)
+      .then(res => res.json())
+      .then(setAggregatorWire)
+      .catch(console.error);
   }, []);
   
   // Fetch podcasts when sort changes
