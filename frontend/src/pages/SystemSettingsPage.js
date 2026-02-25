@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash, Translate } from '@phosphor-icons/react';
+import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, BellRinging, BellSlash, Translate, SpeakerHigh, Stop } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAudio } from '../contexts/AudioContext';
 import { useHapticAlert } from '../components/HapticAlerts';
@@ -10,11 +10,11 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 // Supported broadcast languages with authentic native names
 const BROADCAST_LANGUAGES = [
-  { code: 'en', name: 'English', native: 'English', description: 'INTERNATIONAL' },
-  { code: 'pcm', name: 'Naijá', native: 'Naijá Tok', description: 'PIDGIN_NAIJA' },
-  { code: 'yo', name: 'Yorùbá', native: 'Èdè Yorùbá', description: 'ÌLÚ_YORÙBÁ' },
-  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'AREWACIN_NAJERIYA' },
-  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'ALA_IGBO' },
+  { code: 'en', name: 'English', native: 'English', description: 'INTERNATIONAL', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'pcm', name: 'Naijá', native: 'Naijá Tok', description: 'PIDGIN_NAIJA', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'yo', name: 'Yorùbá', native: 'Èdè Yorùbá', description: 'ÌLÚ_YORÙBÁ', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'ha', name: 'Hausa', native: 'Harshen Hausa', description: 'AREWACIN_NAJERIYA', sample: 'Welcome to Narvo. Your trusted source for African news.' },
+  { code: 'ig', name: 'Igbo', native: 'Asụsụ Igbo', description: 'ALA_IGBO', sample: 'Welcome to Narvo. Your trusted source for African news.' },
 ];
 
 const DEFAULT_SETTINGS = {
@@ -26,6 +26,8 @@ const DEFAULT_SETTINGS = {
   bandwidthPriority: 'STREAMING',
   pushNotifications: false,
   broadcastLanguage: 'en',
+  aggregatorMediastack: true,
+  aggregatorNewsdata: true,
 };
 
 const SystemGearSixPage = () => {
@@ -39,6 +41,53 @@ const SystemGearSixPage = () => {
   const [loadingGearSix, setLoadingGearSix] = useState(true);
   const [notificationStatus, setNotificationStatus] = useState('default');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [previewPlaying, setPreviewPlaying] = useState(null); // lang code currently playing
+  const [previewLoading, setPreviewLoading] = useState(null); // lang code currently loading
+  const previewAudioRef = useRef(null);
+
+  const playVoicePreview = async (e, lang) => {
+    e.stopPropagation();
+    // Stop if already playing this language
+    if (previewPlaying === lang.code) {
+      if (previewAudioRef.current) {
+        previewAudioRef.current.pause();
+        previewAudioRef.current = null;
+      }
+      setPreviewPlaying(null);
+      return;
+    }
+    // Stop any currently playing preview
+    if (previewAudioRef.current) {
+      previewAudioRef.current.pause();
+      previewAudioRef.current = null;
+    }
+    setPreviewLoading(lang.code);
+    setPreviewPlaying(null);
+    try {
+      const res = await fetch(`${API_URL}/api/tts/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: lang.sample, voice_id: 'onyx', language: lang.code }),
+      });
+      if (!res.ok) throw new Error('TTS failed');
+      const data = await res.json();
+      const audio = new Audio(data.audio_url);
+      previewAudioRef.current = audio;
+      audio.onended = () => { setPreviewPlaying(null); previewAudioRef.current = null; };
+      audio.onerror = () => { setPreviewPlaying(null); previewAudioRef.current = null; };
+      await audio.play();
+      setPreviewPlaying(lang.code);
+    } catch (err) {
+      showAlert({ type: 'warning', title: 'PREVIEW_FAILED', message: 'Could not generate voice preview.', code: 'TTS_ERR', duration: 3000 });
+    } finally {
+      setPreviewLoading(null);
+    }
+  };
+
+  // Cleanup preview audio on unmount
+  useEffect(() => {
+    return () => { if (previewAudioRef.current) previewAudioRef.current.pause(); };
+  }, []);
 
   // Check notification status on mount
   useEffect(() => {
@@ -67,6 +116,8 @@ const SystemGearSixPage = () => {
             dataLimit: Math.round((data.data_limit ?? 2.4) * 1000),
             bandwidthPriority: (data.bandwidth_priority || 'streaming').toUpperCase(),
             broadcastLanguage: data.broadcast_language ?? DEFAULT_SETTINGS.broadcastLanguage,
+            aggregatorMediastack: data.aggregator_mediastack ?? DEFAULT_SETTINGS.aggregatorMediastack,
+            aggregatorNewsdata: data.aggregator_newsdata ?? DEFAULT_SETTINGS.aggregatorNewsdata,
           });
         }
       } catch (err) {
@@ -94,6 +145,8 @@ const SystemGearSixPage = () => {
           data_limit: settingsToSave.dataLimit / 1000,
           bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
           broadcast_language: settingsToSave.broadcastLanguage,
+          aggregator_mediastack: settingsToSave.aggregatorMediastack,
+          aggregator_newsdata: settingsToSave.aggregatorNewsdata,
         }),
       });
       if (res.ok) {
@@ -328,6 +381,27 @@ const SystemGearSixPage = () => {
                       }`}>
                         {lang.description}
                       </span>
+                      {/* Voice Preview Button */}
+                      <span
+                        role="button"
+                        tabIndex={0}
+                        onClick={(e) => playVoicePreview(e, lang)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') playVoicePreview(e, lang); }}
+                        className={`absolute bottom-2 right-2 w-7 h-7 flex items-center justify-center narvo-border transition-all cursor-pointer ${
+                          previewPlaying === lang.code
+                            ? (isActive ? 'bg-background-dark text-primary' : 'bg-primary text-background-dark')
+                            : (isActive ? 'bg-background-dark/20 text-background-dark hover:bg-background-dark hover:text-primary' : 'bg-surface/20 text-forest hover:bg-primary hover:text-background-dark')
+                        }`}
+                        data-testid={`voice-preview-${lang.code}`}
+                      >
+                        {previewLoading === lang.code ? (
+                          <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
+                        ) : previewPlaying === lang.code ? (
+                          <Stop weight="fill" className="w-3.5 h-3.5" />
+                        ) : (
+                          <SpeakerHigh weight="bold" className="w-3.5 h-3.5" />
+                        )}
+                      </span>
                     </button>
                   );
                 })}
@@ -337,6 +411,53 @@ const SystemGearSixPage = () => {
                 THIS_CONTROLS_AUDIO_NARRATION — INTERFACE_TEXT_LANGUAGE_IS_SET_IN_SETTINGS
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Aggregator Sources */}
+        <section className="space-y-6 md:space-y-8" data-testid="aggregator-preferences">
+          <div className="flex items-end justify-between narvo-border-b border-forest/30 pb-4">
+            <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
+              NEWS_AGGREGATORS
+            </h2>
+            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+              PROGRAMMATIC_FEED_SOURCES
+            </span>
+          </div>
+
+          <div className="narvo-border divide-y divide-forest/30">
+            {[
+              { key: 'aggregatorMediastack', label: 'MEDIASTACK', desc: 'GLOBAL_NEWS_API — AFRICAN_MARKET_FOCUS', badge: 'LIVE' },
+              { key: 'aggregatorNewsdata', label: 'NEWSDATA.IO', desc: 'NIGERIAN_NEWS_API — LOCAL_SOURCE_PRIORITY', badge: 'LIVE' },
+            ].map(agg => (
+              <div key={agg.key} className="p-4 md:p-8 flex items-center justify-between hover:bg-surface/5 transition-colors">
+                <div className="flex items-center gap-4 md:gap-6">
+                  <div className="w-10 h-10 md:w-12 md:h-12 narvo-border flex items-center justify-center text-primary">
+                    <Lightning weight={settings[agg.key] ? 'fill' : 'regular'} className="w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{agg.label}</h3>
+                      <span className={`mono-ui text-[7px] font-bold px-1.5 py-0.5 ${
+                        settings[agg.key] ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-surface/20 text-forest/50 border border-forest/20'
+                      }`}>{settings[agg.key] ? agg.badge : 'OFF'}</span>
+                    </div>
+                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{agg.desc}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => updateSetting(agg.key, !settings[agg.key])}
+                  className={`w-12 h-6 narvo-border relative transition-all ${
+                    settings[agg.key] ? 'bg-primary' : 'bg-surface/20'
+                  }`}
+                  data-testid={`toggle-${agg.key}`}
+                >
+                  <span className={`absolute top-0.5 w-5 h-5 bg-background-dark transition-all ${
+                    settings[agg.key] ? 'left-6' : 'left-0.5'
+                  }`} />
+                </button>
+              </div>
+            ))}
           </div>
         </section>
 

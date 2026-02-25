@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { useHapticAlert } from '../components/HapticAlerts';
-import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon } from '@phosphor-icons/react';
+import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck, Lightning, Database, Clock, Bell, Globe, Sun, Moon, Compass } from '@phosphor-icons/react';
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
+import { openTourGuide } from '../components/TourGuideModal';
 
 const SettingsPage = () => {
   const navigate = useNavigate();
@@ -269,6 +270,32 @@ const SettingsPage = () => {
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Tour Guide */}
+          <div className="space-y-4">
+            <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
+              GUIDED_TOUR
+            </h2>
+            <div className="narvo-border bg-surface/5 p-5 md:p-6">
+              <div className="flex items-center gap-4 md:gap-6">
+                <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-background-dark flex items-center justify-center">
+                  <Compass weight="fill" className="w-5 h-5 md:w-6 md:h-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">REPLAY_TOUR</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">WALK THROUGH NARVO'S KEY FEATURES AGAIN</p>
+                </div>
+                <button
+                  onClick={openTourGuide}
+                  className="px-4 py-2.5 bg-primary text-background-dark mono-ui text-[9px] font-bold hover:bg-white transition-all flex items-center gap-2"
+                  data-testid="replay-tour-btn"
+                >
+                  <Compass weight="bold" className="w-3.5 h-3.5" />
+                  LAUNCH
+                </button>
+              </div>
             </div>
           </div>
 

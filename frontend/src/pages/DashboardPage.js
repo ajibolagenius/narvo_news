@@ -55,25 +55,65 @@ const DashboardPage = () => {
   const [visibleCount, setVisibleCount] = useState(10);
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
+  const [sourceFilter, setSourceFilter] = useState('all'); // 'all' | 'rss' | 'aggregators'
+  const [userAggPrefs, setUserAggPrefs] = useState(null);
   const { playTrack, addToQueue } = useAudio();
   const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${API_URL}/api/news?limit=50`).then(r => r.json()),
-      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
-    ]).then(([newsData, metricsData]) => {
-      setNews(newsData);
-      setMetrics(metricsData);
-      setLoading(false);
-      if (newsData.length <= 10) setAllLoaded(true);
-    }).catch(() => setLoading(false));
+    // Fetch user aggregator preferences first, then news with those prefs
+    fetch(`${API_URL}/api/settings/guest`).then(r => r.json())
+      .then(settings => {
+        const ms = settings.aggregator_mediastack !== false;
+        const nd = settings.aggregator_newsdata !== false;
+        setUserAggPrefs({ mediastack: ms, newsdata: nd });
+
+        // Build aggregator_sources param from user prefs
+        const enabledSources = [ms && 'mediastack', nd && 'newsdata'].filter(Boolean).join(',');
+        const aggParam = enabledSources ? `&aggregator_sources=${enabledSources}` : '';
+
+        return Promise.all([
+          fetch(`${API_URL}/api/news?limit=50&include_aggregators=true${aggParam}`).then(r => r.json()),
+          fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
+        ]);
+      })
+      .then(([newsData, metricsData]) => {
+        // Deduplicate: prefer RSS over aggregator for same title
+        const seen = new Map();
+        const deduped = [];
+        for (const item of newsData) {
+          const key = (item.title || '').toLowerCase().trim().slice(0, 60);
+          if (!key) { deduped.push(item); continue; }
+          const existing = seen.get(key);
+          if (!existing) {
+            seen.set(key, item);
+            deduped.push(item);
+          } else if (item.aggregator && !existing.aggregator) {
+            // RSS already in, skip aggregator duplicate
+          } else if (!item.aggregator && existing.aggregator) {
+            // Replace aggregator with RSS
+            const idx = deduped.indexOf(existing);
+            if (idx !== -1) deduped[idx] = item;
+            seen.set(key, item);
+          }
+        }
+        setNews(deduped);
+        setMetrics(metricsData);
+        setLoading(false);
+        if (deduped.length <= 10) setAllLoaded(true);
+      })
+      .catch(() => setLoading(false));
   }, []);
 
   const featured = news[0];
-  const stream = news.slice(1, visibleCount + 1);
+  const filteredNews = news.slice(1).filter(item => {
+    if (sourceFilter === 'rss') return !item.aggregator;
+    if (sourceFilter === 'aggregators') return !!item.aggregator;
+    return true;
+  });
+  const stream = filteredNews.slice(0, visibleCount);
 
   const loadMore = () => {
     setLoadingMore(true);
@@ -287,6 +327,28 @@ const DashboardPage = () => {
                     <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase">Nodes: {String(stream.length).padStart(2, '0')}</span>
                   </div>
 
+                  {/* Source Filter Toggle */}
+                  <div className="flex items-center gap-1" data-testid="source-filter-toggle">
+                    {[
+                      { key: 'all', label: 'ALL_SOURCES' },
+                      { key: 'rss', label: 'RSS_ONLY' },
+                      { key: 'aggregators', label: 'AGGREGATORS' },
+                    ].map(f => (
+                      <button
+                        key={f.key}
+                        onClick={() => setSourceFilter(f.key)}
+                        className={`mono-ui text-[8px] md:text-[9px] font-bold px-2.5 py-1 transition-all ${
+                          sourceFilter === f.key
+                            ? 'bg-primary text-background-dark'
+                            : 'narvo-border text-forest hover:text-content'
+                        }`}
+                        data-testid={`filter-${f.key}`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
                   <motion.div variants={cardVariants} className="narvo-border bg-surface/20 divide-y divide-forest/10">
                     {stream.map((item, idx) => (
                       <motion.article
@@ -309,6 +371,11 @@ const DashboardPage = () => {
                           <div className="flex flex-wrap justify-between items-start gap-2">
                             <div className="flex items-center gap-2 md:gap-3">
                               <span className="bg-forest/20 text-primary mono-ui text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 border border-forest/30">SOURCE:{item.source?.toUpperCase().replace(/\s/g, '_').slice(0, 15)}</span>
+                              {item.aggregator && (
+                                <span className="bg-primary/10 text-primary mono-ui text-[8px] px-1.5 py-0.5 border border-primary/30" data-testid={`aggregator-badge-${item.id}`}>
+                                  {item.aggregator === 'mediastack' ? 'MEDIASTACK' : 'NEWSDATA'}
+                                </span>
+                              )}
                               <span className="mono-ui text-[9px] md:text-[10px] text-forest/50">{timeAgo(idx)}</span>
                               <TruthTag storyId={item.id} compact />
                             </div>
@@ -384,7 +451,7 @@ const DashboardPage = () => {
                     ) : (
                       <ArrowDown weight="bold" className="w-4 h-4" />
                     )}
-                    <span>{loadingMore ? 'LOADING...' : `LOAD_MORE // ${Math.max(0, news.length - 1 - visibleCount)} REMAINING`}</span>
+                    <span>{loadingMore ? 'LOADING...' : `LOAD_MORE // ${Math.max(0, filteredNews.length - visibleCount)} REMAINING`}</span>
                   </button>
                   )}
                   </motion.section>
@@ -506,6 +573,28 @@ const DashboardPage = () => {
                 </details>
               );
             })}
+
+            {/* Aggregator APIs */}
+            <div className="mt-2 pt-2 border-t border-forest/20" data-testid="aggregator-counts">
+              <span className="mono-ui text-[9px] text-forest font-bold tracking-widest block mb-1.5">AGGREGATOR_APIs</span>
+              {[
+                { name: 'Mediastack', key: 'mediastack' },
+                { name: 'NewsData.io', key: 'newsdata' },
+              ].map(agg => {
+                const status = metrics?.aggregators?.[agg.key];
+                const configured = status?.configured;
+                const cached = status?.cached_count || 0;
+                return (
+                  <div key={agg.key} className="flex items-center justify-between py-0.5 mono-ui text-[8px]" data-testid={`aggregator-${agg.key}`}>
+                    <div className="flex items-center gap-1.5">
+                      <span className={`w-1.5 h-1.5 ${configured ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
+                      <span className="text-forest/80">{agg.name}</span>
+                    </div>
+                    <span className={`font-bold ${cached > 0 ? 'text-primary' : 'text-forest/40'}`}>{cached > 0 ? `${cached} articles` : configured ? 'READY' : 'OFF'}</span>
+                  </div>
+                );
+              })}
+            </div>
 
             <div className="mt-2 pt-2 border-t border-forest/20 flex items-center justify-between">
               <span className="mono-ui text-[8px] text-primary flex items-center gap-1">

@@ -17,6 +17,27 @@ from supabase import create_client, Client
 from pymongo import MongoClient
 import feedparser
 import httpx
+import re as _re
+
+# ── Sanitizer: strip stage directions / sound-effect text from AI output ──
+_STAGE_DIRECTION_PATTERNS = [
+    _re.compile(r'\[.*?\]'),                       # [Sound of music fades]
+    _re.compile(r'\(.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\)', _re.IGNORECASE),
+    _re.compile(r'\*.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\*', _re.IGNORECASE),
+    _re.compile(r'(?i)^\s*(?:sound of|sounds? of|sfx:?).*$', _re.MULTILINE),
+    _re.compile(r'(?i)^\s*(?:\(|\*).*?(?:music|jingle|theme|fade|transition).*?(?:\)|\*)\s*$', _re.MULTILINE),
+]
+
+def sanitize_ai_text(text: str) -> str:
+    """Remove stage directions, sound descriptions, and production cues from AI-generated text."""
+    if not text:
+        return text
+    result = text
+    for pattern in _STAGE_DIRECTION_PATTERNS:
+        result = pattern.sub('', result)
+    # Collapse multiple blank lines into one
+    result = _re.sub(r'\n{3,}', '\n\n', result)
+    return result.strip()
 
 # Initialize FastAPI
 app = FastAPI(title="Narvo API", version="2.0")
@@ -49,13 +70,20 @@ app.include_router(translation_router)
 @app.on_event("startup")
 async def startup_feed_health():
     from services.news_service import run_health_check
+    from services.aggregator_service import refresh_cache
 
     async def periodic_health_check():
         while True:
             await run_health_check()
             await asyncio.sleep(300)  # Every 5 minutes
 
+    async def periodic_aggregator_refresh():
+        while True:
+            await refresh_cache()
+            await asyncio.sleep(600)  # Every 10 minutes
+
     asyncio.create_task(periodic_health_check())
+    asyncio.create_task(periodic_aggregator_refresh())
 
 # Initialize clients
 supabase: Client = create_client(
@@ -133,10 +161,10 @@ class MorningBriefing(BaseModel):
 
 class TTSRequest(BaseModel):
     text: str
-    voice_id: str = "nova"
+    voice_id: str = "onyx"
     stability: float = 0.5
     similarity_boost: float = 0.75
-    language: str = "en"  # Target language for translation (en, pcm, yo, ha, ig)
+    language: str = "en"
 
 class TTSResponse(BaseModel):
     audio_url: str
@@ -294,6 +322,14 @@ Style Guidelines:
 - Extract 2-3 key takeaways as bullet points
 - Maintain journalistic objectivity
 
+CRITICAL RULES — NEVER include any of the following:
+- Sound effect descriptions (e.g. "Sound of music fades", "upbeat jingle plays")
+- Stage directions or production cues (e.g. "[pause]", "(dramatic music)", "*sigh*")
+- Meta-commentary about the broadcast itself (e.g. "And now for the next story")
+- Filler phrases like "Stay tuned" or "More on this after the break"
+- Any text inside brackets, parentheses, or asterisks that describes sounds, music, or actions
+Write ONLY the actual spoken news content — every word must be substantive reporting.
+
 Respond in JSON format:
 {
   "narrative": "The broadcast narrative text...",
@@ -315,6 +351,11 @@ Respond in JSON format:
         cleaned = cleaned.strip()
         
         result = json.loads(cleaned)
+        # Sanitize AI output — remove any stage directions / sound cues
+        if "narrative" in result:
+            result["narrative"] = sanitize_ai_text(result["narrative"])
+        if "key_takeaways" in result:
+            result["key_takeaways"] = [sanitize_ai_text(kt) for kt in result["key_takeaways"] if sanitize_ai_text(kt)]
         return result
     except Exception as e:
         print(f"Error generating narrative: {e}")
@@ -333,13 +374,15 @@ async def health_check():
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
-@app.get("/api/news", response_model=List[NewsItem])
+@app.get("/api/news")
 async def get_news(
     region: Optional[str] = Query(None, description="Filter by region"),
     category: Optional[str] = Query(None, description="Filter by category"),
-    limit: int = Query(20, le=50, description="Number of items to return")
+    limit: int = Query(20, le=50, description="Number of items to return"),
+    include_aggregators: bool = Query(False, description="Include aggregator news"),
+    aggregator_sources: Optional[str] = Query(None, description="Comma-separated aggregator sources: mediastack,newsdata")
 ):
-    """Fetch aggregated news from RSS feeds"""
+    """Fetch aggregated news from RSS feeds and optional aggregator APIs"""
     all_news = []
     
     # Fetch from all RSS feeds concurrently
@@ -349,11 +392,21 @@ async def get_news(
     for items in results:
         all_news.extend(items)
     
+    # Optionally merge aggregator news
+    if include_aggregators:
+        try:
+            from services.aggregator_service import get_normalized_aggregator_news
+            sources_list = aggregator_sources.split(",") if aggregator_sources else None
+            agg_news = await get_normalized_aggregator_news(sources=sources_list)
+            all_news.extend(agg_news)
+        except Exception as e:
+            print(f"[News] Aggregator fetch error: {e}")
+    
     # Apply filters
     if region:
-        all_news = [n for n in all_news if n["region"].lower() == region.lower()]
+        all_news = [n for n in all_news if n.get("region", "").lower() == region.lower()]
     if category:
-        all_news = [n for n in all_news if n["category"].lower() == category.lower()]
+        all_news = [n for n in all_news if n.get("category", "").lower() == category.lower()]
     
     # Sort by recency and return
     all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
@@ -524,6 +577,34 @@ async def refresh_sources_health(background_tasks: BackgroundTasks):
     background_tasks.add_task(run_health_check)
     return {"status": "started", "message": "Health check initiated"}
 
+# ── Aggregator Endpoints ──────────────────────────────────────────────
+
+@app.get("/api/aggregators/status")
+async def aggregators_status():
+    """Get status of programmatic aggregator integrations"""
+    from services.aggregator_service import get_aggregator_status
+    return get_aggregator_status()
+
+@app.get("/api/aggregators/fetch")
+async def fetch_aggregators(keywords: str = Query("Nigeria Africa", description="Search keywords")):
+    """Fetch news from all programmatic aggregators (Mediastack + NewsData.io)"""
+    from services.aggregator_service import fetch_all_aggregators
+    return await fetch_all_aggregators(keywords)
+
+@app.get("/api/aggregators/mediastack")
+async def fetch_mediastack_news(keywords: str = Query("Nigeria Africa"), limit: int = Query(20, ge=1, le=50)):
+    """Fetch news from Mediastack API"""
+    from services.aggregator_service import fetch_mediastack
+    articles = await fetch_mediastack(keywords, limit)
+    return {"count": len(articles), "articles": articles}
+
+@app.get("/api/aggregators/newsdata")
+async def fetch_newsdata_news(query: str = Query("Nigeria"), limit: int = Query(20, ge=1, le=50)):
+    """Fetch news from NewsData.io API"""
+    from services.aggregator_service import fetch_newsdata
+    articles = await fetch_newsdata(query, limit)
+    return {"count": len(articles), "articles": articles}
+
 @app.get("/api/trending")
 async def get_trending():
     """Get trending tags and topics based on recent news"""
@@ -579,44 +660,85 @@ async def search_news(
     category: str = Query(None, description="Filter by category"),
     source: str = Query(None, description="Filter by source"),
     limit: int = Query(20, le=50, description="Max results"),
-    skip: int = Query(0, description="Offset for pagination")
+    skip: int = Query(0, description="Offset for pagination"),
+    include_aggregators: bool = Query(True, description="Include aggregator articles in search")
 ):
-    """Search news articles from RSS feeds"""
+    """Search news articles from RSS feeds, aggregators, and podcasts"""
     try:
-        # Fetch all news
-        all_news = []
+        query_lower = q.lower()
+        all_items = []
+
+        # 1. Fetch RSS news
         tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for items in results:
             if isinstance(items, list):
-                all_news.extend(items)
-        
-        # Search filter
-        query_lower = q.lower()
+                all_items.extend(items)
+
+        # 2. Include cached aggregator articles
+        if include_aggregators:
+            try:
+                from services.aggregator_service import get_normalized_aggregator_news
+                agg_items = await get_normalized_aggregator_news()
+                all_items.extend(agg_items)
+            except Exception as e:
+                print(f"[Search] Aggregator error: {e}")
+
+        # 3. Include podcasts
+        try:
+            from services.podcast_service import search_podcasts
+            pods = await search_podcasts(q, limit=10)
+            for p in pods:
+                all_items.append({
+                    "id": p.get("id", ""),
+                    "title": p.get("title", ""),
+                    "summary": p.get("description", ""),
+                    "source": p.get("podcast_name", "Podcast"),
+                    "source_url": p.get("audio_url", ""),
+                    "published": p.get("published", ""),
+                    "category": "Podcast",
+                    "region": "Africa",
+                    "tags": [],
+                    "image_url": p.get("image_url"),
+                    "aggregator": "podcast",
+                })
+        except Exception:
+            pass
+
+        # 4. Filter by search query
         filtered = []
-        for item in all_news:
-            # Text matching
-            title_match = query_lower in item.get("title", "").lower()
-            summary_match = query_lower in item.get("summary", "").lower()
-            
-            if title_match or summary_match:
-                # Category filter
-                if category and item.get("category", "").lower() != category.lower():
+        for item in all_items:
+            title_match = query_lower in (item.get("title") or "").lower()
+            summary_match = query_lower in (item.get("summary") or "").lower()
+            source_match = query_lower in (item.get("source") or "").lower()
+            tag_match = any(query_lower in t.lower() for t in (item.get("tags") or []))
+
+            if title_match or summary_match or source_match or tag_match:
+                if category and (item.get("category") or "").lower() != category.lower():
                     continue
-                # Source filter
-                if source and item.get("source", "").lower() != source.lower():
+                if source and (item.get("source") or "").lower() != source.lower():
                     continue
                 filtered.append(item)
-        
-        # Sort by relevance (title matches first) then by date
-        filtered.sort(key=lambda x: (
-            query_lower not in x.get("title", "").lower(),
-            x.get("published", "")
+
+        # 5. Deduplicate by id
+        seen_ids = set()
+        deduped = []
+        for item in filtered:
+            item_id = item.get("id", "")
+            if item_id and item_id in seen_ids:
+                continue
+            seen_ids.add(item_id)
+            deduped.append(item)
+
+        # 6. Sort: title matches first, then by date
+        deduped.sort(key=lambda x: (
+            query_lower not in (x.get("title") or "").lower(),
+            x.get("published") or ""
         ), reverse=True)
-        
-        total = len(filtered)
-        paginated = filtered[skip:skip + limit]
-        
+
+        total = len(deduped)
+        paginated = deduped[skip:skip + limit]
+
         return {
             "results": paginated,
             "total": total,
@@ -831,7 +953,9 @@ class UserSettings(BaseModel):
     gestural_swipe: bool = True
     gestural_pinch: bool = False
     voice_commands: bool = False
-    broadcast_language: str = "en"  # en, pcm, yo, ha, ig
+    broadcast_language: str = "en"
+    aggregator_mediastack: bool = True
+    aggregator_newsdata: bool = True
 
 @app.get("/api/settings/{user_id}")
 async def get_user_settings(user_id: str):
@@ -959,6 +1083,9 @@ async def get_metrics():
     from services.news_service import get_content_sources as get_sources
     sources_data = get_sources()
     
+    from services.aggregator_service import get_aggregator_status
+    agg_status = get_aggregator_status()
+
     return {
         "listeners_today": "14.2k",
         "sources_online": sources_data.get("total_sources", 23),
@@ -970,7 +1097,8 @@ async def get_metrics():
         "signal_strength": "98%",
         "network_load": "42%",
         "broadcast_sources": len(sources_data.get("broadcast_sources", [])),
-        "verification_apis": len(sources_data.get("verification_apis", []))
+        "verification_apis": len(sources_data.get("verification_apis", [])),
+        "aggregators": agg_status,
     }
 
 # Morning Briefing Cache
@@ -998,17 +1126,25 @@ async def generate_briefing_script(stories: List[dict]) -> str:
 Requirements:
 - Open with a brief greeting
 - Cover each story in 2-3 sentences
-- Use smooth transitions
+- Use smooth transitions between stories
 - End with a short sign-off
 - Keep it under 500 words
-- Plain text only, no markdown"""
+- Plain text only, no markdown
+
+CRITICAL RULES — NEVER include any of the following:
+- Sound effect descriptions (e.g. "Sound of music fades", "upbeat jingle", "theme music plays")
+- Stage directions or production cues (e.g. "[pause]", "(transition music)", "[SFX]")
+- Descriptions of non-verbal actions (e.g. "*shuffles papers*", "(clears throat)")
+- Text inside brackets, parentheses, or asterisks that describes sounds, moods, or actions
+- Filler like "Stay tuned", "After these messages", "More after the break"
+Write ONLY spoken words. Every sentence must deliver news content. The audio production is handled separately."""
         ).with_model("gemini", "gemini-2.0-flash")
         
         user_message = UserMessage(
             text=f"Create a brief morning news script:\n\n{stories_text}"
         )
         response = await chat.send_message(user_message)
-        return response.strip()
+        return sanitize_ai_text(response.strip())
     except Exception as e:
         print(f"Error generating briefing script: {e}")
         # Fallback to simple concatenation

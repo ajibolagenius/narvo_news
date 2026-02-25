@@ -84,3 +84,13 @@ def get_podcast_audio_url(podcast_id: str) -> Optional[str]:
     if podcast:
         return podcast.get("audio_url")
     return None
+
+
+async def search_podcasts(query: str, limit: int = 10) -> List[Dict]:
+    """Search podcast episodes by title/description."""
+    q = query.lower()
+    results = []
+    for ep in PODCAST_EPISODES:
+        if q in ep.get("title", "").lower() or q in ep.get("description", "").lower():
+            results.append(ep)
+    return results[:limit]

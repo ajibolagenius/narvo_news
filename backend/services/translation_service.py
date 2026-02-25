@@ -1,9 +1,27 @@
 # Translation Service - Multi-language translation using Gemini
 import os
+import re as _re
 from typing import Dict, Optional
 from datetime import datetime
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+
+# ── Sanitizer: strip stage directions / sound-effect text from AI output ──
+_STAGE_DIRECTION_PATTERNS = [
+    _re.compile(r'\[.*?\]'),
+    _re.compile(r'\(.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\)', _re.IGNORECASE),
+    _re.compile(r'\*.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\*', _re.IGNORECASE),
+    _re.compile(r'(?i)^\s*(?:sound of|sounds? of|sfx:?).*$', _re.MULTILINE),
+    _re.compile(r'(?i)^\s*(?:\(|\*).*?(?:music|jingle|theme|fade|transition).*?(?:\)|\*)\s*$', _re.MULTILINE),
+]
+
+def _sanitize(text: str) -> str:
+    if not text:
+        return text
+    result = text
+    for p in _STAGE_DIRECTION_PATTERNS:
+        result = p.sub('', result)
+    return _re.sub(r'\n{3,}', '\n\n', result).strip()
 
 # Supported languages with authentic native names and TTS voice recommendations
 SUPPORTED_LANGUAGES = {
@@ -105,32 +123,37 @@ async def translate_text(
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
         # Build system prompt based on target language
+        _no_sfx_rule = """
+CRITICAL: NEVER include sound descriptions, stage directions, or production cues.
+No text like "[music fades]", "(pause)", "*sigh*", "Sound of..." etc.
+Write ONLY the actual spoken news content."""
+
         system_prompts = {
             "pcm": """You are a professional Nigerian broadcast journalist fluent in Nigerian Pidgin (Naija).
 Translate the news into natural, authentic Nigerian Pidgin while maintaining journalistic accuracy.
 Use common Pidgin expressions and idioms. Keep the broadcast tone professional but relatable.
 Example style: "Di goment don tok say..." instead of "The government has announced..."
-Write ONLY the translated text, no explanations.""",
+Write ONLY the translated text, no explanations.""" + _no_sfx_rule,
             
             "yo": """You are a professional Yoruba broadcast journalist.
 Translate the news into fluent, natural Yoruba (Èdè Yorùbá) while maintaining journalistic accuracy.
 Use proper Yoruba grammar, tones, and expressions. Keep the broadcast tone dignified and clear.
-Write ONLY the translated text in Yoruba, no explanations or English.""",
+Write ONLY the translated text in Yoruba, no explanations or English.""" + _no_sfx_rule,
             
             "ha": """You are a professional Hausa broadcast journalist.
 Translate the news into fluent, natural Hausa (Harshen Hausa) while maintaining journalistic accuracy.
 Use proper Hausa grammar and expressions common in Northern Nigeria. Keep the broadcast tone professional.
-Write ONLY the translated text in Hausa, no explanations or English.""",
+Write ONLY the translated text in Hausa, no explanations or English.""" + _no_sfx_rule,
             
             "ig": """You are a professional Igbo broadcast journalist.
 Translate the news into fluent, natural Igbo (Asụsụ Igbo) while maintaining journalistic accuracy.
 Use proper Igbo grammar, dialect (Central Igbo preferred), and expressions. Keep the broadcast tone clear and authoritative.
-Write ONLY the translated text in Igbo, no explanations or English.""",
+Write ONLY the translated text in Igbo, no explanations or English.""" + _no_sfx_rule,
             
             "en": """You are a professional broadcast journalist.
 Rewrite this news in clear, engaging broadcast English.
 Use an authoritative but accessible tone suitable for radio/audio news.
-Write ONLY the rewritten text, no explanations."""
+Write ONLY the rewritten text, no explanations.""" + _no_sfx_rule
         }
         
         system_message = system_prompts.get(target_language, system_prompts["en"])
@@ -144,7 +167,7 @@ Write ONLY the rewritten text, no explanations."""
         user_message = UserMessage(text=f"Translate this news:\n\n{text}")
         response = await chat.send_message(user_message)
         
-        translated_text = response.strip()
+        translated_text = _sanitize(response.strip())
         
         return {
             "success": True,
@@ -219,6 +242,10 @@ Requirements:
 - Maintain journalistic accuracy
 - Use natural expressions for the target language
 
+CRITICAL: NEVER include sound descriptions, stage directions, or production cues.
+No text like "Sound of music fades", "[pause]", "(jingle plays)", "*transition*" etc.
+Write ONLY the actual spoken news content — every word must be substantive reporting.
+
 Respond in JSON format:
 {{
   "narrative": "The broadcast narrative in {lang_info['name']}...",
@@ -244,10 +271,14 @@ Respond in JSON format:
         
         result = json.loads(cleaned)
         
+        # Sanitize AI output
+        narrative = _sanitize(result.get("narrative", summary))
+        takeaways = [_sanitize(kt) for kt in result.get("key_takeaways", []) if _sanitize(kt)]
+        
         return {
             "success": True,
-            "narrative": result.get("narrative", summary),
-            "key_takeaways": result.get("key_takeaways", []),
+            "narrative": narrative,
+            "key_takeaways": takeaways,
             "language": target_language,
             "language_name": lang_info["name"],
             "voice_id": lang_info["voice_id"]
