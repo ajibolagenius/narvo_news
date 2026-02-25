@@ -95,8 +95,8 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Bug Fix: Global Search** — Rewrote /api/search to query RSS feeds, aggregators, and podcasts with deduplication by ID.
 - **Feature: User Prefs → Dashboard** — Dashboard fetches user's aggregator preferences and passes them to /api/news endpoint.
 - **Feature: Title Deduplication** — Client-side deduplication in DashboardPage by normalized title prevents duplicate stories.
-- **Feature: Tour Guide Modal** — 5-step modal for first-time users (localStorage 'narvo_tour_completed'). Covers LIVE_FEED, SOURCE_FILTER, DISCOVER, SEARCH, SYSTEM_SETTINGS.
-- **Feature: Cinematic Audio** — Tone.js-based audio effects: briefing intro/outro chimes integrated into AudioContext. Exports: playBriefingIntro, playBriefingOutro, playBreakingAlert, playUITransition, playSectionDivider.
+- **Feature: Tour Guide Modal** — 5-step modal for first-time users (localStorage 'narvo_tour_completed'). Covers LIVE_FEED, SOURCE_FILTER, DISCOVER, SEARCH, SYSTEM_SETTINGS. Triggers on login, register, and guest entry via custom event. Replay button on /settings page.
+- **Feature: Cinematic Audio** — Broadcast-grade Tone.js audio effects scoped to briefing section only. Master chain: compressor + reverb. Intro (bass + rising chord + bright stab + noise sweep), section divider (bell + sweep), outro (descending chord + bass + shimmer). SFX toggle on briefing page.
 
 ## Supported Languages
 
