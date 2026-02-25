@@ -60,6 +60,7 @@ function App() {
     <AuthProvider>
       <AudioProvider>
       <DownloadQueueProvider>
+      <ContentSourcesProvider>
       <BreakingNewsProvider>
         <HapticAlertProvider>
           <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
