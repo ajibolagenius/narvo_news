@@ -26,8 +26,8 @@ const BookmarksPage = () => {
   return (
     <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0" data-testid="bookmarks-page">
       <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
-        <span className="mono-ui text-[10px] md:text-xs text-forest">MODULE: <span className="text-primary">SAVED_TRANSMISSIONS</span></span>
-        <span className="mono-ui text-[10px] md:text-xs text-forest">{bookmarks.length} ITEMS</span>
+        <span className="mono-ui text-[12px] md:text-xs text-forest">MODULE: <span className="text-primary">SAVED_TRANSMISSIONS</span></span>
+        <span className="mono-ui text-[12px] md:text-xs text-forest">{bookmarks.length} ITEMS</span>
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8">
@@ -40,9 +40,9 @@ const BookmarksPage = () => {
                 <div className="narvo-border bg-surface/20 p-3 md:p-4 mb-6 md:mb-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-primary animate-pulse" />
-                    <span className="mono-ui text-[9px] md:text-[10px] text-forest">OFFLINE_CACHE: <span className="text-primary">{cachedIds.filter(id => bookmarks.some(b => b.story_id === id)).length} / {bookmarks.length}</span></span>
+                    <span className="mono-ui text-[11px] md:text-[12px] text-forest">OFFLINE_CACHE: <span className="text-primary">{cachedIds.filter(id => bookmarks.some(b => b.story_id === id)).length} / {bookmarks.length}</span></span>
                   </div>
-                  <span className="mono-ui text-[8px] md:text-[9px] text-forest/50 sm:ml-auto">Play to cache audio</span>
+                  <span className="mono-ui text-[10px] md:text-[11px] text-forest/50 sm:ml-auto">Play to cache audio</span>
                 </div>
               )}
 
@@ -62,25 +62,25 @@ const BookmarksPage = () => {
                       <div className="flex flex-col gap-2 md:gap-3">
                         <div className="flex flex-wrap justify-between items-start gap-2">
                           <div className="flex items-center gap-2 md:gap-3">
-                            <span className="bg-forest/20 text-primary mono-ui text-[8px] md:text-[9px] px-1.5 md:px-2 py-0.5 border border-forest/30">{item.category?.toUpperCase()}</span>
+                            <span className="bg-forest/20 text-primary mono-ui text-[10px] md:text-[11px] px-1.5 md:px-2 py-0.5 border border-forest/30">{item.category?.toUpperCase()}</span>
                             {isCached(item.story_id) && (
-                              <span className="mono-ui text-[7px] md:text-[8px] text-forest flex items-center gap-1 border border-forest/30 px-1 md:px-1.5 py-0.5" data-testid={`cached-badge-${item.story_id}`}>
+                              <span className="mono-ui text-[9px] md:text-[10px] text-forest flex items-center gap-1 border border-forest/30 px-1 md:px-1.5 py-0.5" data-testid={`cached-badge-${item.story_id}`}>
                                 <Check className="w-2.5 h-2.5 md:w-3 md:h-3" /> CACHED
                               </span>
                             )}
                           </div>
-                          <span className="mono-ui text-[7px] md:text-[8px] text-forest/50">{item.source}</span>
+                          <span className="mono-ui text-[9px] md:text-[10px] text-forest/50">{item.source}</span>
                         </div>
                         <h3 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content group-hover:text-primary transition-colors leading-tight">{item.title}</h3>
                         <p className="text-xs md:text-sm text-forest font-mono leading-relaxed opacity-70 line-clamp-2">{item.summary}</p>
                         <div className="flex items-center gap-3 md:gap-6 pt-1">
-                          <button onClick={(e) => { e.stopPropagation(); playTrack({ id: item.story_id, title: item.title, summary: item.summary, source: item.source }); }} className="mono-ui text-[9px] md:text-[10px] text-primary flex items-center gap-2 hover:text-content transition-colors" data-testid={`play-bookmark-${item.story_id}`}>
+                          <button onClick={(e) => { e.stopPropagation(); playTrack({ id: item.story_id, title: item.title, summary: item.summary, source: item.source }); }} className="mono-ui text-[11px] md:text-[12px] text-primary flex items-center gap-2 hover:text-content transition-colors" data-testid={`play-bookmark-${item.story_id}`}>
                             {currentTrack?.id === item.story_id && isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                             <span className="hidden sm:inline">{isCached(item.story_id) ? 'PLAY_OFFLINE' : 'GENERATE_AUDIO'}</span>
                             <span className="sm:hidden">PLAY</span>
                           </button>
                           <div className="flex-1 h-[1px] bg-forest/10 hidden md:block" />
-                          <span className="mono-ui text-[7px] md:text-[8px] text-forest/50 hidden md:inline">SAVED: {new Date(item.saved_at).toLocaleDateString()}</span>
+                          <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 hidden md:inline">SAVED: {new Date(item.saved_at).toLocaleDateString()}</span>
                           <button onClick={(e) => { e.stopPropagation(); handleRemove(item.story_id); }} className="text-forest hover:text-red-400 transition-colors ml-auto md:ml-0" data-testid={`remove-bookmark-${item.story_id}`}>
                             <Trash className="w-4 h-4" />
                           </button>

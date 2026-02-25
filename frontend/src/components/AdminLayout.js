@@ -23,7 +23,7 @@ const AdminLayout = () => {
         </div>
         
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-4 mono-ui text-[9px] font-bold">
+          <div className="flex items-center gap-4 mono-ui text-[11px] font-bold">
             <div className="flex items-center gap-2 text-forest">
               <WifiHigh className="w-4 h-4" />
               <span>SIGNAL: <span className="text-primary">100%</span></span>
@@ -33,7 +33,7 @@ const AdminLayout = () => {
               <span>AUTH: <span className="text-primary">LEVEL_5</span></span>
             </div>
           </div>
-          <div className="mono-ui text-[10px] text-forest font-bold">
+          <div className="mono-ui text-[12px] text-forest font-bold">
             LOCAL: {new Date().toLocaleTimeString('en-GB', { hour12: false })}
           </div>
         </div>
@@ -46,7 +46,7 @@ const AdminLayout = () => {
       </div>
 
       {/* Admin Footer */}
-      <footer className="h-10 narvo-border-t bg-background-dark/40 flex items-center justify-between px-6 mono-ui text-[8px] text-forest font-bold">
+      <footer className="h-10 narvo-border-t bg-background-dark/40 flex items-center justify-between px-6 mono-ui text-[10px] text-forest font-bold">
         <span>ADMIN_PROTOCOL: V2.4 // RESTRICTED_ACCESS</span>
         <span>ENCRYPTION: AES-256-GCM // SESSION_ACTIVE</span>
       </footer>

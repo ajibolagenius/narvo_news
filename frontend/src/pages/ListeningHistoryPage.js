@@ -56,13 +56,13 @@ const ListeningHistoryPage = () => {
             <h1 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               LISTENING_HISTORY
             </h1>
-            <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold mt-1">
+            <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold mt-1">
               RECENTLY_PLAYED_BROADCASTS // TIMELINE
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-forest" />
-            <span className="mono-ui text-[8px] text-forest">{history.length}_ENTRIES</span>
+            <span className="mono-ui text-[10px] text-forest">{history.length}_ENTRIES</span>
           </div>
         </div>
 
@@ -82,7 +82,7 @@ const ListeningHistoryPage = () => {
           <div className="narvo-border bg-surface/10 p-8 md:p-12 text-center">
             <Waveform className="w-12 h-12 text-forest/30 mx-auto mb-4" />
             <h3 className="font-display text-lg font-bold text-content uppercase mb-2">NO_HISTORY_YET</h3>
-            <p className="mono-ui text-[9px] text-forest">Play a broadcast to see it appear here.</p>
+            <p className="mono-ui text-[11px] text-forest">Play a broadcast to see it appear here.</p>
           </div>
         ) : (
           <div className="space-y-6 md:space-y-8">
@@ -90,7 +90,7 @@ const ListeningHistoryPage = () => {
               <div key={dateLabel}>
                 <div className="flex items-center gap-3 mb-3 md:mb-4">
                   <div className="w-2 h-2 bg-primary" />
-                  <span className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">
+                  <span className="mono-ui text-[11px] md:text-[12px] text-forest font-bold tracking-widest">
                     {dateLabel.toUpperCase()}
                   </span>
                   <div className="flex-1 h-px bg-forest/20" />
@@ -120,19 +120,19 @@ const ListeningHistoryPage = () => {
                         </h4>
                         <div className="flex items-center gap-2 mt-0.5">
                           {item.source && (
-                            <span className="mono-ui text-[7px] md:text-[8px] text-forest font-bold truncate">{item.source}</span>
+                            <span className="mono-ui text-[9px] md:text-[10px] text-forest font-bold truncate">{item.source}</span>
                           )}
                           {item.category && (
                             <>
                               <span className="text-forest/30">/</span>
-                              <span className="mono-ui text-[7px] md:text-[8px] text-primary">{item.category.toUpperCase()}</span>
+                              <span className="mono-ui text-[9px] md:text-[10px] text-primary">{item.category.toUpperCase()}</span>
                             </>
                           )}
                         </div>
                       </div>
 
                       {/* Timestamp */}
-                      <span className="mono-ui text-[7px] md:text-[8px] text-forest/50 shrink-0">
+                      <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 shrink-0">
                         {formatTime(item.played_at)}
                       </span>
                     </div>

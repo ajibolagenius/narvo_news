@@ -48,7 +48,7 @@ const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
 
       {/* Right side */}
       <div className="flex items-center gap-3 shrink-0">
-        <div className="hidden lg:flex flex-col items-end font-mono text-[9px] text-[rgb(var(--color-text-secondary))]">
+        <div className="hidden lg:flex flex-col items-end font-mono text-[11px] text-[rgb(var(--color-text-secondary))]">
           <span>{t('header.signal')}: <span className="text-[rgb(var(--color-primary))] font-bold">100%</span></span>
           <span>{t('header.latency')}: <span className="text-[rgb(var(--color-primary))] font-bold">12ms</span></span>
         </div>

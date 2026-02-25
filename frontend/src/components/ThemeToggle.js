@@ -39,7 +39,7 @@ export const ThemeToggle = ({ className = '', showLabel = false }) => {
         </motion.div>
       </div>
       {showLabel && (
-        <span className="font-mono text-[9px] uppercase text-[rgb(var(--color-text-secondary))]">
+        <span className="font-mono text-[11px] uppercase text-[rgb(var(--color-text-secondary))]">
           {isDark ? 'DARK' : 'LIGHT'}
         </span>
       )}

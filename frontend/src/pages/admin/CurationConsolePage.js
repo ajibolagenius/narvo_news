@@ -29,11 +29,11 @@ const CurationConsolePage = () => {
     <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="curation-console-page">
       {/* Breadcrumb Bar */}
       <div className="h-14 narvo-border-b bg-background-dark/20 flex items-center px-8 gap-4 shrink-0">
-        <span className="mono-ui text-[9px] text-forest font-bold">DASHBOARD</span>
+        <span className="mono-ui text-[11px] text-forest font-bold">DASHBOARD</span>
         <CaretRight className="w-3 h-3 text-forest" />
-        <span className="mono-ui text-[9px] text-forest font-bold">WIRE_FEEDS</span>
+        <span className="mono-ui text-[11px] text-forest font-bold">WIRE_FEEDS</span>
         <CaretRight className="w-3 h-3 text-forest" />
-        <span className="mono-ui text-[9px] text-primary font-bold">REUTERS_V2 // ID:8829</span>
+        <span className="mono-ui text-[11px] text-primary font-bold">REUTERS_V2 // ID:8829</span>
       </div>
 
       <div className="flex-1 flex overflow-hidden">
@@ -45,7 +45,7 @@ const CurationConsolePage = () => {
               <h2 className="font-display text-3xl font-bold text-content uppercase tracking-tight max-w-2xl leading-tight">
                 Source_Analysis: Geopolitical_Shift_Lagos
               </h2>
-              <span className="mono-ui text-[9px] border border-primary px-3 py-1 bg-primary/10 text-primary font-bold">
+              <span className="mono-ui text-[11px] border border-primary px-3 py-1 bg-primary/10 text-primary font-bold">
                 HIGH_PRIORITY
               </span>
             </div>
@@ -56,7 +56,7 @@ const CurationConsolePage = () => {
             {/* Raw Feed */}
             <div className="flex-1 flex flex-col min-w-[300px]">
               <div className="px-8 py-3 narvo-border-b bg-forest/5 flex justify-between items-center">
-                <span className="mono-ui text-[9px] text-forest font-bold tracking-widest uppercase">RAW_SOURCE // REUTERS</span>
+                <span className="mono-ui text-[11px] text-forest font-bold tracking-widest uppercase">RAW_SOURCE // REUTERS</span>
                 <Lock className="w-4 h-4 text-forest" />
               </div>
               <div className="p-8 overflow-y-auto custom-scroll space-y-6 text-sm text-forest font-medium leading-relaxed">
@@ -77,7 +77,7 @@ const CurationConsolePage = () => {
             {/* Synthesized Output */}
             <div className="flex-1 flex flex-col min-w-[300px] bg-background-dark/10">
               <div className="px-8 py-3 narvo-border-b bg-forest/5 flex justify-between items-center">
-                <span className="mono-ui text-[9px] text-primary font-bold tracking-widest uppercase">NARVO_SYNTHESIS // V2.4</span>
+                <span className="mono-ui text-[11px] text-primary font-bold tracking-widest uppercase">NARVO_SYNTHESIS // V2.4</span>
                 <Sparkle className="w-4 h-4 text-primary" />
               </div>
               <div className="p-8 overflow-y-auto custom-scroll space-y-6 text-sm text-content font-medium leading-relaxed">
@@ -97,7 +97,7 @@ const CurationConsolePage = () => {
           </div>
 
           {/* Legend */}
-          <div className="h-12 narvo-border-t bg-background-dark/40 flex items-center px-8 gap-8 mono-ui text-[9px] text-forest font-bold shrink-0 uppercase">
+          <div className="h-12 narvo-border-t bg-background-dark/40 flex items-center px-8 gap-8 mono-ui text-[11px] text-forest font-bold shrink-0 uppercase">
             <span className="opacity-40 tracking-widest">Signal_Legend:</span>
             {legendItems.map((item, idx) => (
               <div key={idx} className="flex items-center gap-2">
@@ -113,17 +113,17 @@ const CurationConsolePage = () => {
           <div className="p-6 narvo-border-b">
             <div className="flex items-center gap-3 mb-2">
               <Sliders className="w-5 h-5 text-primary" />
-              <h3 className="mono-ui text-[11px] text-content font-bold tracking-widest">ADJUSTMENT_PANEL</h3>
+              <h3 className="mono-ui text-[13px] text-content font-bold tracking-widest">ADJUSTMENT_PANEL</h3>
             </div>
-            <p className="mono-ui text-[8px] text-forest">FINE_TUNE_SYNTHESIS_PARAMS</p>
+            <p className="mono-ui text-[10px] text-forest">FINE_TUNE_SYNTHESIS_PARAMS</p>
           </div>
 
           <div className="flex-1 overflow-y-auto custom-scroll p-6 space-y-8">
             {/* Tone Control */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="mono-ui text-[9px] text-forest font-bold">TONE_FORMALITY</span>
-                <span className="mono-ui text-[10px] text-primary font-bold">{toneValue}%</span>
+                <span className="mono-ui text-[11px] text-forest font-bold">TONE_FORMALITY</span>
+                <span className="mono-ui text-[12px] text-primary font-bold">{toneValue}%</span>
               </div>
               <input 
                 type="range" 
@@ -133,7 +133,7 @@ const CurationConsolePage = () => {
                 onChange={(e) => setToneValue(parseInt(e.target.value))}
                 className="w-full h-1 bg-forest/30 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-primary"
               />
-              <div className="flex justify-between mono-ui text-[8px] text-forest">
+              <div className="flex justify-between mono-ui text-[10px] text-forest">
                 <span>CASUAL</span>
                 <span>FORMAL</span>
               </div>
@@ -142,8 +142,8 @@ const CurationConsolePage = () => {
             {/* Length Control */}
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="mono-ui text-[9px] text-forest font-bold">OUTPUT_LENGTH</span>
-                <span className="mono-ui text-[10px] text-primary font-bold">{lengthValue}%</span>
+                <span className="mono-ui text-[11px] text-forest font-bold">OUTPUT_LENGTH</span>
+                <span className="mono-ui text-[12px] text-primary font-bold">{lengthValue}%</span>
               </div>
               <input 
                 type="range" 
@@ -153,7 +153,7 @@ const CurationConsolePage = () => {
                 onChange={(e) => setLengthValue(parseInt(e.target.value))}
                 className="w-full h-1 bg-forest/30 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-primary"
               />
-              <div className="flex justify-between mono-ui text-[8px] text-forest">
+              <div className="flex justify-between mono-ui text-[10px] text-forest">
                 <span>CONCISE</span>
                 <span>DETAILED</span>
               </div>
@@ -161,12 +161,12 @@ const CurationConsolePage = () => {
 
             {/* Keyword Retention */}
             <div className="space-y-4">
-              <span className="mono-ui text-[9px] text-forest font-bold block">KEYWORD_RETENTION</span>
+              <span className="mono-ui text-[11px] text-forest font-bold block">KEYWORD_RETENTION</span>
               <div className="flex flex-wrap gap-2">
                 {['ECOWAS', 'LAGOS', 'ENERGY', 'PRICING'].map((keyword, idx) => (
                   <span 
                     key={idx} 
-                    className="px-3 py-1 narvo-border bg-primary/10 text-primary mono-ui text-[8px] font-bold"
+                    className="px-3 py-1 narvo-border bg-primary/10 text-primary mono-ui text-[10px] font-bold"
                   >
                     {keyword}
                   </span>
@@ -176,29 +176,29 @@ const CurationConsolePage = () => {
 
             {/* Bias Detection */}
             <div className="narvo-border bg-forest/5 p-4 space-y-3">
-              <span className="mono-ui text-[9px] text-forest font-bold block">BIAS_SCAN_RESULT</span>
+              <span className="mono-ui text-[11px] text-forest font-bold block">BIAS_SCAN_RESULT</span>
               <div className="flex items-center gap-3">
                 <div className="w-full h-2 bg-forest/20 relative">
                   <div className="absolute inset-0 bg-primary w-[15%]" />
                 </div>
-                <span className="mono-ui text-[10px] text-primary font-bold">15%</span>
+                <span className="mono-ui text-[12px] text-primary font-bold">15%</span>
               </div>
-              <p className="mono-ui text-[8px] text-forest">LOW_BIAS_DETECTED // SAFE_TO_PUBLISH</p>
+              <p className="mono-ui text-[10px] text-forest">LOW_BIAS_DETECTED // SAFE_TO_PUBLISH</p>
             </div>
           </div>
 
           {/* Action Buttons */}
           <div className="p-6 narvo-border-t space-y-3">
-            <button className="w-full py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:bg-forest hover:text-content transition-all flex items-center justify-center gap-2">
+            <button className="w-full py-3 narvo-border mono-ui text-[12px] font-bold text-forest hover:bg-forest hover:text-content transition-all flex items-center justify-center gap-2">
               <ArrowCounterClockwise className="w-4 h-4" />
               REGENERATE
             </button>
             <div className="flex gap-3">
-              <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-red-500 hover:border-red-500 transition-all flex items-center justify-center gap-2">
+              <button className="flex-1 py-3 narvo-border mono-ui text-[12px] font-bold text-content hover:bg-red-500 hover:border-red-500 transition-all flex items-center justify-center gap-2">
                 <X className="w-4 h-4" />
                 REJECT
               </button>
-              <button className="flex-1 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all flex items-center justify-center gap-2">
+              <button className="flex-1 py-3 bg-primary mono-ui text-[12px] font-bold text-background-dark hover:bg-white transition-all flex items-center justify-center gap-2">
                 <Check className="w-4 h-4" />
                 APPROVE
               </button>

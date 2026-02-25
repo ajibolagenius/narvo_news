@@ -66,7 +66,7 @@ const ModerationHubPage = () => {
       <div className="px-8 py-6 narvo-border-b flex justify-between items-center bg-background-dark/20 shrink-0">
         <div className="flex items-baseline gap-4">
           <h2 className="font-display text-2xl font-bold text-content uppercase tracking-tight">Incoming_Matrix</h2>
-          <span className="mono-ui text-[9px] text-forest font-bold border border-forest px-2 py-0.5">LIVE_WATCH</span>
+          <span className="mono-ui text-[11px] text-forest font-bold border border-forest px-2 py-0.5">LIVE_WATCH</span>
         </div>
         <div className="flex gap-2">
           <button 
@@ -110,16 +110,16 @@ const ModerationHubPage = () => {
                 {/* Header */}
                 <div className="flex justify-between items-start border-b border-forest/20 pb-4">
                   <div className="space-y-1">
-                    <span className={`mono-ui text-[9px] font-bold flex items-center gap-1 ${statusClasses.text}`}>
+                    <span className={`mono-ui text-[11px] font-bold flex items-center gap-1 ${statusClasses.text}`}>
                       <StatusIcon className="w-3 h-3" />
                       {item.status === 'DISPUTED' && '⚠ ALERT: '}
                       {item.status === 'VERIFIED' && '✔ '}
                       {item.status === 'UNVERIFIED' && '? '}
                       {item.status}
                     </span>
-                    <p className="mono-ui text-[8px] text-forest font-bold">ID: {item.id} {'//'} {item.source}</p>
+                    <p className="mono-ui text-[10px] text-forest font-bold">ID: {item.id} {'//'} {item.source}</p>
                   </div>
-                  <span className="mono-ui text-[9px] text-forest font-bold">{item.timestamp}</span>
+                  <span className="mono-ui text-[11px] text-forest font-bold">{item.timestamp}</span>
                 </div>
 
                 {/* Content */}
@@ -132,22 +132,22 @@ const ModerationHubPage = () => {
                     <div className="aspect-video narvo-border bg-background-dark/40 overflow-hidden relative">
                       <div className="absolute inset-0 bg-gradient-to-br from-forest/20 to-transparent" />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="mono-ui text-[9px] text-forest font-bold">MEDIA_PREVIEW</span>
+                        <span className="mono-ui text-[11px] text-forest font-bold">MEDIA_PREVIEW</span>
                       </div>
                     </div>
                   )}
                   
-                  <p className="text-[11px] text-forest font-medium leading-relaxed line-clamp-3">
+                  <p className="text-[13px] text-forest font-medium leading-relaxed line-clamp-3">
                     {item.description}
                   </p>
                   
                   <div className="flex flex-wrap gap-2">
                     {item.tags.map((tag, tagIdx) => (
-                      <span key={tagIdx} className="px-2 py-0.5 narvo-border text-forest mono-ui text-[8px] font-bold">
+                      <span key={tagIdx} className="px-2 py-0.5 narvo-border text-forest mono-ui text-[10px] font-bold">
                         {tag}
                       </span>
                     ))}
-                    <span className={`px-2 py-0.5 narvo-border ${statusClasses.text} ${statusClasses.border} mono-ui text-[8px] font-bold`}>
+                    <span className={`px-2 py-0.5 narvo-border ${statusClasses.text} ${statusClasses.border} mono-ui text-[10px] font-bold`}>
                       AI_CONF: {item.confidence}
                     </span>
                   </div>
@@ -156,23 +156,23 @@ const ModerationHubPage = () => {
                 {/* Actions */}
                 <div className="flex gap-2 pt-4 narvo-border-t">
                   {item.status === 'VERIFIED' ? (
-                    <button className="w-full py-4 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all uppercase flex items-center justify-center gap-3">
+                    <button className="w-full py-4 bg-primary mono-ui text-[12px] font-bold text-background-dark hover:bg-white transition-all uppercase flex items-center justify-center gap-3">
                       <CheckSquare className="w-4 h-4" />
                       PUBLISH_CONFIRMATION
                     </button>
                   ) : item.status === 'DISPUTED' ? (
                     <>
-                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-red-500 hover:border-red-500 transition-all uppercase flex items-center justify-center gap-2">
+                      <button className="flex-1 py-3 narvo-border mono-ui text-[12px] font-bold text-content hover:bg-red-500 hover:border-red-500 transition-all uppercase flex items-center justify-center gap-2">
                         <Flag className="w-4 h-4" />
                         FLAG
                       </button>
-                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-forest transition-all uppercase">
+                      <button className="flex-1 py-3 narvo-border mono-ui text-[12px] font-bold text-content hover:bg-forest transition-all uppercase">
                         IGNORE
                       </button>
                     </>
                   ) : (
                     <>
-                      <button className="flex-1 py-3 narvo-border mono-ui text-[10px] font-bold text-content hover:bg-forest transition-all uppercase">
+                      <button className="flex-1 py-3 narvo-border mono-ui text-[12px] font-bold text-content hover:bg-forest transition-all uppercase">
                         ASSIGN
                       </button>
                       <button className="w-12 narvo-border flex items-center justify-center hover:bg-forest text-content transition-all">
@@ -188,7 +188,7 @@ const ModerationHubPage = () => {
       </div>
 
       {/* Stats Bar */}
-      <div className="h-12 narvo-border-t bg-background-dark/40 flex items-center justify-between px-8 mono-ui text-[9px] text-forest font-bold shrink-0">
+      <div className="h-12 narvo-border-t bg-background-dark/40 flex items-center justify-between px-8 mono-ui text-[11px] text-forest font-bold shrink-0">
         <div className="flex items-center gap-6">
           <span>QUEUE_TOTAL: <span className="text-content">{stats?.queue_total || 0}</span></span>
           <span>DISPUTED: <span className="text-red-500">{stats?.disputed || 0}</span></span>

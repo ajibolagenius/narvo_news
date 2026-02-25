@@ -35,7 +35,7 @@ const ForgotPasswordPage = () => {
             NARVO <span className="text-forest font-light mx-2">{'//'}</span> RECOVERY
           </div>
         </div>
-        <div className="hidden md:flex items-center gap-2 mono-ui text-[10px] text-forest">
+        <div className="hidden md:flex items-center gap-2 mono-ui text-[12px] text-forest">
           <span className="w-2 h-2 bg-primary animate-pulse" />
           <span>SECURE_CHANNEL: ACTIVE</span>
           <span className="ml-4">LOCAL <Clock /></span>
@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
           {/* Back link */}
           <Link 
             to="/auth" 
-            className="inline-flex items-center gap-2 mono-ui text-[11px] text-forest hover:text-primary transition-colors mb-6"
+            className="inline-flex items-center gap-2 mono-ui text-[13px] text-forest hover:text-primary transition-colors mb-6"
             data-testid="back-to-auth"
           >
             <ArrowLeft weight="bold" className="w-4 h-4" />
@@ -64,13 +64,13 @@ const ForgotPasswordPage = () => {
                 </h2>
               </div>
               <div className="p-6 md:p-8 space-y-5">
-                <p className="mono-ui text-[11px] text-forest leading-relaxed">
+                <p className="mono-ui text-[13px] text-forest leading-relaxed">
                   A password recovery signal has been transmitted to <span className="text-primary font-bold">{email}</span>.
                   Check your inbox and follow the secure link to reset your access code.
                 </p>
                 <div className="border border-forest/30 bg-surface/10 p-4 space-y-2">
-                  <span className="mono-ui text-[9px] text-primary font-bold block">RECOVERY_PROTOCOL:</span>
-                  <ul className="space-y-1.5 mono-ui text-[10px] text-forest">
+                  <span className="mono-ui text-[11px] text-primary font-bold block">RECOVERY_PROTOCOL:</span>
+                  <ul className="space-y-1.5 mono-ui text-[12px] text-forest">
                     <li>01 // Check inbox (and spam folder)</li>
                     <li>02 // Click the secure reset link</li>
                     <li>03 // Set a new access code (min 6 chars)</li>
@@ -100,7 +100,7 @@ const ForgotPasswordPage = () => {
                 <h2 className="font-display text-2xl font-bold uppercase text-content tracking-tight">
                   Recover Access
                 </h2>
-                <p className="mono-ui text-[10px] text-forest mt-1">
+                <p className="mono-ui text-[12px] text-forest mt-1">
                   INITIATE_PASSWORD_RECOVERY_SEQUENCE
                 </p>
               </div>
@@ -112,17 +112,17 @@ const ForgotPasswordPage = () => {
                 {error && (
                   <div className="border border-red-500/50 bg-red-500/10 p-3 flex items-center gap-2" data-testid="reset-error">
                     <Warning weight="fill" className="w-4 h-4 text-red-400 shrink-0" />
-                    <span className="text-red-400 mono-ui text-[11px]">[ERROR] {error}</span>
+                    <span className="text-red-400 mono-ui text-[13px]">[ERROR] {error}</span>
                   </div>
                 )}
 
-                <p className="mono-ui text-[11px] text-forest leading-relaxed">
+                <p className="mono-ui text-[13px] text-forest leading-relaxed">
                   Enter the operator credential (email) associated with your NARVO account. 
                   A secure recovery link will be transmitted.
                 </p>
 
                 <div>
-                  <label className="mono-ui text-[10px] text-forest mb-2 block font-bold">
+                  <label className="mono-ui text-[12px] text-forest mb-2 block font-bold">
                     Operator Credential
                   </label>
                   <div className="flex items-center border border-forest bg-background-dark h-12 px-4 focus-within:border-primary transition-all">
@@ -155,7 +155,7 @@ const ForgotPasswordPage = () => {
               <div className="border-t border-forest bg-background-dark p-4 text-center">
                 <Link
                   to="/auth"
-                  className="mono-ui text-[11px] text-forest hover:text-primary transition-colors"
+                  className="mono-ui text-[13px] text-forest hover:text-primary transition-colors"
                   data-testid="back-to-signin"
                 >
                   [Remember your access code? Sign In]
@@ -164,7 +164,7 @@ const ForgotPasswordPage = () => {
             </div>
           )}
 
-          <p className="mono-ui text-[9px] text-forest/50 text-center mt-6 leading-relaxed">
+          <p className="mono-ui text-[11px] text-forest/50 text-center mt-6 leading-relaxed">
             Recovery signals are encrypted via AES-256-GCM.<br />
             Links expire after 60 minutes for security.
           </p>

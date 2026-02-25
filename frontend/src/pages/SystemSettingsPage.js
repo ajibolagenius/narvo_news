@@ -93,7 +93,7 @@ const SoundThemesSection = ({ settings, updateSetting }) => {
         <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
           BROADCAST_THEMES
         </h2>
-        <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+        <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] hidden sm:block">
           AUDIO_BRANDING_ENGINE
         </span>
       </div>
@@ -111,14 +111,14 @@ const SoundThemesSection = ({ settings, updateSetting }) => {
               data-testid={`theme-${theme.id}`}
             >
               {isActive && (
-                <span className="absolute top-2 right-2 text-[7px] font-bold px-1.5 py-0.5 bg-background-dark text-primary mono-ui">
+                <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 bg-background-dark text-primary mono-ui">
                   ACTIVE
                 </span>
               )}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <MusicNotes className="w-4 h-4" weight="bold" />
-                  <span className="mono-ui text-[11px] md:text-[12px] font-bold">{theme.name.toUpperCase()}</span>
+                  <span className="mono-ui text-[13px] md:text-[12px] font-bold">{theme.name.toUpperCase()}</span>
                 </div>
                 <button
                   onClick={(e) => playThemePreview(e, theme.id)}
@@ -136,7 +136,7 @@ const SoundThemesSection = ({ settings, updateSetting }) => {
                   )}
                 </button>
               </div>
-              <p className={`mono-ui text-[8px] md:text-[9px] leading-relaxed ${isActive ? 'text-background-dark/70' : 'text-forest'}`}>
+              <p className={`mono-ui text-[10px] md:text-[11px] leading-relaxed ${isActive ? 'text-background-dark/70' : 'text-forest'}`}>
                 {theme.description}
               </p>
             </div>
@@ -302,7 +302,7 @@ const SystemGearSixPage = () => {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               {t('system_settings.display_entity')}
             </h2>
-            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+            <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] hidden sm:block">
               VISUAL_OUTPUT_LAYER
             </span>
           </div>
@@ -315,8 +315,8 @@ const SystemGearSixPage = () => {
                   <Sun className="w-4 h-4 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-0.5 min-w-0">
-                  <h3 className="mono-ui text-[10px] md:text-[12px] text-content font-bold">{t('system_settings.high_contrast')}</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold break-words">{t('system_settings.high_contrast_desc')}</p>
+                  <h3 className="mono-ui text-[12px] md:text-[12px] text-content font-bold">{t('system_settings.high_contrast')}</h3>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold break-words">{t('system_settings.high_contrast_desc')}</p>
                 </div>
               </div>
               <button 
@@ -339,16 +339,16 @@ const SystemGearSixPage = () => {
                   <Monitor className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.interface_scaling')}</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.interface_scaling_desc')}</p>
+                  <h3 className="mono-ui text-[13px] md:text-[12px] text-content font-bold">{t('system_settings.interface_scaling')}</h3>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold">{t('system_settings.interface_scaling_desc')}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 md:gap-4 font-mono text-[10px] md:text-[11px] font-bold text-primary">
+              <div className="flex items-center gap-3 md:gap-4 font-mono text-[12px] md:text-[13px] font-bold text-primary">
                 <span>100%</span>
                 <select 
                   value={settings.interfaceScale}
                   onChange={(e) => updateSetting('interfaceScale', e.target.value)}
-                  className="appearance-none bg-surface/20 narvo-border px-3 md:px-4 py-2 pr-8 md:pr-10 mono-ui text-[9px] md:text-[10px] text-content focus:outline-none focus:border-primary transition-all cursor-pointer"
+                  className="appearance-none bg-surface/20 narvo-border px-3 md:px-4 py-2 pr-8 md:pr-10 mono-ui text-[11px] md:text-[12px] text-content focus:outline-none focus:border-primary transition-all cursor-pointer"
                   data-testid="select-interface-scale"
                 >
                   <option value="COMPACT">COMPACT</option>
@@ -366,7 +366,7 @@ const SystemGearSixPage = () => {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               NEWS_AGGREGATORS
             </h2>
-            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+            <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] hidden sm:block">
               PROGRAMMATIC_FEED_SOURCES
             </span>
           </div>
@@ -383,12 +383,12 @@ const SystemGearSixPage = () => {
                   </div>
                   <div className="space-y-0.5 min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="mono-ui text-[10px] md:text-[12px] text-content font-bold">{agg.label}</h3>
-                      <span className={`mono-ui text-[7px] font-bold px-1.5 py-0.5 ${
+                      <h3 className="mono-ui text-[12px] md:text-[12px] text-content font-bold">{agg.label}</h3>
+                      <span className={`mono-ui text-[9px] font-bold px-1.5 py-0.5 ${
                         settings[agg.key] ? 'bg-primary/10 text-primary border border-primary/30' : 'bg-surface/20 text-forest/50 border border-forest/20'
                       }`}>{settings[agg.key] ? agg.badge : 'OFF'}</span>
                     </div>
-                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold break-words">{agg.desc}</p>
+                    <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold break-words">{agg.desc}</p>
                   </div>
                 </div>
                 <button
@@ -416,7 +416,7 @@ const SystemGearSixPage = () => {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               {t('system_settings.notification_syntax')}
             </h2>
-            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+            <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] hidden sm:block">
               ALERT_SYSTEM_MANAGEMENT
             </span>
           </div>
@@ -429,8 +429,8 @@ const SystemGearSixPage = () => {
                   <Pulse className="w-4 h-4 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-0.5 min-w-0">
-                  <h3 className="mono-ui text-[10px] md:text-[12px] text-content font-bold">{t('system_settings.haptic_sync')}</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold break-words">{t('system_settings.haptic_sync_desc')}</p>
+                  <h3 className="mono-ui text-[12px] md:text-[12px] text-content font-bold">{t('system_settings.haptic_sync')}</h3>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold break-words">{t('system_settings.haptic_sync_desc')}</p>
                 </div>
               </div>
               <button 
@@ -454,11 +454,11 @@ const SystemGearSixPage = () => {
                     <Bell className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.alert_amplitude')}</h3>
-                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.alert_amplitude_desc')}</p>
+                    <h3 className="mono-ui text-[13px] md:text-[12px] text-content font-bold">{t('system_settings.alert_amplitude')}</h3>
+                    <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold">{t('system_settings.alert_amplitude_desc')}</p>
                   </div>
                 </div>
-                <span className="mono-ui text-[10px] md:text-[11px] text-primary font-bold border border-primary px-2 py-1">
+                <span className="mono-ui text-[12px] md:text-[13px] text-primary font-bold border border-primary px-2 py-1">
                   {settings.alertVolume}%
                 </span>
               </div>
@@ -483,7 +483,7 @@ const SystemGearSixPage = () => {
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               {t('system_settings.data_throughput')}
             </h2>
-            <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] hidden sm:block">
+            <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] hidden sm:block">
               BANDWIDTH_SYNC_CONTROL
             </span>
           </div>
@@ -497,16 +497,16 @@ const SystemGearSixPage = () => {
                     <Gauge className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.data_limit')}</h3>
-                    <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.data_limit_desc')}</p>
+                    <h3 className="mono-ui text-[13px] md:text-[12px] text-content font-bold">{t('system_settings.data_limit')}</h3>
+                    <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold">{t('system_settings.data_limit_desc')}</p>
                   </div>
                 </div>
-                <span className="mono-ui text-[10px] md:text-[11px] text-primary font-bold border border-primary px-2 py-1">
+                <span className="mono-ui text-[12px] md:text-[13px] text-primary font-bold border border-primary px-2 py-1">
                   {(settings.dataLimit / 1000).toFixed(1)} TB
                 </span>
               </div>
               <div className="pl-0 md:pl-[72px] flex items-center gap-3 md:gap-4">
-                <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">0</span>
+                <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold">0</span>
                 <input 
                   type="range" 
                   className="flex-1 h-1 bg-forest/30 appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:bg-primary"
@@ -516,7 +516,7 @@ const SystemGearSixPage = () => {
                   onChange={(e) => updateSetting('dataLimit', parseInt(e.target.value))}
                   data-testid="slider-data-limit"
                 />
-                <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">5TB</span>
+                <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold">5TB</span>
               </div>
             </div>
 
@@ -527,8 +527,8 @@ const SystemGearSixPage = () => {
                   <Lightning className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">{t('system_settings.bandwidth_priority')}</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">{t('system_settings.bandwidth_priority_desc')}</p>
+                  <h3 className="mono-ui text-[13px] md:text-[12px] text-content font-bold">{t('system_settings.bandwidth_priority')}</h3>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold">{t('system_settings.bandwidth_priority_desc')}</p>
                 </div>
               </div>
               <div className="flex narvo-border divide-x divide-forest/50">
@@ -536,7 +536,7 @@ const SystemGearSixPage = () => {
                   <button
                     key={option}
                     onClick={() => updateSetting('bandwidthPriority', option)}
-                    className={`px-3 md:px-4 py-2 mono-ui text-[9px] md:text-[10px] font-bold transition-all ${
+                    className={`px-3 md:px-4 py-2 mono-ui text-[11px] md:text-[12px] font-bold transition-all ${
                       settings.bandwidthPriority === option 
                         ? 'bg-primary text-background-dark' 
                         : 'text-forest hover:text-content hover:bg-surface/10'
@@ -555,7 +555,7 @@ const SystemGearSixPage = () => {
         <div className="flex flex-col sm:flex-row justify-end gap-4 md:gap-6 pt-8 md:pt-12">
           <button 
             onClick={handleReset}
-            className="px-6 md:px-10 py-3 md:py-4 mono-ui text-[10px] md:text-[11px] font-bold text-forest narvo-border hover:bg-forest/10 transition-all flex items-center justify-center gap-2"
+            className="px-6 md:px-10 py-3 md:py-4 mono-ui text-[12px] md:text-[13px] font-bold text-forest narvo-border hover:bg-forest/10 transition-all flex items-center justify-center gap-2"
             data-testid="reset-defaults-btn"
           >
             <ArrowCounterClockwise className="w-4 h-4" />
@@ -564,7 +564,7 @@ const SystemGearSixPage = () => {
           <button 
             onClick={handleSave}
             disabled={saving}
-            className={`px-6 md:px-10 py-3 md:py-4 mono-ui text-[10px] md:text-[11px] font-bold transition-all flex items-center justify-center gap-2 ${
+            className={`px-6 md:px-10 py-3 md:py-4 mono-ui text-[12px] md:text-[13px] font-bold transition-all flex items-center justify-center gap-2 ${
               hasChanges && !saving
                 ? 'bg-primary text-background-dark hover:bg-white' 
                 : saving
@@ -576,7 +576,7 @@ const SystemGearSixPage = () => {
             {saving ? <CircleNotch className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
             {saving ? 'AUTO_SAVING...' : hasChanges ? t('system_settings.save_config') : 'SAVED'}
           </button>
-          <span className="mono-ui text-[8px] text-forest/60 mt-2">AUTO_SAVE_ENABLED</span>
+          <span className="mono-ui text-[10px] text-forest/60 mt-2">AUTO_SAVE_ENABLED</span>
         </div>
       </div>
     </main>

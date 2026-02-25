@@ -60,14 +60,14 @@ const DownloadQueueIndicator = () => {
             </div>
             
             <div className="flex-1 text-left">
-              <div className="mono-ui text-[10px] font-bold text-content">
+              <div className="mono-ui text-[12px] font-bold text-content">
                 {isProcessing ? 'DOWNLOADING...' : 
                  allComplete ? 'DOWNLOADS_COMPLETE' :
                  failedCount > 0 ? `${failedCount} FAILED` :
                  'DOWNLOAD_QUEUE'
                 }
               </div>
-              <div className="mono-ui text-[8px] text-forest">
+              <div className="mono-ui text-[10px] text-forest">
                 {completedCount}/{totalCount} {pendingCount > 0 && `• ${pendingCount} pending`}
               </div>
             </div>
@@ -93,7 +93,7 @@ const DownloadQueueIndicator = () => {
                     className="text-primary transition-all duration-300"
                   />
                 </svg>
-                <span className="absolute inset-0 flex items-center justify-center mono-ui text-[8px] text-primary font-bold">
+                <span className="absolute inset-0 flex items-center justify-center mono-ui text-[10px] text-primary font-bold">
                   {overallProgress}%
                 </span>
               </div>
@@ -141,7 +141,7 @@ const DownloadQueueIndicator = () => {
                       
                       {/* Title & Progress */}
                       <div className="flex-1 min-w-0">
-                        <div className="mono-ui text-[9px] text-content font-bold truncate">
+                        <div className="mono-ui text-[11px] text-content font-bold truncate">
                           {item.title?.slice(0, 30)}{item.title?.length > 30 ? '...' : ''}
                         </div>
                         {item.status === 'downloading' && (
@@ -153,13 +153,13 @@ const DownloadQueueIndicator = () => {
                           </div>
                         )}
                         {item.status === 'pending' && (
-                          <span className="mono-ui text-[7px] text-forest">WAITING...</span>
+                          <span className="mono-ui text-[9px] text-forest">WAITING...</span>
                         )}
                       </div>
                       
                       {/* Progress % */}
                       {item.status === 'downloading' && (
-                        <span className="mono-ui text-[8px] text-primary font-bold">
+                        <span className="mono-ui text-[10px] text-primary font-bold">
                           {item.progress}%
                         </span>
                       )}
@@ -171,13 +171,13 @@ const DownloadQueueIndicator = () => {
                 <div className="flex items-center justify-between p-2 px-3 bg-surface/10">
                   <button
                     onClick={clearCompleted}
-                    className="mono-ui text-[8px] text-forest hover:text-content transition-colors"
+                    className="mono-ui text-[10px] text-forest hover:text-content transition-colors"
                   >
                     CLEAR_COMPLETED
                   </button>
                   <button
                     onClick={clearAll}
-                    className="mono-ui text-[8px] text-red-400 hover:text-red-300 transition-colors"
+                    className="mono-ui text-[10px] text-red-400 hover:text-red-300 transition-colors"
                   >
                     CLEAR_ALL
                   </button>

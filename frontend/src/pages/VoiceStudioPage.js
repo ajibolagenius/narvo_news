@@ -146,19 +146,19 @@ const VoiceStudioPage = () => {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <Translate className="w-4 h-4 text-primary" />
-              <span className="mono-ui text-[8px] md:text-[9px] text-primary font-bold tracking-widest">AUDIO_TRANSLATION_ENGINE</span>
+              <span className="mono-ui text-[10px] md:text-[11px] text-primary font-bold tracking-widest">AUDIO_TRANSLATION_ENGINE</span>
             </div>
             <h2 className="font-display text-2xl md:text-3xl font-bold text-content uppercase tracking-tight">
               VOICE_MATRIX
             </h2>
-            <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold mt-1">
+            <p className="mono-ui text-[10px] md:text-[11px] text-forest font-bold mt-1">
               SELECT_ENTITY_MODEL — SETS_VOICE_AND_BROADCAST_LANGUAGE
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="mono-ui text-[8px] text-forest">NODE: LAG_88_V</span>
-            <span className="mono-ui text-[8px] text-forest/40 hidden sm:inline">/</span>
-            <span className="mono-ui text-[8px] text-forest hidden sm:inline">48kHz / 32bit</span>
+            <span className="mono-ui text-[10px] text-forest">NODE: LAG_88_V</span>
+            <span className="mono-ui text-[10px] text-forest/40 hidden sm:inline">/</span>
+            <span className="mono-ui text-[10px] text-forest hidden sm:inline">48kHz / 32bit</span>
           </div>
         </div>
       </div>
@@ -194,12 +194,12 @@ const VoiceStudioPage = () => {
                 >
                   {/* Status Badge + Language Tag */}
                   <div className="flex items-center justify-between mb-3 md:mb-4">
-                    <span className={`mono-ui text-[7px] md:text-[8px] px-2 py-0.5 font-bold ${
+                    <span className={`mono-ui text-[9px] md:text-[10px] px-2 py-0.5 font-bold ${
                       active ? 'bg-primary text-background-dark' : 'border border-forest text-forest'
                     }`}>
                       {active ? 'ACTIVE_MODEL' : 'STANDBY'}
                     </span>
-                    <span className={`mono-ui text-[7px] md:text-[8px] px-2 py-0.5 font-bold ${
+                    <span className={`mono-ui text-[9px] md:text-[10px] px-2 py-0.5 font-bold ${
                       active ? 'bg-background-dark text-primary' : 'bg-forest/20 text-forest'
                     }`} data-testid={`broadcast-lang-${voice.language || 'en'}`}>
                       {lang.region}
@@ -210,7 +210,7 @@ const VoiceStudioPage = () => {
                   <h3 className="font-display text-xl md:text-2xl font-bold text-content uppercase leading-tight">
                     {voice.name.replace(' ', '_')}
                   </h3>
-                  <span className="mono-ui text-[9px] md:text-[10px] text-forest mt-1">
+                  <span className="mono-ui text-[11px] md:text-[12px] text-forest mt-1">
                     {voice.accent} / {lang.native}
                   </span>
 
@@ -230,10 +230,10 @@ const VoiceStudioPage = () => {
                   {/* Footer: Metadata + Preview */}
                   <div className="flex items-center justify-between narvo-border-t border-forest/30 pt-3">
                     <div className="min-w-0">
-                      <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold block truncate">
+                      <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold block truncate">
                         {voice.description}
                       </span>
-                      <span className={`mono-ui text-[7px] md:text-[8px] font-bold mt-0.5 block ${active ? 'text-primary' : 'text-forest/50'}`}>
+                      <span className={`mono-ui text-[9px] md:text-[10px] font-bold mt-0.5 block ${active ? 'text-primary' : 'text-forest/50'}`}>
                         {active ? 'SIGNAL_STABLE' : 'NODE_IDLE'}
                       </span>
                     </div>
@@ -262,7 +262,7 @@ const VoiceStudioPage = () => {
           </div>
         )}
 
-        <p className="mt-6 mono-ui text-[8px] md:text-[9px] text-forest/40">
+        <p className="mt-6 mono-ui text-[10px] md:text-[11px] text-forest/40">
           SELECTING_A_MODEL_SETS_BOTH_VOICE_AND_BROADCAST_LANGUAGE — INTERFACE_TEXT_LANGUAGE_IS_SET_IN_SETTINGS
         </p>
       </div>
@@ -276,7 +276,7 @@ const VoiceStudioPage = () => {
             </div>
             <div className="min-w-0">
               <span className="text-content font-display font-bold text-sm block truncate">{selectedVoice.name}</span>
-              <span className="mono-ui text-[8px] text-forest block truncate">
+              <span className="mono-ui text-[10px] text-forest block truncate">
                 {selectedVoice.accent} / {LANG_META[selectedVoice.language]?.native || selectedVoice.language}
               </span>
             </div>
@@ -284,7 +284,7 @@ const VoiceStudioPage = () => {
           <button
             onClick={handleApplyModel}
             disabled={saving}
-            className="bg-primary text-background-dark px-6 md:px-8 py-2 md:py-3 mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-all disabled:opacity-50 shrink-0 w-full sm:w-auto text-center"
+            className="bg-primary text-background-dark px-6 md:px-8 py-2 md:py-3 mono-ui text-[12px] md:text-[13px] font-bold hover:bg-white transition-all disabled:opacity-50 shrink-0 w-full sm:w-auto text-center"
             data-testid="apply-voice-btn"
           >
             {saving ? 'SAVING...' : 'APPLY_MODEL'}

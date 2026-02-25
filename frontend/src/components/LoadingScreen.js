@@ -34,11 +34,11 @@ const LoadingScreen = ({ onComplete, duration = 3000 }) => {
       </div>
       <div className="scanning-line z-0" />
       <header className="relative z-10 w-full p-6 flex justify-between items-start">
-        <div className="mono-ui text-[10px] text-forest">
+        <div className="mono-ui text-[12px] text-forest">
           <span className="block">NARVO_OS_BUILD</span>
           <span className="block opacity-60 mt-1">SECURE_CHANNEL // ENCRYPTED</span>
         </div>
-        <div className="mono-ui text-[10px] text-right">
+        <div className="mono-ui text-[12px] text-right">
           <span className="block text-primary">SIGNAL_STATUS: OPTIMAL</span>
           <span className="block text-forest opacity-60 mt-1">LATENCY: 12MS</span>
         </div>

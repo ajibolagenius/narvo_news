@@ -18,7 +18,7 @@ export const ResponsiveTabView = ({ tabs, className = '' }) => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 min-w-[100px] px-4 py-3 font-mono text-[10px] uppercase tracking-wider transition-all whitespace-nowrap
+              className={`flex-1 min-w-[100px] px-4 py-3 font-mono text-[12px] uppercase tracking-wider transition-all whitespace-nowrap
                 ${activeTab === tab.id 
                   ? 'text-[rgb(var(--color-primary))] border-b-2 border-[rgb(var(--color-primary))] bg-[rgb(var(--color-bg))]' 
                   : 'text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]'
@@ -55,7 +55,7 @@ export const ResponsiveTabView = ({ tabs, className = '' }) => {
         {tabs.map((tab) => (
           <div key={tab.id} className="border border-[rgb(var(--color-border))]">
             <div className="px-4 py-3 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]">
-              <h3 className="font-mono text-[10px] uppercase tracking-wider text-[rgb(var(--color-text-secondary))]">
+              <h3 className="font-mono text-[12px] uppercase tracking-wider text-[rgb(var(--color-text-secondary))]">
                 {tab.icon && <span className="mr-2">{tab.icon}</span>}
                 {tab.label}
               </h3>
@@ -83,7 +83,7 @@ export const Tabs = ({ tabs, defaultTab, className = '' }) => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-3 font-mono text-[10px] uppercase tracking-wider transition-all whitespace-nowrap
+            className={`px-4 py-3 font-mono text-[12px] uppercase tracking-wider transition-all whitespace-nowrap
               ${activeTab === tab.id 
                 ? 'text-[rgb(var(--color-primary))] border-b-2 border-[rgb(var(--color-primary))]' 
                 : 'text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-text-primary))]'

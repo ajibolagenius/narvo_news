@@ -9,7 +9,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const MetricCard = ({ title, icon: Icon, loading, children }) => (
   <div className="narvo-border bg-surface/5 p-5 md:p-8 flex flex-col justify-between min-h-[180px] md:min-h-[220px]">
     <div className="flex justify-between items-start">
-      <h3 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-widest">{title}</h3>
+      <h3 className="mono-ui text-[11px] md:text-[12px] text-forest font-bold tracking-widest">{title}</h3>
       <Icon className="w-4 h-4 md:w-5 md:h-5 text-forest" />
     </div>
     {loading ? (
@@ -49,7 +49,7 @@ const AccountPage = () => {
           <div className="narvo-border bg-surface/10 p-4 md:p-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 blur-3xl pointer-events-none" />
             <div className="relative z-10">
-              <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold tracking-[0.2em] block mb-4">
+              <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] block mb-4">
                 AUTHENTICATED_OPERATOR
               </span>
               <div className="flex items-center gap-4">
@@ -58,12 +58,12 @@ const AccountPage = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <span className="text-content block font-display font-bold text-sm md:text-lg truncate">{user.email}</span>
-                  <span className="mono-ui text-[8px] md:text-[9px] text-forest block mt-0.5">
+                  <span className="mono-ui text-[10px] md:text-[11px] text-forest block mt-0.5">
                     OPERATOR_ID: {user.id?.slice(0, 16)}...
                   </span>
                   <div className="flex items-center gap-2 mt-1.5">
-                    <span className="px-1.5 py-0.5 bg-primary/20 text-primary mono-ui text-[7px] md:text-[8px] font-bold">PREMIUM</span>
-                    <span className="px-1.5 py-0.5 bg-forest/20 text-forest mono-ui text-[7px] md:text-[8px] font-bold">VERIFIED</span>
+                    <span className="px-1.5 py-0.5 bg-primary/20 text-primary mono-ui text-[9px] md:text-[10px] font-bold">PREMIUM</span>
+                    <span className="px-1.5 py-0.5 bg-forest/20 text-forest mono-ui text-[9px] md:text-[10px] font-bold">VERIFIED</span>
                   </div>
                 </div>
               </div>
@@ -79,10 +79,10 @@ const AccountPage = () => {
           <div className="relative z-10 p-4 md:p-8 space-y-4 md:space-y-6">
             <div className="flex items-center gap-3">
               <span className="w-2 h-2 bg-primary animate-pulse" />
-              <span className="mono-ui text-[9px] md:text-[10px] text-primary font-bold uppercase">{t('account.stream_active')}</span>
+              <span className="mono-ui text-[11px] md:text-[12px] text-primary font-bold uppercase">{t('account.stream_active')}</span>
             </div>
             <div>
-              <h3 className="mono-ui text-[8px] md:text-[9px] text-forest font-bold uppercase tracking-widest mb-1">
+              <h3 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold uppercase tracking-widest mb-1">
                 {t('account.current_plan')}
               </h3>
               <p className="font-display text-3xl md:text-5xl lg:text-6xl font-bold text-content uppercase leading-none">
@@ -91,12 +91,12 @@ const AccountPage = () => {
             </div>
             <div className="flex flex-wrap gap-2 md:gap-4">
               <button 
-                className="px-4 md:px-6 py-2 bg-transparent border border-white text-content mono-ui text-[9px] md:text-[10px] font-bold hover:bg-primary hover:border-primary hover:text-background-dark transition-all"
+                className="px-4 md:px-6 py-2 bg-transparent border border-white text-content mono-ui text-[11px] md:text-[12px] font-bold hover:bg-primary hover:border-primary hover:text-background-dark transition-all"
                 data-testid="manage-plan-btn"
               >
                 {t('account.manage_plan')}
               </button>
-              <button className="px-3 py-2 text-slate-400 mono-ui text-[9px] md:text-[10px] font-bold hover:text-primary transition-colors flex items-center gap-2">
+              <button className="px-3 py-2 text-slate-400 mono-ui text-[11px] md:text-[12px] font-bold hover:text-primary transition-colors flex items-center gap-2">
                 <FileText className="w-3.5 h-3.5" />
                 <span>{t('account.view_invoices')}</span>
               </button>
@@ -106,7 +106,7 @@ const AccountPage = () => {
 
         {/* Metrics Grid */}
         <div>
-          <h2 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-[0.2em] mb-4">
+          <h2 className="mono-ui text-[11px] md:text-[12px] text-forest font-bold tracking-[0.2em] mb-4">
             TRANSMISSION_METRICS
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
@@ -114,7 +114,7 @@ const AccountPage = () => {
               <span className="font-display text-4xl md:text-5xl font-bold text-content block">
                 {metrics?.broadcast_hours ?? 0}
               </span>
-              <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold mt-1 block">HOURS_GENERATED</span>
+              <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold mt-1 block">HOURS_GENERATED</span>
               <div className="w-full h-1 bg-forest/20 mt-4 relative">
                 <div className="absolute top-0 left-0 h-full bg-primary" style={{ width: `${Math.min(100, (metrics?.broadcast_hours || 0) * 10)}%` }} />
               </div>
@@ -124,7 +124,7 @@ const AccountPage = () => {
               <span className="font-display text-4xl md:text-5xl font-bold text-content block">
                 {metrics?.stories_processed ?? 0}
               </span>
-              <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold mt-1 block">
+              <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold mt-1 block">
                 {metrics?.sources_online ?? 0}_SOURCES_ONLINE
               </span>
               <div className="flex items-end gap-1 h-8 mt-4 opacity-40">
@@ -138,7 +138,7 @@ const AccountPage = () => {
               <span className="font-display text-4xl md:text-5xl font-bold text-content block">
                 {metrics?.network_load ?? '0%'}
               </span>
-              <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold mt-1 block">SIGNAL: {metrics?.signal_strength ?? 'N/A'}</span>
+              <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold mt-1 block">SIGNAL: {metrics?.signal_strength ?? 'N/A'}</span>
               <div className="w-full h-1 bg-forest/20 mt-4 relative">
                 <div className="absolute top-0 left-0 h-full bg-primary" style={{ width: `${networkLoad}%` }} />
               </div>
@@ -148,7 +148,7 @@ const AccountPage = () => {
 
         {/* System Alerts */}
         <div>
-          <h2 className="mono-ui text-[9px] md:text-[10px] text-forest font-bold tracking-[0.2em] mb-4 flex items-center gap-2">
+          <h2 className="mono-ui text-[11px] md:text-[12px] text-forest font-bold tracking-[0.2em] mb-4 flex items-center gap-2">
             <Bell className="w-3.5 h-3.5" />
             {t('account.system_alerts')}
           </h2>
@@ -162,7 +162,7 @@ const AccountPage = () => {
               ))
             ) : alerts.length === 0 ? (
               <div className="p-4 narvo-border text-center">
-                <span className="mono-ui text-[9px] text-forest">NO_ACTIVE_ALERTS</span>
+                <span className="mono-ui text-[11px] text-forest">NO_ACTIVE_ALERTS</span>
               </div>
             ) : (
               alerts.map(alert => (
@@ -174,12 +174,12 @@ const AccountPage = () => {
                   data-testid={`alert-${alert.id}`}
                 >
                   {alert.priority && <div className="absolute top-0 left-0 w-1 h-full bg-primary" />}
-                  <p className={`mono-ui text-[10px] md:text-[11px] font-bold mb-1.5 ${alert.priority ? 'text-primary' : 'text-content'}`}>
+                  <p className={`mono-ui text-[12px] md:text-[13px] font-bold mb-1.5 ${alert.priority ? 'text-primary' : 'text-content'}`}>
                     {alert.title}
                   </p>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest leading-relaxed">{alert.desc}</p>
+                  <p className="mono-ui text-[10px] md:text-[11px] text-forest leading-relaxed">{alert.desc}</p>
                   {alert.time && (
-                    <p className="mono-ui text-[7px] text-slate-500 mt-2 text-right">
+                    <p className="mono-ui text-[9px] text-slate-500 mt-2 text-right">
                       {alert.time.includes('T') ? new Date(alert.time).toLocaleString() : alert.time}
                     </p>
                   )}
@@ -194,9 +194,9 @@ const AccountPage = () => {
           <div className="narvo-border-t pt-4 md:pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <User className="w-4 h-4 text-forest" />
-              <span className="mono-ui text-[8px] md:text-[9px] text-forest">{t('account.session_active')}</span>
+              <span className="mono-ui text-[10px] md:text-[11px] text-forest">{t('account.session_active')}</span>
             </div>
-            <span className="mono-ui text-[8px] text-forest/50">LISTENERS: {metrics?.listeners_today ?? '0'}</span>
+            <span className="mono-ui text-[10px] text-forest/50">LISTENERS: {metrics?.listeners_today ?? '0'}</span>
           </div>
         )}
       </div>

@@ -39,11 +39,11 @@ const VoiceManagementPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-1 bg-forest narvo-border">
           {kpiData.map((kpi, idx) => (
             <div key={idx} className="bg-background-dark p-6 space-y-4">
-              <span className="mono-ui text-[8px] text-forest font-bold tracking-widest">{kpi.label}</span>
+              <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">{kpi.label}</span>
               <div className="flex items-baseline gap-2">
                 <span className="font-display text-4xl font-bold text-content">{kpi.value}</span>
                 {kpi.unit && <span className="mono-ui text-[12px] text-forest font-bold">{kpi.unit}</span>}
-                {kpi.change && <span className="mono-ui text-[10px] text-primary font-bold">{kpi.change}</span>}
+                {kpi.change && <span className="mono-ui text-[12px] text-primary font-bold">{kpi.change}</span>}
               </div>
               {kpi.progress && (
                 <div className="h-1 bg-forest/20 relative overflow-hidden">
@@ -51,7 +51,7 @@ const VoiceManagementPage = () => {
                 </div>
               )}
               {kpi.status && (
-                <p className="mono-ui text-[8px] text-primary font-bold">{kpi.status}</p>
+                <p className="mono-ui text-[10px] text-primary font-bold">{kpi.status}</p>
               )}
               {kpi.bars && (
                 <div className="flex gap-0.5 h-1 items-end">
@@ -74,16 +74,16 @@ const VoiceManagementPage = () => {
             <div className="flex gap-4">
               <button 
                 onClick={fetchData}
-                className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase"
+                className="px-6 py-3 narvo-border mono-ui text-[12px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase"
               >
                 <ArrowClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                 Refresh
               </button>
-              <button className="px-6 py-3 narvo-border mono-ui text-[10px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase">
+              <button className="px-6 py-3 narvo-border mono-ui text-[12px] font-bold text-forest hover:text-content transition-all flex items-center gap-2 uppercase">
                 <Funnel className="w-4 h-4" />
                 Filter
               </button>
-              <button className="px-6 py-3 bg-primary mono-ui text-[10px] font-bold text-background-dark hover:bg-white transition-all flex items-center gap-2 uppercase">
+              <button className="px-6 py-3 bg-primary mono-ui text-[12px] font-bold text-background-dark hover:bg-white transition-all flex items-center gap-2 uppercase">
                 <PlusSquare className="w-4 h-4" />
                 New_Model
               </button>
@@ -93,7 +93,7 @@ const VoiceManagementPage = () => {
           <div className="narvo-border overflow-hidden bg-background-dark/20">
             <table className="w-full text-left">
               <thead>
-                <tr className="narvo-border-b bg-forest/5 mono-ui text-[9px] text-forest font-bold">
+                <tr className="narvo-border-b bg-forest/5 mono-ui text-[11px] text-forest font-bold">
                   <th className="px-8 py-4">VOICE_IDENTITY</th>
                   <th className="px-8 py-4">LANGUAGE_SET</th>
                   <th className="px-8 py-4">LATENCY</th>
@@ -102,7 +102,7 @@ const VoiceManagementPage = () => {
                   <th className="px-8 py-4 text-right">OPS</th>
                 </tr>
               </thead>
-              <tbody className="mono-ui text-[10px] text-forest font-bold">
+              <tbody className="mono-ui text-[12px] text-forest font-bold">
                 {voices.map((voice, idx) => (
                   <tr key={idx} className="narvo-border-b hover:bg-forest/5 transition-colors cursor-pointer group">
                     <td className="px-8 py-5">
@@ -112,7 +112,7 @@ const VoiceManagementPage = () => {
                         </div>
                         <div>
                           <p className="text-content">{voice.name}</p>
-                          <p className="text-[8px] text-forest">ID: {voice.id}</p>
+                          <p className="text-[10px] text-forest">ID: {voice.id}</p>
                         </div>
                       </div>
                     </td>
@@ -157,7 +157,7 @@ const VoiceManagementPage = () => {
 
       {/* Signal Analyzer Dock */}
       <div className="h-48 narvo-border-t bg-background-dark/40 p-8 flex flex-col gap-4 shrink-0">
-        <div className="flex justify-between items-center text-[9px] mono-ui font-bold text-forest">
+        <div className="flex justify-between items-center text-[11px] mono-ui font-bold text-forest">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-2 text-primary">
               <span className="w-2 h-2 bg-primary animate-pulse" />

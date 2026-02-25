@@ -262,8 +262,8 @@ const DiscoverPage = () => {
           <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent p-6 md:p-12">
             <div className="max-w-4xl space-y-4 md:space-y-6">
               <div className="flex items-center gap-2 md:gap-3">
-                <span className="bg-primary text-background-dark px-2 md:px-3 py-1 mono-ui text-[9px] md:text-[10px] font-bold">{t('discover.live_broadcast')}</span>
-                <span className="mono-ui text-[9px] md:text-[10px] text-primary">SIGNAL_STRONG // ARC_NODE_01</span>
+                <span className="bg-primary text-background-dark px-2 md:px-3 py-1 mono-ui text-[11px] md:text-[12px] font-bold">{t('discover.live_broadcast')}</span>
+                <span className="mono-ui text-[11px] md:text-[12px] text-primary">SIGNAL_STRONG // ARC_NODE_01</span>
               </div>
               {loading ? (
                 <>
@@ -283,15 +283,15 @@ const DiscoverPage = () => {
               <div className="flex items-center gap-4 md:gap-6 pt-2 md:pt-4">
                 <button 
                   onClick={handlePlayFeatured}
-                  className="flex items-center gap-2 md:gap-3 bg-white text-background-dark px-4 md:px-8 py-2 md:py-4 mono-ui text-[10px] md:text-[12px] font-bold hover:bg-primary transition-colors"
+                  className="flex items-center gap-2 md:gap-3 bg-white text-background-dark px-4 md:px-8 py-2 md:py-4 mono-ui text-[12px] md:text-[12px] font-bold hover:bg-primary transition-colors"
                   data-testid="start-transmission-btn"
                 >
                   <Play className="w-4 h-4 md:w-5 md:h-5" fill="currentColor" />
                   <span>[ {t('discover.start_transmission')} ]</span>
                 </button>
                 <div className="hidden sm:flex gap-2 md:gap-4">
-                  <div className="text-primary mono-ui text-[9px] md:text-[10px] bg-background-dark narvo-border px-2 md:px-3 py-1">CAM_01</div>
-                  <div className="text-primary mono-ui text-[9px] md:text-[10px] bg-background-dark narvo-border px-2 md:px-3 py-1 animate-pulse">REC ●</div>
+                  <div className="text-primary mono-ui text-[11px] md:text-[12px] bg-background-dark narvo-border px-2 md:px-3 py-1">CAM_01</div>
+                  <div className="text-primary mono-ui text-[11px] md:text-[12px] bg-background-dark narvo-border px-2 md:px-3 py-1 animate-pulse">REC ●</div>
                 </div>
               </div>
             </div>
@@ -302,7 +302,7 @@ const DiscoverPage = () => {
         <div className="lg:hidden flex items-center narvo-border-b">
           <button
             onClick={() => setMobileTab('podcasts')}
-            className={`flex-1 h-10 flex items-center justify-center gap-2 mono-ui text-[9px] font-bold transition-colors ${
+            className={`flex-1 h-10 flex items-center justify-center gap-2 mono-ui text-[11px] font-bold transition-colors ${
               mobileTab === 'podcasts' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'
             }`}
             data-testid="tab-podcasts"
@@ -311,7 +311,7 @@ const DiscoverPage = () => {
           </button>
           <button
             onClick={() => setMobileTab('radio')}
-            className={`flex-1 h-10 flex items-center justify-center gap-2 mono-ui text-[9px] font-bold transition-colors ${
+            className={`flex-1 h-10 flex items-center justify-center gap-2 mono-ui text-[11px] font-bold transition-colors ${
               mobileTab === 'radio' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'
             }`}
             data-testid="tab-radio"
@@ -331,7 +331,7 @@ const DiscoverPage = () => {
                     <button
                       onClick={handleDownloadAll}
                       disabled={isProcessing}
-                      className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[8px] md:text-[9px] font-bold narvo-border ${isProcessing ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
+                      className={`flex items-center gap-1.5 px-3 py-1 mono-ui text-[10px] md:text-[11px] font-bold narvo-border ${isProcessing ? 'text-forest cursor-wait' : 'text-primary hover:bg-primary hover:text-background-dark'} transition-colors`}
                       data-testid="download-all-btn"
                     >
                       <CloudArrowDown className="w-3 h-3" />
@@ -341,13 +341,13 @@ const DiscoverPage = () => {
                   <div className="flex items-center gap-1 md:gap-2 p-1 narvo-border bg-background-dark">
                     <button 
                       onClick={() => { setPodcastSort('latest'); setPodcastSearch(''); }}
-                      className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+                      className={`px-2 md:px-4 py-1 mono-ui text-[11px] md:text-[12px] font-bold ${podcastSort === 'latest' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
                     >
                       {t('discover.latest')}
                     </button>
                     <button 
                       onClick={() => { setPodcastSort('popular'); setPodcastSearch(''); }}
-                      className={`px-2 md:px-4 py-1 mono-ui text-[9px] md:text-[10px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
+                      className={`px-2 md:px-4 py-1 mono-ui text-[11px] md:text-[12px] ${podcastSort === 'popular' ? 'bg-primary text-background-dark font-bold' : 'text-forest hover:text-content'}`}
                     >
                       {t('discover.popular')}
                     </button>
@@ -363,21 +363,21 @@ const DiscoverPage = () => {
                     value={podcastSearch}
                     onChange={(e) => handlePodcastSearch(e.target.value)}
                     placeholder="SEARCH_EPISODES..."
-                    className="w-full h-8 pl-8 pr-3 narvo-border bg-background-dark mono-ui text-[9px] text-content placeholder:text-forest/40 focus:border-primary focus:outline-none"
+                    className="w-full h-8 pl-8 pr-3 narvo-border bg-background-dark mono-ui text-[11px] text-content placeholder:text-forest/40 focus:border-primary focus:outline-none"
                     data-testid="podcast-search-input"
                   />
                 </div>
                 <div className="flex gap-1 overflow-x-auto custom-scroll pb-1">
                   <button
                     onClick={() => setPodcastCategory('all')}
-                    className={`px-2 py-1 mono-ui text-[8px] font-bold whitespace-nowrap shrink-0 ${podcastCategory === 'all' ? 'bg-primary text-background-dark' : 'narvo-border text-forest hover:text-content'}`}
+                    className={`px-2 py-1 mono-ui text-[10px] font-bold whitespace-nowrap shrink-0 ${podcastCategory === 'all' ? 'bg-primary text-background-dark' : 'narvo-border text-forest hover:text-content'}`}
                     data-testid="podcast-cat-all"
                   >ALL</button>
                   {podcastCategories.map(cat => (
                     <button
                       key={cat.id}
                       onClick={() => setPodcastCategory(cat.id)}
-                      className={`px-2 py-1 mono-ui text-[8px] font-bold whitespace-nowrap shrink-0 ${podcastCategory === cat.id ? 'bg-primary text-background-dark' : 'narvo-border text-forest hover:text-content'}`}
+                      className={`px-2 py-1 mono-ui text-[10px] font-bold whitespace-nowrap shrink-0 ${podcastCategory === cat.id ? 'bg-primary text-background-dark' : 'narvo-border text-forest hover:text-content'}`}
                       data-testid={`podcast-cat-${cat.id}`}
                     >{cat.name.toUpperCase()}</button>
                   ))}
@@ -421,40 +421,40 @@ const DiscoverPage = () => {
                     >
                       <div className="flex justify-between items-start">
                         <div className="flex items-center gap-2">
-                          <span className="mono-ui text-[8px] md:text-[9px] text-primary border border-primary/30 px-1.5 md:px-2 py-0.5 bg-primary/10 font-bold">
+                          <span className="mono-ui text-[10px] md:text-[11px] text-primary border border-primary/30 px-1.5 md:px-2 py-0.5 bg-primary/10 font-bold">
                             {podcast.episode}
                           </span>
                           {isCached && (
-                            <span className="flex items-center gap-1 mono-ui text-[7px] text-green-500">
+                            <span className="flex items-center gap-1 mono-ui text-[9px] text-green-500">
                               <CheckCircle weight="fill" className="w-3 h-3" />
                               OFFLINE
                             </span>
                           )}
                         </div>
-                        <span className="mono-ui text-[8px] md:text-[9px] text-forest">{podcast.duration}</span>
+                        <span className="mono-ui text-[10px] md:text-[11px] text-forest">{podcast.duration}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="mono-ui text-[7px] text-forest bg-surface/50 px-1.5 py-0.5 uppercase">{podcast.category}</span>
+                        <span className="mono-ui text-[9px] text-forest bg-surface/50 px-1.5 py-0.5 uppercase">{podcast.category}</span>
                       </div>
                       <h4 className="font-display text-base md:text-xl font-bold uppercase tracking-tight text-content leading-tight group-hover:text-primary transition-colors">
                         {podcast.title}
                       </h4>
-                      <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
+                      <p className="text-[12px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
                         {podcast.description}
                       </p>
                       {/* Expanded Episode Detail */}
                       {isExpanded && (
                         <div className="narvo-border bg-surface/10 p-4 space-y-3" data-testid={`podcast-detail-${podcast.id}`}>
-                          <div className="flex flex-wrap gap-3 mono-ui text-[8px] text-forest">
+                          <div className="flex flex-wrap gap-3 mono-ui text-[10px] text-forest">
                             <span>CATEGORY: <span className="text-primary">{(podcast.category || 'GENERAL').toUpperCase()}</span></span>
                             <span>DURATION: <span className="text-content">{podcast.duration}</span></span>
                             {podcast.published && <span>PUBLISHED: <span className="text-content">{podcast.published}</span></span>}
                           </div>
-                          <p className="mono-ui text-[9px] text-forest/80 leading-relaxed">{podcast.description}</p>
+                          <p className="mono-ui text-[11px] text-forest/80 leading-relaxed">{podcast.description}</p>
                           <div className="flex gap-2 pt-1">
                             <button
                               onClick={(e) => { e.stopPropagation(); handlePlayPodcast(podcast); }}
-                              className="flex items-center gap-2 bg-primary text-background-dark px-4 py-2 mono-ui text-[9px] font-bold hover:bg-white transition-colors"
+                              className="flex items-center gap-2 bg-primary text-background-dark px-4 py-2 mono-ui text-[11px] font-bold hover:bg-white transition-colors"
                               data-testid={`play-detail-${podcast.id}`}
                             >
                               <Play className="w-4 h-4" fill="currentColor" />
@@ -464,7 +464,7 @@ const DiscoverPage = () => {
                               <button
                                 onClick={(e) => { e.stopPropagation(); handleDownloadPodcast(podcast); }}
                                 disabled={inQueue}
-                                className="flex items-center gap-2 narvo-border px-4 py-2 mono-ui text-[9px] font-bold text-forest hover:text-primary hover:border-primary transition-colors"
+                                className="flex items-center gap-2 narvo-border px-4 py-2 mono-ui text-[11px] font-bold text-forest hover:text-primary hover:border-primary transition-colors"
                               >
                                 <CloudArrowDown className="w-4 h-4" />
                                 {inQueue ? `${downloadProgress}%` : 'DOWNLOAD'}
@@ -476,7 +476,7 @@ const DiscoverPage = () => {
                       <div className="mt-auto pt-4 md:pt-6 flex items-center justify-between">
                         <button 
                           onClick={() => handlePlayPodcast(podcast)}
-                          className="flex items-center gap-2 md:gap-3 text-primary mono-ui text-[9px] md:text-[10px] font-bold hover:text-content transition-colors"
+                          className="flex items-center gap-2 md:gap-3 text-primary mono-ui text-[11px] md:text-[12px] font-bold hover:text-content transition-colors"
                           data-testid={`play-podcast-${podcast.id}`}
                         >
                           <PlayCircle className="w-5 h-5 md:w-6 md:h-6" />
@@ -488,7 +488,7 @@ const DiscoverPage = () => {
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDownloadPodcast(podcast); }}
                             disabled={inQueue}
-                            className={`flex items-center gap-1.5 mono-ui text-[8px] md:text-[9px] ${inQueue ? 'text-primary cursor-wait' : 'text-forest hover:text-primary'} transition-colors`}
+                            className={`flex items-center gap-1.5 mono-ui text-[10px] md:text-[11px] ${inQueue ? 'text-primary cursor-wait' : 'text-forest hover:text-primary'} transition-colors`}
                             data-testid={`download-podcast-${podcast.id}`}
                             title="Download for offline"
                           >
@@ -521,12 +521,12 @@ const DiscoverPage = () => {
             <div className="p-4 md:p-8 narvo-border-b bg-background-dark sticky top-0 z-10">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.radio_garden')}</h3>
-                <div className="flex items-center gap-1.5 text-[8px] md:text-[9px] mono-ui text-primary font-bold bg-primary/10 px-1.5 md:px-2 py-0.5 narvo-border">
+                <div className="flex items-center gap-1.5 text-[10px] md:text-[11px] mono-ui text-primary font-bold bg-primary/10 px-1.5 md:px-2 py-0.5 narvo-border">
                   <span className={`w-1.5 h-1.5 ${isRadioPlaying ? 'bg-primary animate-pulse' : 'bg-forest'}`} />
                   {isRadioPlaying ? 'LIVE' : 'STANDBY'}
                 </div>
               </div>
-              <p className="mono-ui text-[9px] md:text-[10px] text-forest">AFRICAN_BROADCAST_RELAY_v2.1</p>
+              <p className="mono-ui text-[11px] md:text-[12px] text-forest">AFRICAN_BROADCAST_RELAY_v2.1</p>
             </div>
 
             {/* Country Selector */}
@@ -535,7 +535,7 @@ const DiscoverPage = () => {
                 <button
                   key={c.code}
                   onClick={() => setSelectedCountry(c.code)}
-                  className={`px-2 py-1 mono-ui text-[8px] md:text-[9px] font-bold transition-all ${
+                  className={`px-2 py-1 mono-ui text-[10px] md:text-[11px] font-bold transition-all ${
                     selectedCountry === c.code 
                       ? 'bg-primary text-background-dark' 
                       : 'narvo-border text-forest hover:text-content hover:border-white'
@@ -563,7 +563,7 @@ const DiscoverPage = () => {
                   <div className="narvo-border bg-surface/10 p-6 text-center">
                     <Radio className="w-8 h-8 text-forest mx-auto mb-3 opacity-50" />
                     <h4 className="font-display text-sm font-bold text-content uppercase mb-2">NO STATIONS FOUND</h4>
-                    <p className="mono-ui text-[9px] text-forest">Try selecting another country.</p>
+                    <p className="mono-ui text-[11px] text-forest">Try selecting another country.</p>
                   </div>
                 </div>
               ) : (
@@ -589,7 +589,7 @@ const DiscoverPage = () => {
                           <Radio className="w-3 h-3 text-primary animate-pulse" />
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mono-ui text-[8px] text-forest">
+                      <div className="flex items-center gap-2 mono-ui text-[10px] text-forest">
                         <span>{station.country}</span>
                         {station.bitrate > 0 && <span>• {station.bitrate}kbps</span>}
                       </div>
@@ -603,11 +603,11 @@ const DiscoverPage = () => {
             <div className="p-4 md:p-6 bg-background-dark/90 backdrop-blur-md narvo-border-t">
               <div className="flex items-center justify-between mb-3">
                 <div className="space-y-1 min-w-0 flex-1">
-                  <span className="mono-ui text-[8px] md:text-[9px] text-forest font-bold block">{t('discover.now_playing')}</span>
-                  <p className="mono-ui text-[10px] md:text-xs text-content font-bold uppercase truncate">
+                  <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold block">{t('discover.now_playing')}</span>
+                  <p className="mono-ui text-[12px] md:text-xs text-content font-bold uppercase truncate">
                     {currentStation?.name || t('discover.select_station')}
                   </p>
-                  <p className="mono-ui text-[8px] text-forest">
+                  <p className="mono-ui text-[10px] text-forest">
                     {currentStation?.country || '--'} {currentStation?.bitrate ? `// ${currentStation.bitrate}kbps` : ''}
                   </p>
                 </div>
@@ -657,7 +657,7 @@ const DiscoverPage = () => {
                   <Lightning weight="fill" className="w-5 h-5 text-primary" />
                   <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">AGGREGATOR_WIRE</h3>
                 </div>
-                <div className="flex items-center gap-3 mono-ui text-[9px]">
+                <div className="flex items-center gap-3 mono-ui text-[11px]">
                   <span className="text-primary font-bold">{aggregatorWire.total} ARTICLES</span>
                   <span className="text-forest/50">MEDIASTACK + NEWSDATA</span>
                 </div>
@@ -674,18 +674,18 @@ const DiscoverPage = () => {
                   data-testid={`aggregator-article-${idx}`}
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <span className={`mono-ui text-[7px] font-bold px-1.5 py-0.5 ${
+                    <span className={`mono-ui text-[9px] font-bold px-1.5 py-0.5 ${
                       article.aggregator === 'mediastack' ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' : 'bg-primary/10 text-primary border border-primary/30'
                     }`}>
                       {article.aggregator === 'mediastack' ? 'MEDIASTACK' : 'NEWSDATA'}
                     </span>
-                    <span className="mono-ui text-[8px] text-forest/50 truncate">{article.source}</span>
+                    <span className="mono-ui text-[10px] text-forest/50 truncate">{article.source}</span>
                   </div>
-                  <h4 className="mono-ui text-[10px] md:text-[11px] text-content font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                  <h4 className="mono-ui text-[12px] md:text-[13px] text-content font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
                   </h4>
                   {article.summary && (
-                    <p className="mt-1 mono-ui text-[8px] text-forest/60 line-clamp-2">{article.summary}</p>
+                    <p className="mt-1 mono-ui text-[10px] text-forest/60 line-clamp-2">{article.summary}</p>
                   )}
                 </a>
               ))}
@@ -701,7 +701,7 @@ const DiscoverPage = () => {
                 <Broadcast className="w-5 h-5 text-primary" />
                 <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">CONTENT_SOURCES</h3>
               </div>
-              <div className="flex items-center gap-4 mono-ui text-[9px]">
+              <div className="flex items-center gap-4 mono-ui text-[11px]">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 bg-primary animate-pulse" />
                   <span className="text-primary font-bold">{getTotalSources()} ACTIVE_FEEDS</span>
@@ -715,28 +715,28 @@ const DiscoverPage = () => {
             <div className="bg-background-dark p-4 md:p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Rss className="w-4 h-4 text-primary" />
-                <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">RSS_FEEDS</span>
+                <span className="mono-ui text-[12px] text-forest font-bold tracking-widest">RSS_FEEDS</span>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
-                  <span className="mono-ui text-[10px] text-content">LOCAL_NG</span>
+                  <span className="mono-ui text-[12px] text-content">LOCAL_NG</span>
                   <span className="mono-ui text-sm text-primary font-bold">{getLocalSources()}</span>
                 </div>
                 <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
-                  <span className="mono-ui text-[10px] text-content">CONTINENTAL_AF</span>
+                  <span className="mono-ui text-[12px] text-content">CONTINENTAL_AF</span>
                   <span className="mono-ui text-sm text-primary font-bold">{getContinentalSources()}</span>
                 </div>
                 <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
-                  <span className="mono-ui text-[10px] text-content">INTERNATIONAL</span>
+                  <span className="mono-ui text-[12px] text-content">INTERNATIONAL</span>
                   <span className="mono-ui text-sm text-primary font-bold">{getInternationalSources()}</span>
                 </div>
                 {aggregatorWire && (
                   <div className="flex justify-between items-center narvo-border p-3 bg-primary/5 border-primary/20">
-                    <span className="mono-ui text-[10px] text-primary">AGGREGATOR_APIs</span>
+                    <span className="mono-ui text-[12px] text-primary">AGGREGATOR_APIs</span>
                     <span className="mono-ui text-sm text-primary font-bold">{aggregatorWire.total}</span>
                   </div>
                 )}
-                <div className="mono-ui text-[8px] text-forest/60 mt-2">
+                <div className="mono-ui text-[10px] text-forest/60 mt-2">
                   {sources?.sources?.slice(0, 5).map(s => s.name).join(' · ') || 'Loading...'}
                 </div>
               </div>
@@ -746,22 +746,22 @@ const DiscoverPage = () => {
             <div className="bg-background-dark p-4 md:p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Radio className="w-4 h-4 text-primary" />
-                <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">BROADCAST_RELAY</span>
+                <span className="mono-ui text-[12px] text-forest font-bold tracking-widest">BROADCAST_RELAY</span>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
-                  <span className="mono-ui text-[10px] text-content">TV_STATIONS</span>
+                  <span className="mono-ui text-[12px] text-content">TV_STATIONS</span>
                   <span className="mono-ui text-sm text-primary font-bold">
                     {getBroadcastSources().filter(s => s.type === 'TV').length}
                   </span>
                 </div>
                 <div className="flex justify-between items-center narvo-border p-3 bg-surface/10">
-                  <span className="mono-ui text-[10px] text-content">RADIO_STATIONS</span>
+                  <span className="mono-ui text-[12px] text-content">RADIO_STATIONS</span>
                   <span className="mono-ui text-sm text-primary font-bold">
                     {getBroadcastSources().filter(s => s.type === 'Radio').length}
                   </span>
                 </div>
-                <div className="mono-ui text-[8px] text-forest/60 mt-2">
+                <div className="mono-ui text-[10px] text-forest/60 mt-2">
                   {getBroadcastSources().slice(0, 4).map(s => s.name).join(' • ') || 'Loading...'}
                 </div>
               </div>
@@ -771,13 +771,13 @@ const DiscoverPage = () => {
             <div className="bg-background-dark p-4 md:p-6">
               <div className="flex items-center gap-2 mb-4">
                 <Globe className="w-4 h-4 text-primary" />
-                <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">VERIFICATION_API</span>
+                <span className="mono-ui text-[12px] text-forest font-bold tracking-widest">VERIFICATION_API</span>
               </div>
               <div className="space-y-2">
                 {sources?.verification_apis?.map((api, idx) => (
                   <div key={idx} className="flex items-center justify-between narvo-border p-2 bg-surface/10">
-                    <span className="mono-ui text-[9px] text-content">{api.name}</span>
-                    <span className={`mono-ui text-[8px] px-1.5 py-0.5 ${
+                    <span className="mono-ui text-[11px] text-content">{api.name}</span>
+                    <span className={`mono-ui text-[10px] px-1.5 py-0.5 ${
                       api.status === 'active' ? 'bg-primary/20 text-primary' : 'bg-forest/20 text-forest'
                     }`}>
                       {api.status?.toUpperCase()}
@@ -785,7 +785,7 @@ const DiscoverPage = () => {
                   </div>
                 )) || (
                   <div className="text-center p-4">
-                    <span className="mono-ui text-[9px] text-forest">Loading APIs...</span>
+                    <span className="mono-ui text-[11px] text-forest">Loading APIs...</span>
                   </div>
                 )}
               </div>

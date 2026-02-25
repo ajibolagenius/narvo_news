@@ -64,8 +64,8 @@ const DailyDigestToggle = () => {
           )}
         </div>
         <div className="min-w-0">
-          <span className="mono-ui text-[10px] text-content font-bold block">DAILY_DIGEST</span>
-          <span className="mono-ui text-[7px] text-forest block">
+          <span className="mono-ui text-[12px] text-content font-bold block">DAILY_DIGEST</span>
+          <span className="mono-ui text-[9px] text-forest block">
             {!supported ? 'NOT_SUPPORTED_IN_BROWSER' : denied ? 'BLOCKED_IN_BROWSER_SETTINGS' : isSubscribed ? 'NOTIFICATIONS_ACTIVE' : 'ENABLE_PUSH_ALERTS'}
           </span>
         </div>

@@ -42,7 +42,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
               data-testid={`mobile-nav-${item.label.toLowerCase()}`}
             >
               <Icon weight={isActive ? 'fill' : 'regular'} className="w-5 h-5" />
-              <span className="font-mono text-[8px] uppercase">{item.label}</span>
+              <span className="font-mono text-[10px] uppercase">{item.label}</span>
             </button>
           );
         })}
@@ -51,7 +51,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
           className={`flex flex-col items-center gap-0.5 ${isSettingsActive ? 'text-[rgb(var(--color-primary))]' : 'text-[rgb(var(--color-text-secondary))]'}`}
         >
           <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5" />
-          <span className="font-mono text-[8px] uppercase">More</span>
+          <span className="font-mono text-[10px] uppercase">More</span>
         </button>
       </nav>
     );
@@ -103,7 +103,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
                 data-testid={`sidebar-${item.label.toLowerCase()}`}
               >
                 <Icon weight={isActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
-                {open && <span className="font-mono text-[11px] font-bold uppercase tracking-wider truncate">{item.label}</span>}
+                {open && <span className="font-mono text-[13px] font-bold uppercase tracking-wider truncate">{item.label}</span>}
               </button>
             );
           })}
@@ -126,7 +126,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
             title="Settings Hub"
           >
             <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
-            {open && <span className="font-mono text-[11px] font-bold uppercase tracking-wider">{t('nav.settings')}</span>}
+            {open && <span className="font-mono text-[13px] font-bold uppercase tracking-wider">{t('nav.settings')}</span>}
           </button>
         </div>
 
@@ -143,7 +143,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
             data-testid="sidebar-admin"
           >
             <ShieldCheck weight={location.pathname.startsWith('/admin') ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
-            {open && <span className="font-mono text-[11px] font-bold uppercase tracking-wider">{t('nav.admin')}</span>}
+            {open && <span className="font-mono text-[13px] font-bold uppercase tracking-wider">{t('nav.admin')}</span>}
           </button>
         </div>
       </motion.aside>

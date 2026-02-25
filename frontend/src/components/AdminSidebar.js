@@ -24,12 +24,12 @@ const AdminSidebar = () => {
           </div>
           <div>
             <h2 className="font-display text-lg font-bold text-content uppercase">{t('nav.admin')}</h2>
-            <span className="mono-ui text-[8px] text-red-500 font-bold">CONTROL_CENTER</span>
+            <span className="mono-ui text-[10px] text-red-500 font-bold">CONTROL_CENTER</span>
           </div>
         </div>
         <button
           onClick={() => navigate('/dashboard')}
-          className="w-full py-2 narvo-border text-forest mono-ui text-[9px] font-bold hover:text-content hover:bg-forest/20 transition-all flex items-center justify-center gap-2"
+          className="w-full py-2 narvo-border text-forest mono-ui text-[11px] font-bold hover:text-content hover:bg-forest/20 transition-all flex items-center justify-center gap-2"
         >
           <CaretLeft className="w-4 h-4" />
           {t('news_detail.back_to_feed')}
@@ -37,7 +37,7 @@ const AdminSidebar = () => {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
-        <span className="mono-ui text-[8px] text-forest/50 font-bold tracking-widest px-3 mb-2 block">
+        <span className="mono-ui text-[10px] text-forest/50 font-bold tracking-widest px-3 mb-2 block">
           MODULES
         </span>
         {adminNavItems.map((item) => {
@@ -55,7 +55,7 @@ const AdminSidebar = () => {
               data-testid={`admin-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
             >
               <Icon className="w-5 h-5 shrink-0" />
-              <span className="mono-ui text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
+              <span className="mono-ui text-[12px] font-bold uppercase tracking-wider">{item.label}</span>
             </button>
           );
         })}
@@ -64,13 +64,13 @@ const AdminSidebar = () => {
       <div className="p-4 narvo-border-t bg-background-dark/20">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="mono-ui text-[8px] text-forest font-bold">{t('dashboard.system_status')}</span>
+            <span className="mono-ui text-[10px] text-forest font-bold">{t('dashboard.system_status')}</span>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-primary animate-pulse rounded-full" />
-              <span className="mono-ui text-[8px] text-primary font-bold">{t('dashboard.online')}</span>
+              <span className="mono-ui text-[10px] text-primary font-bold">{t('dashboard.online')}</span>
             </div>
           </div>
-          <div className="space-y-2 mono-ui text-[8px] text-forest">
+          <div className="space-y-2 mono-ui text-[10px] text-forest">
             <div className="flex justify-between">
               <span>UPTIME</span>
               <span className="text-content">99.98%</span>

@@ -49,14 +49,14 @@ const DailyDigest = () => {
             <Broadcast weight="bold" className="w-4 h-4 text-primary" />
           </div>
           <div>
-            <span className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.15em]">DAILY_DIGEST</span>
-            <p className="mono-ui text-[7px] md:text-[8px] text-forest/50">TOP STORIES DELIVERED DAILY</p>
+            <span className="mono-ui text-[12px] md:text-[13px] text-forest font-bold tracking-[0.15em]">DAILY_DIGEST</span>
+            <p className="mono-ui text-[9px] md:text-[10px] text-forest/50">TOP STORIES DELIVERED DAILY</p>
           </div>
         </div>
         <button
           onClick={toggleSubscription}
           disabled={loading}
-          className={`flex items-center gap-2 narvo-border px-3 py-1.5 mono-ui text-[9px] font-bold transition-all ${
+          className={`flex items-center gap-2 narvo-border px-3 py-1.5 mono-ui text-[11px] font-bold transition-all ${
             subscribed
               ? 'bg-primary text-background-dark border-primary'
               : 'bg-surface/10 text-forest hover:bg-primary hover:text-background-dark hover:border-primary'
@@ -73,8 +73,8 @@ const DailyDigest = () => {
             <div key={story.id || i} className="p-3 md:p-4 flex items-center gap-3">
               <span className="mono-ui text-[14px] font-bold text-primary/40 w-5 shrink-0">{String(i + 1).padStart(2, '0')}</span>
               <div className="flex-1 min-w-0">
-                <p className="mono-ui text-[9px] md:text-[10px] text-content font-bold truncate">{story.title}</p>
-                <span className="mono-ui text-[7px] text-forest/50">{story.category} — {story.source}</span>
+                <p className="mono-ui text-[11px] md:text-[12px] text-content font-bold truncate">{story.title}</p>
+                <span className="mono-ui text-[9px] text-forest/50">{story.category} — {story.source}</span>
               </div>
               <CaretRight className="w-3 h-3 text-forest/30 shrink-0" />
             </div>

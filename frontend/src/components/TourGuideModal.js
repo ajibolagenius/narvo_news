@@ -102,10 +102,10 @@ export const TourGuideModal = () => {
         <div className="flex items-center justify-between p-4 border-b border-forest/20">
           <div className="flex items-center gap-2">
             <Broadcast weight="fill" className="w-4 h-4 text-primary" />
-            <span className="mono-ui text-[9px] text-forest font-bold tracking-widest">NARVO_TOUR</span>
+            <span className="mono-ui text-[11px] text-forest font-bold tracking-widest">NARVO_TOUR</span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="mono-ui text-[9px] text-forest/50">{step + 1}/{TOUR_STEPS.length}</span>
+            <span className="mono-ui text-[11px] text-forest/50">{step + 1}/{TOUR_STEPS.length}</span>
             <button onClick={close} className="text-forest hover:text-content transition-colors" data-testid="tour-close">
               <X weight="bold" className="w-4 h-4" />
             </button>
@@ -119,7 +119,7 @@ export const TourGuideModal = () => {
           </div>
           <div>
             <h3 className="font-display text-xl font-bold text-content uppercase tracking-tight">{current.title}</h3>
-            <p className="mt-2 mono-ui text-[10px] text-forest leading-relaxed">{current.body}</p>
+            <p className="mt-2 mono-ui text-[12px] text-forest leading-relaxed">{current.body}</p>
           </div>
         </div>
 
@@ -127,7 +127,7 @@ export const TourGuideModal = () => {
         <div className="flex items-center justify-between p-4 border-t border-forest/20">
           <button
             onClick={close}
-            className="mono-ui text-[9px] text-forest/50 hover:text-forest transition-colors"
+            className="mono-ui text-[11px] text-forest/50 hover:text-forest transition-colors"
             data-testid="tour-skip"
           >
             SKIP_TOUR
@@ -144,7 +144,7 @@ export const TourGuideModal = () => {
             )}
             <button
               onClick={next}
-              className="px-4 h-8 bg-primary text-background-dark mono-ui text-[9px] font-bold flex items-center gap-1.5 hover:bg-primary/90 transition-colors"
+              className="px-4 h-8 bg-primary text-background-dark mono-ui text-[11px] font-bold flex items-center gap-1.5 hover:bg-primary/90 transition-colors"
               data-testid="tour-next"
             >
               {step === TOUR_STEPS.length - 1 ? 'START_LISTENING' : 'NEXT'}
