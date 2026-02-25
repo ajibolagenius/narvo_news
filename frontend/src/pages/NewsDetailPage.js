@@ -164,13 +164,13 @@ const NewsDetailPage = () => {
   // Pre-generate TTS audio as soon as news loads — store the audio_url
   useEffect(() => {
     if (!news || loading) return;
-    const text = (news.narrative || news.summary || news.title || '').slice(0, 500);
+    const text = news.narrative || news.summary || news.title || '';
     if (!text) return;
     
     fetch(`${API_URL}/api/tts/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, voice_id: 'emma', language: 'en' }),
+      body: JSON.stringify({ text: text.slice(0, 4000), voice_id: voiceModel || 'emma', language: broadcastLanguage || 'en' }),
     })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
