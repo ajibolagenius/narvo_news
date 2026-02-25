@@ -112,6 +112,14 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Expandable regions** — LOCAL_NG (20), CONTINENTAL_AF (8), INTERNATIONAL (11) — click to expand and see individual source names.
 - **Live status indicators** — Pulsing dots per region and LIVE_AGGREGATION footer.
 
+### P8 Features - Real-Time Feed Health Monitoring (Feb 25, 2025)
+- **Backend health check** — Server startup pings all 39 RSS feeds concurrently with 8s timeout. Status: green (<5s + 200 OK), amber (>5s or non-200), red (timeout/error).
+- **Health API** — `GET /api/sources/health` returns per-source status, latency, last_checked. `POST /api/sources/health/refresh` triggers re-check.
+- **Dashboard health bar** — Proportional green/amber/red bar showing overall feed health.
+- **Per-source health dots** — Each source in expanded regions shows colored dot + latency in ms.
+- **Region-level indicator** — Region dot reflects worst status in that group.
+- **REFRESH button** — Manual re-check trigger at widget bottom.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
