@@ -6,15 +6,36 @@ import feedparser
 from datetime import datetime, timezone
 from typing import List, Dict, Optional
 
-# RSS Feed Sources
+# RSS Feed Sources - Populated from Narvo Content Sources Document
 RSS_FEEDS = [
-    {"url": "https://www.vanguardngr.com/feed/", "source": "Vanguard Nigeria", "category": "General"},
-    {"url": "https://punchng.com/feed/", "source": "Punch Nigeria", "category": "General"},
-    {"url": "https://www.premiumtimesng.com/feed", "source": "Premium Times", "category": "Politics"},
-    {"url": "https://dailytrust.com/feed/", "source": "Daily Trust", "category": "General"},
-    {"url": "https://guardian.ng/feed/", "source": "The Guardian Nigeria", "category": "General"},
-    {"url": "https://www.channelstv.com/feed/", "source": "Channels TV", "category": "General"},
-    {"url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf", "source": "AllAfrica", "category": "General"},
+    # === LOCAL (NIGERIA) ===
+    {"url": "https://www.bbc.com/hausa/topics/c2dwqd1zr92t/rss.xml", "source": "BBC Hausa", "category": "General", "region": "local"},
+    {"url": "https://www.channelstv.com/feed/", "source": "Channels TV", "category": "General", "region": "local"},
+    {"url": "https://dailytrust.com/feed/", "source": "Daily Trust", "category": "General", "region": "local"},
+    {"url": "https://www.vanguardngr.com/feed/", "source": "Vanguard Nigeria", "category": "General", "region": "local"},
+    {"url": "https://guardian.ng/feed/", "source": "Guardian Nigeria", "category": "General", "region": "local"},
+    {"url": "https://punchng.com/feed/", "source": "Punch Nigeria", "category": "General", "region": "local"},
+    {"url": "https://www.premiumtimesng.com/feed", "source": "Premium Times", "category": "Politics", "region": "local"},
+    {"url": "http://saharareporters.com/rss.xml", "source": "Sahara Reporters", "category": "Politics", "region": "local"},
+    {"url": "https://nairametrics.com/feed/", "source": "Nairametrics", "category": "Economy", "region": "local"},
+    {"url": "https://www.thisdaylive.com/feed/", "source": "ThisDay", "category": "General", "region": "local"},
+    {"url": "https://tribuneonlineng.com/feed/", "source": "Nigerian Tribune", "category": "General", "region": "local"},
+    {"url": "https://leadership.ng/feed/", "source": "Leadership", "category": "Politics", "region": "local"},
+    {"url": "https://businessday.ng/feed/", "source": "Business Day Nigeria", "category": "Economy", "region": "local"},
+    {"url": "https://www.pulse.ng/rss", "source": "Pulse Nigeria", "category": "Entertainment", "region": "local"},
+    {"url": "https://techpoint.africa/feed/", "source": "Techpoint Africa", "category": "Tech", "region": "local"},
+    {"url": "https://ripplesnigeria.com/feed/", "source": "Ripples Nigeria", "category": "Economy", "region": "local"},
+    
+    # === INTERNATIONAL ===
+    {"url": "https://feeds.bbci.co.uk/news/world/africa/rss.xml", "source": "BBC Africa", "category": "General", "region": "international"},
+    {"url": "http://rss.cnn.com/rss/edition_africa.rss", "source": "CNN Africa", "category": "General", "region": "international"},
+    {"url": "https://www.aljazeera.com/xml/rss/all.xml", "source": "Al Jazeera", "category": "General", "region": "international"},
+    {"url": "https://www.reuters.com/rssFeed/worldNews", "source": "Reuters World", "category": "General", "region": "international"},
+    {"url": "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf", "source": "AllAfrica", "category": "General", "region": "international"},
+    
+    # === SPORTS ===
+    {"url": "https://www.espn.com/espn/rss/soccer/news", "source": "ESPN Soccer", "category": "Sports", "region": "international"},
+    {"url": "https://www.goal.com/en-ng/feeds/news", "source": "Goal Nigeria", "category": "Sports", "region": "local"},
 ]
 
 async def fetch_rss_feed(feed_config: Dict, timeout: int = 10) -> List[Dict]:
