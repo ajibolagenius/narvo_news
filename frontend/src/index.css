@@ -81,6 +81,8 @@
   --color-text-secondary: 98 129 65;  /* Forest Green - Labels, metadata */
   --color-text-dim: 128 128 128;      /* 50% Grey - Utility text */
   --color-accent: 98 129 65;          /* Forest Green - Highlights */
+  --color-text-dim-accessible: 82 82 82; /* #525252 - WCAG AA on white */
+  --focus-outline-color: 98 129 65;   /* Forest green for light mode */
 }
 
 /* Theme transition */
