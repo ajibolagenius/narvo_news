@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAudio } from '../contexts/AudioContext';
-import { Play, Pause, Calendar, ArrowClockwise, Clock, Radio, CaretRight } from '@phosphor-icons/react';
+import { Play, Pause, Calendar, ArrowClockwise, Clock, Radio, CaretRight, SpeakerHigh } from '@phosphor-icons/react';
 import Skeleton, { ListSkeleton } from '../components/Skeleton';
+import { playBriefingIntro, playBriefingOutro, playSectionDivider } from '../lib/cinematicAudio';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -16,6 +17,28 @@ const MorningBriefingPage = () => {
   const [selectedVoice, setSelectedVoice] = useState('nova');
   const [voices, setVoices] = useState([]);
   const { playTrack, currentTrack, isPlaying, isLoading: audioLoading } = useAudio();
+  const [sfxEnabled, setSfxEnabled] = useState(true);
+  const audioEndedRef = useRef(null);
+
+  // Listen for briefing audio ended to play outro
+  useEffect(() => {
+    const handler = () => {
+      if (sfxEnabled && currentTrack?.source === 'NARVO_BRIEFING') {
+        playBriefingOutro().catch(() => {});
+      }
+    };
+    // Find the global audio element and attach ended listener
+    const audioEl = document.querySelector('audio');
+    if (audioEl) {
+      audioEl.addEventListener('ended', handler);
+      audioEndedRef.current = { el: audioEl, handler };
+    }
+    return () => {
+      if (audioEndedRef.current) {
+        audioEndedRef.current.el.removeEventListener('ended', audioEndedRef.current.handler);
+      }
+    };
+  }, [sfxEnabled, currentTrack]);
 
   // Fetch initial data
   useEffect(() => {
@@ -66,14 +89,26 @@ const MorningBriefingPage = () => {
     setLoading(false);
   };
 
-  const handlePlay = () => {
+  const handlePlay = async () => {
     if (briefing?.audio_url) {
+      // Play cinematic intro before starting the briefing
+      if (sfxEnabled) {
+        try { await playBriefingIntro(); } catch (e) { /* user hasn't interacted yet */ }
+        // Small delay so intro rings out before narration starts
+        await new Promise(r => setTimeout(r, 1400));
+      }
       playTrack({
         id: briefing.id,
         title: briefing.title,
         url: briefing.audio_url,
         source: 'NARVO_BRIEFING'
       });
+    }
+  };
+
+  const handleSectionDivider = async () => {
+    if (sfxEnabled) {
+      try { await playSectionDivider(); } catch (e) {}
     }
   };
 
