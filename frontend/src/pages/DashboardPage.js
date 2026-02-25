@@ -56,7 +56,7 @@ const DashboardPage = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
   const { playTrack, addToQueue } = useAudio();
-  const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion } = useContentSources();
+  const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
 
