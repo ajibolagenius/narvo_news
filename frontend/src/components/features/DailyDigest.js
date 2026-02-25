@@ -71,7 +71,7 @@ const DailyDigest = () => {
         <div className="divide-y divide-forest/10">
           {digest.top_stories.slice(0, 3).map((story, i) => (
             <div key={story.id || i} className="p-3 md:p-4 flex items-center gap-3">
-              <span className="mono-ui text-[14px] font-bold text-primary/40 w-5 shrink-0">{String(i + 1).padStart(2, '0')}</span>
+              <span className="mono-ui text-[15px] font-bold text-primary/40 w-5 shrink-0">{String(i + 1).padStart(2, '0')}</span>
               <div className="flex-1 min-w-0">
                 <p className="mono-ui text-[11px] md:text-[12px] text-content font-bold truncate">{story.title}</p>
                 <span className="mono-ui text-[9px] text-forest/50">{story.category} — {story.source}</span>

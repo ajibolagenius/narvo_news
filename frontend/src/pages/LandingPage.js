@@ -162,7 +162,7 @@ const LandingPage = () => {
             <p className="text-slate-400 text-sm mb-6">{mod.desc}</p>
             <div className="border-t border-forest pt-4 flex justify-between items-center">
               <span className="mono-ui text-[12px] text-forest">{mod.label}</span>
-              <span className="mono-ui text-[14px] text-primary">{mod.metric}</span>
+              <span className="mono-ui text-[15px] text-primary">{mod.metric}</span>
             </div>
           </div>
         ))}
