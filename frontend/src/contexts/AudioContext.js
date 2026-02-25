@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import { playBriefingIntro, playBriefingOutro } from '../lib/cinematicAudio';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const AudioContext = createContext({});
