@@ -1144,7 +1144,8 @@ Write ONLY spoken words. Every sentence must deliver news content. The audio pro
             text=f"Create a brief morning news script:\n\n{stories_text}"
         )
         response = await chat.send_message(user_message)
-        return sanitize_ai_text(response.strip())    except Exception as e:
+        return sanitize_ai_text(response.strip())
+    except Exception as e:
         print(f"Error generating briefing script: {e}")
         # Fallback to simple concatenation
         script = f"Good morning, this is your Narvo Morning Briefing for {datetime.now().strftime('%A, %B %d, %Y')}.\n\n"
