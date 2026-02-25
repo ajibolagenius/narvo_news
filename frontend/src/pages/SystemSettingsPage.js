@@ -447,7 +447,7 @@ const SystemGearSixPage = () => {
                 </div>
                 <button
                   onClick={() => updateSetting(agg.key, !settings[agg.key])}
-                  className={`w-12 h-6 narvo-border relative transition-all ${
+                  className={`w-12 h-6 narvo-border relative transition-all shrink-0 self-end sm:self-auto ${
                     settings[agg.key] ? 'bg-primary' : 'bg-surface/20'
                   }`}
                   data-testid={`toggle-${agg.key}`}
