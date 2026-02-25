@@ -442,6 +442,37 @@ const DiscoverPage = () => {
                       <p className="text-[10px] md:text-xs text-forest font-mono leading-relaxed opacity-70 line-clamp-3">
                         {podcast.description}
                       </p>
+                      {/* Expanded Episode Detail */}
+                      {isExpanded && (
+                        <div className="narvo-border bg-surface/10 p-4 space-y-3" data-testid={`podcast-detail-${podcast.id}`}>
+                          <div className="flex flex-wrap gap-3 mono-ui text-[8px] text-forest">
+                            <span>CATEGORY: <span className="text-primary">{(podcast.category || 'GENERAL').toUpperCase()}</span></span>
+                            <span>DURATION: <span className="text-content">{podcast.duration}</span></span>
+                            {podcast.published && <span>PUBLISHED: <span className="text-content">{podcast.published}</span></span>}
+                          </div>
+                          <p className="mono-ui text-[9px] text-forest/80 leading-relaxed">{podcast.description}</p>
+                          <div className="flex gap-2 pt-1">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handlePlayPodcast(podcast); }}
+                              className="flex items-center gap-2 bg-primary text-background-dark px-4 py-2 mono-ui text-[9px] font-bold hover:bg-white transition-colors"
+                              data-testid={`play-detail-${podcast.id}`}
+                            >
+                              <Play className="w-4 h-4" fill="currentColor" />
+                              PLAY_NOW
+                            </button>
+                            {podcast.audio_url && !isCached && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDownloadPodcast(podcast); }}
+                                disabled={inQueue}
+                                className="flex items-center gap-2 narvo-border px-4 py-2 mono-ui text-[9px] font-bold text-forest hover:text-primary hover:border-primary transition-colors"
+                              >
+                                <CloudArrowDown className="w-4 h-4" />
+                                {inQueue ? `${downloadProgress}%` : 'DOWNLOAD'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )}
                       <div className="mt-auto pt-4 md:pt-6 flex items-center justify-between">
                         <button 
                           onClick={() => handlePlayPodcast(podcast)}
