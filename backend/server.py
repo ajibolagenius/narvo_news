@@ -45,6 +45,12 @@ app.include_router(user_router)
 app.include_router(factcheck_router)
 app.include_router(translation_router)
 
+# Startup: run initial feed health check in background
+@app.on_event("startup")
+async def startup_feed_health():
+    from services.news_service import run_health_check
+    asyncio.create_task(run_health_check())
+
 # Initialize clients
 supabase: Client = create_client(
     os.environ.get("SUPABASE_URL"),
