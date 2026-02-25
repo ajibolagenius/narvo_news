@@ -23,7 +23,7 @@ const VoiceStudioPage = () => {
   const [previewPlaying, setPreviewPlaying] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(null);
   const previewAudioRef = useRef(null);
-  const { playTrack, setBroadcastLanguage } = useAudio();
+  const { playTrack, setBroadcastLanguage, setVoiceModel } = useAudio();
   const { user } = useAuth();
   const { showAlert } = useHapticAlert();
 
