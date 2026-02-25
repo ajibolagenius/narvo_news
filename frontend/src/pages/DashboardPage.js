@@ -430,29 +430,57 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Content Sources */}
-          <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden">
+          {/* Source Breakdown Widget */}
+          <div className="narvo-border bg-surface/20 p-4 relative overflow-hidden" data-testid="source-breakdown-widget">
             <div className="absolute top-0 right-0 p-2 opacity-20"><Broadcast weight="fill" className="w-8 h-8" /></div>
-            <span className="mono-ui text-[10px] text-forest block mb-3 font-bold tracking-widest">CONTENT_SOURCES</span>
-            <div className="space-y-2">
-              <div className="flex justify-between mono-ui text-[10px]">
-                <span className="text-content">TOTAL_FEEDS</span>
-                <span className="text-primary font-bold">{getTotalSources()}</span>
-              </div>
-              <div className="flex justify-between mono-ui text-[10px]">
-                <span className="text-forest">LOCAL_NG</span>
-                <span className="text-content">{getLocalSources()}</span>
-              </div>
-              <div className="flex justify-between mono-ui text-[10px]">
-                <span className="text-forest">INTERNATIONAL</span>
-                <span className="text-content">{getInternationalSources()}</span>
-              </div>
+            <div className="flex items-center justify-between mb-3">
+              <span className="mono-ui text-[10px] text-forest font-bold tracking-widest">SOURCE_MATRIX</span>
+              <span className="mono-ui text-[9px] text-primary font-bold">{getTotalSources()} FEEDS</span>
             </div>
-            <div className="mt-3 pt-3 border-t border-forest/20">
+
+            {/* Proportion bar */}
+            <div className="flex h-1.5 w-full mb-4 gap-px">
+              <div className="bg-primary transition-all" style={{ width: `${(getLocalSources() / (getTotalSources() || 1)) * 100}%` }} />
+              <div className="bg-amber-500 transition-all" style={{ width: `${(getContinentalSources() / (getTotalSources() || 1)) * 100}%` }} />
+              <div className="bg-forest transition-all" style={{ width: `${(getInternationalSources() / (getTotalSources() || 1)) * 100}%` }} />
+            </div>
+
+            {/* Region groups */}
+            {[
+              { key: 'local', label: 'LOCAL_NG', count: getLocalSources(), color: 'primary', dot: 'bg-primary' },
+              { key: 'continental', label: 'CONTINENTAL_AF', count: getContinentalSources(), color: 'amber-500', dot: 'bg-amber-500' },
+              { key: 'international', label: 'INTERNATIONAL', count: getInternationalSources(), color: 'forest', dot: 'bg-forest' },
+            ].map(region => {
+              const regionSources = getSourcesByRegion(region.key);
+              return (
+                <details key={region.key} className="group mb-2" data-testid={`source-region-${region.key}`}>
+                  <summary className="flex items-center justify-between cursor-pointer py-1.5 list-none">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-2 h-2 ${region.dot} animate-pulse`} />
+                      <span className="mono-ui text-[10px] text-content font-bold">{region.label}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`mono-ui text-[10px] font-bold text-${region.color}`}>{region.count}</span>
+                      <span className="mono-ui text-[8px] text-forest group-open:rotate-90 transition-transform">&#9654;</span>
+                    </div>
+                  </summary>
+                  <div className="pl-4 pt-1 pb-1 flex flex-wrap gap-x-1 gap-y-0.5">
+                    {regionSources.map((src, i) => (
+                      <span key={i} className="mono-ui text-[8px] text-forest/80 after:content-['\00b7'] after:mx-1 after:text-forest/30 last:after:content-['']">
+                        {src.name}
+                      </span>
+                    ))}
+                  </div>
+                </details>
+              );
+            })}
+
+            <div className="mt-2 pt-2 border-t border-forest/20 flex items-center justify-between">
               <span className="mono-ui text-[8px] text-primary flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-primary animate-pulse" />
                 LIVE_AGGREGATION
               </span>
+              <span className="mono-ui text-[7px] text-forest/50">UPDATED_LIVE</span>
             </div>
           </div>
 
