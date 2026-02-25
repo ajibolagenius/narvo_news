@@ -537,9 +537,23 @@ async def generate_tts(request: TTSRequest):
         
         # Convert to base64
         audio_b64 = base64.b64encode(audio_bytes).decode()
+        audio_url = f"data:audio/mpeg;base64,{audio_b64}"
+        
+        # Cache the result (TTL managed by MongoDB TTL index if needed)
+        db["tts_cache"].update_one(
+            {"cache_key": cache_key},
+            {"$set": {
+                "cache_key": cache_key,
+                "audio_url": audio_url,
+                "translated_text": translated_text,
+                "voice_id": voice,
+                "created_at": datetime.now(timezone.utc).isoformat()
+            }},
+            upsert=True
+        )
         
         return TTSResponse(
-            audio_url=f"data:audio/mpeg;base64,{audio_b64}",
+            audio_url=audio_url,
             text=request.text,
             translated_text=translated_text,
             voice_id=voice,
