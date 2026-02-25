@@ -85,7 +85,7 @@ const MobileMetadata = ({ news, readTime, relatedNews, isBookmarked, toggleBookm
               <span className="mono-ui text-[9px] text-forest block mb-3 font-bold tracking-widest">{t('news_detail.signal_tags')}</span>
               <div className="flex flex-wrap gap-1.5">
                 {news.tags.map((tag, i) => (
-                  <span key={i} className="narvo-border px-1.5 py-1 mono-ui text-[8px] text-content hover:bg-forest hover:text-background-dark cursor-pointer transition-colors">#{tag.toUpperCase()}</span>
+                  <TagPill key={i} tag={tag} />
                 ))}
               </div>
             </div>
