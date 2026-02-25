@@ -41,6 +41,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('narvo_preferences');
   };
 
+  const signInWithGoogle = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      }
+    });
+    if (error) throw error;
+    return data;
+  };
+
   const resetPassword = async (email) => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/auth`,
@@ -49,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, resetPassword }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, signInWithGoogle, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
