@@ -112,6 +112,9 @@ const DashboardPage = () => {
     if (sourceFilter === 'rss') return !item.aggregator;
     if (sourceFilter === 'aggregators') return !!item.aggregator;
     return true;
+  }).sort((a, b) => {
+    if (sortOrder === 'oldest') return new Date(a.published || 0) - new Date(b.published || 0);
+    return new Date(b.published || 0) - new Date(a.published || 0);
   });
   const stream = filteredNews.slice(0, visibleCount);
 
