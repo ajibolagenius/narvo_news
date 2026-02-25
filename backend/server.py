@@ -133,10 +133,10 @@ class MorningBriefing(BaseModel):
 
 class TTSRequest(BaseModel):
     text: str
-    voice_id: str = "nova"
+    voice_id: str = "onyx"
     stability: float = 0.5
     similarity_boost: float = 0.75
-    language: str = "en"  # Target language for translation (en, pcm, yo, ha, ig)
+    language: str = "en"
 
 class TTSResponse(BaseModel):
     audio_url: str
