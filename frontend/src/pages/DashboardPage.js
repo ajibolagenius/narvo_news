@@ -6,6 +6,7 @@ import { PlayCircle, Translate, BookmarkSimple, ArrowDown, Pulse, CloudSun, Shar
 import { useAudio } from '../contexts/AudioContext';
 import { useContentSources } from '../contexts/ContentSourcesContext';
 import { useBookmarks } from '../hooks/useBookmarks';
+import { useAudioPrefetch } from '../hooks/useAudioPrefetch';
 import { FeaturedSkeleton, StreamCardSkeleton } from '../components/Skeleton';
 import TruthTag from '../components/TruthTag';
 import { useHapticAlert } from '../components/HapticAlerts';
