@@ -126,3 +126,37 @@ def get_aggregator_status() -> Dict:
         },
         "last_fetched": _aggregator_cache.get("last_fetched"),
     }
+
+
+def normalize_to_news_items(articles: List[Dict]) -> List[Dict]:
+    """Normalize aggregator articles to match NewsItem schema."""
+    items = []
+    for a in articles:
+        items.append({
+            "id": a.get("id", ""),
+            "title": a.get("title", "Untitled"),
+            "summary": a.get("summary", ""),
+            "narrative": None,
+            "source": a.get("source", "Unknown"),
+            "source_url": a.get("source_url", ""),
+            "published": a.get("published", ""),
+            "region": a.get("region", "Africa"),
+            "category": (a.get("category") or "General").title(),
+            "truth_score": 100,
+            "audio_url": None,
+            "listen_count": 0,
+            "tags": a.get("tags", []),
+            "image_url": a.get("image_url"),
+            "aggregator": a.get("aggregator", ""),
+        })
+    return items
+
+
+async def get_normalized_aggregator_news(keywords: str = "Nigeria Africa") -> List[Dict]:
+    """Fetch from all aggregators and return normalized news items."""
+    result = await fetch_all_aggregators(keywords)
+    all_articles = (
+        result.get("mediastack", {}).get("articles", []) +
+        result.get("newsdata", {}).get("articles", [])
+    )
+    return normalize_to_news_items(all_articles)
