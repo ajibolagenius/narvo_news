@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://narvo-news-engine.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://narvo-audio-fix.preview.emergentagent.com')
 
 class TestHealthEndpoint:
     """Health check endpoint tests"""
