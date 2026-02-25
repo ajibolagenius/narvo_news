@@ -8,7 +8,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Backend**: FastAPI (modularized), Python 3.11
 - **Database**: MongoDB (via MONGO_URL)
 - **Auth**: Supabase (Email/Password + Google OAuth)
-- **AI/TTS**: Google Gemini 2.0 Flash & OpenAI TTS (via Emergent LLM Key)
+- **AI/TTS**: YarnGPT (primary), OpenAI TTS fallback (via Emergent LLM Key), Google Gemini 2.0 Flash
 - **Translation**: Gemini AI for 5 African languages + English
 - **Fact-Checking**: Google Fact Check API (with keyword analysis fallback)
 - **News Sources**: 39 RSS feeds + Mediastack API + NewsData.io API
@@ -17,7 +17,8 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 
 ## Core Features Implemented
 - News dashboard with RSS + aggregator feeds, filtering, sorting, deduplication
-- AI narrative generation (Google Gemini), TTS narration (OpenAI) with server-side caching
+- AI narrative generation (Google Gemini), TTS narration with server-side caching
+- YarnGPT as primary TTS engine with 5 Nigerian-accented voices
 - Morning briefing with transcript follow-along
 - Multi-language broadcast (5 African languages + English)
 - Podcast discovery with real RSS feeds, search, category filters, episode detail expansion
@@ -30,8 +31,12 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - Real-time fact-checking with actual publishers (AFP, Reuters, Africa Check, PesaCheck, Full Fact)
 - Real platform metrics from database (stories processed, broadcast hours, network load)
 - Real system alerts from live service status monitoring
+- Interest Matrix — 8 selectable news categories for personalized feed delivery
+- Broadcast Sound Themes — 5 selectable audio branding themes (Narvo Classic, Afrobeats, BBC World, Breaking Alert, Midnight Jazz)
+- Push Notification endpoints (subscribe, unsubscribe, daily digest)
 - WCAG 2.1 AA accessibility (skip link, focus-visible, reduced motion)
 - Responsive mobile-first design across all pages
+- News detail autoplay with TTS pre-generation and direct audio URL pass-through
 
 ## Key API Endpoints
 | Endpoint | Method | Description |
@@ -42,21 +47,29 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 | `/api/podcasts/categories` | GET | 8 podcast categories |
 | `/api/podcasts/search` | GET | Search episodes by title/description |
 | `/api/podcasts/{id}` | GET | Episode detail by ID |
-| `/api/settings/{user_id}` | GET/POST | User settings (merge save, localStorage+MongoDB) |
-| `/api/tts/generate` | POST | TTS with MongoDB caching |
+| `/api/settings/{user_id}` | GET/POST | User settings (merge save, includes interests & sound_theme) |
+| `/api/tts/generate` | POST | TTS with MongoDB caching (YarnGPT primary, OpenAI fallback) |
 | `/api/factcheck/story/{id}` | GET | Real fact-check with story lookup + keyword analysis |
 | `/api/metrics` | GET | Real platform metrics from DB |
 | `/api/system-alerts` | GET | Real system alerts from live services |
 | `/api/listening-history` | POST | Record a played broadcast |
-| `/api/listening-history/{user_id}` | GET | User's listening history (most recent first) |
+| `/api/listening-history/{user_id}` | GET | User's listening history |
 | `/api/briefing/latest` | GET | Latest morning briefing |
-| `/api/voices` | GET | Available TTS voices |
+| `/api/voices` | GET | Available TTS voices (YarnGPT) |
+| `/api/sound-themes` | GET | Available broadcast sound themes |
+| `/api/notifications/subscribe` | POST | Subscribe to push notifications |
+| `/api/notifications/unsubscribe` | POST | Unsubscribe from push notifications |
+| `/api/notifications/digest` | GET | Get daily digest content |
+| `/api/categories` | GET | Available news categories |
 
 ## Backend Tests
 - `/app/backend/tests/test_services_v2.py` — 10 tests covering metrics, factcheck, podcasts, listening history, TTS caching, settings persistence
+- `/app/backend/tests/test_iteration44.py` — 11 tests covering YarnGPT voices, sound themes, notifications, interests, briefing stability
 
 ## Backlog
-- **P1:** Daily digest email/push notifications
-- **P1:** Additional broadcast sound themes
+- **P1:** Daily digest email notifications
+- **P1:** Backend unit tests for yarngpt_service, factcheck_service
+- **P2:** Additional podcast source discovery
 - **P2:** Native mobile application
 - **P3:** User-provided API keys for external services
+- **P3:** Analytics dashboard
