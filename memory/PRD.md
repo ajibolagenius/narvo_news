@@ -133,6 +133,14 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Combined Aggregator Fetch** — `GET /api/aggregators/fetch` returns combined results from both. `GET /api/aggregators/status` shows configuration status.
 - **Extended Backend Tests** — New `test_tts_podcast_aggregator.py` with 16 tests covering TTS voice mapping, podcast endpoints, aggregator APIs, and health regression. Total: 35 tests across 2 test files.
 
+### P11 Features - Aggregator Feed Integration & SOURCE_MATRIX Counts (Feb 25, 2025)
+- **Aggregator articles in main feed** — `/api/news?include_aggregators=true` merges Mediastack + NewsData.io articles into the RSS feed, sorted by date. Dashboard fetches with this param.
+- **Aggregator badges on dashboard** — Stream cards from aggregators show MEDIASTACK or NEWSDATA badge next to the source tag.
+- **AGGREGATOR_WIRE on Discover** — New section between podcasts/radio and CONTENT_SOURCES showing up to 8 aggregator articles in a 4x2 grid with source badges and summaries. Each links to the original article.
+- **AGGREGATOR_APIs in SOURCE_MATRIX** — Dashboard widget now includes Mediastack and NewsData.io with article counts and live status indicators.
+- **Discover CONTENT_SOURCES updated** — Shows LOCAL_NG, CONTINENTAL_AF, INTERNATIONAL, and AGGREGATOR_APIs counts.
+- **Metrics updated** — `/api/metrics` includes aggregator status object.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
