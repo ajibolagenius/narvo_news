@@ -344,9 +344,25 @@ export const AudioProvider = ({ children }) => {
     setCurrentTime(0);
     setIsLoading(false);
     
+    // Record to listening history
+    try {
+      const userId = user?.id || 'guest';
+      fetch(`${API_URL}/api/listening-history`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: userId,
+          track_id: track.id || '',
+          title: track.title || 'Unknown',
+          source: track.source || '',
+          category: track.category || '',
+        }),
+      }).catch(() => {});
+    } catch { /* ignore */ }
+    
     // Update Media Session for background/lock screen controls
     updateMediaSession(finalTrack);
-  }, [currentTrack, isPlaying, generateTTS, addToQueue, updateMediaSession]);
+  }, [currentTrack, isPlaying, generateTTS, addToQueue, updateMediaSession, user?.id]);
 
   // Force play - always plays immediately
   const forcePlayTrack = useCallback(async (track) => {
