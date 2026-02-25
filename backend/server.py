@@ -1403,6 +1403,42 @@ async def generate_briefing_audio(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
+# ─── Push Notifications ───────────────────────────────────────
+@app.post("/api/notifications/subscribe")
+async def subscribe_push(data: dict = Body(...)):
+    """Store push notification subscription"""
+    endpoint = data.get("endpoint", "")
+    if not endpoint:
+        raise HTTPException(status_code=400, detail="Missing endpoint")
+    db["push_subscriptions"].update_one(
+        {"endpoint": endpoint},
+        {"$set": {**data, "subscribed_at": datetime.now(timezone.utc).isoformat()}},
+        upsert=True
+    )
+    return {"status": "subscribed"}
+
+@app.post("/api/notifications/unsubscribe")
+async def unsubscribe_push(data: dict = Body(...)):
+    """Remove push notification subscription"""
+    endpoint = data.get("endpoint", "")
+    if endpoint:
+        db["push_subscriptions"].delete_one({"endpoint": endpoint})
+    return {"status": "unsubscribed"}
+
+@app.get("/api/notifications/digest")
+async def get_daily_digest():
+    """Get daily digest content for push notification"""
+    stories = list(db["news_cache"].find(
+        {},
+        {"_id": 0, "id": 1, "title": 1, "category": 1, "source": 1}
+    ).sort("published", -1).limit(5))
+    return {
+        "title": "NARVO DAILY DIGEST",
+        "top_stories": stories,
+        "briefing_available": True,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
 # ===========================================
 # RADIO STATIONS API (Radio Browser)
 # ===========================================
