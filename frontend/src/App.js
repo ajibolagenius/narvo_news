@@ -6,6 +6,7 @@ import { AudioProvider } from './contexts/AudioContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { LenisProvider } from './contexts/LenisProvider';
 import { DownloadQueueProvider } from './contexts/DownloadQueueContext';
+import { ContentSourcesProvider } from './contexts/ContentSourcesContext';
 import { HapticAlertProvider } from './components/HapticAlerts';
 import { BreakingNewsProvider } from './components/BreakingNews';
 import DownloadQueueIndicator from './components/DownloadQueueIndicator';
@@ -59,9 +60,10 @@ function App() {
     <AuthProvider>
       <AudioProvider>
       <DownloadQueueProvider>
+      <ContentSourcesProvider>
       <BreakingNewsProvider>
         <HapticAlertProvider>
-          <Router>
+          <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <DownloadQueueIndicator />
             <Suspense fallback={<PageLoader />}>
               <Routes>
@@ -101,6 +103,7 @@ function App() {
           </Router>
         </HapticAlertProvider>
       </BreakingNewsProvider>
+      </ContentSourcesProvider>
       </DownloadQueueProvider>
       </AudioProvider>
     </AuthProvider>

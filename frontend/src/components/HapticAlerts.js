@@ -182,13 +182,29 @@ const AlertItem = ({ alert, onDismiss }) => {
 // Provider Component
 export const HapticAlertProvider = ({ children }) => {
   const [alerts, setAlerts] = useState([]);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
 
-  // Trigger haptic feedback if supported
-  const triggerHaptic = useCallback((pattern) => {
-    if ('vibrate' in navigator) {
-      navigator.vibrate(pattern);
-    }
+  // Track user interaction for vibration API
+  useEffect(() => {
+    const handleInteraction = () => setHasUserInteracted(true);
+    document.addEventListener('click', handleInteraction, { once: true });
+    document.addEventListener('touchstart', handleInteraction, { once: true });
+    return () => {
+      document.removeEventListener('click', handleInteraction);
+      document.removeEventListener('touchstart', handleInteraction);
+    };
   }, []);
+
+  // Trigger haptic feedback if supported and user has interacted
+  const triggerHaptic = useCallback((pattern) => {
+    if ('vibrate' in navigator && hasUserInteracted) {
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {
+        // Silently fail - vibration not critical
+      }
+    }
+  }, [hasUserInteracted]);
 
   // Show alert
   const showAlert = useCallback((alertConfig) => {

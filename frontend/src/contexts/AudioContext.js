@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const AudioContext = createContext({});
@@ -6,6 +7,7 @@ const AudioContext = createContext({});
 export const useAudio = () => useContext(AudioContext);
 
 export const AudioProvider = ({ children }) => {
+  const { user } = useAuth();
   const audioRef = useRef(null);
   const fadeIntervalRef = useRef(null);
   const [currentTrack, setCurrentTrack] = useState(null);
@@ -22,23 +24,29 @@ export const AudioProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [broadcastLanguage, setBroadcastLanguage] = useState('en');
 
-  // Fetch user's language preference on mount
-  useEffect(() => {
-    const fetchLanguagePreference = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/settings/guest`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.broadcast_language) {
-            setBroadcastLanguage(data.broadcast_language);
-          }
+  // Fetch user's language preference
+  const fetchLanguagePreference = useCallback(async () => {
+    const userId = user?.id || 'guest';
+    try {
+      const response = await fetch(`${API_URL}/api/settings/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.broadcast_language) {
+          console.log('[AudioContext] Fetched broadcast_language:', data.broadcast_language, 'for user:', userId);
+          setBroadcastLanguage(data.broadcast_language);
+          return data.broadcast_language;
         }
-      } catch (err) {
-        console.log('Using default language: en');
       }
-    };
+    } catch (err) {
+      console.log('[AudioContext] Using default language: en');
+    }
+    return 'en';
+  }, [user?.id]);
+
+  // Re-fetch when user changes (login/logout/guest switch)
+  useEffect(() => {
     fetchLanguagePreference();
-  }, []);
+  }, [fetchLanguagePreference]);
 
   // Update Media Session metadata for lock screen/background playback
   const updateMediaSession = useCallback((track) => {
@@ -170,10 +178,13 @@ export const AudioProvider = ({ children }) => {
       }
     });
     audio.addEventListener('error', (e) => {
-      console.error('Audio error:', e);
-      setError('Failed to play audio');
-      setIsPlaying(false);
-      setIsLoading(false);
+      // Only log errors when there's actually a source loaded
+      if (audio.src && audio.src !== window.location.href) {
+        console.error('[AudioContext] Audio error:', e.target?.error?.message || 'Unknown error');
+        setError('Failed to play audio');
+        setIsPlaying(false);
+        setIsLoading(false);
+      }
     });
 
     return () => {
@@ -208,13 +219,15 @@ export const AudioProvider = ({ children }) => {
     const textToSpeak = track.narrative || track.summary || track.title;
     if (!textToSpeak) return null;
     
+    console.log('[AudioContext] Generating TTS with language:', broadcastLanguage);
+    
     try {
       const response = await fetch(`${API_URL}/api/tts/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           text: textToSpeak.slice(0, 4000),
-          voice_id: 'nova',
+          voice_id: 'onyx',
           language: broadcastLanguage  // Pass user's preferred language
         })
       });
@@ -222,6 +235,7 @@ export const AudioProvider = ({ children }) => {
       if (!response.ok) throw new Error('TTS generation failed');
       
       const data = await response.json();
+      console.log('[AudioContext] TTS response - language:', data.language, 'translated:', !!data.translated_text);
       return data.audio_url;
     } catch (err) {
       console.error('TTS error:', err);
@@ -308,10 +322,21 @@ export const AudioProvider = ({ children }) => {
     
     // Play the audio
     audio.src = trackUrl;
-    audio.play().catch((err) => {
-      console.error('Play error:', err);
-      setError('Failed to play audio');
-    });
+    
+    // Attempt to play - may fail due to autoplay policy
+    try {
+      await audio.play();
+    } catch (err) {
+      // Handle autoplay policy - this is normal browser behavior
+      if (err.name === 'NotAllowedError') {
+        console.log('[AudioContext] Autoplay blocked - waiting for user interaction');
+        // Audio is loaded and ready, user just needs to click play
+        setIsPlaying(false);
+      } else {
+        console.error('[AudioContext] Play error:', err);
+        setError('Failed to play audio');
+      }
+    }
     
     const finalTrack = { ...track, url: trackUrl };
     setCurrentTrack(finalTrack);
@@ -433,6 +458,7 @@ export const AudioProvider = ({ children }) => {
       toggleMute,
       setAutoPlay,
       setBroadcastLanguage,
+      refreshLanguagePreference: fetchLanguagePreference,
       playTrack,
       forcePlayTrack,
       playTrackAndQueue,

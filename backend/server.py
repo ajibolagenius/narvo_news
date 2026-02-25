@@ -45,6 +45,18 @@ app.include_router(user_router)
 app.include_router(factcheck_router)
 app.include_router(translation_router)
 
+# Startup: run initial feed health check and schedule periodic refresh
+@app.on_event("startup")
+async def startup_feed_health():
+    from services.news_service import run_health_check
+
+    async def periodic_health_check():
+        while True:
+            await run_health_check()
+            await asyncio.sleep(300)  # Every 5 minutes
+
+    asyncio.create_task(periodic_health_check())
+
 # Initialize clients
 supabase: Client = create_client(
     os.environ.get("SUPABASE_URL"),
@@ -78,11 +90,11 @@ RSS_FEEDS = [
 
 # Voice configurations with authentic Nigerian names (mapped to OpenAI voices)
 VOICE_PROFILES = [
-    {"id": "nova", "name": "Nova", "accent": "English", "language": "en", "description": "Clear, professional international voice"},
-    {"id": "onyx", "name": "Onyx", "accent": "Naijá", "language": "pcm", "description": "Strong, authoritative Naijá voice"},
-    {"id": "echo", "name": "Olúwásẹ̀un", "accent": "Yorùbá", "language": "yo", "description": "Warm, melodic Yorùbá voice"},
-    {"id": "alloy", "name": "Abubakar", "accent": "Hausa", "language": "ha", "description": "Calm, dignified Hausa voice"},
-    {"id": "shimmer", "name": "Chinyere", "accent": "Igbo", "language": "ig", "description": "Bright, expressive Igbo voice"},
+    {"id": "onyx", "name": "Emeka", "accent": "English", "language": "en", "gender": "male", "description": "Deep, authoritative English voice"},
+    {"id": "echo", "name": "Tunde", "accent": "Naijá", "language": "pcm", "gender": "male", "description": "Warm, confident Naijá voice"},
+    {"id": "nova", "name": "Adùnní", "accent": "Yorùbá", "language": "yo", "gender": "female", "description": "Clear, melodic Yorùbá voice"},
+    {"id": "shimmer", "name": "Halima", "accent": "Hausa", "language": "ha", "gender": "female", "description": "Bright, dignified Hausa voice"},
+    {"id": "alloy", "name": "Adaeze", "accent": "Igbo", "language": "ig", "gender": "female", "description": "Warm, expressive Igbo voice"},
 ]
 
 # Pydantic Models
@@ -146,6 +158,8 @@ class VoiceProfile(BaseModel):
     id: str
     name: str
     accent: str
+    language: str
+    gender: str
     description: str
 
 class UserPreferences(BaseModel):
@@ -490,6 +504,25 @@ async def get_categories():
         {"id": "health", "name": "Health", "icon": "heart"},
         {"id": "general", "name": "General", "icon": "newspaper"},
     ]
+
+@app.get("/api/sources")
+async def get_content_sources():
+    """Get metadata about all content sources"""
+    from services.news_service import get_content_sources as get_sources
+    return get_sources()
+
+@app.get("/api/sources/health")
+async def get_sources_health():
+    """Get real-time health status of all RSS feeds"""
+    from services.news_service import get_feed_health
+    return get_feed_health()
+
+@app.post("/api/sources/health/refresh")
+async def refresh_sources_health(background_tasks: BackgroundTasks):
+    """Trigger a fresh health check of all feeds"""
+    from services.news_service import run_health_check
+    background_tasks.add_task(run_health_check)
+    return {"status": "started", "message": "Health check initiated"}
 
 @app.get("/api/trending")
 async def get_trending():
@@ -923,12 +956,21 @@ async def analyze_claim(text: str = Query(..., description="Text to fact-check")
 @app.get("/api/metrics")
 async def get_metrics():
     """Get platform metrics for dashboard"""
+    from services.news_service import get_content_sources as get_sources
+    sources_data = get_sources()
+    
     return {
         "listeners_today": "14.2k",
-        "sources_online": 89,
+        "sources_online": sources_data.get("total_sources", 23),
+        "total_sources": sources_data.get("total_sources", 23),
+        "local_sources": sources_data.get("local_sources", 17),
+        "international_sources": sources_data.get("international_sources", 6),
+        "continental_sources": sources_data.get("continental_sources", 0),
         "stories_processed": 342,
         "signal_strength": "98%",
-        "network_load": "42%"
+        "network_load": "42%",
+        "broadcast_sources": len(sources_data.get("broadcast_sources", [])),
+        "verification_apis": len(sources_data.get("verification_apis", []))
     }
 
 # Morning Briefing Cache

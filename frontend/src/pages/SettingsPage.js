@@ -24,8 +24,6 @@ const SettingsPage = () => {
     navigate('/');
   };
 
-  const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
-
   const settingsSections = [
     {
       title: t('settings.profile_management'),
@@ -162,26 +160,22 @@ const SettingsPage = () => {
             </div>
           </div>
 
-          {/* Language Selector */}
+          {/* Interface Language Selector */}
           <div className="space-y-4">
             <h2 className="mono-ui text-[10px] md:text-[11px] text-forest font-bold tracking-[0.2em] border-b border-forest/30 pb-2">
-              BROADCAST_LANGUAGE
+              INTERFACE_LANGUAGE
             </h2>
             <div className="narvo-border bg-surface/5 p-5 md:p-6">
               <div className="flex items-center gap-4 md:gap-6 mb-5">
                 <div className="w-10 h-10 md:w-12 md:h-12 narvo-border bg-background-dark flex items-center justify-center">
                   <Globe className="w-5 h-5 md:w-6 md:h-6 text-primary" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h3 className="font-display text-lg md:text-xl font-bold text-content uppercase">{t('settings.language')}</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">{t('settings.language_desc')}</p>
-                </div>
-                <div className="ml-auto flex items-center gap-2">
-                  <span className="mono-ui text-[8px] text-forest">ACTIVE:</span>
-                  <span className="mono-ui text-[10px] text-primary font-bold bg-primary/10 px-2 py-1 narvo-border">{currentLang.label}</span>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest">CONTROLS_UI_TEXT_AND_MENUS — NOT_AUDIO_BROADCAST</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+              <div className="flex flex-wrap gap-2 items-center">
                 {LANGUAGES.map(lang => (
                   <button
                     key={lang.code}
@@ -189,18 +183,20 @@ const SettingsPage = () => {
                       i18n.changeLanguage(lang.code);
                       showAlert({ type: 'sync', title: 'LANGUAGE_CHANGED', message: `Interface set to ${lang.label}`, code: 'LANG_OK', duration: 3000 });
                     }}
-                    className={`p-3 narvo-border text-center transition-all ${
+                    className={`px-4 py-2 mono-ui text-[10px] font-bold transition-all ${
                       i18n.language === lang.code
-                        ? 'bg-primary/10 border-primary'
-                        : 'bg-surface/10 hover:border-forest hover:bg-surface/20'
+                        ? 'bg-primary text-background-dark'
+                        : 'narvo-border text-forest hover:text-content hover:border-forest'
                     }`}
-                    data-testid={`lang-${lang.code}`}
+                    data-testid={`interface-lang-${lang.code}`}
                   >
-                    <span className="block font-display text-sm font-bold text-content mb-1">{lang.label}</span>
-                    <span className="mono-ui text-[7px] text-forest font-bold">{lang.region}</span>
+                    {lang.label}
                   </button>
                 ))}
               </div>
+              <p className="mono-ui text-[7px] md:text-[8px] text-forest/50 mt-4">
+                TO_CHANGE_AUDIO_NARRATION_LANGUAGE → SYSTEM_SETTINGS / BROADCAST_LANGUAGE
+              </p>
             </div>
           </div>
 

@@ -77,35 +77,87 @@ const SystemGearSixPage = () => {
     fetchGearSix();
   }, [user?.id]);
 
-  const updateSetting = (key, value) => {
-    setGearSix(prev => ({ ...prev, [key]: value }));
-    setHasChanges(true);
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
+  // Auto-save with debounce
+  const autoSaveTimeoutRef = React.useRef(null);
+  
+  const saveSettings = React.useCallback(async (settingsToSave) => {
     const userId = user?.id || 'guest';
     try {
       const res = await fetch(`${API_URL}/api/settings/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          high_contrast: settings.highContrast,
-          interface_scale: settings.interfaceScale === 'DEFAULT' ? '100%' : settings.interfaceScale.toLowerCase(),
-          haptic_sync: settings.hapticSync,
-          alert_volume: settings.alertVolume,
-          data_limit: settings.dataLimit / 1000,
-          bandwidth_priority: settings.bandwidthPriority.toLowerCase(),
-          broadcast_language: settings.broadcastLanguage,
+          high_contrast: settingsToSave.highContrast,
+          interface_scale: settingsToSave.interfaceScale === 'DEFAULT' ? '100%' : settingsToSave.interfaceScale.toLowerCase(),
+          haptic_sync: settingsToSave.hapticSync,
+          alert_volume: settingsToSave.alertVolume,
+          data_limit: settingsToSave.dataLimit / 1000,
+          bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
+          broadcast_language: settingsToSave.broadcastLanguage,
         }),
       });
       if (res.ok) {
-        setHasChanges(false);
-        // Update AudioContext with new language preference
-        setBroadcastLanguage(settings.broadcastLanguage);
-        showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
+        setBroadcastLanguage(settingsToSave.broadcastLanguage);
+        console.log('[Settings] Auto-saved broadcast_language:', settingsToSave.broadcastLanguage);
+        return true;
       }
     } catch (err) {
+      console.error('[Settings] Auto-save failed:', err);
+    }
+    return false;
+  }, [user?.id, setBroadcastLanguage]);
+
+  const updateSetting = (key, value) => {
+    const newSettings = { ...settings, [key]: value };
+    setGearSix(newSettings);
+    setHasChanges(true);
+    
+    // Auto-save with 1 second debounce
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    autoSaveTimeoutRef.current = setTimeout(async () => {
+      setSaving(true);
+      const success = await saveSettings(newSettings);
+      if (success) {
+        setHasChanges(false);
+        // Show toast when broadcast language changes
+        if (key === 'broadcastLanguage') {
+          const langInfo = BROADCAST_LANGUAGES.find(l => l.code === value);
+          showAlert({
+            type: 'success',
+            title: 'BROADCAST_UPDATED',
+            message: `Now broadcasting in ${langInfo?.name || value}`,
+            code: 'LANG_SAVE',
+            duration: 3000,
+          });
+        }
+      }
+      setSaving(false);
+    }, 1000);
+  };
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleSave = async () => {
+    // Clear any pending auto-save
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    
+    setSaving(true);
+    const success = await saveSettings(settings);
+    if (success) {
+      setHasChanges(false);
+      showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });
+    } else {
       showAlert({ type: 'error', title: 'SAVE_FAILED', message: 'Could not save settings.', code: 'ERR_SAVE' });
     }
     setSaving(false);
@@ -241,45 +293,48 @@ const SystemGearSixPage = () => {
                   <Translate className="w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">NEWS_TRANSLATION</h3>
-                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">SELECT_YOUR_PREFERRED_BROADCAST_LANGUAGE</p>
+                  <h3 className="mono-ui text-[11px] md:text-[12px] text-content font-bold">AUDIO_NARRATION_LANGUAGE</h3>
+                  <p className="mono-ui text-[8px] md:text-[9px] text-forest font-bold">NEWS_WILL_BE_TRANSLATED_AND_READ_ALOUD_IN_THIS_LANGUAGE</p>
                 </div>
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 pl-0 md:pl-[72px]">
-                {BROADCAST_LANGUAGES.map(lang => (
-                  <button
-                    key={lang.code}
-                    onClick={() => updateSetting('broadcastLanguage', lang.code)}
-                    className={`p-3 md:p-4 narvo-border text-left transition-all ${
-                      settings.broadcastLanguage === lang.code 
-                        ? 'bg-primary text-background-dark border-primary' 
-                        : 'hover:bg-surface/10 hover:border-forest'
-                    }`}
-                    data-testid={`lang-${lang.code}`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="mono-ui text-[10px] md:text-[11px] font-bold">{lang.name}</span>
-                      {settings.broadcastLanguage === lang.code && (
-                        <span className="text-[8px] font-bold px-1.5 py-0.5 bg-background-dark text-primary">ACTIVE</span>
+                {BROADCAST_LANGUAGES.map(lang => {
+                  const isActive = settings.broadcastLanguage === lang.code;
+                  return (
+                    <button
+                      key={lang.code}
+                      onClick={() => updateSetting('broadcastLanguage', lang.code)}
+                      className={`relative p-4 md:p-5 narvo-border text-left transition-all ${
+                        isActive
+                          ? 'bg-primary text-background-dark border-primary' 
+                          : 'hover:bg-surface/10 hover:border-forest'
+                      }`}
+                      data-testid={`broadcast-lang-${lang.code}`}
+                    >
+                      {isActive && (
+                        <span className="absolute top-2 right-2 text-[7px] font-bold px-1.5 py-0.5 bg-background-dark text-primary mono-ui">
+                          ON_AIR
+                        </span>
                       )}
-                    </div>
-                    <span className={`mono-ui text-[9px] md:text-[10px] ${
-                      settings.broadcastLanguage === lang.code ? 'text-background-dark/70' : 'text-forest'
-                    }`}>
-                      {lang.native}
-                    </span>
-                    <div className={`mt-1 mono-ui text-[7px] md:text-[8px] ${
-                      settings.broadcastLanguage === lang.code ? 'text-background-dark/50' : 'text-forest/60'
-                    }`}>
-                      {lang.description}
-                    </div>
-                  </button>
-                ))}
+                      <span className="block mono-ui text-[11px] md:text-[12px] font-bold mb-1">{lang.name}</span>
+                      <span className={`block mono-ui text-[9px] md:text-[10px] ${
+                        isActive ? 'text-background-dark/70' : 'text-forest'
+                      }`}>
+                        {lang.native}
+                      </span>
+                      <span className={`block mt-2 mono-ui text-[7px] md:text-[8px] tracking-wider ${
+                        isActive ? 'text-background-dark/50' : 'text-forest/60'
+                      }`}>
+                        {lang.description}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
               
-              <p className="pl-0 md:pl-[72px] mono-ui text-[8px] md:text-[9px] text-forest/70">
-                NEWS_WILL_BE_TRANSLATED_AND_NARRATED_IN_SELECTED_LANGUAGE
+              <p className="pl-0 md:pl-[72px] mono-ui text-[8px] md:text-[9px] text-forest/50">
+                THIS_CONTROLS_AUDIO_NARRATION — INTERFACE_TEXT_LANGUAGE_IS_SET_IN_SETTINGS
               </p>
             </div>
           </div>
@@ -471,17 +526,20 @@ const SystemGearSixPage = () => {
           </button>
           <button 
             onClick={handleSave}
-            disabled={!hasChanges || saving}
+            disabled={saving}
             className={`px-6 md:px-10 py-3 md:py-4 mono-ui text-[10px] md:text-[11px] font-bold transition-all flex items-center justify-center gap-2 ${
               hasChanges && !saving
                 ? 'bg-primary text-background-dark hover:bg-white' 
-                : 'bg-forest/30 text-forest cursor-not-allowed'
+                : saving
+                ? 'bg-forest/50 text-forest cursor-wait'
+                : 'bg-forest/30 text-forest'
             }`}
             data-testid="save-config-btn"
           >
             {saving ? <CircleNotch className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
-            {saving ? t('system_settings.saving') : t('system_settings.save_config')}
+            {saving ? 'AUTO_SAVING...' : hasChanges ? t('system_settings.save_config') : 'SAVED'}
           </button>
+          <span className="mono-ui text-[8px] text-forest/60 mt-2">AUTO_SAVE_ENABLED</span>
         </div>
       </div>
     </main>
