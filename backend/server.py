@@ -45,11 +45,17 @@ app.include_router(user_router)
 app.include_router(factcheck_router)
 app.include_router(translation_router)
 
-# Startup: run initial feed health check in background
+# Startup: run initial feed health check and schedule periodic refresh
 @app.on_event("startup")
 async def startup_feed_health():
     from services.news_service import run_health_check
-    asyncio.create_task(run_health_check())
+
+    async def periodic_health_check():
+        while True:
+            await run_health_check()
+            await asyncio.sleep(300)  # Every 5 minutes
+
+    asyncio.create_task(periodic_health_check())
 
 # Initialize clients
 supabase: Client = create_client(
