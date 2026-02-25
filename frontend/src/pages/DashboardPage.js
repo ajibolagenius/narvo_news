@@ -63,6 +63,9 @@ const DashboardPage = () => {
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
   const [sortOrder, setSortOrder] = useState('latest');
+
+  // Prefetch audio for the first 3 articles in idle time
+  useAudioPrefetch(news.slice(0, 3), 'nova', 3);
   const [showTelemetry, setShowTelemetry] = useState(false);
 
   useEffect(() => {
