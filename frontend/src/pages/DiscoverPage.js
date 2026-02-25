@@ -532,6 +532,51 @@ const DiscoverPage = () => {
           </div>
         </div>
 
+        {/* Aggregator Wire */}
+        {aggregatorWire && aggregatorWire.total > 0 && (
+          <section className="narvo-border-t bg-surface/5" data-testid="aggregator-wire-section">
+            <div className="p-4 md:p-8 narvo-border-b bg-surface/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Lightning weight="fill" className="w-5 h-5 text-primary" />
+                  <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">AGGREGATOR_WIRE</h3>
+                </div>
+                <div className="flex items-center gap-3 mono-ui text-[9px]">
+                  <span className="text-primary font-bold">{aggregatorWire.total} ARTICLES</span>
+                  <span className="text-forest/50">MEDIASTACK + NEWSDATA</span>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[1px] bg-forest/20">
+              {[...(aggregatorWire.mediastack?.articles || []), ...(aggregatorWire.newsdata?.articles || [])].slice(0, 8).map((article, idx) => (
+                <a
+                  key={article.id || idx}
+                  href={article.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-background-dark p-4 hover:bg-surface/20 transition-colors group block"
+                  data-testid={`aggregator-article-${idx}`}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`mono-ui text-[7px] font-bold px-1.5 py-0.5 ${
+                      article.aggregator === 'mediastack' ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' : 'bg-primary/10 text-primary border border-primary/30'
+                    }`}>
+                      {article.aggregator === 'mediastack' ? 'MEDIASTACK' : 'NEWSDATA'}
+                    </span>
+                    <span className="mono-ui text-[8px] text-forest/50 truncate">{article.source}</span>
+                  </div>
+                  <h4 className="mono-ui text-[10px] md:text-[11px] text-content font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                    {article.title}
+                  </h4>
+                  {article.summary && (
+                    <p className="mt-1 mono-ui text-[8px] text-forest/60 line-clamp-2">{article.summary}</p>
+                  )}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Content Sources Section */}
         <section className="narvo-border-t bg-surface/5">
           <div className="p-4 md:p-8 narvo-border-b bg-surface/10">
