@@ -91,7 +91,7 @@ const ToolsPage = () => {
       </section>
 
       {/* Tool Categories */}
-      <div className="p-4 md:p-10 pb-20 md:pb-10">
+      <div className="p-4 md:p-10 pb-32 md:pb-10">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {TOOL_CATEGORIES.map((cat) => {
             const Icon = cat.icon;

@@ -208,7 +208,7 @@ const SearchPage = () => {
       </div>
 
       {/* Results Grid */}
-      <div className="p-4 md:p-10 flex-1 pb-20 md:pb-10">
+      <div className="p-4 md:p-10 flex-1 pb-32 md:pb-10">
         {(loading || searching) ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-[1px] md:bg-forest/20 md:narvo-border overflow-hidden">
             {Array.from({ length: 8 }).map((_, i) => (
