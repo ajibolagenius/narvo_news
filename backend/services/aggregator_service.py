@@ -67,10 +67,11 @@ async def fetch_mediastack(keywords: str = "Nigeria Africa", limit: int = 20) ->
     return []
 
 
-async def fetch_newsdata(query: str = "Nigeria", limit: int = 20) -> List[Dict]:
+async def fetch_newsdata(query: str = "Nigeria", limit: int = 10) -> List[Dict]:
     """Fetch news from NewsData.io API."""
     if not NEWSDATA_KEY:
         return []
+    limit = min(limit, 10)  # Free plan caps at 10
     url = "https://newsdata.io/api/1/latest"
     params = {
         "apikey": NEWSDATA_KEY,
