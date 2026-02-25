@@ -39,6 +39,7 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const ServerErrorPage = lazy(() => import('./pages/ServerErrorPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
 const ToolsPage = lazy(() => import('./pages/ToolsPage'));
+const ListeningHistoryPage = lazy(() => import('./pages/ListeningHistoryPage'));
 // Admin Pages
 const OperationHubPage = lazy(() => import('./pages/admin/OperationHubPage'));
 const CurationConsolePage = lazy(() => import('./pages/admin/CurationConsolePage'));
