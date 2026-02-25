@@ -929,12 +929,20 @@ async def analyze_claim(text: str = Query(..., description="Text to fact-check")
 @app.get("/api/metrics")
 async def get_metrics():
     """Get platform metrics for dashboard"""
+    from services.news_service import get_content_sources as get_sources
+    sources_data = get_sources()
+    
     return {
         "listeners_today": "14.2k",
-        "sources_online": 89,
+        "sources_online": sources_data.get("total_sources", 23),
+        "total_sources": sources_data.get("total_sources", 23),
+        "local_sources": sources_data.get("local_sources", 17),
+        "international_sources": sources_data.get("international_sources", 6),
         "stories_processed": 342,
         "signal_strength": "98%",
-        "network_load": "42%"
+        "network_load": "42%",
+        "broadcast_sources": len(sources_data.get("broadcast_sources", [])),
+        "verification_apis": len(sources_data.get("verification_apis", []))
     }
 
 # Morning Briefing Cache
