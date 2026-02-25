@@ -478,7 +478,23 @@ async def paraphrase_content(request: ParaphraseRequest):
 
 @app.post("/api/tts/generate", response_model=TTSResponse)
 async def generate_tts(request: TTSRequest):
-    """Generate text-to-speech audio using OpenAI TTS via Emergent, with optional translation"""
+    """Generate text-to-speech audio using OpenAI TTS via Emergent, with optional translation and caching"""
+    import hashlib
+    
+    # Generate cache key from text + voice + language
+    cache_key = hashlib.md5(f"{request.text[:200]}:{request.voice_id}:{request.language}".encode()).hexdigest()
+    
+    # Check MongoDB cache first
+    cached = db["tts_cache"].find_one({"cache_key": cache_key}, {"_id": 0})
+    if cached and cached.get("audio_url"):
+        return TTSResponse(
+            audio_url=cached["audio_url"],
+            text=request.text,
+            translated_text=cached.get("translated_text"),
+            voice_id=cached.get("voice_id", request.voice_id),
+            language=request.language
+        )
+    
     try:
         from emergentintegrations.llm.openai import OpenAITextToSpeech
         from services.translation_service import translate_text, SUPPORTED_LANGUAGES
