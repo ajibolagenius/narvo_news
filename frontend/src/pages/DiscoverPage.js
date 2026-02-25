@@ -421,7 +421,7 @@ const DiscoverPage = () => {
           </div>
 
           {/* Radio Garden Panel */}
-          <div className="lg:col-span-1 flex flex-col h-full bg-surface/5">
+          <div className={`lg:col-span-1 flex flex-col h-full bg-surface/5 ${mobileTab !== 'radio' ? 'hidden lg:flex' : ''}`}>
             {/* Hidden audio element for radio playback */}
             <audio ref={audioRef} className="hidden" />
             
