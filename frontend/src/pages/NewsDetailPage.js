@@ -497,10 +497,7 @@ const NewsDetailPage = () => {
           {/* Truth Tag Display */}
           <div className="narvo-border bg-primary/5 p-3 xl:p-4 border-primary/30">
             <span className="mono-ui text-[9px] xl:text-[10px] text-forest block mb-2 xl:mb-3 font-bold tracking-widest">{t('news_detail.verification_status')}</span>
-            <div className="flex items-center justify-between">
-              <TruthTag storyId={news.id} />
-              <span className="mono-ui text-[8px] text-forest">DUBAWA_AI</span>
-            </div>
+            <TruthTag storyId={news.id} />
           </div>
 
           {/* Article Info */}
