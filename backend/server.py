@@ -116,14 +116,9 @@ RSS_FEEDS = [
     {"name": "Al Jazeera Africa", "url": "https://www.aljazeera.com/xml/rss/all.xml", "region": "Continental"},
 ]
 
-# Voice configurations with authentic Nigerian names (mapped to OpenAI voices)
-VOICE_PROFILES = [
-    {"id": "onyx", "name": "Emeka", "accent": "English", "language": "en", "gender": "male", "description": "Deep, authoritative English voice"},
-    {"id": "echo", "name": "Tunde", "accent": "Naijá", "language": "pcm", "gender": "male", "description": "Warm, confident Naijá voice"},
-    {"id": "nova", "name": "Adùnní", "accent": "Yorùbá", "language": "yo", "gender": "female", "description": "Clear, melodic Yorùbá voice"},
-    {"id": "shimmer", "name": "Halima", "accent": "Hausa", "language": "ha", "gender": "female", "description": "Bright, dignified Hausa voice"},
-    {"id": "alloy", "name": "Adaeze", "accent": "Igbo", "language": "ig", "gender": "female", "description": "Warm, expressive Igbo voice"},
-]
+# Voice configurations — YarnGPT voices with Nigerian accents
+from services.yarngpt_service import get_voice_profiles as _get_yarn_profiles, YARNGPT_VOICES
+VOICE_PROFILES = _get_yarn_profiles()
 
 # Pydantic Models
 class NewsItem(BaseModel):
