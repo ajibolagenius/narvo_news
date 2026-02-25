@@ -74,10 +74,11 @@ class TestTTSGenerationVoices:
         assert response.status_code == 200, f"TTS failed: {response.text}"
         data = response.json()
         
-        # Should have audio_url
+        # Should have audio_url (can be http URL or data: base64 URL)
         assert 'audio_url' in data, f"Missing audio_url in response: {data}"
-        assert data['audio_url'].startswith('http'), f"audio_url should be a URL: {data['audio_url']}"
-        print(f"PASS: /api/tts/generate with voice_id=idera returned audio_url: {data['audio_url'][:60]}...")
+        audio_url = data['audio_url']
+        assert audio_url.startswith('http') or audio_url.startswith('data:audio'), f"audio_url should be a URL or data URI: {audio_url[:60]}..."
+        print(f"PASS: /api/tts/generate with voice_id=idera returned audio data: {audio_url[:60]}...")
 
     def test_tts_generate_with_zainab_voice(self):
         """Test Hausa voice zainab"""
