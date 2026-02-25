@@ -417,7 +417,7 @@ const DashboardPage = () => {
                     ) : (
                       <ArrowDown weight="bold" className="w-4 h-4" />
                     )}
-                    <span>{loadingMore ? 'LOADING...' : `LOAD_MORE // ${Math.max(0, news.length - 1 - visibleCount)} REMAINING`}</span>
+                    <span>{loadingMore ? 'LOADING...' : `LOAD_MORE // ${Math.max(0, filteredNews.length - visibleCount)} REMAINING`}</span>
                   </button>
                   )}
                   </motion.section>
