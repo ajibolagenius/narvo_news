@@ -268,9 +268,31 @@ const DiscoverPage = () => {
           </div>
         </section>
 
+        {/* Mobile Tab Switcher (visible only below lg) */}
+        <div className="lg:hidden flex items-center narvo-border-b">
+          <button
+            onClick={() => setMobileTab('podcasts')}
+            className={`flex-1 h-10 flex items-center justify-center gap-2 mono-ui text-[9px] font-bold transition-colors ${
+              mobileTab === 'podcasts' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'
+            }`}
+            data-testid="tab-podcasts"
+          >
+            <Rss className="w-3.5 h-3.5" /> PODCASTS
+          </button>
+          <button
+            onClick={() => setMobileTab('radio')}
+            className={`flex-1 h-10 flex items-center justify-center gap-2 mono-ui text-[9px] font-bold transition-colors ${
+              mobileTab === 'radio' ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'
+            }`}
+            data-testid="tab-radio"
+          >
+            <Radio className="w-3.5 h-3.5" /> RADIO
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-3">
-          {/* Podcast Matrix */}
-          <div className="lg:col-span-2 lg:narvo-border-r h-full">
+          {/* Podcast Matrix (always visible on lg, controlled by tab on mobile) */}
+          <div className={`lg:col-span-2 lg:narvo-border-r h-full ${mobileTab !== 'podcasts' ? 'hidden lg:block' : ''}`}>
             <div className="flex items-center justify-between p-4 md:p-8 narvo-border-b bg-surface/10 sticky top-0 z-10 backdrop-blur-md">
               <h3 className="font-display text-lg md:text-2xl font-bold uppercase text-content tracking-tight">{t('discover.deep_dive_podcasts')}</h3>
               <div className="flex items-center gap-2 md:gap-4">
