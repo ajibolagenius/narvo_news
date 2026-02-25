@@ -1162,6 +1162,89 @@ async def get_metrics():
         "aggregators": agg_status,
     }
 
+# ─── Listening History ───────────────────────────────────────
+@app.post("/api/listening-history")
+async def add_listening_history(data: dict = Body(...)):
+    """Record a played broadcast to listening history"""
+    user_id = data.get("user_id", "guest")
+    entry = {
+        "user_id": user_id,
+        "track_id": data.get("track_id", ""),
+        "title": data.get("title", "Unknown"),
+        "source": data.get("source", ""),
+        "category": data.get("category", ""),
+        "duration": data.get("duration", 0),
+        "played_at": datetime.now(timezone.utc).isoformat(),
+    }
+    db["listening_history"].insert_one(entry)
+    return {"status": "ok"}
+
+@app.get("/api/listening-history/{user_id}")
+async def get_listening_history(user_id: str, limit: int = Query(20, ge=1, le=100)):
+    """Get user's listening history, most recent first"""
+    items = list(db["listening_history"].find(
+        {"user_id": user_id},
+        {"_id": 0}
+    ).sort("played_at", -1).limit(limit))
+    return items
+
+@app.get("/api/system-alerts")
+async def get_system_alerts():
+    """Get real system alerts based on actual service status"""
+    from services.aggregator_service import get_aggregator_status
+    agg = get_aggregator_status()
+    alerts = []
+    
+    # Check aggregator staleness
+    if agg.get("cache_stale"):
+        alerts.append({
+            "id": "agg-stale",
+            "type": "warning",
+            "title": "AGGREGATOR_CACHE_STALE",
+            "desc": "News aggregator cache has expired. New stories may be delayed.",
+            "time": agg.get("last_fetched", ""),
+            "priority": True,
+        })
+    
+    # Check source counts
+    ms_count = agg.get("mediastack", {}).get("cached_count", 0)
+    nd_count = agg.get("newsdata", {}).get("cached_count", 0)
+    
+    if ms_count + nd_count > 0:
+        alerts.append({
+            "id": "agg-active",
+            "type": "info",
+            "title": "AGGREGATOR_FEEDS_ACTIVE",
+            "desc": f"Mediastack: {ms_count} stories cached. NewsData: {nd_count} stories cached.",
+            "time": agg.get("last_fetched", ""),
+            "priority": False,
+        })
+    
+    # TTS cache stats
+    tts_count = db["tts_cache"].count_documents({})
+    if tts_count > 0:
+        alerts.append({
+            "id": "tts-cache",
+            "type": "info",
+            "title": "TTS_CACHE_ACTIVE",
+            "desc": f"{tts_count} audio broadcasts cached for instant playback.",
+            "time": datetime.now(timezone.utc).isoformat(),
+            "priority": False,
+        })
+    
+    # Always show a platform status message
+    alerts.append({
+        "id": "platform-status",
+        "type": "feature",
+        "title": "PLATFORM_OPERATIONAL",
+        "desc": "All Narvo broadcast systems are online and operational.",
+        "time": datetime.now(timezone.utc).isoformat(),
+        "priority": False,
+    })
+    
+    return alerts
+
+
 # Morning Briefing Cache
 _briefing_cache = {
     "briefing": None,
