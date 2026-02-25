@@ -1,0 +1,92 @@
+{
+  "summary": "Iteration 28 Testing Complete - Language Selector UI Differentiation feature fully verified. All 11 test cases PASSED. The /settings page now uses 'INTERFACE_LANGUAGE' header with pill-style buttons (7 languages) that control i18n UI text. The /system page uses 'BROADCAST_LANGUAGE' header with rich card-based grid (5 languages) showing native names and 'ON_AIR' badge for active selection controlling audio TTS language.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_28.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "PASS: SettingsPage.js line 166 - 'INTERFACE_LANGUAGE' section header (not BROADCAST_LANGUAGE)",
+    "PASS: SettingsPage.js lines 178-196 - Pill-style buttons with data-testid='interface-lang-{code}' for 7 languages",
+    "PASS: SettingsPage.js line 175 - Description 'CONTROLS_UI_TEXT_AND_MENUS — NOT_AUDIO_BROADCAST'",
+    "PASS: SettingsPage.js lines 197-199 - Footer text linking to System Settings for audio language",
+    "PASS: SystemSettingsPage.js line 270 - 'BROADCAST_LANGUAGE' section header",
+    "PASS: SystemSettingsPage.js line 272-273 - 'AUDIO_TRANSLATION_ENGINE' subtitle",
+    "PASS: SystemSettingsPage.js lines 290-323 - Card-based language grid with native names for 5 languages",
+    "PASS: SystemSettingsPage.js lines 305-307 - 'ON_AIR' badge on active language card",
+    "PASS: SystemSettingsPage.js line 302 - data-testid='broadcast-lang-{code}' for broadcast language cards",
+    "PASS: SystemSettingsPage.js lines 325-327 - Footer text 'THIS_CONTROLS_AUDIO_NARRATION'"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only testing)",
+    "frontend": "100% (11/11 test cases passed)"
+  },
+  "test_credentials": "Guest mode: Click '[Oya, Play]' button on landing page",
+  "seed_data_creation": "None required",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 28 tested Language Selector UI Differentiation feature. Key findings: (1) /settings page INTERFACE_LANGUAGE section has 7 pill-style buttons (en, fr, yo, ha, ig, pcm, sw) with data-testid='interface-lang-{code}' - clicking changes i18n UI language. (2) /system page BROADCAST_LANGUAGE section has 5 card-based buttons (en, pcm, yo, ha, ig) with data-testid='broadcast-lang-{code}' - clicking changes audio TTS language with auto-save. (3) ON_AIR badge shows on active broadcast language card. (4) Both pages clearly differentiate their purpose through header text, descriptions, and visual design.",
+  "features_tested": {
+    "settings_interface_language_header": {
+      "status": "PASS",
+      "notes": "/settings displays 'INTERFACE_LANGUAGE' header (NOT 'BROADCAST_LANGUAGE')"
+    },
+    "settings_pill_buttons": {
+      "status": "PASS",
+      "notes": "7 pill-style buttons displayed horizontally: English, Français, Yorùbá, Hausa, Igbo, Pidgin, Kiswahili"
+    },
+    "settings_ui_description": {
+      "status": "PASS",
+      "notes": "Shows 'CONTROLS_UI_TEXT_AND_MENUS — NOT_AUDIO_BROADCAST' description"
+    },
+    "settings_footer_text": {
+      "status": "PASS",
+      "notes": "Footer links to System Settings for audio language: 'TO_CHANGE_AUDIO_NARRATION_LANGUAGE → SYSTEM_SETTINGS / BROADCAST_LANGUAGE'"
+    },
+    "settings_i18n_changes": {
+      "status": "PASS",
+      "notes": "Clicking Français button changes entire UI to French (sidebar menu, headers, etc.)"
+    },
+    "system_broadcast_header": {
+      "status": "PASS",
+      "notes": "/system displays 'BROADCAST_LANGUAGE' section header with 'AUDIO_TRANSLATION_ENGINE' subtitle"
+    },
+    "system_card_grid": {
+      "status": "PASS",
+      "notes": "5 rich language cards with name, native name, and region: English, Naijá, Yorùbá, Hausa, Igbo"
+    },
+    "system_on_air_badge": {
+      "status": "PASS",
+      "notes": "Active language card displays 'ON_AIR' badge in top-right corner"
+    },
+    "system_footer_text": {
+      "status": "PASS",
+      "notes": "Footer shows 'THIS_CONTROLS_AUDIO_NARRATION — INTERFACE_TEXT_LANGUAGE_IS_SET_IN_SETTINGS'"
+    },
+    "system_auto_save": {
+      "status": "PASS",
+      "notes": "Clicking broadcast language card triggers auto-save (console: '[Settings] Auto-saved broadcast_language: pcm')"
+    },
+    "separation_verified": {
+      "status": "PASS",
+      "notes": "/settings has NO broadcast-lang-* selectors; /system has NO interface-lang-* selectors - proper separation"
+    }
+  },
+  "screenshots": [
+    ".screenshots/iter28_dashboard.png",
+    ".screenshots/iter28_settings_interface_lang.png",
+    ".screenshots/iter28_settings_fr_selected.png",
+    ".screenshots/iter28_system_broadcast_lang.png",
+    ".screenshots/iter28_system_broadcast_lang_scrolled.png",
+    ".screenshots/iter28_system_pcm_selected.png"
+  ]
+}
