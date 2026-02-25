@@ -22,6 +22,7 @@ export const AudioProvider = ({ children }) => {
   const [queueIndex, setQueueIndex] = useState(-1);
   const [autoPlay, setAutoPlay] = useState(true);
   const [error, setError] = useState(null);
+  const [playbackRate, setPlaybackRateState] = useState(1);
   const [broadcastLanguage, setBroadcastLanguage] = useState('en');
   const [voiceModel, setVoiceModel] = useState('emma');
 
