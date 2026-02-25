@@ -32,12 +32,58 @@ const DEFAULT_SETTINGS = {
 
 const SoundThemesSection = ({ settings, updateSetting }) => {
   const [themes, setThemes] = useState([]);
+  const [previewPlaying, setPreviewPlaying] = useState(null);
+
   useEffect(() => {
     fetch(`${API_URL}/api/sound-themes`)
       .then(r => r.json())
       .then(setThemes)
       .catch(() => {});
   }, []);
+
+  const playThemePreview = async (e, themeId) => {
+    e.stopPropagation();
+    if (previewPlaying === themeId) {
+      setPreviewPlaying(null);
+      return;
+    }
+    setPreviewPlaying(themeId);
+    try {
+      const Tone = (await import('tone')).default || await import('tone');
+      await Tone.start();
+      const res = await fetch(`${API_URL}/api/sound-themes/${themeId}`);
+      const themeData = await res.json();
+      const intro = themeData.intro;
+      if (!intro?.notes?.length) { setPreviewPlaying(null); return; }
+
+      const reverb = new Tone.Reverb({ decay: 2, wet: 0.3 }).toDestination();
+      const gain = new Tone.Gain(0.5).connect(reverb);
+      const synthType = intro.type === 'membrane' ? Tone.MembraneSynth
+        : intro.type === 'am' ? Tone.AMSynth
+        : intro.type === 'square' || intro.type === 'triangle'
+          ? Tone.Synth : Tone.FMSynth;
+      const synth = new (synthType)({
+        envelope: intro.envelope || { attack: 0.05, decay: 0.3, sustain: 0.4, release: 0.8 },
+        volume: -10,
+      }).connect(gain);
+
+      const now = Tone.now();
+      const noteDur = 60 / (intro.tempo || 120);
+      intro.notes.forEach((note, i) => {
+        synth.triggerAttackRelease(note, noteDur * 0.8, now + i * noteDur);
+      });
+      const totalDur = intro.notes.length * noteDur;
+      setTimeout(() => {
+        synth.dispose();
+        gain.dispose();
+        reverb.dispose();
+        setPreviewPlaying(null);
+      }, totalDur * 1000 + 500);
+    } catch (err) {
+      console.error('[SoundTheme Preview]', err);
+      setPreviewPlaying(null);
+    }
+  };
 
   if (!themes.length) return null;
 
@@ -54,11 +100,12 @@ const SoundThemesSection = ({ settings, updateSetting }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {themes.map(theme => {
           const isActive = (settings.soundTheme || 'narvo_classic') === theme.id;
+          const isPreviewing = previewPlaying === theme.id;
           return (
-            <button
+            <div
               key={theme.id}
               onClick={() => updateSetting('soundTheme', theme.id)}
-              className={`narvo-border p-4 md:p-5 text-left transition-all relative ${
+              className={`narvo-border p-4 md:p-5 text-left transition-all relative cursor-pointer ${
                 isActive ? 'bg-primary text-background-dark border-primary' : 'hover:bg-surface/10 hover:border-forest'
               }`}
               data-testid={`theme-${theme.id}`}
@@ -68,14 +115,31 @@ const SoundThemesSection = ({ settings, updateSetting }) => {
                   ACTIVE
                 </span>
               )}
-              <div className="flex items-center gap-2 mb-2">
-                <MusicNotes className="w-4 h-4" weight="bold" />
-                <span className="mono-ui text-[11px] md:text-[12px] font-bold">{theme.name.toUpperCase()}</span>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <MusicNotes className="w-4 h-4" weight="bold" />
+                  <span className="mono-ui text-[11px] md:text-[12px] font-bold">{theme.name.toUpperCase()}</span>
+                </div>
+                <button
+                  onClick={(e) => playThemePreview(e, theme.id)}
+                  className={`w-7 h-7 flex items-center justify-center narvo-border transition-all shrink-0 ${
+                    isPreviewing
+                      ? (isActive ? 'bg-background-dark text-primary' : 'bg-primary text-background-dark border-primary')
+                      : (isActive ? 'bg-background-dark/20 text-background-dark hover:bg-background-dark/40' : 'bg-surface/20 text-forest hover:bg-primary hover:text-background-dark hover:border-primary')
+                  }`}
+                  data-testid={`preview-theme-${theme.id}`}
+                >
+                  {isPreviewing ? (
+                    <CircleNotch weight="bold" className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <SpeakerHigh weight="bold" className="w-3.5 h-3.5" />
+                  )}
+                </button>
               </div>
               <p className={`mono-ui text-[8px] md:text-[9px] leading-relaxed ${isActive ? 'text-background-dark/70' : 'text-forest'}`}>
                 {theme.description}
               </p>
-            </button>
+            </div>
           );
         })}
       </div>
