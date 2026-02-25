@@ -96,6 +96,9 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **Broadcast Language Selector (/system)** - Rich card grid for 5 TTS languages with native names and ON_AIR badge. Controls audio narration language. Section labeled "BROADCAST_LANGUAGE" with subtitle "AUDIO_TRANSLATION_ENGINE".
 - Cross-references between pages guide users to the correct selector.
 
+### Bug Fixes (Feb 25, 2025)
+- **AudioContext broadcast_language fetch** - Fixed hardcoded 'guest' user ID in AudioContext.js. Now uses actual user ID from AuthContext, re-fetches when user changes.
+
 ## Supported Languages
 
 ### Interface Languages (i18n - /settings page)
