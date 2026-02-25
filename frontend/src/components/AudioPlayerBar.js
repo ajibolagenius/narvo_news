@@ -385,7 +385,7 @@ const MobilePlayer = () => {
                 </button>
               </div>
 
-              {/* Volume */}
+              {/* Speed + Volume */}
               <div className="flex items-center gap-3">
                 <button onClick={toggleMute} className="text-[rgb(var(--color-text-secondary))] p-1">
                   {isMuted || volume === 0 ? <SpeakerSlash weight="fill" className="w-4 h-4" /> : <SpeakerHigh weight="fill" className="w-4 h-4" />}
@@ -397,7 +397,17 @@ const MobilePlayer = () => {
                 >
                   <div className="h-full bg-[rgb(var(--color-primary))]" style={{ width: `${isMuted ? 0 : volume * 100}%` }} />
                 </div>
-                <span className="font-mono text-[8px] text-[rgb(var(--color-text-dim))] w-8">{isMuted ? 'MUTE' : `${Math.round(volume * 100)}%`}</span>
+                <button
+                  onClick={cycleSpeed}
+                  className={`px-2 py-1 font-mono text-[10px] font-bold border shrink-0 ${
+                    playbackRate !== 1
+                      ? 'text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]'
+                      : 'text-[rgb(var(--color-text-secondary))] border-[rgb(var(--color-border))]'
+                  }`}
+                  data-testid="mobile-speed-control"
+                >
+                  {playbackRate}x
+                </button>
               </div>
 
               {/* Queue info */}
