@@ -31,9 +31,13 @@ const AccessibilityPage = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const { showAlert } = useHapticAlert();
-  const [displayDensity, setDisplayDensity] = useState('standard');
-  const [fontScale, setFontScale] = useState(100);
-  const [gestures, setGestures] = useState({ lateralSwipe: true, pinchZoom: false });
+  const cached = readLocal();
+  const [displayDensity, setDisplayDensity] = useState(cached?.display_density || 'standard');
+  const [fontScale, setFontScale] = useState(cached?.font_scale ?? 100);
+  const [gestures, setGestures] = useState({
+    lateralSwipe: cached?.gestural_swipe ?? true,
+    pinchZoom: cached?.gestural_pinch ?? false,
+  });
   const [voiceCommandsList] = useState([
     { id: 1, command: '"NARVO, OPEN NEWSFEED"', active: true },
     { id: 2, command: '"NARVO, BRIGHTNESS UP"', active: true },
