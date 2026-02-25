@@ -1483,46 +1483,6 @@ class PodcastEpisode(BaseModel):
     category: str = "General"
     published: Optional[str] = None
 
-@app.get("/api/podcasts/categories")
-async def get_podcast_categories():
-    """Get unique podcast categories"""
-    cats = ["Geopolitics", "Technology", "Urban", "Environment", "Finance", "Health", "Climate", "Culture"]
-    return [{"id": c.lower(), "name": c} for c in cats]
-
-@app.get("/api/podcasts/search")
-async def search_podcast_episodes(q: str = Query("", min_length=1), limit: int = Query(10, ge=1, le=50)):
-    """Search podcasts by title or description"""
-    from services.podcast_service import search_podcasts
-    results = await search_podcasts(q, limit=limit)
-    return results
-
-@app.get("/api/podcasts/{podcast_id}")
-async def get_podcast_detail(podcast_id: str):
-    """Get a specific podcast episode by ID"""
-    from services.podcast_service import get_podcast_by_id
-    ep = get_podcast_by_id(podcast_id)
-    if not ep:
-        raise HTTPException(status_code=404, detail="Podcast not found")
-    return ep
-
-@app.get("/api/podcasts", response_model=List[PodcastEpisode])
-async def get_podcasts(
-    sort: str = Query("latest", description="Sort by: latest, popular"),
-    limit: int = Query(10, ge=1, le=50)
-):
-    """Get curated podcast episodes for the Discover page"""
-    episodes = [
-        PodcastEpisode(id="ep402", episode="EP. 402", title="The Geopolitical Shift: Arctic Routes", duration="45:00", description="Understanding the opening trade routes, their environmental impact, and the geopolitical realignment happening at the North Pole.", category="Geopolitics", published="2026-02-20"),
-        PodcastEpisode(id="ep089", episode="EP. 089", title="Tech Horizons: Quantum Synthesis", duration="22:15", description="Exclusive breakthrough at Zurich Labs: the neural interface is ready for human trials. We break down what this means for Africa's tech ecosystem.", category="Technology", published="2026-02-18"),
-        PodcastEpisode(id="ep012", episode="EP. 012", title="Urban Architecture: Megacities", duration="60:00", description="Reimagining dense metropolitan spaces. Nigeria 2050 infrastructure planning data reveals surprising trends in sustainable urban development.", category="Urban", published="2026-02-15"),
-        PodcastEpisode(id="ep201", episode="EP. 201", title="Soundscapes: Amazon Rainforest", duration="33:45", description="Binaural field recordings and biodiversity metrics from the Amazon. An audio journey through the world's most biodiverse ecosystem.", category="Environment", published="2026-02-12"),
-        PodcastEpisode(id="ep156", episode="EP. 156", title="African Markets: Digital Currency Surge", duration="28:30", description="How digital currencies are transforming trade across West Africa. From Lagos to Accra, new financial rails are being built.", category="Finance", published="2026-02-10"),
-        PodcastEpisode(id="ep340", episode="EP. 340", title="Health Frontiers: Malaria Gene Drive", duration="35:20", description="The controversial gene drive technology that could eradicate malaria. Scientists in Kenya share their latest trial results.", category="Health", published="2026-02-08"),
-    ]
-    if sort == "popular":
-        episodes.sort(key=lambda x: x.duration, reverse=True)
-    return episodes[:limit]
-
 @app.get("/api/discover/trending")
 async def get_trending_topics():
     """Get trending topics and categories for the Discover page"""
