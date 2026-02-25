@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch, Broadcast, Rss, Globe } from '@phosphor-icons/react';
+import { Play, PlayCircle, Pause, Radio, SpeakerHigh, SpeakerSlash, CloudArrowDown, CheckCircle, CircleNotch, Broadcast, Rss, Globe, Lightning } from '@phosphor-icons/react';
 import { useTranslation } from 'react-i18next';
 import { useAudio } from '../contexts/AudioContext';
 import { useDownloadQueue } from '../contexts/DownloadQueueContext';
@@ -21,7 +21,7 @@ const DiscoverPage = () => {
   const [cachedPodcasts, setCachedPodcasts] = useState({});
   const { playTrack } = useAudio();
   const { addToQueue, addSingleToQueue, queue, isProcessing } = useDownloadQueue();
-  const { sources, getTotalSources, getLocalSources, getInternationalSources, getBroadcastSources } = useContentSources();
+  const { sources, getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getBroadcastSources } = useContentSources();
   
   // Radio state
   const [radioStations, setRadioStations] = useState([]);
@@ -32,6 +32,7 @@ const DiscoverPage = () => {
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const [radioVolume, setRadioVolume] = useState(0.7);
   const audioRef = useRef(null);
+  const [aggregatorWire, setAggregatorWire] = useState(null);
 
   // Check which podcasts are cached
   const checkCachedPodcasts = async (podcastList) => {
