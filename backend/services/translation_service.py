@@ -271,10 +271,14 @@ Respond in JSON format:
         
         result = json.loads(cleaned)
         
+        # Sanitize AI output
+        narrative = _sanitize(result.get("narrative", summary))
+        takeaways = [_sanitize(kt) for kt in result.get("key_takeaways", []) if _sanitize(kt)]
+        
         return {
             "success": True,
-            "narrative": result.get("narrative", summary),
-            "key_takeaways": result.get("key_takeaways", []),
+            "narrative": narrative,
+            "key_takeaways": takeaways,
             "language": target_language,
             "language_name": lang_info["name"],
             "voice_id": lang_info["voice_id"]
