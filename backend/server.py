@@ -659,6 +659,7 @@ async def search_news(
     q: str = Query(..., description="Search query"),
     category: str = Query(None, description="Filter by category"),
     source: str = Query(None, description="Filter by source"),
+    source_type: str = Query(None, description="Filter by source type: rss, aggregator, podcast"),
     limit: int = Query(20, le=50, description="Max results"),
     skip: int = Query(0, description="Offset for pagination"),
     include_aggregators: bool = Query(True, description="Include aggregator articles in search")
@@ -705,9 +706,21 @@ async def search_news(
         except Exception:
             pass
 
-        # 4. Filter by search query
+        # 4. Filter by search query and source_type
         filtered = []
         for item in all_items:
+            # Source type filter
+            if source_type:
+                is_agg = bool(item.get("aggregator") and item.get("aggregator") != "podcast")
+                is_podcast = item.get("aggregator") == "podcast" or item.get("category", "").lower() == "podcast"
+                is_rss = not is_agg and not is_podcast
+                if source_type == "rss" and not is_rss:
+                    continue
+                if source_type == "aggregator" and not is_agg:
+                    continue
+                if source_type == "podcast" and not is_podcast:
+                    continue
+
             title_match = query_lower in (item.get("title") or "").lower()
             summary_match = query_lower in (item.get("summary") or "").lower()
             source_match = query_lower in (item.get("source") or "").lower()
@@ -720,7 +733,7 @@ async def search_news(
                     continue
                 filtered.append(item)
 
-        # 5. Deduplicate by id
+        # 5. Deduplicate by id and add source_type field
         seen_ids = set()
         deduped = []
         for item in filtered:
@@ -728,6 +741,13 @@ async def search_news(
             if item_id and item_id in seen_ids:
                 continue
             seen_ids.add(item_id)
+            # Tag source type for frontend
+            if item.get("aggregator") and item.get("aggregator") != "podcast":
+                item["source_type"] = "aggregator"
+            elif item.get("aggregator") == "podcast" or item.get("category", "").lower() == "podcast":
+                item["source_type"] = "podcast"
+            else:
+                item["source_type"] = "rss"
             deduped.append(item)
 
         # 6. Sort: title matches first, then by date

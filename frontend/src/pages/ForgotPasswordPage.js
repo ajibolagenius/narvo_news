@@ -38,7 +38,7 @@ const ForgotPasswordPage = () => {
         <div className="hidden md:flex items-center gap-2 mono-ui text-[10px] text-forest">
           <span className="w-2 h-2 bg-primary animate-pulse" />
           <span>SECURE_CHANNEL: ACTIVE</span>
-          <span className="ml-4">UTC <Clock /></span>
+          <span className="ml-4">LOCAL <Clock /></span>
         </div>
       </header>
 

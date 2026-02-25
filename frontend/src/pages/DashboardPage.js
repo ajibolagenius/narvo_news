@@ -61,6 +61,7 @@ const DashboardPage = () => {
   const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
+  const [sortOrder, setSortOrder] = useState('latest');
 
   useEffect(() => {
     // Fetch user aggregator preferences first, then news with those prefs
@@ -112,6 +113,9 @@ const DashboardPage = () => {
     if (sourceFilter === 'rss') return !item.aggregator;
     if (sourceFilter === 'aggregators') return !!item.aggregator;
     return true;
+  }).sort((a, b) => {
+    if (sortOrder === 'oldest') return new Date(a.published || 0) - new Date(b.published || 0);
+    return new Date(b.published || 0) - new Date(a.published || 0);
   });
   const stream = filteredNews.slice(0, visibleCount);
 
@@ -209,14 +213,32 @@ const DashboardPage = () => {
       <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0">
         {/* Sub-Header */}
         <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="mono-ui text-[10px] md:text-xs text-forest">CHANNEL: <span className="text-primary">NIGERIA_LGS_01</span></span>
-            <div className="w-2.5 h-2.5 bg-primary animate-pulse" />
-            <span className="mono-ui text-[10px] md:text-xs text-forest hidden sm:inline">LIVE_TRANSMISSION</span>
+          <div className="flex items-center gap-2 md:gap-3 min-w-0">
+            <span className="mono-ui text-[9px] md:text-xs text-forest shrink-0">CHANNEL: <span className="text-primary">NIGERIA_LGS_01</span></span>
+            <div className="w-2 h-2 bg-primary animate-pulse shrink-0" />
           </div>
-          <div className="flex items-center gap-3">
-            <button className="mono-ui text-[10px] md:text-xs text-forest border border-forest px-2 md:px-3 py-1 hover:bg-forest hover:text-content transition-colors" data-testid="filter-btn">FILTERS</button>
-            <button className="mono-ui text-[10px] md:text-xs text-primary border border-primary px-2 md:px-3 py-1 hover:bg-primary hover:text-background-dark transition-colors" data-testid="sort-btn">SORT</button>
+          <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+            {/* Source filter tabs */}
+            <div className="flex items-center border border-forest/30 p-0.5" data-testid="source-filter-toggle">
+              {['all', 'rss', 'aggregators'].map(f => (
+                <button
+                  key={f}
+                  onClick={() => setSourceFilter(f)}
+                  className={`px-1.5 md:px-2.5 py-0.5 md:py-1 mono-ui text-[7px] md:text-[9px] font-bold transition-colors ${sourceFilter === f ? 'bg-primary text-background-dark' : 'text-forest hover:text-content'}`}
+                  data-testid={`filter-${f}`}
+                >
+                  {f === 'all' ? 'ALL' : f === 'rss' ? 'RSS' : 'AGG'}
+                </button>
+              ))}
+            </div>
+            {/* Sort toggle */}
+            <button
+              onClick={() => setSortOrder(s => s === 'latest' ? 'oldest' : 'latest')}
+              className="mono-ui text-[8px] md:text-[9px] text-primary border border-primary px-1.5 md:px-2.5 py-0.5 md:py-1 hover:bg-primary hover:text-background-dark transition-colors font-bold"
+              data-testid="sort-btn"
+            >
+              {sortOrder === 'latest' ? 'NEW' : 'OLD'}
+            </button>
           </div>
         </div>
 
@@ -325,28 +347,6 @@ const DashboardPage = () => {
                   <div className="flex items-center justify-between border-b border-forest/30 pb-2">
                     <span className="mono-ui text-[10px] md:text-xs text-forest font-bold tracking-[0.2em]">{'//'} {t('dashboard.synthesized_streams')}</span>
                     <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase">Nodes: {String(stream.length).padStart(2, '0')}</span>
-                  </div>
-
-                  {/* Source Filter Toggle */}
-                  <div className="flex items-center gap-1" data-testid="source-filter-toggle">
-                    {[
-                      { key: 'all', label: 'ALL_SOURCES' },
-                      { key: 'rss', label: 'RSS_ONLY' },
-                      { key: 'aggregators', label: 'AGGREGATORS' },
-                    ].map(f => (
-                      <button
-                        key={f.key}
-                        onClick={() => setSourceFilter(f.key)}
-                        className={`mono-ui text-[8px] md:text-[9px] font-bold px-2.5 py-1 transition-all ${
-                          sourceFilter === f.key
-                            ? 'bg-primary text-background-dark'
-                            : 'narvo-border text-forest hover:text-content'
-                        }`}
-                        data-testid={`filter-${f.key}`}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
                   </div>
 
                   <motion.div variants={cardVariants} className="narvo-border bg-surface/20 divide-y divide-forest/10">

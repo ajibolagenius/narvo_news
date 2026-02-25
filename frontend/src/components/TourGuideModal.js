@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { X, ArrowRight, ArrowLeft, Broadcast, MagnifyingGlass, GearSix, Headphones, Waveform } from '@phosphor-icons/react';
 
 const TOUR_STEPS = [
@@ -45,15 +46,20 @@ export function openTourGuide() {
 export const TourGuideModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
+  const location = useLocation();
 
-  // First-visit auto-show
+  // Only auto-show on dashboard-area pages (not standalone pages like /tools, /)
+  const isDashboardArea = ['/dashboard', '/discover', '/search', '/briefing', '/saved', '/offline', '/settings', '/system'].some(p => location.pathname.startsWith(p));
+
+  // First-visit auto-show (only in dashboard area)
   useEffect(() => {
+    if (!isDashboardArea) return;
     const completed = localStorage.getItem(STORAGE_KEY);
     if (!completed) {
       const timer = setTimeout(() => setIsOpen(true), 2000);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [isDashboardArea]);
 
   // Listen for external open events (login, register, settings button)
   useEffect(() => {

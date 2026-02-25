@@ -12,8 +12,8 @@ const getNavItems = (t) => [
   { icon: SquaresFour, label: t('nav.feed'), path: '/dashboard' },
   { icon: Compass, label: t('nav.discover'), path: '/discover' },
   { icon: MagnifyingGlass, label: t('nav.search'), path: '/search' },
-  { icon: BookmarkSimple, label: t('nav.saved'), path: '/saved' },
   { icon: Waveform, label: t('nav.briefing'), path: '/briefing' },
+  { icon: BookmarkSimple, label: t('nav.saved'), path: '/saved' },
   { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
 ];
 
