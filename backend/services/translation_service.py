@@ -242,6 +242,10 @@ Requirements:
 - Maintain journalistic accuracy
 - Use natural expressions for the target language
 
+CRITICAL: NEVER include sound descriptions, stage directions, or production cues.
+No text like "Sound of music fades", "[pause]", "(jingle plays)", "*transition*" etc.
+Write ONLY the actual spoken news content — every word must be substantive reporting.
+
 Respond in JSON format:
 {{
   "narrative": "The broadcast narrative in {lang_info['name']}...",
