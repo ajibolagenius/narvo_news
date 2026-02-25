@@ -78,8 +78,18 @@ const VoiceStudioPage = () => {
           broadcast_language: selectedVoice.language || 'en',
         }),
       });
+      // Update AudioContext immediately
       setBroadcastLanguage(selectedVoice.language || 'en');
       setVoiceModel(selectedVoice.id);
+      // Cache for instant load next time
+      try {
+        const existing = JSON.parse(localStorage.getItem('narvo_settings_cache') || '{}');
+        localStorage.setItem('narvo_settings_cache', JSON.stringify({
+          ...existing,
+          voice_model: selectedVoice.id,
+          broadcast_language: selectedVoice.language || 'en',
+        }));
+      } catch { /* ignore */ }
       const langInfo = LANG_META[selectedVoice.language] || {};
       showAlert({
         type: 'success',
