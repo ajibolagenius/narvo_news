@@ -145,6 +145,8 @@ const SystemGearSixPage = () => {
           data_limit: settingsToSave.dataLimit / 1000,
           bandwidth_priority: settingsToSave.bandwidthPriority.toLowerCase(),
           broadcast_language: settingsToSave.broadcastLanguage,
+          aggregator_mediastack: settingsToSave.aggregatorMediastack,
+          aggregator_newsdata: settingsToSave.aggregatorNewsdata,
         }),
       });
       if (res.ok) {
