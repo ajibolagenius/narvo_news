@@ -1080,7 +1080,7 @@ async def get_voice_settings(user_id: str):
     settings = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
     if settings and "settings" in settings:
         return {
-            "voice_model": settings["settings"].get("voice_model", "nova"),
+            "voice_model": settings["settings"].get("voice_model", "emma"),
             "voice_dialect": settings["settings"].get("voice_dialect", "standard"),
             "voice_region": settings["settings"].get("voice_region", "africa"),
         }
