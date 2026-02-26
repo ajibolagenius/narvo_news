@@ -413,6 +413,9 @@ async def health_check():
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
+# ── News response cache (reduces RSS fetching) ──
+_news_response_cache = {"data": None, "timestamp": None, "ttl": 120}
+
 @app.get("/api/news")
 async def get_news(
     region: Optional[str] = Query(None, description="Filter by region"),
@@ -422,14 +425,25 @@ async def get_news(
     aggregator_sources: Optional[str] = Query(None, description="Comma-separated aggregator sources: mediastack,newsdata")
 ):
     """Fetch aggregated news from RSS feeds and optional aggregator APIs"""
-    all_news = []
-    
-    # Fetch from all RSS feeds concurrently
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-    results = await asyncio.gather(*tasks)
-    
-    for items in results:
-        all_news.extend(items)
+    now = datetime.now(timezone.utc)
+
+    # Use cached base news if fresh (120s TTL)
+    if (
+        _news_response_cache["data"] is not None
+        and _news_response_cache["timestamp"]
+        and (now - _news_response_cache["timestamp"]).total_seconds() < _news_response_cache["ttl"]
+    ):
+        all_news = list(_news_response_cache["data"])
+    else:
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for items in results:
+            if isinstance(items, list):
+                all_news.extend(items)
+        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+        _news_response_cache["data"] = all_news
+        _news_response_cache["timestamp"] = now
     
     # Optionally merge aggregator news
     if include_aggregators:
@@ -437,7 +451,7 @@ async def get_news(
             from services.aggregator_service import get_normalized_aggregator_news
             sources_list = aggregator_sources.split(",") if aggregator_sources else None
             agg_news = await get_normalized_aggregator_news(sources=sources_list)
-            all_news.extend(agg_news)
+            all_news = list(all_news) + list(agg_news)
         except Exception as e:
             print(f"[News] Aggregator fetch error: {e}")
     
