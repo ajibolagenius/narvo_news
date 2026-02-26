@@ -127,7 +127,7 @@ const MorningBriefingPage = () => {
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0" data-testid="briefing-page">
+    <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0 overflow-hidden" data-testid="briefing-page">
       {/* Header */}
       <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
         <div className="flex items-center gap-2 md:gap-3">
