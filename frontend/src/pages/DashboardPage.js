@@ -459,12 +459,12 @@ const DashboardPage = () => {
                     animate="show"
                     data-testid="recommendations-section"
                   >
-                    <div className="flex items-center justify-between border-b border-primary/30 pb-2 mb-3">
-                      <div className="flex items-center gap-2">
-                        <Lightning weight="fill" className="w-4 h-4 text-primary" />
-                        <span className="mono-ui text-[12px] md:text-xs text-primary font-bold tracking-[0.2em]">{'//'} FOR_YOU</span>
+                    <div className="flex items-center justify-between border-b border-primary/30 pb-2 mb-3 gap-2">
+                      <div className="flex items-center gap-2 min-w-0 shrink">
+                        <Lightning weight="fill" className="w-3.5 h-3.5 text-primary shrink-0" />
+                        <span className="mono-ui text-[11px] md:text-xs text-primary font-bold tracking-[0.15em] shrink-0">{'//'} FOR_YOU</span>
                       </div>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 shrink-0">
                         {recoProfile && (
                           <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase hidden sm:inline">
                             {recoProfile.history_count} listens
@@ -478,10 +478,10 @@ const DashboardPage = () => {
                             });
                             showAlert({ type: 'success', title: 'PLAYLIST_QUEUED', message: `${Math.min(5, recommendations.length)} recommendations added to queue.`, code: 'PL_OK', duration: 3000 });
                           }}
-                          className="flex items-center gap-1.5 px-2.5 py-1 bg-primary text-background-dark mono-ui text-[10px] md:text-[11px] font-bold hover:bg-white transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 bg-primary text-background-dark mono-ui text-[9px] md:text-[11px] font-bold hover:bg-white transition-colors whitespace-nowrap"
                           data-testid="play-all-recommendations"
                         >
-                          <PlayCircle weight="fill" className="w-3.5 h-3.5" />
+                          <PlayCircle weight="fill" className="w-3 h-3" />
                           PLAY_ALL
                         </button>
                       </div>
