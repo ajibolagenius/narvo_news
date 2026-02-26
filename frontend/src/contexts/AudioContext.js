@@ -314,13 +314,12 @@ export const AudioProvider = ({ children }) => {
       if (prev.length === 0 && !audioRef.current?.src) {
         setQueueIndex(0);
         queueIndexRef.current = 0;
-        // Defer playback to next tick so state is updated
-        setTimeout(() => playTrack(track, true), 50);
+        setTimeout(() => playTrackRef.current?.(track, true), 50);
       }
 
       return newQueue;
     });
-  }, [playTrack]);
+  }, []);
 
   const removeFromQueue = useCallback((trackId) => {
     setQueue(prev => prev.filter(t => t.id !== trackId));
