@@ -439,6 +439,9 @@ export const AudioProvider = ({ children }) => {
     return playTrack(track, true);
   }, [playTrack]);
 
+  // Keep playTrack ref current for queue auto-play
+  useEffect(() => { playTrackRef.current = playTrack; }, [playTrack]);
+
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
     if (!audio.src) return;
