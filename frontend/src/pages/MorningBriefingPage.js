@@ -20,7 +20,8 @@ const MorningBriefingPage = () => {
   const [generating, setGenerating] = useState(false);
   const [history, setHistory] = useState([]);
   const [historyLoading, setHistoryLoading] = useState(true);
-  const [selectedVoice] = useState('nova');
+  const { voiceModel } = useAudio();
+  const [selectedVoice] = useState(voiceModel || 'emma');
   const [showArchive, setShowArchive] = useState(false);
   const { playTrack, currentTrack, isPlaying, isLoading: audioLoading, currentTime: audioCurrentTime, duration: audioDuration } = useAudio();
   const [sfxEnabled, setSfxEnabled] = useState(true);
