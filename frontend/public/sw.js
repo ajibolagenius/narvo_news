@@ -95,17 +95,18 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Strategy 3: App shell & static assets — Cache First
+  // Strategy 3: App shell & static assets — Stale While Revalidate
   if (url.origin === self.location.origin && !url.pathname.startsWith('/api')) {
     event.respondWith(
-      caches.match(event.request).then((cached) => {
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cached = await cache.match(event.request);
         const fetchPromise = fetch(event.request).then((response) => {
           if (response.ok) {
-            caches.open(CACHE_NAME).then((c) => c.put(event.request, response.clone()));
+            cache.put(event.request, response.clone());
           }
           return response;
-        }).catch(() => cached);
-        return cached || fetchPromise;
+        }).catch(() => null);
+        return cached || (await fetchPromise) || new Response('', { status: 503 });
       })
     );
     return;
