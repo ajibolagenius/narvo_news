@@ -319,7 +319,26 @@ const DashboardPage = () => {
         </div>
 
         {/* Feed Content */}
-        <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8" data-testid="news-feed">
+        <div
+          ref={containerRef}
+          className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8 relative"
+          data-testid="news-feed"
+          {...pullHandlers}
+        >
+          {/* Pull-to-refresh indicator (mobile) */}
+          {(pulling || refreshing) && (
+            <div
+              className="md:hidden flex items-center justify-center py-3 transition-all"
+              style={{ height: pulling ? pullDistance : refreshing ? 40 : 0, overflow: 'hidden' }}
+            >
+              <div className={`w-5 h-5 border-2 border-[rgb(var(--color-primary))] border-t-transparent ${refreshing ? 'animate-spin' : ''}`}
+                style={{ transform: pulling ? `rotate(${pullDistance * 3}deg)` : undefined, borderRadius: '50%' }}
+              />
+              <span className="ml-2 font-mono text-[11px] text-[rgb(var(--color-primary))]">
+                {refreshing ? 'REFRESHING...' : 'PULL TO REFRESH'}
+              </span>
+            </div>
+          )}
           <div className="max-w-4xl mx-auto flex flex-col gap-8 md:gap-12">
             {loading ? (
               <>
