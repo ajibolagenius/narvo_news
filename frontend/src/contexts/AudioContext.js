@@ -245,6 +245,7 @@ export const AudioProvider = ({ children }) => {
   const queueRef = useRef([]);
   const queueIndexRef = useRef(-1);
   const autoPlayRef = useRef(true);
+  const playTrackRef = useRef(null);
 
   useEffect(() => { queueRef.current = queue; }, [queue]);
   useEffect(() => { queueIndexRef.current = queueIndex; }, [queueIndex]);
