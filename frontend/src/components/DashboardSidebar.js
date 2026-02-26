@@ -96,7 +96,7 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
         </div>
 
         <div className="flex-1 flex flex-col py-2 gap-0.5 overflow-y-auto custom-scroll">
-          {navItems.map((item) => {
+          {desktopNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
             return (
