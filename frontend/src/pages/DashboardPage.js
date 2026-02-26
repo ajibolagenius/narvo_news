@@ -340,7 +340,7 @@ const DashboardPage = () => {
         {/* Feed Content */}
         <div
           ref={containerRef}
-          className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8 relative"
+          className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll p-4 md:p-8 pb-32 md:pb-8 relative"
           data-testid="news-feed"
           {...pullHandlers}
         >
