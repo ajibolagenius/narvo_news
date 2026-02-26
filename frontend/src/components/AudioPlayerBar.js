@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, SkipBack, SkipForward, SpeakerHigh, SpeakerSlash,
-  Queue, X, Trash, Repeat, Broadcast, CaretUp, CaretDown, Waveform
+  Queue, X, Trash, Repeat, Broadcast, CaretUp, CaretDown, Waveform, DotsSixVertical
 } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 
