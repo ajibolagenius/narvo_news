@@ -139,3 +139,33 @@ self.addEventListener('notificationclick', (event) => {
     })
   );
 });
+
+/* ── Background Sync: flush offline queue ── */
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'narvo-sync-queue') {
+    event.waitUntil(flushOfflineQueue());
+  }
+});
+
+async function flushOfflineQueue() {
+  try {
+    const cache = await caches.open('narvo-offline-queue');
+    const requests = await cache.keys();
+    for (const request of requests) {
+      try {
+        const cached = await cache.match(request);
+        const body = await cached.text();
+        await fetch(request.url, {
+          method: request.method || 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body,
+        });
+        await cache.delete(request);
+      } catch (e) {
+        // Keep in queue for next sync
+      }
+    }
+  } catch (e) {
+    // Queue empty or error
+  }
+}
