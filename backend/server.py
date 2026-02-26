@@ -560,7 +560,7 @@ async def generate_tts(request: TTSRequest):
                 "audio_url": audio_url,
                 "translated_text": translated_text,
                 "voice_id": request.voice_id,
-                "created_at": datetime.now(timezone.utc).isoformat()
+                "created_at": datetime.now(timezone.utc)
             }},
             upsert=True
         )
