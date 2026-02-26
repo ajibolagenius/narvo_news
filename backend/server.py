@@ -1466,17 +1466,12 @@ async def generate_briefing_audio(
 ):
     """Generate audio for a custom briefing script"""
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
-        
+        from services.yarngpt_service import generate_tts as yarn_generate_tts
         tts_text = script[:4000] if len(script) > 4000 else script
-        
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        audio_bytes = await tts.generate_speech(
-            text=tts_text, model="tts-1", voice=voice_id, response_format="mp3", speed=1.0
-        )
-        audio_b64 = base64.b64encode(audio_bytes).decode()
-        
-        return {"audio_url": f"data:audio/mpeg;base64,{audio_b64}", "voice_id": voice_id}
+        audio_url = await yarn_generate_tts(text=tts_text, voice_id=voice_id, language="en")
+        if not audio_url:
+            raise Exception("TTS generation failed")
+        return {"audio_url": audio_url, "voice_id": voice_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
