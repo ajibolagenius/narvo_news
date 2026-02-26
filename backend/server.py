@@ -1462,7 +1462,7 @@ async def get_briefing_by_date(briefing_date: str):
 @app.post("/api/briefing/audio")
 async def generate_briefing_audio(
     script: str = Query(..., description="Briefing script text"),
-    voice_id: str = Query("nova", description="Voice for TTS")
+    voice_id: str = Query("emma", description="Voice for TTS")
 ):
     """Generate audio for a custom briefing script"""
     try:
