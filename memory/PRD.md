@@ -14,6 +14,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - **News Sources**: 39 RSS feeds + Mediastack API + NewsData.io API
 - **Podcast Sources**: 5 real RSS feeds (The Daily, The Vergecast, SYSK, Planet Money, The Continent)
 - **PWA**: Service Worker + IndexedDB + Media Session API
+- **Recommendation Engine**: Hybrid collaborative filtering + Gemini AI topic expansion
 
 ## Core Features Implemented
 - News dashboard with RSS + aggregator feeds, filtering, sorting, deduplication
@@ -32,14 +33,18 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 - Real platform metrics from database (stories processed, broadcast hours, network load)
 - Real system alerts from live service status monitoring
 - Interest Matrix — 8 selectable news categories for personalized feed delivery
-- Broadcast Sound Themes — 5 selectable audio branding themes (Narvo Classic, Afrobeats, BBC World, Breaking Alert, Midnight Jazz)
+- Broadcast Sound Themes — 5 selectable audio branding themes
 - Push Notification endpoints (subscribe, unsubscribe, daily digest)
 - WCAG 2.1 AA accessibility (skip link, focus-visible, reduced motion)
 - Responsive mobile-first design across all pages
 - News detail autoplay with TTS pre-generation and direct audio URL pass-through
 - Playback speed control (0.75x, 1x, 1.25x, 1.5x, 2x) on desktop and mobile players
-- Voice preference consistency: settingsLoaded flag prevents race conditions, dual-write to localStorage + MongoDB
-- Enhanced readability: global font-size increase (+2px on all inline sizes), body 16px/1.6
+- Voice preference consistency: settingsLoaded flag prevents race conditions
+- Enhanced readability: global font-size increase (+2px on all inline sizes)
+- **Content Recommendation Engine**: Hybrid collaborative filtering + Gemini AI topic expansion, personalized FOR_YOU section on dashboard
+- **Enhanced Tour Guide**: 8-step guided tour with tips, proper skip/complete state management, re-playable from Settings
+- **Mobile Nav Cleanup**: Search icon removed from mobile bottom nav (retained on desktop sidebar)
+- **Mobile Overflow Fixes**: overflow-x-hidden applied to Dashboard, Discover, Search pages
 
 ## Key API Endpoints
 | Endpoint | Method | Description |
@@ -57,6 +62,7 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 | `/api/system-alerts` | GET | Real system alerts from live services |
 | `/api/listening-history` | POST | Record a played broadcast |
 | `/api/listening-history/{user_id}` | GET | User's listening history |
+| `/api/recommendations/{user_id}` | GET | Personalized news recommendations (hybrid AI + collaborative) |
 | `/api/briefing/latest` | GET | Latest morning briefing |
 | `/api/voices` | GET | Available TTS voices (YarnGPT) |
 | `/api/sound-themes` | GET | Available broadcast sound themes |
@@ -68,8 +74,12 @@ Narvo is a precision-engineered, audio-first news broadcast platform with full P
 ## Backend Tests
 - `/app/backend/tests/test_services_v2.py` — 10 tests covering metrics, factcheck, podcasts, listening history, TTS caching, settings persistence
 - `/app/backend/tests/test_iteration44.py` — 11 tests covering YarnGPT voices, sound themes, notifications, interests, briefing stability
+- `/app/backend/tests/test_iteration50_recommendations.py` — 11 tests covering recommendation engine, profile building, scoring, API responses
 
 ## Backlog
+- **P1:** Implement "Now" strategy from Narvo_PWA_Rust_AI_Strategy.md (PWA Web API hooks)
+- **P2:** Further backend performance optimization
 - **P3:** User-provided API keys for external services
 - **P3:** Analytics dashboard
 - **P3:** Daily digest email notifications
+- **P3:** Deeper native mobile application features (Rust backend exploration)
