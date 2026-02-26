@@ -14,6 +14,7 @@ const getNavItems = (t) => [
   { icon: Waveform, label: t('nav.briefing'), path: '/briefing' },
   { icon: BookmarkSimple, label: t('nav.saved'), path: '/saved' },
   { icon: ClockCounterClockwise, label: 'History', path: '/history' },
+  { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
   { icon: ChartBar, label: 'Analytics', path: '/analytics' },
 ];
 
