@@ -1030,7 +1030,7 @@ async def get_admin_stats():
 # ===========================================
 
 class UserSettings(BaseModel):
-    voice_model: str = "nova"
+    voice_model: str = "emma"
     voice_dialect: str = "standard"
     voice_region: str = "africa"
     high_contrast: bool = False
