@@ -621,3 +621,49 @@ input[type="range"]::-webkit-slider-runnable-track {
     linear-gradient(90deg, rgb(var(--color-border)) 1px, transparent 1px);
   background-size: 40px 40px;
 }
+
+
+
+/* ===========================================
+   NATIVE MOBILE OPTIMIZATIONS
+   =========================================== */
+/* Min touch targets (44px as per Apple HIG) */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Compact buttons (pills, tags) exempt from min-width but keep min-height */
+  .mono-ui button, [data-compact] {
+    min-width: auto;
+    min-height: 36px;
+  }
+}
+
+/* Active state feedback for touch */
+@media (hover: none) and (pointer: coarse) {
+  button:active, a:active, [role="button"]:active {
+    opacity: 0.7;
+    transition: opacity 0.05s ease;
+  }
+}
+
+/* Standalone PWA adjustments */
+@media all and (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+}
+
+/* Smooth scrolling with momentum */
+.custom-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
+/* Prevent text selection on interactive elements */
+button, [role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+}

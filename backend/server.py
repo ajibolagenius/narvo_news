@@ -11,7 +11,7 @@ load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
 from pymongo import MongoClient
@@ -41,6 +41,10 @@ def sanitize_ai_text(text: str) -> str:
 
 # Initialize FastAPI
 app = FastAPI(title="Narvo API", version="2.0")
+
+# GZip compression for smaller payloads
+from starlette.middleware.gzip import GZipMiddleware
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 # CORS
 app.add_middleware(
@@ -72,6 +76,19 @@ async def startup_feed_health():
     from services.news_service import run_health_check
     from services.aggregator_service import refresh_cache
 
+    # Create MongoDB indexes for performance
+    try:
+        db["tts_cache"].create_index("cache_key", unique=True)
+        db["tts_cache"].create_index("created_at", expireAfterSeconds=86400 * 7)  # 7-day TTL
+        db["user_preferences"].create_index("user_id", unique=True)
+        db["bookmarks"].create_index([("user_id", 1), ("story_id", 1)])
+        db["listening_history"].create_index([("user_id", 1), ("played_at", -1)])
+        db["news_cache"].create_index([("published", -1)])
+        db["news_cache"].create_index("id", unique=True, sparse=True)
+        db["push_subscriptions"].create_index("endpoint", unique=True)
+    except Exception as e:
+        print(f"[Startup] Index creation: {e}")
+
     async def periodic_health_check():
         while True:
             await run_health_check()
@@ -97,6 +114,23 @@ db = mongo_client[os.environ.get("DB_NAME", "narvo")]
 bookmarks_col = db["bookmarks"]
 preferences_col = db["user_preferences"]
 briefings_col = db["briefings"]
+
+# ── In-memory cache for static/semi-static data ──
+import time as _time
+
+class MemCache:
+    """Simple TTL cache for static data."""
+    def __init__(self):
+        self._store = {}
+    def get(self, key, ttl=300):
+        entry = self._store.get(key)
+        if entry and (_time.time() - entry[1]) < ttl:
+            return entry[0]
+        return None
+    def set(self, key, value):
+        self._store[key] = (value, _time.time())
+
+_cache = MemCache()
 
 # Create indexes
 bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
@@ -526,7 +560,7 @@ async def generate_tts(request: TTSRequest):
                 "audio_url": audio_url,
                 "translated_text": translated_text,
                 "voice_id": request.voice_id,
-                "created_at": datetime.now(timezone.utc).isoformat()
+                "created_at": datetime.now(timezone.utc)
             }},
             upsert=True
         )
@@ -544,23 +578,31 @@ async def generate_tts(request: TTSRequest):
 
 @app.get("/api/voices", response_model=List[VoiceProfile])
 async def get_voices():
-    """Get available voice profiles"""
-    return VOICE_PROFILES
+    """Get available voice profiles (cached 10min)"""
+    cached = _cache.get("voices", ttl=600)
+    if cached: return JSONResponse(content=cached, headers={"Cache-Control": "public, max-age=600"})
+    result = VOICE_PROFILES
+    _cache.set("voices", [dict(v) for v in result])
+    return result
 
 @app.get("/api/regions")
 async def get_regions():
     """Get available news regions"""
-    return [
-        {"id": "nigeria", "name": "Nigeria", "icon": "NG"},
-        {"id": "continental", "name": "Continental", "icon": "AF"},
-    ]
+    return JSONResponse(
+        content=[{"id": "nigeria", "name": "Nigeria", "icon": "NG"}, {"id": "continental", "name": "Continental", "icon": "AF"}],
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
 
 
 @app.get("/api/sound-themes")
 async def list_sound_themes():
-    """Get available broadcast sound themes"""
+    """Get available broadcast sound themes (cached 10min)"""
+    cached = _cache.get("sound_themes", ttl=600)
+    if cached: return JSONResponse(content=cached, headers={"Cache-Control": "public, max-age=600"})
     from services.sound_themes_service import get_sound_themes
-    return get_sound_themes()
+    result = get_sound_themes()
+    _cache.set("sound_themes", result)
+    return result
 
 @app.get("/api/sound-themes/{theme_id}")
 async def get_sound_theme_detail(theme_id: str):
@@ -569,20 +611,23 @@ async def get_sound_theme_detail(theme_id: str):
     theme = get_sound_theme(theme_id)
     if not theme:
         raise HTTPException(status_code=404, detail="Theme not found")
-    return theme
+    return JSONResponse(content=theme, headers={"Cache-Control": "public, max-age=3600"})
 
 
 @app.get("/api/categories")
 async def get_categories():
-    """Get news categories"""
-    return [
-        {"id": "politics", "name": "Politics", "icon": "building"},
-        {"id": "economy", "name": "Economy", "icon": "chart"},
-        {"id": "tech", "name": "Tech", "icon": "cpu"},
-        {"id": "sports", "name": "Sports", "icon": "trophy"},
-        {"id": "health", "name": "Health", "icon": "heart"},
-        {"id": "general", "name": "General", "icon": "newspaper"},
-    ]
+    """Get news categories (cached 1hr)"""
+    return JSONResponse(
+        content=[
+            {"id": "politics", "name": "Politics", "icon": "building"},
+            {"id": "economy", "name": "Economy", "icon": "chart"},
+            {"id": "tech", "name": "Tech", "icon": "cpu"},
+            {"id": "sports", "name": "Sports", "icon": "trophy"},
+            {"id": "health", "name": "Health", "icon": "heart"},
+            {"id": "general", "name": "General", "icon": "newspaper"},
+        ],
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
 
 @app.get("/api/sources")
 async def get_content_sources():

@@ -7,6 +7,7 @@ import { useAudio } from '../contexts/AudioContext';
 import { useContentSources } from '../contexts/ContentSourcesContext';
 import { useBookmarks } from '../hooks/useBookmarks';
 import { useAudioPrefetch } from '../hooks/useAudioPrefetch';
+import usePullToRefresh from '../hooks/usePullToRefresh';
 import { TagPill } from '../components/HashtagText';
 import { FeaturedSkeleton, StreamCardSkeleton } from '../components/Skeleton';
 import TruthTag from '../components/TruthTag';
@@ -70,52 +71,52 @@ const DashboardPage = () => {
   useAudioPrefetch(news.slice(0, 3), 'nova', 3);
   const [showTelemetry, setShowTelemetry] = useState(false);
 
-  useEffect(() => {
-    // Fetch user aggregator preferences first, then news with those prefs
-    fetch(`${API_URL}/api/settings/guest`).then(r => r.json())
-      .then(settings => {
-        const ms = settings.aggregator_mediastack !== false;
-        const nd = settings.aggregator_newsdata !== false;
-        setUserAggPrefs({ mediastack: ms, newsdata: nd });
-        // Load user interest preferences for feed prioritization
-        if (settings.interests?.length) setUserInterests(settings.interests);
+  const fetchDashboardData = React.useCallback(async () => {
+    const settings = await fetch(`${API_URL}/api/settings/guest`).then(r => r.json());
+    const ms = settings.aggregator_mediastack !== false;
+    const nd = settings.aggregator_newsdata !== false;
+    setUserAggPrefs({ mediastack: ms, newsdata: nd });
+    if (settings.interests?.length) setUserInterests(settings.interests);
 
-        // Build aggregator_sources param from user prefs
-        const enabledSources = [ms && 'mediastack', nd && 'newsdata'].filter(Boolean).join(',');
-        const aggParam = enabledSources ? `&aggregator_sources=${enabledSources}` : '';
+    const enabledSources = [ms && 'mediastack', nd && 'newsdata'].filter(Boolean).join(',');
+    const aggParam = enabledSources ? `&aggregator_sources=${enabledSources}` : '';
 
-        return Promise.all([
-          fetch(`${API_URL}/api/news?limit=50&include_aggregators=true${aggParam}`).then(r => r.json()),
-          fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
-        ]);
-      })
-      .then(([newsData, metricsData]) => {
-        // Deduplicate: prefer RSS over aggregator for same title
-        const seen = new Map();
-        const deduped = [];
-        for (const item of newsData) {
-          const key = (item.title || '').toLowerCase().trim().slice(0, 60);
-          if (!key) { deduped.push(item); continue; }
-          const existing = seen.get(key);
-          if (!existing) {
-            seen.set(key, item);
-            deduped.push(item);
-          } else if (item.aggregator && !existing.aggregator) {
-            // RSS already in, skip aggregator duplicate
-          } else if (!item.aggregator && existing.aggregator) {
-            // Replace aggregator with RSS
-            const idx = deduped.indexOf(existing);
-            if (idx !== -1) deduped[idx] = item;
-            seen.set(key, item);
-          }
-        }
-        setNews(deduped);
-        setMetrics(metricsData);
-        setLoading(false);
-        if (deduped.length <= 10) setAllLoaded(true);
-      })
-      .catch(() => setLoading(false));
+    const [newsData, metricsData] = await Promise.all([
+      fetch(`${API_URL}/api/news?limit=50&include_aggregators=true${aggParam}`).then(r => r.json()),
+      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
+    ]);
+
+    const seen = new Map();
+    const deduped = [];
+    for (const item of newsData) {
+      const key = (item.title || '').toLowerCase().trim().slice(0, 60);
+      if (!key) { deduped.push(item); continue; }
+      const existing = seen.get(key);
+      if (!existing) {
+        seen.set(key, item);
+        deduped.push(item);
+      } else if (item.aggregator && !existing.aggregator) {
+        // skip
+      } else if (!item.aggregator && existing.aggregator) {
+        const idx = deduped.indexOf(existing);
+        if (idx !== -1) deduped[idx] = item;
+        seen.set(key, item);
+      }
+    }
+    setNews(deduped);
+    setMetrics(metricsData);
+    if (deduped.length <= 10) setAllLoaded(true);
   }, []);
+
+  useEffect(() => {
+    fetchDashboardData().catch(() => {}).finally(() => setLoading(false));
+  }, [fetchDashboardData]);
+
+  // Pull-to-refresh
+  const { containerRef, pulling, refreshing, pullDistance, handlers: pullHandlers } = usePullToRefresh(
+    fetchDashboardData,
+    { threshold: 70 }
+  );
 
   const featured = news[0];
   const filteredNews = news.slice(1).filter(item => {
@@ -318,7 +319,26 @@ const DashboardPage = () => {
         </div>
 
         {/* Feed Content */}
-        <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8" data-testid="news-feed">
+        <div
+          ref={containerRef}
+          className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8 relative"
+          data-testid="news-feed"
+          {...pullHandlers}
+        >
+          {/* Pull-to-refresh indicator (mobile) */}
+          {(pulling || refreshing) && (
+            <div
+              className="md:hidden flex items-center justify-center py-3 transition-all"
+              style={{ height: pulling ? pullDistance : refreshing ? 40 : 0, overflow: 'hidden' }}
+            >
+              <div className={`w-5 h-5 border-2 border-[rgb(var(--color-primary))] border-t-transparent ${refreshing ? 'animate-spin' : ''}`}
+                style={{ transform: pulling ? `rotate(${pullDistance * 3}deg)` : undefined, borderRadius: '50%' }}
+              />
+              <span className="ml-2 font-mono text-[11px] text-[rgb(var(--color-primary))]">
+                {refreshing ? 'REFRESHING...' : 'PULL TO REFRESH'}
+              </span>
+            </div>
+          )}
           <div className="max-w-4xl mx-auto flex flex-col gap-8 md:gap-12">
             {loading ? (
               <>

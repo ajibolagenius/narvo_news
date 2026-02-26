@@ -1,255 +1,140 @@
-/* eslint-disable no-restricted-globals */
-
-const CACHE_NAME = 'narvo-cache-v2';
+/* Narvo Service Worker — v3 with runtime API caching & offline support */
+const CACHE_NAME = 'narvo-v3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/narvo-icon-192.png',
+  '/narvo-icon-512.png',
 ];
 
-// IndexedDB for offline actions queue
-const DB_NAME = 'narvo-sw-db';
-const STORE_NAME = 'offline-actions';
-
-function openDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, 1);
-    request.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-      }
-    };
-    request.onsuccess = (e) => resolve(e.target.result);
-    request.onerror = (e) => reject(e.target.error);
-  });
-}
-
-// Install event - cache static assets
+/* ── Install: pre-cache static shell ── */
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Caching static assets');
-      return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.log('[SW] Cache addAll failed:', err);
-      });
-    })
-  );
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+  );
 });
 
-// Activate event - clean up old caches
+/* ── Activate: clean old caches ── */
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name.startsWith('narvo-') && name !== CACHE_NAME)
-          .map((name) => {
-            console.log('[SW] Deleting old cache:', name);
-            return caches.delete(name);
-          })
-      );
-    })
+    caches.keys().then((names) =>
+      Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch event - network first, fallback to cache
+/* ── Fetch strategies ── */
+const API_CACHE_TTL = {
+  '/api/voices':       600000,   // 10min
+  '/api/categories':   3600000,  // 1hr
+  '/api/regions':      3600000,
+  '/api/sound-themes': 600000,
+  '/api/sources':      600000,
+};
+
+function isApiCacheable(url) {
+  return Object.keys(API_CACHE_TTL).some((p) => url.pathname.endsWith(p));
+}
+
+function isNewsApi(url) {
+  return url.pathname.includes('/api/news') || url.pathname.includes('/api/search');
+}
+
 self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
+  const url = new URL(event.request.url);
 
-  // Skip non-GET requests
-  if (request.method !== 'GET') return;
+  // Skip non-GET and cross-origin
+  if (event.request.method !== 'GET') return;
+  if (url.origin !== self.location.origin && !url.pathname.startsWith('/api')) return;
 
-  // Skip API requests (they should be handled by the app)
-  if (url.pathname.startsWith('/api/')) return;
-
-  // Skip chrome-extension and other non-http(s) requests
-  if (!url.protocol.startsWith('http')) return;
-
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        if (response.ok) {
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            if (url.origin === self.location.origin) {
-              cache.put(request, responseClone);
-            }
-          });
-        }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(request).then((cachedResponse) => {
-          if (cachedResponse) {
-            return cachedResponse;
+  // Strategy 1: Static API data — Cache First with TTL
+  if (isApiCacheable(url)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async (cache) => {
+        const cached = await cache.match(event.request);
+        if (cached) {
+          const dateHeader = cached.headers.get('sw-cached-at');
+          const matchedPath = Object.keys(API_CACHE_TTL).find((p) => url.pathname.endsWith(p));
+          if (dateHeader && (Date.now() - parseInt(dateHeader)) < API_CACHE_TTL[matchedPath]) {
+            return cached;
           }
-          if (request.mode === 'navigate') {
-            return caches.match('/');
-          }
-          return new Response('Offline', { status: 503 });
-        });
-      })
-  );
-});
-
-// Handle messages from the main app
-self.addEventListener('message', (event) => {
-  const { data } = event;
-  
-  if (data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-  
-  // Queue offline action
-  if (data.type === 'QUEUE_OFFLINE_ACTION') {
-    queueOfflineAction(data.action).then(() => {
-      // Register for background sync
-      self.registration.sync.register('sync-offline-actions').catch(() => {
-        console.log('[SW] Background sync not supported');
-      });
-    });
-  }
-});
-
-// Queue an action for later sync
-async function queueOfflineAction(action) {
-  try {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    store.add({
-      ...action,
-      timestamp: Date.now()
-    });
-    return new Promise((resolve, reject) => {
-      tx.oncomplete = resolve;
-      tx.onerror = reject;
-    });
-  } catch (e) {
-    console.error('[SW] Failed to queue action:', e);
-  }
-}
-
-// Process queued offline actions
-async function processOfflineQueue() {
-  try {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, 'readwrite');
-    const store = tx.objectStore(STORE_NAME);
-    
-    const actions = await new Promise((resolve) => {
-      const req = store.getAll();
-      req.onsuccess = () => resolve(req.result || []);
-      req.onerror = () => resolve([]);
-    });
-    
-    for (const action of actions) {
-      try {
-        // Process the action based on type
-        if (action.actionType === 'SAVE_ARTICLE') {
-          await fetch('/api/offline/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(action.payload)
-          });
-        } else if (action.actionType === 'BOOKMARK') {
-          await fetch('/api/articles/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(action.payload)
-          });
         }
-        
-        // Remove processed action
-        store.delete(action.id);
-        console.log('[SW] Processed offline action:', action.actionType);
-      } catch (e) {
-        console.error('[SW] Failed to process action:', e);
-        // Keep the action in queue for retry
-      }
-    }
-  } catch (e) {
-    console.error('[SW] Failed to process queue:', e);
-  }
-}
-
-// Background sync event
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-offline-actions') {
-    console.log('[SW] Background sync triggered');
-    event.waitUntil(processOfflineQueue());
-  }
-});
-
-// Push notification event
-self.addEventListener('push', (event) => {
-  console.log('[SW] Push received');
-  
-  let data = {
-    title: 'Narvo Breaking News',
-    body: 'New breaking news available',
-    icon: '/logo192.png',
-    badge: '/logo192.png',
-    tag: 'narvo-news',
-    data: { url: '/dashboard' }
-  };
-  
-  try {
-    if (event.data) {
-      data = { ...data, ...event.data.json() };
-    }
-  } catch (e) {
-    console.log('[SW] Push data parse error:', e);
-  }
-  
-  const options = {
-    body: data.body,
-    icon: data.icon || '/logo192.png',
-    badge: data.badge || '/logo192.png',
-    tag: data.tag || 'narvo-news',
-    vibrate: [200, 100, 200],
-    data: data.data || { url: '/dashboard' },
-    actions: [
-      { action: 'read', title: 'Read Now' },
-      { action: 'dismiss', title: 'Dismiss' }
-    ],
-    requireInteraction: true
-  };
-  
-  event.waitUntil(
-    self.registration.showNotification(data.title, options)
-  );
-});
-
-// Notification click event
-self.addEventListener('notificationclick', (event) => {
-  console.log('[SW] Notification clicked:', event.action);
-  event.notification.close();
-  
-  if (event.action === 'dismiss') {
+        try {
+          const response = await fetch(event.request);
+          if (response.ok) {
+            const clone = response.clone();
+            const body = await clone.blob();
+            const headers = new Headers(clone.headers);
+            headers.set('sw-cached-at', String(Date.now()));
+            cache.put(event.request, new Response(body, { status: clone.status, statusText: clone.statusText, headers }));
+          }
+          return response;
+        } catch {
+          return cached || new Response('{"error":"offline"}', { status: 503, headers: { 'Content-Type': 'application/json' } });
+        }
+      })
+    );
     return;
   }
-  
-  const url = event.notification.data?.url || '/dashboard';
-  
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then((clientList) => {
-        // Try to focus existing window
-        for (const client of clientList) {
-          if (client.url.includes(self.location.origin) && 'focus' in client) {
-            client.navigate(url);
-            return client.focus();
+
+  // Strategy 2: News API — Network First, cache for offline
+  if (isNewsApi(url)) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(event.request, clone));
           }
-        }
-        // Open new window
-        if (clients.openWindow) {
-          return clients.openWindow(url);
-        }
+          return response;
+        })
+        .catch(() => caches.match(event.request).then((c) => c || new Response('[]', { headers: { 'Content-Type': 'application/json' } })))
+    );
+    return;
+  }
+
+  // Strategy 3: App shell & static assets — Cache First
+  if (url.origin === self.location.origin && !url.pathname.startsWith('/api')) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        const fetchPromise = fetch(event.request).then((response) => {
+          if (response.ok) {
+            caches.open(CACHE_NAME).then((c) => c.put(event.request, response.clone()));
+          }
+          return response;
+        }).catch(() => cached);
+        return cached || fetchPromise;
       })
+    );
+    return;
+  }
+});
+
+/* ── Push notification handler ── */
+self.addEventListener('push', (event) => {
+  const data = event.data ? event.data.json() : {};
+  const title = data.title || 'NARVO DAILY DIGEST';
+  const options = {
+    body: data.body || 'Your daily news briefing is ready.',
+    icon: '/narvo-icon-192.png',
+    badge: '/narvo-icon-192.png',
+    tag: 'narvo-digest',
+    data: { url: data.url || '/' },
+    actions: [{ action: 'open', title: 'READ NOW' }],
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || '/';
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window' }).then((clients) => {
+      const existing = clients.find((c) => c.url.includes(url));
+      if (existing) return existing.focus();
+      return self.clients.openWindow(url);
+    })
   );
 });

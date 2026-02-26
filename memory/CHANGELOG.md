@@ -4,6 +4,37 @@ All notable changes to this project are documented in this file.
 
 ---
 
+## [P25] — Feb 26, 2026
+### Backend Performance Optimization
+- **GZip compression** — Added `GZipMiddleware` (min 500 bytes) for smaller response payloads.
+- **MongoDB indexes** — Created indexes on startup for all hot collections:
+  - `tts_cache`: unique on `cache_key`, TTL index on `created_at` (7-day expiry)
+  - `user_preferences`: unique on `user_id`
+  - `bookmarks`: compound on `(user_id, story_id)`
+  - `listening_history`: compound on `(user_id, played_at desc)`
+  - `news_cache`: index on `published desc`, unique sparse on `id`
+  - `push_subscriptions`: unique on `endpoint`
+- **In-memory TTL cache** — `MemCache` class caches static data (voices 10min, categories 1hr, themes 10min) to avoid repeated computation.
+- **Cache-Control headers** — Static endpoints return `Cache-Control: public, max-age` via `JSONResponse`.
+- **TTS cache TTL** — `created_at` stored as datetime for MongoDB TTL index; auto-cleanup after 7 days.
+
+### Native Mobile PWA Enhancements
+- **Enhanced Service Worker (v3)** — 3 fetch strategies:
+  - Cache-first with TTL for static API data (voices, categories, themes)
+  - Network-first for news API (offline fallback to cached)
+  - Stale-while-revalidate for app shell assets
+  - Push notification handlers with notification click routing
+- **Apple PWA meta tags** — `apple-mobile-web-app-capable`, `black-translucent` status bar, `apple-mobile-web-app-title`, `viewport-fit=cover`.
+- **Pull-to-refresh** — Native touch gesture on dashboard feed (usePullToRefresh hook).
+- **Touch optimizations** — 44px min touch targets (Apple HIG), active state opacity feedback, overscroll containment.
+- **Safe-area support** — CSS `env(safe-area-inset-*)` padding for notched devices.
+- **Standalone detection** — `window.__NARVO_STANDALONE` flag for installed PWA UI adaptation.
+
+### Tested
+- Testing agent iteration_49: Backend 100% (17/17), Frontend 100% (15/15). All optimizations verified including MongoDB indexes, cache hits, PWA meta tags, service worker strategies, pull-to-refresh, mobile touch targets.
+
+---
+
 ## [P24] — Feb 26, 2026
 ### Fixed — Voice Consistency (Critical)
 - **Race condition eliminated** — AudioContext now has `settingsLoaded` flag. NewsDetailPage waits for this flag before pre-generating TTS, preventing default voice from being used.
