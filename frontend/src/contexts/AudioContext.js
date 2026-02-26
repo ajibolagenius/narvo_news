@@ -227,6 +227,7 @@ export const AudioProvider = ({ children }) => {
       clearInterval(fadeIntervalRef.current);
       audio.pause();
       audio.src = '';
+      releaseWakeLock();
     };
     // eslint-disable-next-line
   }, []);
