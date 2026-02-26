@@ -41,27 +41,71 @@ Narvo already uses several [Web APIs](https://developer.mozilla.org/en-US/docs/W
 
 ---
 
-## 3. Rust for Performance: Feasibility and Where It Helps
+## 3. Rust and Go: Feasibility, Where Each Helps, and Integration
 
-**Feasibility:** Yes, but in **targeted** places. The stack is React (frontend) + FastAPI (backend). Rust can be used as (a) **WebAssembly (WASM)** in the browser, or (b) **native services/libraries** called from the backend or from a separate process.
+**Feasibility:** Yes, in **targeted** places. The stack is React (frontend) + FastAPI (backend). **Rust** can be used as (a) **WebAssembly (WASM)** in the browser, or (b) **native services/libraries** called via HTTP or FFI. **Go** can run as **HTTP/gRPC microservices** alongside FastAPI. **Rust and Go can be integrated** in the same architecture: each language runs in its own process and communicates over HTTP or gRPC.
 
-**Where Rust would help:**
+### 3.1 Where Rust helps
 
 | Area | Current | Rust option | Benefit |
 |------|--------|-------------|--------|
-| **RSS / feed parsing** | Python (feedparser, httpx) in `news_service`, `server.py`. | Rust crate (e.g. `feed-rs`) in a small **native library** or **microservice**; FastAPI calls it via FFI or HTTP. | Faster, safer parsing under load; lower CPU for 39+ feeds. |
-| **Audio transcoding / chunking** | Backend streams or returns base64; frontend uses blob in IndexedDB. | Optional Rust **CLI or library** for normalising format, trimming silence, or chunking for adaptive streaming. | Better mobile playback and storage use if you add streaming or format conversion. |
-| **Search / filtering** | In-memory or MongoDB queries (e.g. search in `server.py`). | **Tantivy** (Rust) or **Rust + WASM** for client-side search over cached headlines. | Faster full-text search on large sets; offline search in PWA. |
-| **Heavy JSON / schema validation** | Pydantic in FastAPI. | Rust **validator** for high-throughput endpoints (e.g. webhook ingestion); call from Python via subprocess or HTTP. | Higher throughput for future webhooks or bulk ingest. |
-| **Cryptography / signing** | Likely Python (e.g. JWT, env secrets). | Rust for **signing webhook payloads** or **key derivation** if you add partner APIs. | Constant-time crypto, smaller attack surface. |
-| **Frontend hot path** | React + JS (audio queue, list rendering). | **Rust → WASM** for very hot paths only: e.g. **audio buffer processing**, **large list sorting/filtering** (thousands of items). | Smoother scrolling and less main-thread work; only if profiling shows JS as the bottleneck. |
+| **RSS / feed parsing** | Python (feedparser, httpx) in `news_service`, `server.py`. | Rust crate (e.g. `feed-rs`) in a small **service** or **library**; FastAPI or Go calls it via HTTP or FFI. | Faster, safer parsing under load; lower CPU for 39+ feeds. |
+| **Audio transcoding / chunking** | Backend streams or base64; frontend uses blob in IndexedDB. | Optional Rust **CLI or library** for normalising format, trimming silence, or chunking for adaptive streaming. | Better mobile playback and storage if you add streaming or format conversion. |
+| **Search / filtering** | In-memory or MongoDB queries. | **Tantivy** (Rust) or **Rust + WASM** for client-side search over cached headlines. | Faster full-text search; offline search in PWA. |
+| **Heavy JSON / schema validation** | Pydantic in FastAPI. | Rust **validator** for high-throughput webhook ingest; call via HTTP. | Higher throughput for future webhooks. |
+| **Cryptography / signing** | Python (e.g. JWT, env secrets). | Rust for **signing webhook payloads** or **key derivation** (partner APIs). | Constant-time crypto, smaller attack surface. |
+| **Frontend hot path** | React + JS. | **Rust → WASM** for hot paths only: audio buffer work, large list sort/filter. | Less main-thread work if profiling shows JS bottleneck. |
 
-**Recommendation:**  
+### 3.2 Where Go helps
+
+| Area | Current | Go option | Benefit |
+|------|--------|-----------|--------|
+| **Feed ingestion / orchestration** | Python fetches and parses in `news_service`. | **Go service**: HTTP client pool, fetch 39+ feeds concurrently, call Rust parser (or own parser), return normalised items. | Simple concurrency, single binary, fast rollout. |
+| **Webhooks / delivery** | Not yet implemented. | **Go service**: receive webhook events, validate signature (or call Rust signer), fan-out to subscribers. | Good fit for I/O-bound, many connections. |
+| **Health / readiness probes** | FastAPI `/api/health`. | Optional **Go sidecar** for aggressive health checks (e.g. feed ping, DB ping) and metrics. | Offload from main API. |
+
+### 3.3 Integrating Rust and Go (and Python)
+
+Yes, **Rust and Go can be integrated** in the same system. Typical patterns:
+
+| Pattern | Description | Example in Narvo |
+|---------|-------------|------------------|
+| **Side-by-side services** | Rust and Go each run as separate processes; both are called by FastAPI (or by each other) over **HTTP** or **gRPC**. | FastAPI → Go feed-ingest service (HTTP); Go → Rust parse service (HTTP) for raw XML → JSON. |
+| **Go calls Rust** | Go microservice calls a **Rust HTTP/gRPC service** for CPU-heavy work (parsing, search, crypto). | Go “ingest” service fetches feeds, sends body to Rust “parser” service, gets structured items back. |
+| **Rust calls Go** | Less common; use when Rust is the entrypoint and needs Go’s strengths (e.g. Go service that manages long-lived connections). | Rust search service might call a Go “webhook delivery” service to notify subscribers. |
+| **Python (FastAPI) orchestrates** | FastAPI remains the main API; it calls **Go** for ingestion/webhooks and **Rust** for parsing/search/crypto as internal or internal-plus-external services. | `GET /api/news` → FastAPI → Go ingest (returns raw or parsed) or FastAPI → Rust parser (raw XML → JSON). |
+
+**Suggested integration layout:**
+
+```
+[PWA / clients]
+       │
+       ▼
+[FastAPI]  ──HTTP──► [Go: feed ingest / webhooks]  ──HTTP──► [Rust: feed-rs parser]
+       │                                                              │
+       └──HTTP──► [Rust: search / crypto / sign]                     (optional)
+       │
+       ▼
+[MongoDB / Supabase / external APIs]
+```
+
+- **Go:** Feed fetch + orchestration, webhook receiver, optional health sidecar.  
+- **Rust:** Parsing (feed-rs), full-text search (Tantivy), crypto/signing, or WASM in the frontend.  
+- **FastAPI:** Main app and NaaS API; delegates to Go or Rust where it pays off.
+
+**Integration mechanics:**
+
+- **HTTP:** Simple REST or JSON over HTTP; every language has clients. Use for Go ↔ Rust, FastAPI ↔ Go, FastAPI ↔ Rust.  
+- **gRPC:** More efficient if you have many internal calls; need `.proto` and codegen for each language. Optional once you have more than a couple of services.  
+- **Deployment:** Run each service in its own container (e.g. Docker); same cluster or same host. FastAPI config (e.g. env) holds URLs for Go and Rust services.
+
+### 3.4 Recommendation
+
 - **Short term:** Keep the current stack; optimise Python (async, connection pooling, caching).  
-- **Medium term:** Introduce Rust for **feed parsing** or **search** as a sidecar or library called from FastAPI.  
-- **Optional:** Use **WASM** only where profiling shows a clear frontend CPU bottleneck (e.g. client-side search over cached news).
+- **Medium term:** Introduce **Go** first for a **feed-ingest** or **webhook** service (quick to ship, one binary). Add **Rust** where you need maximum CPU efficiency: **parsing** (called by Go or FastAPI), **search** (Tantivy), or **WASM** in the PWA.  
+- **Integration:** Use **HTTP** between FastAPI, Go, and Rust; prefer a single Go service and a single Rust service to start, then expand by responsibility.
 
-**Risks:** Build and deployment complexity, team familiarity, and debugging across language boundaries. Prefer a single, well-scoped Rust component (e.g. “feed-ingest service”) rather than rewriting the whole backend.
+**Risks:** Build/deploy complexity, cross-language debugging, and operability (logging, tracing, env). Mitigate with clear service boundaries, structured logs, and one deployment unit per language (e.g. one Go binary, one Rust binary).
 
 ---
 
@@ -102,13 +146,25 @@ Use **LangGraph**, **AutoGen**, or a simple **state machine** in Python to chain
 
 ---
 
-## 5. Summary
+## 5. Implementation phasing: Now vs future
+
+| Phase | What to implement | Rationale |
+|-------|-------------------|-----------|
+| **Now (current / near term)** | **Web APIs (frontend only):** **Screen Wake Lock** (playback), **Page Visibility** (pause prefetch when tab hidden), **Storage Manager** (show “X MB used” on Offline page). Optional: **Network Information** for “Data saver” hint and prefetch limits. **Backend:** Keep FastAPI + Python; optimise async, connection pooling, caching. **AI:** No new training or agents; keep existing Gemini/narrative/TTS. | Low effort, no new services; improves mobile playback and offline UX immediately. Rust/Go and new AI agents add operational and build complexity—defer until needed. |
+| **Future (backlog / roadmap)** | **Web APIs:** **Battery**, **Background Sync**, **Content Index**, **Badging**, **Periodic Background Sync**; optionally **Contact Picker**, **Geolocation** when product decides. **Rust/Go:** Introduce **Go** for feed-ingest or webhook service when scaling or partner APIs justify it; add **Rust** for parsing/search/crypto when CPU or security becomes a bottleneck. **AI:** Model training (narrative style, TTS/voice, fact-check, topic tagging, translation); agents (ingestion, enrichment, delivery, support/chat, quality/guardrails) as NaaS and Enterprise features mature. | These depend on product priorities, scale, or new capabilities (webhooks, Enterprise); implement when the payoff is clear. |
+
+**Summary:** Implement **now** the PWA Web API wins (Wake Lock, Page Visibility, Storage Manager, optionally Network Information) and Python optimisations; treat **Rust/Go integration**, **extra Web APIs** (Battery, Background Sync, Content Index, Badging, etc.), and **AI training/agents** as **future** work.
+
+---
+
+## 6. Summary
 
 | Question | Summary |
 |----------|---------|
 | **1. Web APIs for PWA** | Add **Network Information**, **Battery**, **Screen Wake Lock**, **Page Visibility**, **Background Sync**, **Storage Manager**, **Content Index**, and **Badging** to improve mobile data usage, battery, playback UX, offline reliability, and discoverability. |
 | **2. Where to use them** | **Dashboard**, **Discover**, **Offline**, **News Detail**, **Briefing**, **useAudioPrefetch**, **Daily Digest**, and **SW**; **Storage** and **Content Index** on Offline; **Badging** in app shell or SW. |
-| **3. Rust** | **Feasible** as a library or microservice for feed parsing, search, or crypto; optional **WASM** for frontend hot paths. Start with one scoped component (e.g. feed ingest) rather than full rewrite. |
+| **3. Rust and Go** | **Both feasible and integrable.** Run as separate services over HTTP (or gRPC). **Go:** feed ingest, webhooks, health. **Rust:** parsing (feed-rs), search (Tantivy), crypto, or WASM. FastAPI orchestrates; start with one Go and one Rust service, then expand. |
 | **4. AI / agents for NaaS** | **Training:** narrative/style, TTS/voice, claim detection, topic tagging, translation. **Agents:** ingestion, enrichment, delivery, support/chat, quality/guardrails; use existing NaaS APIs as tools and Python (or LangGraph) for orchestration. |
+| **5. Phasing** | **Now:** Wake Lock, Page Visibility, Storage Manager, optional Network Information; Python optimisations. **Future:** Battery, Background Sync, Content Index, Badging, Rust/Go services, AI training and agents. See **§5 Implementation phasing**. |
 
 References: [Narvo_News_as_a_Service.md](../business/Narvo_News_as_a_Service.md), [memory/PRD.md](../../memory/PRD.md), [Web API docs](https://developer.mozilla.org/en-US/docs/Web/API).
