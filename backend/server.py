@@ -1330,7 +1330,7 @@ Write ONLY spoken words. Every sentence must deliver news content. The audio pro
 
 @app.get("/api/briefing/generate")
 async def generate_morning_briefing(
-    voice_id: str = Query("nova", description="Voice for TTS"),
+    voice_id: str = Query("emma", description="Voice for TTS"),
     force_regenerate: bool = Query(False, description="Force regeneration")
 ):
     """Generate or retrieve morning briefing with audio"""
