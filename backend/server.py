@@ -15,6 +15,18 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
 from pymongo import MongoClient
+
+# MongoDB with connection pooling
+mongo_client = MongoClient(
+    os.environ.get("MONGO_URL"),
+    maxPoolSize=20,
+    minPoolSize=5,
+    maxIdleTimeMS=30000,
+    serverSelectionTimeoutMS=5000,
+    connectTimeoutMS=5000,
+)
+DB_NAME = os.environ.get("DB_NAME", "narvo")
+db = mongo_client[DB_NAME]
 import feedparser
 import httpx
 import re as _re
@@ -108,9 +120,7 @@ supabase: Client = create_client(
     os.environ.get("SUPABASE_ANON_KEY")
 )
 
-# MongoDB for persistent storage
-mongo_client = MongoClient(os.environ.get("MONGO_URL"))
-db = mongo_client[os.environ.get("DB_NAME", "narvo")]
+# MongoDB collection references
 bookmarks_col = db["bookmarks"]
 preferences_col = db["user_preferences"]
 briefings_col = db["briefings"]
@@ -186,11 +196,11 @@ class MorningBriefing(BaseModel):
     stories: List[BriefingStory]
     script: str
     audio_url: Optional[str] = None
-    voice_id: str = "nova"
+    voice_id: str = "emma"
 
 class TTSRequest(BaseModel):
     text: str
-    voice_id: str = "onyx"
+    voice_id: str = "emma"
     stability: float = 0.5
     similarity_boost: float = 0.75
     language: str = "en"
@@ -220,7 +230,7 @@ class VoiceProfile(BaseModel):
     description: str
 
 class UserPreferences(BaseModel):
-    voice_id: str = "nova"
+    voice_id: str = "emma"
     region: str = "Nigeria"
     interests: List[str] = []
 
@@ -403,6 +413,9 @@ async def health_check():
         "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
+# ── News response cache (reduces RSS fetching) ──
+_news_response_cache = {"data": None, "timestamp": None, "ttl": 120}
+
 @app.get("/api/news")
 async def get_news(
     region: Optional[str] = Query(None, description="Filter by region"),
@@ -412,14 +425,25 @@ async def get_news(
     aggregator_sources: Optional[str] = Query(None, description="Comma-separated aggregator sources: mediastack,newsdata")
 ):
     """Fetch aggregated news from RSS feeds and optional aggregator APIs"""
-    all_news = []
-    
-    # Fetch from all RSS feeds concurrently
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-    results = await asyncio.gather(*tasks)
-    
-    for items in results:
-        all_news.extend(items)
+    now = datetime.now(timezone.utc)
+
+    # Use cached base news if fresh (120s TTL)
+    if (
+        _news_response_cache["data"] is not None
+        and _news_response_cache["timestamp"]
+        and (now - _news_response_cache["timestamp"]).total_seconds() < _news_response_cache["ttl"]
+    ):
+        all_news = list(_news_response_cache["data"])
+    else:
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for items in results:
+            if isinstance(items, list):
+                all_news.extend(items)
+        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+        _news_response_cache["data"] = all_news
+        _news_response_cache["timestamp"] = now
     
     # Optionally merge aggregator news
     if include_aggregators:
@@ -427,7 +451,7 @@ async def get_news(
             from services.aggregator_service import get_normalized_aggregator_news
             sources_list = aggregator_sources.split(",") if aggregator_sources else None
             agg_news = await get_normalized_aggregator_news(sources=sources_list)
-            all_news.extend(agg_news)
+            all_news = list(all_news) + list(agg_news)
         except Exception as e:
             print(f"[News] Aggregator fetch error: {e}")
     
@@ -1030,7 +1054,7 @@ async def get_admin_stats():
 # ===========================================
 
 class UserSettings(BaseModel):
-    voice_model: str = "nova"
+    voice_model: str = "emma"
     voice_dialect: str = "standard"
     voice_region: str = "africa"
     high_contrast: bool = False
@@ -1080,14 +1104,14 @@ async def get_voice_settings(user_id: str):
     settings = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
     if settings and "settings" in settings:
         return {
-            "voice_model": settings["settings"].get("voice_model", "nova"),
+            "voice_model": settings["settings"].get("voice_model", "emma"),
             "voice_dialect": settings["settings"].get("voice_dialect", "standard"),
             "voice_region": settings["settings"].get("voice_region", "africa"),
         }
-    return {"voice_model": "nova", "voice_dialect": "standard", "voice_region": "africa"}
+    return {"voice_model": "emma", "voice_dialect": "standard", "voice_region": "africa"}
 
 @app.post("/api/settings/{user_id}/voice")
-async def save_voice_settings(user_id: str, voice_model: str = "nova", voice_dialect: str = "standard", voice_region: str = "africa"):
+async def save_voice_settings(user_id: str, voice_model: str = "emma", voice_dialect: str = "standard", voice_region: str = "africa"):
     """Save voice settings"""
     preferences_col.update_one(
         {"user_id": user_id},
@@ -1192,23 +1216,32 @@ async def get_recommendations_endpoint(user_id: str, limit: int = Query(10, ge=1
     """Get personalized news recommendations for a user"""
     from services.recommendation_service import get_recommendations
 
-    # Fetch current news to score against
-    all_news = []
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    for items in results:
-        if isinstance(items, list):
-            all_news.extend(items)
+    # Reuse the news response cache to avoid redundant RSS fetches
+    now = datetime.now(timezone.utc)
+    if (
+        _news_response_cache["data"] is not None
+        and _news_response_cache["timestamp"]
+        and (now - _news_response_cache["timestamp"]).total_seconds() < _news_response_cache["ttl"]
+    ):
+        all_news = list(_news_response_cache["data"])
+    else:
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for items in results:
+            if isinstance(items, list):
+                all_news.extend(items)
+        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+        _news_response_cache["data"] = all_news
+        _news_response_cache["timestamp"] = now
 
     # Include aggregator news
     try:
         from services.aggregator_service import get_normalized_aggregator_news
         agg_news = await get_normalized_aggregator_news()
-        all_news.extend(agg_news)
+        all_news = list(all_news) + list(agg_news)
     except Exception:
         pass
-
-    all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
 
     result = await get_recommendations(user_id, all_news, limit=limit)
 
@@ -1330,7 +1363,7 @@ Write ONLY spoken words. Every sentence must deliver news content. The audio pro
 
 @app.get("/api/briefing/generate")
 async def generate_morning_briefing(
-    voice_id: str = Query("nova", description="Voice for TTS"),
+    voice_id: str = Query("emma", description="Voice for TTS"),
     force_regenerate: bool = Query(False, description="Force regeneration")
 ):
     """Generate or retrieve morning briefing with audio"""
@@ -1373,18 +1406,16 @@ async def generate_morning_briefing(
         # Generate briefing script
         script = await generate_briefing_script(top_stories)
         
-        # Generate TTS audio
+        # Generate TTS audio (YarnGPT primary, OpenAI fallback — same as /api/tts/generate)
         audio_url = None
         try:
-            from emergentintegrations.llm.openai import OpenAITextToSpeech
-            
+            from services.yarngpt_service import generate_tts as yarn_generate_tts
             tts_text = script[:2500] if len(script) > 2500 else script
-            tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-            audio_bytes = await tts.generate_speech(
-                text=tts_text, model="tts-1", voice=voice_id, response_format="mp3", speed=1.0
+            audio_url = await yarn_generate_tts(
+                text=tts_text,
+                voice_id=voice_id,
+                language="en"
             )
-            audio_b64 = base64.b64encode(audio_bytes).decode()
-            audio_url = f"data:audio/mpeg;base64,{audio_b64}"
         except Exception as e:
             print(f"TTS Error for briefing: {e}")
         
@@ -1464,21 +1495,16 @@ async def get_briefing_by_date(briefing_date: str):
 @app.post("/api/briefing/audio")
 async def generate_briefing_audio(
     script: str = Query(..., description="Briefing script text"),
-    voice_id: str = Query("nova", description="Voice for TTS")
+    voice_id: str = Query("emma", description="Voice for TTS")
 ):
     """Generate audio for a custom briefing script"""
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
-        
+        from services.yarngpt_service import generate_tts as yarn_generate_tts
         tts_text = script[:4000] if len(script) > 4000 else script
-        
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        audio_bytes = await tts.generate_speech(
-            text=tts_text, model="tts-1", voice=voice_id, response_format="mp3", speed=1.0
-        )
-        audio_b64 = base64.b64encode(audio_bytes).decode()
-        
-        return {"audio_url": f"data:audio/mpeg;base64,{audio_b64}", "voice_id": voice_id}
+        audio_url = await yarn_generate_tts(text=tts_text, voice_id=voice_id, language="en")
+        if not audio_url:
+            raise Exception("TTS generation failed")
+        return {"audio_url": audio_url, "voice_id": voice_id}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
 
@@ -1808,6 +1834,108 @@ def is_crawler(user_agent: str) -> bool:
         return False
     ua_lower = user_agent.lower()
     return any(crawler in ua_lower for crawler in CRAWLER_USER_AGENTS)
+
+# ─── Analytics ───────────────────────────────────────
+@app.get("/api/analytics/{user_id}")
+async def get_user_analytics(user_id: str):
+    """Get listening analytics for a user with trends and comparisons"""
+    history = list(db["listening_history"].find(
+        {"user_id": user_id},
+        {"_id": 0, "category": 1, "source": 1, "played_at": 1, "duration": 1, "title": 1}
+    ).sort("played_at", -1).limit(500))
+
+    if not history:
+        return {
+            "total_listens": 0, "total_duration_minutes": 0,
+            "categories": {}, "sources": {},
+            "daily_activity": [], "streak": 0, "top_categories": [],
+            "weekly_trend": [], "period_comparison": None,
+            "hourly_distribution": {},
+        }
+
+    from collections import Counter
+    from datetime import timedelta
+
+    now = datetime.now(timezone.utc)
+    cat_counts = Counter()
+    src_counts = Counter()
+    daily_counts = {}
+    hourly_counts = Counter()
+    this_week = 0
+    last_week = 0
+
+    for h in history:
+        cat = (h.get("category") or "general").lower()
+        cat_counts[cat] += 1
+        src = h.get("source", "unknown")
+        src_counts[src] += 1
+        played = h.get("played_at", "")
+        day = played[:10]
+        if day:
+            daily_counts[day] = daily_counts.get(day, 0) + 1
+
+        # Parse hour for hourly distribution
+        try:
+            played_dt = datetime.fromisoformat(played.replace("Z", "+00:00"))
+            hourly_counts[played_dt.hour] += 1
+            age_days = (now - played_dt).days
+            if age_days < 7:
+                this_week += 1
+            elif age_days < 14:
+                last_week += 1
+        except Exception:
+            pass
+
+    # Streak
+    streak = 0
+    for i in range(30):
+        day_str = (now - timedelta(days=i)).strftime("%Y-%m-%d")
+        if day_str in daily_counts:
+            streak += 1
+        else:
+            break
+
+    total_duration = sum(h.get("duration", 0) for h in history)
+    daily_sorted = sorted(daily_counts.items(), key=lambda x: x[0], reverse=True)[:14]
+
+    # Weekly trend (last 4 weeks)
+    weekly_trend = []
+    for w in range(4):
+        start = now - timedelta(days=(w + 1) * 7)
+        end = now - timedelta(days=w * 7)
+        label = f"W-{w}" if w > 0 else "This week"
+        count = sum(1 for h in history
+                    if h.get("played_at", "")[:10] >= start.strftime("%Y-%m-%d")
+                    and h.get("played_at", "")[:10] < end.strftime("%Y-%m-%d"))
+        weekly_trend.append({"week": label, "count": count})
+    weekly_trend.reverse()
+
+    # Period comparison
+    change_pct = 0
+    if last_week > 0:
+        change_pct = round(((this_week - last_week) / last_week) * 100)
+    period_comparison = {
+        "this_week": this_week,
+        "last_week": last_week,
+        "change_pct": change_pct,
+        "trend": "up" if this_week > last_week else "down" if this_week < last_week else "flat",
+    }
+
+    # Hourly distribution (24h)
+    hourly_dist = {str(h).zfill(2): hourly_counts.get(h, 0) for h in range(24)}
+
+    return {
+        "total_listens": len(history),
+        "total_duration_minutes": round(total_duration / 60, 1) if total_duration else 0,
+        "categories": dict(cat_counts.most_common(8)),
+        "sources": dict(src_counts.most_common(10)),
+        "daily_activity": [{"date": d, "count": c} for d, c in daily_sorted],
+        "streak": streak,
+        "top_categories": [k for k, _ in cat_counts.most_common(3)],
+        "weekly_trend": weekly_trend,
+        "period_comparison": period_comparison,
+        "hourly_distribution": hourly_dist,
+    }
 
 @app.get("/api/share/{news_id}", response_class=HTMLResponse)
 async def share_page(news_id: str, request: Request):

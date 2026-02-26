@@ -245,11 +245,11 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="flex-1 flex min-h-0 overflow-hidden">
+    <div className="flex-1 flex min-h-0 min-w-0 overflow-hidden">
       {/* Primary Feed */}
       <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0 overflow-hidden">
         {/* Sub-Header */}
-        <div className="h-10 md:h-14 flex items-center justify-between px-2 md:px-8 bg-surface/30 narvo-border-b shrink-0">
+        <div className="h-10 md:h-14 flex items-center justify-between px-2 md:px-8 bg-surface/30 narvo-border-b shrink-0 overflow-hidden">
           <div className="flex items-center gap-1 md:gap-3 min-w-0">
             <span className="mono-ui text-[9px] md:text-xs text-primary font-bold shrink-0 hidden xs:inline">LGS_01</span>
             <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-primary animate-pulse shrink-0" />
@@ -280,7 +280,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Mobile Telemetry Drawer (hidden on xl where sidebar shows) */}
-        <div className="xl:hidden">
+        <div className="xl:hidden overflow-hidden">
           <button
             onClick={() => setShowTelemetry(v => !v)}
             className="w-full h-9 flex items-center justify-between px-4 bg-surface/20 narvo-border-b"

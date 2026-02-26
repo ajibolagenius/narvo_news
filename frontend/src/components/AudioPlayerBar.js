@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, SkipBack, SkipForward, SpeakerHigh, SpeakerSlash,
-  Queue, X, Trash, Repeat, Broadcast, CaretUp, CaretDown, Waveform
+  Queue, X, Trash, Repeat, Broadcast, CaretUp, CaretDown, Waveform, DotsSixVertical
 } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 
@@ -20,12 +20,14 @@ const DesktopPlayer = () => {
   const {
     currentTrack, isPlaying, isLoading, isTransitioning, currentTime, duration,
     togglePlay, seek, playNext, playPrev,
-    queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
+    queue, queueIndex, removeFromQueue, clearQueue, playFromQueue, reorderQueue,
     volume, isMuted, setVolume, toggleMute, autoPlay, setAutoPlay,
     playbackRate, setPlaybackRate,
   } = useAudio();
   const [showQueue, setShowQueue] = useState(false);
   const [showVol, setShowVol] = useState(false);
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
   const volRef = useRef(null);
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
@@ -87,17 +89,32 @@ const DesktopPlayer = () => {
               ) : queue.map((track, idx) => (
                 <div
                   key={track.id}
+                  draggable={idx !== queueIndex}
+                  onDragStart={(e) => { setDragIdx(idx); e.dataTransfer.effectAllowed = 'move'; }}
+                  onDragOver={(e) => { e.preventDefault(); setDragOverIdx(idx); }}
+                  onDragEnd={() => {
+                    if (dragIdx !== null && dragOverIdx !== null && dragIdx !== dragOverIdx) {
+                      reorderQueue(dragIdx, dragOverIdx);
+                    }
+                    setDragIdx(null);
+                    setDragOverIdx(null);
+                  }}
                   onClick={() => playFromQueue(idx)}
-                  className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-all border-b border-[rgb(var(--color-border))]/20 ${
+                  className={`flex items-center gap-2 px-3 py-2.5 cursor-pointer transition-all border-b border-[rgb(var(--color-border))]/20 ${
                     idx === queueIndex ? 'bg-[rgb(var(--color-primary))]/8 border-l-2 border-l-[rgb(var(--color-primary))]' : 'hover:bg-[rgb(var(--color-surface))]/20'
-                  }`}
+                  } ${dragOverIdx === idx ? 'border-t-2 border-t-[rgb(var(--color-primary))]' : ''}`}
+                  data-testid={`queue-item-${idx}`}
                 >
+                  <div className={`cursor-grab active:cursor-grabbing ${idx === queueIndex ? 'opacity-30' : 'text-[rgb(var(--color-text-dim))] hover:text-[rgb(var(--color-text-secondary))]'}`}
+                    onMouseDown={(e) => e.stopPropagation()}>
+                    <DotsSixVertical weight="bold" className="w-3.5 h-3.5" />
+                  </div>
                   <span className="font-mono text-[11px] text-[rgb(var(--color-text-dim))] w-5">{String(idx + 1).padStart(2, '0')}</span>
                   <div className="flex-1 min-w-0">
                     <span className={`text-xs truncate block ${idx === queueIndex ? 'text-[rgb(var(--color-primary))]' : 'text-[rgb(var(--color-text-primary))]'}`}>{track.title}</span>
                     <span className="font-mono text-[10px] text-[rgb(var(--color-text-dim))]">{track.source}</span>
                   </div>
-                  <button onClick={(e) => { e.stopPropagation(); removeFromQueue(track.id); }} className="p-1 text-[rgb(var(--color-text-dim))] hover:text-red-500"><X weight="bold" className="w-3 h-3" /></button>
+                  <button onClick={(e) => { e.stopPropagation(); removeFromQueue(track.id); }} className="p-1 text-[rgb(var(--color-text-dim))] hover:text-red-500" data-testid={`queue-remove-${idx}`}><X weight="bold" className="w-3 h-3" /></button>
                 </div>
               ))}
             </div>

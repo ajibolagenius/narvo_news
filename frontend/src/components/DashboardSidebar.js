@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { 
   SquaresFour, Waveform, BookmarkSimple, MagnifyingGlass, Compass, WifiSlash,
-  GearSix, ShieldCheck, List, ClockCounterClockwise
+  GearSix, ShieldCheck, List, ClockCounterClockwise, ChartBar
 } from '@phosphor-icons/react';
 import ThemeToggle from './ThemeToggle';
 
@@ -15,9 +15,10 @@ const getNavItems = (t) => [
   { icon: BookmarkSimple, label: t('nav.saved'), path: '/saved' },
   { icon: ClockCounterClockwise, label: 'History', path: '/history' },
   { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
+  { icon: ChartBar, label: 'Analytics', path: '/analytics' },
 ];
 
-// Desktop-only nav includes search
+// Desktop-only nav includes search + analytics
 const getDesktopNavItems = (t) => [
   { icon: SquaresFour, label: t('nav.feed'), path: '/dashboard' },
   { icon: Compass, label: t('nav.discover'), path: '/discover' },
@@ -25,6 +26,7 @@ const getDesktopNavItems = (t) => [
   { icon: Waveform, label: t('nav.briefing'), path: '/briefing' },
   { icon: BookmarkSimple, label: t('nav.saved'), path: '/saved' },
   { icon: ClockCounterClockwise, label: 'History', path: '/history' },
+  { icon: ChartBar, label: 'Analytics', path: '/analytics' },
   { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
 ];
 

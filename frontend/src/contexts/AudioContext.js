@@ -194,9 +194,18 @@ export const AudioProvider = ({ children }) => {
     audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
-      // Auto-play next with smooth transition
-      if (autoPlay) {
-        playNextSmooth();
+      // Auto-play next with smooth transition using refs for fresh state
+      if (autoPlayRef.current && queueRef.current.length > 0) {
+        const nextIdx = queueIndexRef.current + 1;
+        if (nextIdx < queueRef.current.length) {
+          const nextTrack = queueRef.current[nextIdx];
+          setQueueIndex(nextIdx);
+          queueIndexRef.current = nextIdx;
+          // Small delay for smooth transition
+          setTimeout(() => {
+            playTrack(nextTrack, true);
+          }, 300);
+        }
       }
     });
     audio.addEventListener('play', () => {
@@ -231,6 +240,16 @@ export const AudioProvider = ({ children }) => {
     };
     // eslint-disable-next-line
   }, []);
+
+  // Refs for queue state (used in event handlers to avoid stale closures)
+  const queueRef = useRef([]);
+  const queueIndexRef = useRef(-1);
+  const autoPlayRef = useRef(true);
+  const playTrackRef = useRef(null);
+
+  useEffect(() => { queueRef.current = queue; }, [queue]);
+  useEffect(() => { queueIndexRef.current = queueIndex; }, [queueIndex]);
+  useEffect(() => { autoPlayRef.current = autoPlay; }, [autoPlay]);
 
   // Volume control
   const setVolume = useCallback((newVolume) => {
@@ -285,11 +304,20 @@ export const AudioProvider = ({ children }) => {
     }
   }, [broadcastLanguage, voiceModel]);
 
-  // Queue management (defined before playTrack so it's available)
+  // Queue management
   const addToQueue = useCallback((track) => {
     setQueue(prev => {
       if (prev.some(t => t.id === track.id)) return prev;
-      return [...prev, track];
+      const newQueue = [...prev, track];
+
+      // Auto-play first item if nothing is currently playing
+      if (prev.length === 0 && !audioRef.current?.src) {
+        setQueueIndex(0);
+        queueIndexRef.current = 0;
+        setTimeout(() => playTrackRef.current?.(track, true), 50);
+      }
+
+      return newQueue;
     });
   }, []);
 
@@ -410,6 +438,9 @@ export const AudioProvider = ({ children }) => {
   const forcePlayTrack = useCallback(async (track) => {
     return playTrack(track, true);
   }, [playTrack]);
+
+  // Keep playTrack ref current for queue auto-play
+  useEffect(() => { playTrackRef.current = playTrack; }, [playTrack]);
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
