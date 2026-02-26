@@ -1,20 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MagnifyingGlass, User, Broadcast } from '@phosphor-icons/react';
+import { MagnifyingGlass, User, Broadcast, WifiHigh, WifiMedium, WifiLow, WifiSlash, DownloadSimple } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import ThemeToggle from './ThemeToggle';
+import { useNetworkInfo, useInstallPrompt } from '../hooks/usePwaApis';
 
 const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+  const { online, effectiveType, isSlowConnection } = useNetworkInfo();
+  const { canInstall, install } = useInstallPrompt();
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
   };
+
+  const NetworkIcon = !online ? WifiSlash : isSlowConnection ? WifiLow : effectiveType === '3g' ? WifiMedium : WifiHigh;
+  const networkColor = !online ? 'text-red-500' : isSlowConnection ? 'text-yellow-500' : 'text-[rgb(var(--color-primary))]';
 
   return (
     <header className="h-14 md:h-16 flex items-center gap-4 px-4 md:px-6 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-bg))] z-20 shrink-0" data-testid="dashboard-header">
@@ -47,7 +53,25 @@ const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
       </button>
 
       {/* Right side */}
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-2 md:gap-3 shrink-0">
+        {/* Network status */}
+        <div className={`flex items-center gap-1 ${networkColor}`} data-testid="network-status" title={online ? `${effectiveType?.toUpperCase()}` : 'Offline'}>
+          <NetworkIcon weight="bold" className="w-4 h-4" />
+          <span className="hidden lg:inline font-mono text-[10px] uppercase">{online ? effectiveType : 'OFF'}</span>
+        </div>
+
+        {/* Install PWA button */}
+        {canInstall && (
+          <button
+            onClick={install}
+            className="flex items-center gap-1 px-2 py-1 bg-[rgb(var(--color-primary))] text-[rgb(var(--color-bg))] font-mono text-[10px] font-bold hover:opacity-90 transition-opacity"
+            data-testid="pwa-install-btn"
+          >
+            <DownloadSimple weight="bold" className="w-3 h-3" />
+            <span className="hidden md:inline">INSTALL</span>
+          </button>
+        )}
+
         <div className="hidden lg:flex flex-col items-end font-mono text-[11px] text-[rgb(var(--color-text-secondary))]">
           <span>{t('header.signal')}: <span className="text-[rgb(var(--color-primary))] font-bold">100%</span></span>
           <span>{t('header.latency')}: <span className="text-[rgb(var(--color-primary))] font-bold">12ms</span></span>
