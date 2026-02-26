@@ -76,6 +76,19 @@ async def startup_feed_health():
     from services.news_service import run_health_check
     from services.aggregator_service import refresh_cache
 
+    # Create MongoDB indexes for performance
+    try:
+        db["tts_cache"].create_index("cache_key", unique=True)
+        db["tts_cache"].create_index("created_at", expireAfterSeconds=86400 * 7)  # 7-day TTL
+        db["user_preferences"].create_index("user_id", unique=True)
+        db["bookmarks"].create_index([("user_id", 1), ("story_id", 1)])
+        db["listening_history"].create_index([("user_id", 1), ("played_at", -1)])
+        db["news_cache"].create_index([("published", -1)])
+        db["news_cache"].create_index("id", unique=True, sparse=True)
+        db["push_subscriptions"].create_index("endpoint", unique=True)
+    except Exception as e:
+        print(f"[Startup] Index creation: {e}")
+
     async def periodic_health_check():
         while True:
             await run_health_check()
