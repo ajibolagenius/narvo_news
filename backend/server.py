@@ -578,23 +578,31 @@ async def generate_tts(request: TTSRequest):
 
 @app.get("/api/voices", response_model=List[VoiceProfile])
 async def get_voices():
-    """Get available voice profiles"""
-    return VOICE_PROFILES
+    """Get available voice profiles (cached 10min)"""
+    cached = _cache.get("voices", ttl=600)
+    if cached: return JSONResponse(content=cached, headers={"Cache-Control": "public, max-age=600"})
+    result = VOICE_PROFILES
+    _cache.set("voices", [dict(v) for v in result])
+    return result
 
 @app.get("/api/regions")
 async def get_regions():
     """Get available news regions"""
-    return [
-        {"id": "nigeria", "name": "Nigeria", "icon": "NG"},
-        {"id": "continental", "name": "Continental", "icon": "AF"},
-    ]
+    return JSONResponse(
+        content=[{"id": "nigeria", "name": "Nigeria", "icon": "NG"}, {"id": "continental", "name": "Continental", "icon": "AF"}],
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
 
 
 @app.get("/api/sound-themes")
 async def list_sound_themes():
-    """Get available broadcast sound themes"""
+    """Get available broadcast sound themes (cached 10min)"""
+    cached = _cache.get("sound_themes", ttl=600)
+    if cached: return JSONResponse(content=cached, headers={"Cache-Control": "public, max-age=600"})
     from services.sound_themes_service import get_sound_themes
-    return get_sound_themes()
+    result = get_sound_themes()
+    _cache.set("sound_themes", result)
+    return result
 
 @app.get("/api/sound-themes/{theme_id}")
 async def get_sound_theme_detail(theme_id: str):
@@ -603,20 +611,23 @@ async def get_sound_theme_detail(theme_id: str):
     theme = get_sound_theme(theme_id)
     if not theme:
         raise HTTPException(status_code=404, detail="Theme not found")
-    return theme
+    return JSONResponse(content=theme, headers={"Cache-Control": "public, max-age=3600"})
 
 
 @app.get("/api/categories")
 async def get_categories():
-    """Get news categories"""
-    return [
-        {"id": "politics", "name": "Politics", "icon": "building"},
-        {"id": "economy", "name": "Economy", "icon": "chart"},
-        {"id": "tech", "name": "Tech", "icon": "cpu"},
-        {"id": "sports", "name": "Sports", "icon": "trophy"},
-        {"id": "health", "name": "Health", "icon": "heart"},
-        {"id": "general", "name": "General", "icon": "newspaper"},
-    ]
+    """Get news categories (cached 1hr)"""
+    return JSONResponse(
+        content=[
+            {"id": "politics", "name": "Politics", "icon": "building"},
+            {"id": "economy", "name": "Economy", "icon": "chart"},
+            {"id": "tech", "name": "Tech", "icon": "cpu"},
+            {"id": "sports", "name": "Sports", "icon": "trophy"},
+            {"id": "health", "name": "Health", "icon": "heart"},
+            {"id": "general", "name": "General", "icon": "newspaper"},
+        ],
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
 
 @app.get("/api/sources")
 async def get_content_sources():
