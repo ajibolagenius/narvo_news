@@ -32,16 +32,17 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t } = useTranslation();
-  const navItems = getNavItems(t);
+  const mobileNavItems = getNavItems(t);
+  const desktopNavItems = getDesktopNavItems(t);
 
   const isSettingsActive = location.pathname === '/settings' || 
     ['/account', '/voices', '/system', '/accessibility'].includes(location.pathname);
 
-  // Mobile bottom tab bar
+  // Mobile bottom tab bar (without search icon)
   if (mobile) {
     return (
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-14 bg-[rgb(var(--color-bg))] border-t border-[rgb(var(--color-border))] flex items-center justify-around z-30" data-testid="mobile-bottom-nav">
-        {navItems.map((item) => {
+        {mobileNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
           return (
