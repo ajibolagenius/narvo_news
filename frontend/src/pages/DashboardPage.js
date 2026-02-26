@@ -451,6 +451,87 @@ const DashboardPage = () => {
                   </motion.section>
                 )}
 
+                {/* Recommended For You */}
+                {recommendations.length > 0 && (
+                  <motion.section
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    data-testid="recommendations-section"
+                  >
+                    <div className="flex items-center justify-between border-b border-primary/30 pb-2 mb-4">
+                      <div className="flex items-center gap-2">
+                        <Lightning weight="fill" className="w-4 h-4 text-primary" />
+                        <span className="mono-ui text-[12px] md:text-xs text-primary font-bold tracking-[0.2em]">{'//'} FOR_YOU</span>
+                      </div>
+                      {recoProfile && (
+                        <span className="mono-ui text-[10px] md:text-[11px] text-forest/50 uppercase">
+                          Based on {recoProfile.history_count} listens
+                        </span>
+                      )}
+                    </div>
+
+                    {recoProfile?.top_categories?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {recoProfile.top_categories.map(cat => (
+                          <span key={cat} className="bg-primary/10 text-primary mono-ui text-[10px] px-2 py-0.5 border border-primary/20 uppercase">
+                            {cat}
+                          </span>
+                        ))}
+                        {recoProfile.expanded_topics?.slice(0, 3).map(topic => (
+                          <span key={topic} className="bg-forest/10 text-forest mono-ui text-[10px] px-2 py-0.5 border border-forest/20">
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                      {recommendations.slice(0, 6).map((item) => (
+                        <motion.article
+                          key={item.id}
+                          variants={cardVariants}
+                          className="narvo-border bg-surface/30 group cursor-pointer hover:bg-surface/50 hover:border-primary/30 transition-all overflow-hidden"
+                          onClick={() => navigate(`/news/${item.id}`)}
+                          data-testid={`reco-card-${item.id}`}
+                        >
+                          <div className="h-28 md:h-32 relative overflow-hidden">
+                            <img
+                              src={item.image_url || getCategoryImage(item.category || item.tags?.[0], item.id)}
+                              alt={item.category}
+                              className="w-full h-full object-cover opacity-40 group-hover:opacity-70 grayscale group-hover:grayscale-0 transition-all duration-500"
+                            />
+                            <div className={`absolute inset-0 bg-gradient-to-t from-background-dark/90 to-transparent`} />
+                            <div className="absolute top-2 left-2 flex gap-1.5">
+                              <span className="bg-primary/90 text-background-dark mono-ui text-[9px] md:text-[10px] font-bold px-1.5 py-0.5 uppercase">{item.category || 'General'}</span>
+                            </div>
+                            <div className="absolute bottom-2 right-2">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); playTrack(item); }}
+                                className="w-8 h-8 bg-primary/90 flex items-center justify-center hover:bg-primary transition-colors"
+                                data-testid={`reco-play-${item.id}`}
+                              >
+                                <PlayCircle weight="fill" className="w-4 h-4 text-background-dark" />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="p-3 md:p-4">
+                            <h4 className="font-display text-sm md:text-base font-bold text-content uppercase tracking-tight leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                              {item.title}
+                            </h4>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="mono-ui text-[9px] md:text-[10px] text-forest truncate">{item.source}</span>
+                              {item.recommendation_score > 0 && (
+                                <span className="mono-ui text-[9px] text-primary/60 font-bold shrink-0 ml-2">{Math.round(item.recommendation_score)}% MATCH</span>
+                              )}
+                            </div>
+                          </div>
+                        </motion.article>
+                      ))}
+                    </div>
+                  </motion.section>
+                )}
+
                 {/* Synthesized Streams */}
                 <motion.section
                   className="space-y-4 md:space-y-6"
