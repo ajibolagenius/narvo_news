@@ -1186,6 +1186,38 @@ async def get_listening_history(user_id: str, limit: int = Query(20, ge=1, le=10
     ).sort("played_at", -1).limit(limit))
     return items
 
+# ─── Recommendations ───────────────────────────────────────
+@app.get("/api/recommendations/{user_id}")
+async def get_recommendations_endpoint(user_id: str, limit: int = Query(10, ge=1, le=30)):
+    """Get personalized news recommendations for a user"""
+    from services.recommendation_service import get_recommendations
+
+    # Fetch current news to score against
+    all_news = []
+    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    for items in results:
+        if isinstance(items, list):
+            all_news.extend(items)
+
+    # Include aggregator news
+    try:
+        from services.aggregator_service import get_normalized_aggregator_news
+        agg_news = await get_normalized_aggregator_news()
+        all_news.extend(agg_news)
+    except Exception:
+        pass
+
+    all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+
+    result = await get_recommendations(user_id, all_news, limit=limit)
+
+    # Strip any _id fields that might have snuck in
+    for rec in result.get("recommendations", []):
+        rec.pop("_id", None)
+
+    return result
+
 @app.get("/api/system-alerts")
 async def get_system_alerts():
     """Get real system alerts based on actual service status"""

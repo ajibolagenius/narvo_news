@@ -24,13 +24,13 @@ const BookmarksPage = () => {
   const isCached = (storyId) => cachedIds.includes(storyId);
 
   return (
-    <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0" data-testid="bookmarks-page">
+    <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0 overflow-hidden" data-testid="bookmarks-page">
       <div className="h-12 md:h-14 flex items-center justify-between px-4 md:px-8 bg-surface/30 narvo-border-b shrink-0">
         <span className="mono-ui text-[12px] md:text-xs text-forest">MODULE: <span className="text-primary">SAVED_TRANSMISSIONS</span></span>
         <span className="mono-ui text-[12px] md:text-xs text-forest">{bookmarks.length} ITEMS</span>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll p-4 md:p-8 pb-32 md:pb-8">
         <div className="max-w-4xl mx-auto">
           {loading ? (
             <ListSkeleton count={3} />

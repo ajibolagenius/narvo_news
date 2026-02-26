@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { PlayCircle, Translate, BookmarkSimple, ArrowDown, Pulse, CloudSun, ShareNetwork, Queue, CloudArrowDown, Broadcast } from '@phosphor-icons/react';
+import { PlayCircle, Translate, BookmarkSimple, ArrowDown, Pulse, CloudSun, ShareNetwork, Queue, CloudArrowDown, Broadcast, Lightning } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useContentSources } from '../contexts/ContentSourcesContext';
 import { useBookmarks } from '../hooks/useBookmarks';
@@ -13,6 +13,7 @@ import { FeaturedSkeleton, StreamCardSkeleton } from '../components/Skeleton';
 import TruthTag from '../components/TruthTag';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { getCategoryImage, getCategoryColor } from '../lib/categoryImages';
+import { useAuth } from '../contexts/AuthContext';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
@@ -64,8 +65,12 @@ const DashboardPage = () => {
   const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
+  const { user } = useAuth();
   const [sortOrder, setSortOrder] = useState('latest');
   const [userInterests, setUserInterests] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [recoProfile, setRecoProfile] = useState(null);
+  const [recoLoading, setRecoLoading] = useState(false);
 
   // Prefetch audio for the first 3 articles in idle time
   useAudioPrefetch(news.slice(0, 3), 'nova', 3);
@@ -111,6 +116,20 @@ const DashboardPage = () => {
   useEffect(() => {
     fetchDashboardData().catch(() => {}).finally(() => setLoading(false));
   }, [fetchDashboardData]);
+
+  // Fetch recommendations in parallel (non-blocking)
+  useEffect(() => {
+    const userId = user?.id || 'guest';
+    setRecoLoading(true);
+    fetch(`${API_URL}/api/recommendations/${userId}?limit=6`)
+      .then(r => r.json())
+      .then(data => {
+        setRecommendations(data.recommendations || []);
+        setRecoProfile(data.profile_summary || null);
+      })
+      .catch(() => {})
+      .finally(() => setRecoLoading(false));
+  }, [user?.id]);
 
   // Pull-to-refresh
   const { containerRef, pulling, refreshing, pullDistance, handlers: pullHandlers } = usePullToRefresh(
@@ -226,9 +245,9 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="flex-1 flex min-h-0">
+    <div className="flex-1 flex min-h-0 overflow-hidden">
       {/* Primary Feed */}
-      <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0">
+      <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0 overflow-hidden">
         {/* Sub-Header */}
         <div className="h-10 md:h-14 flex items-center justify-between px-2 md:px-8 bg-surface/30 narvo-border-b shrink-0">
           <div className="flex items-center gap-1 md:gap-3 min-w-0">
@@ -321,7 +340,7 @@ const DashboardPage = () => {
         {/* Feed Content */}
         <div
           ref={containerRef}
-          className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8 relative"
+          className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll p-4 md:p-8 pb-32 md:pb-8 relative"
           data-testid="news-feed"
           {...pullHandlers}
         >
@@ -429,6 +448,103 @@ const DashboardPage = () => {
                         </div>
                       </div>
                     </article>
+                  </motion.section>
+                )}
+
+                {/* Recommended For You */}
+                {recommendations.length > 0 && (
+                  <motion.section
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    data-testid="recommendations-section"
+                  >
+                    <div className="flex items-center justify-between border-b border-primary/30 pb-2 mb-3 gap-2">
+                      <div className="flex items-center gap-2 min-w-0 shrink">
+                        <Lightning weight="fill" className="w-3.5 h-3.5 text-primary shrink-0" />
+                        <span className="mono-ui text-[11px] md:text-xs text-primary font-bold tracking-[0.15em] shrink-0">{'//'} FOR_YOU</span>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {recoProfile && (
+                          <span className="mono-ui text-[9px] md:text-[10px] text-forest/50 uppercase hidden sm:inline">
+                            {recoProfile.history_count} listens
+                          </span>
+                        )}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            recommendations.slice(0, 5).forEach((item, i) => {
+                              setTimeout(() => addToQueue(item), i * 100);
+                            });
+                            showAlert({ type: 'success', title: 'PLAYLIST_QUEUED', message: `${Math.min(5, recommendations.length)} recommendations added to queue.`, code: 'PL_OK', duration: 3000 });
+                          }}
+                          className="flex items-center gap-1 px-2 py-1 bg-primary text-background-dark mono-ui text-[9px] md:text-[11px] font-bold hover:bg-white transition-colors whitespace-nowrap"
+                          data-testid="play-all-recommendations"
+                        >
+                          <PlayCircle weight="fill" className="w-3 h-3" />
+                          PLAY_ALL
+                        </button>
+                      </div>
+                    </div>
+
+                    {recoProfile?.top_categories?.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {recoProfile.top_categories.map(cat => (
+                          <span key={cat} className="bg-primary/10 text-primary mono-ui text-[9px] px-1.5 py-0.5 border border-primary/20 uppercase">
+                            {cat}
+                          </span>
+                        ))}
+                        {recoProfile.expanded_topics?.slice(0, 3).map(topic => (
+                          <span key={topic} className="bg-forest/10 text-forest mono-ui text-[9px] px-1.5 py-0.5 border border-forest/20">
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-2 md:gap-3">
+                      {recommendations.slice(0, 6).map((item) => (
+                        <motion.article
+                          key={item.id}
+                          variants={cardVariants}
+                          className="narvo-border bg-surface/30 group cursor-pointer hover:bg-surface/50 hover:border-primary/30 transition-all overflow-hidden"
+                          onClick={() => navigate(`/news/${item.id}`)}
+                          data-testid={`reco-card-${item.id}`}
+                        >
+                          <div className="h-20 md:h-24 relative overflow-hidden">
+                            <img
+                              src={item.image_url || getCategoryImage(item.category || item.tags?.[0], item.id)}
+                              alt={item.category}
+                              className="w-full h-full object-cover opacity-40 group-hover:opacity-70 grayscale group-hover:grayscale-0 transition-all duration-500"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-background-dark/90 to-transparent" />
+                            <div className="absolute top-1.5 left-1.5">
+                              <span className="bg-primary/90 text-background-dark mono-ui text-[8px] md:text-[9px] font-bold px-1 py-0.5 uppercase">{item.category || 'General'}</span>
+                            </div>
+                            <div className="absolute bottom-1.5 right-1.5">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); playTrack(item); }}
+                                className="w-7 h-7 bg-primary/90 flex items-center justify-center hover:bg-primary transition-colors"
+                                data-testid={`reco-play-${item.id}`}
+                              >
+                                <PlayCircle weight="fill" className="w-3.5 h-3.5 text-background-dark" />
+                              </button>
+                            </div>
+                          </div>
+                          <div className="p-2 md:p-2.5">
+                            <h4 className="font-display text-[11px] md:text-xs font-bold text-content uppercase tracking-tight leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                              {item.title}
+                            </h4>
+                            <div className="flex items-center justify-between mt-1">
+                              <span className="mono-ui text-[8px] md:text-[9px] text-forest truncate">{item.source}</span>
+                              {item.recommendation_score > 0 && (
+                                <span className="mono-ui text-[8px] text-primary/60 font-bold shrink-0 ml-1">{Math.round(item.recommendation_score)}%</span>
+                              )}
+                            </div>
+                          </div>
+                        </motion.article>
+                      ))}
+                    </div>
                   </motion.section>
                 )}
 

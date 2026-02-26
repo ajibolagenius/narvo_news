@@ -6,6 +6,19 @@ const AudioContext = createContext({});
 
 export const useAudio = () => useContext(AudioContext);
 
+// Wake Lock helpers (keep screen on during playback)
+let wakeLockSentinel = null;
+async function requestWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  try {
+    wakeLockSentinel = await navigator.wakeLock.request('screen');
+    wakeLockSentinel.addEventListener('release', () => { wakeLockSentinel = null; });
+  } catch (e) { /* denied */ }
+}
+async function releaseWakeLock() {
+  if (wakeLockSentinel) { await wakeLockSentinel.release(); wakeLockSentinel = null; }
+}
+
 export const AudioProvider = ({ children }) => {
   const { user } = useAuth();
   const audioRef = useRef(null);
@@ -188,14 +201,14 @@ export const AudioProvider = ({ children }) => {
     });
     audio.addEventListener('play', () => {
       setIsPlaying(true);
-      // Update Media Session playback state
+      requestWakeLock(); // Keep screen on during playback
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
     });
     audio.addEventListener('pause', () => {
       setIsPlaying(false);
-      // Update Media Session playback state
+      releaseWakeLock(); // Release screen lock
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'paused';
       }
@@ -214,6 +227,7 @@ export const AudioProvider = ({ children }) => {
       clearInterval(fadeIntervalRef.current);
       audio.pause();
       audio.src = '';
+      releaseWakeLock();
     };
     // eslint-disable-next-line
   }, []);

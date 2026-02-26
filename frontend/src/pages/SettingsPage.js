@@ -9,7 +9,7 @@ import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 import DailyDigest from '../components/features/DailyDigest';
-import { openTourGuide } from '../components/TourGuideModal';
+import { openTourGuide, resetTourGuide } from '../components/TourGuideModal';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -141,7 +141,7 @@ const SettingsPage = () => {
   ];
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll bg-background-dark" data-testid="settings-page">
+    <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll bg-background-dark" data-testid="settings-page">
       {/* Header */}
       <div className="p-6 md:p-10 narvo-border-b">
         <div className="flex items-center gap-3 mb-2">
@@ -403,7 +403,7 @@ const SettingsPage = () => {
                   <p className="mono-ui text-[10px] md:text-[11px] text-forest">WALK THROUGH NARVO'S KEY FEATURES AGAIN</p>
                 </div>
                 <button
-                  onClick={openTourGuide}
+                  onClick={() => { resetTourGuide(); openTourGuide(); }}
                   className="px-4 py-2.5 bg-primary text-background-dark mono-ui text-[11px] font-bold hover:bg-white transition-all flex items-center gap-2"
                   data-testid="replay-tour-btn"
                 >

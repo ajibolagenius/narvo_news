@@ -313,7 +313,7 @@ const AccessibilityPage = () => {
   ];
 
   return (
-    <main className="flex-1 flex flex-col min-h-0 bg-[rgb(var(--color-bg))]" data-testid="accessibility-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-[rgb(var(--color-bg))] overflow-hidden" data-testid="accessibility-page">
       {/* Header */}
       <div className="h-12 flex items-center justify-between px-4 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface))]/10 shrink-0">
         <span className="font-mono text-[12px] text-[rgb(var(--color-text-secondary))] font-bold uppercase">
@@ -335,7 +335,7 @@ const AccessibilityPage = () => {
       </div>
 
       {/* Content - Tabs on mobile, Columns on desktop */}
-      <div className="flex-1 overflow-y-auto custom-scroll">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll">
         <ResponsiveTabView tabs={tabs} className="h-full" />
       </div>
     </main>

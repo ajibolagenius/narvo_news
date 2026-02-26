@@ -139,7 +139,7 @@ const VoiceStudioPage = () => {
   const isActive = (voice) => selectedVoice?.id === voice.id;
 
   return (
-    <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="voice-studio-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-background-dark overflow-hidden" data-testid="voice-studio-page">
       {/* Header */}
       <div className="p-4 md:p-8 narvo-border-b shrink-0">
         <div className="flex flex-col md:flex-row justify-between md:items-end gap-3 md:gap-4">
@@ -164,7 +164,7 @@ const VoiceStudioPage = () => {
       </div>
 
       {/* Scrollable Voice Grid */}
-      <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll p-4 md:p-8 pb-32 md:pb-8">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
