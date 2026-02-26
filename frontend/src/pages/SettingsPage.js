@@ -403,7 +403,7 @@ const SettingsPage = () => {
                   <p className="mono-ui text-[10px] md:text-[11px] text-forest">WALK THROUGH NARVO'S KEY FEATURES AGAIN</p>
                 </div>
                 <button
-                  onClick={openTourGuide}
+                  onClick={() => { resetTourGuide(); openTourGuide(); }}
                   className="px-4 py-2.5 bg-primary text-background-dark mono-ui text-[11px] font-bold hover:bg-white transition-all flex items-center gap-2"
                   data-testid="replay-tour-btn"
                 >
