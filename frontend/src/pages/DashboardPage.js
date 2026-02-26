@@ -245,7 +245,7 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="flex-1 flex min-h-0 overflow-hidden">
+    <div className="flex-1 flex min-h-0 min-w-0 overflow-hidden">
       {/* Primary Feed */}
       <main className="flex-1 flex flex-col bg-background-dark min-w-0 min-h-0 overflow-hidden">
         {/* Sub-Header */}
