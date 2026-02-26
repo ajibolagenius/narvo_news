@@ -286,7 +286,7 @@ const NewsDetailPage = () => {
   const isCurrentlyPlaying = currentTrack?.id === news.id && isPlaying;
 
   return (
-    <div className="flex-1 flex min-h-0">
+    <div className="flex-1 flex min-h-0 overflow-hidden">
       <Helmet>
         <title>{news.title} — NARVO</title>
         <meta property="og:title" content={news.title} />
@@ -301,7 +301,7 @@ const NewsDetailPage = () => {
         <meta name="twitter:image" content={`${API_URL}/api/og/${id}`} />
       </Helmet>
       {/* Main Article Content */}
-      <section className="flex-1 overflow-y-auto relative bg-background-dark custom-scroll" data-testid="news-detail-page">
+      <section className="flex-1 overflow-y-auto overflow-x-hidden relative bg-background-dark custom-scroll" data-testid="news-detail-page">
         <div className="max-w-3xl mx-auto py-8 md:py-12 px-4 md:px-8 pb-32 md:pb-40">
           {/* Back + Truth Tag Header */}
           <div className="mb-4 md:mb-6 flex items-center justify-between">
