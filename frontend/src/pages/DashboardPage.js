@@ -117,6 +117,20 @@ const DashboardPage = () => {
     fetchDashboardData().catch(() => {}).finally(() => setLoading(false));
   }, [fetchDashboardData]);
 
+  // Fetch recommendations in parallel (non-blocking)
+  useEffect(() => {
+    const userId = user?.id || 'guest';
+    setRecoLoading(true);
+    fetch(`${API_URL}/api/recommendations/${userId}?limit=6`)
+      .then(r => r.json())
+      .then(data => {
+        setRecommendations(data.recommendations || []);
+        setRecoProfile(data.profile_summary || null);
+      })
+      .catch(() => {})
+      .finally(() => setRecoLoading(false));
+  }, [user?.id]);
+
   // Pull-to-refresh
   const { containerRef, pulling, refreshing, pullDistance, handlers: pullHandlers } = usePullToRefresh(
     fetchDashboardData,
