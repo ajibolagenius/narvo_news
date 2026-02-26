@@ -20,12 +20,14 @@ const DesktopPlayer = () => {
   const {
     currentTrack, isPlaying, isLoading, isTransitioning, currentTime, duration,
     togglePlay, seek, playNext, playPrev,
-    queue, queueIndex, removeFromQueue, clearQueue, playFromQueue,
+    queue, queueIndex, removeFromQueue, clearQueue, playFromQueue, reorderQueue,
     volume, isMuted, setVolume, toggleMute, autoPlay, setAutoPlay,
     playbackRate, setPlaybackRate,
   } = useAudio();
   const [showQueue, setShowQueue] = useState(false);
   const [showVol, setShowVol] = useState(false);
+  const [dragIdx, setDragIdx] = useState(null);
+  const [dragOverIdx, setDragOverIdx] = useState(null);
   const volRef = useRef(null);
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
