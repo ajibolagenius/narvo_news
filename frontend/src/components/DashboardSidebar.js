@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { 
   SquaresFour, Waveform, BookmarkSimple, MagnifyingGlass, Compass, WifiSlash,
-  GearSix, ShieldCheck, List, ClockCounterClockwise
+  GearSix, ShieldCheck, List, ClockCounterClockwise, ChartBar
 } from '@phosphor-icons/react';
 import ThemeToggle from './ThemeToggle';
 
