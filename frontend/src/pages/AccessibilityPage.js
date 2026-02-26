@@ -335,7 +335,7 @@ const AccessibilityPage = () => {
       </div>
 
       {/* Content - Tabs on mobile, Columns on desktop */}
-      <div className="flex-1 overflow-y-auto custom-scroll">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll">
         <ResponsiveTabView tabs={tabs} className="h-full" />
       </div>
     </main>
