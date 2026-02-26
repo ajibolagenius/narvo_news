@@ -1838,41 +1838,55 @@ def is_crawler(user_agent: str) -> bool:
 # ─── Analytics ───────────────────────────────────────
 @app.get("/api/analytics/{user_id}")
 async def get_user_analytics(user_id: str):
-    """Get listening analytics for a user"""
+    """Get listening analytics for a user with trends and comparisons"""
     history = list(db["listening_history"].find(
         {"user_id": user_id},
         {"_id": 0, "category": 1, "source": 1, "played_at": 1, "duration": 1, "title": 1}
-    ).sort("played_at", -1).limit(200))
+    ).sort("played_at", -1).limit(500))
 
     if not history:
         return {
-            "total_listens": 0,
-            "total_duration_minutes": 0,
-            "categories": {},
-            "sources": {},
-            "daily_activity": [],
-            "streak": 0,
-            "top_categories": [],
+            "total_listens": 0, "total_duration_minutes": 0,
+            "categories": {}, "sources": {},
+            "daily_activity": [], "streak": 0, "top_categories": [],
+            "weekly_trend": [], "period_comparison": None,
+            "hourly_distribution": {},
         }
 
     from collections import Counter
     from datetime import timedelta
 
+    now = datetime.now(timezone.utc)
     cat_counts = Counter()
     src_counts = Counter()
     daily_counts = {}
+    hourly_counts = Counter()
+    this_week = 0
+    last_week = 0
 
     for h in history:
         cat = (h.get("category") or "general").lower()
         cat_counts[cat] += 1
         src = h.get("source", "unknown")
         src_counts[src] += 1
-        day = h.get("played_at", "")[:10]
+        played = h.get("played_at", "")
+        day = played[:10]
         if day:
             daily_counts[day] = daily_counts.get(day, 0) + 1
 
-    # Calculate streak
-    now = datetime.now(timezone.utc)
+        # Parse hour for hourly distribution
+        try:
+            played_dt = datetime.fromisoformat(played.replace("Z", "+00:00"))
+            hourly_counts[played_dt.hour] += 1
+            age_days = (now - played_dt).days
+            if age_days < 7:
+                this_week += 1
+            elif age_days < 14:
+                last_week += 1
+        except Exception:
+            pass
+
+    # Streak
     streak = 0
     for i in range(30):
         day_str = (now - timedelta(days=i)).strftime("%Y-%m-%d")
@@ -1884,6 +1898,32 @@ async def get_user_analytics(user_id: str):
     total_duration = sum(h.get("duration", 0) for h in history)
     daily_sorted = sorted(daily_counts.items(), key=lambda x: x[0], reverse=True)[:14]
 
+    # Weekly trend (last 4 weeks)
+    weekly_trend = []
+    for w in range(4):
+        start = now - timedelta(days=(w + 1) * 7)
+        end = now - timedelta(days=w * 7)
+        label = f"W-{w}" if w > 0 else "This week"
+        count = sum(1 for h in history
+                    if h.get("played_at", "")[:10] >= start.strftime("%Y-%m-%d")
+                    and h.get("played_at", "")[:10] < end.strftime("%Y-%m-%d"))
+        weekly_trend.append({"week": label, "count": count})
+    weekly_trend.reverse()
+
+    # Period comparison
+    change_pct = 0
+    if last_week > 0:
+        change_pct = round(((this_week - last_week) / last_week) * 100)
+    period_comparison = {
+        "this_week": this_week,
+        "last_week": last_week,
+        "change_pct": change_pct,
+        "trend": "up" if this_week > last_week else "down" if this_week < last_week else "flat",
+    }
+
+    # Hourly distribution (24h)
+    hourly_dist = {str(h).zfill(2): hourly_counts.get(h, 0) for h in range(24)}
+
     return {
         "total_listens": len(history),
         "total_duration_minutes": round(total_duration / 60, 1) if total_duration else 0,
@@ -1892,6 +1932,9 @@ async def get_user_analytics(user_id: str):
         "daily_activity": [{"date": d, "count": c} for d, c in daily_sorted],
         "streak": streak,
         "top_categories": [k for k, _ in cat_counts.most_common(3)],
+        "weekly_trend": weekly_trend,
+        "period_comparison": period_comparison,
+        "hourly_distribution": hourly_dist,
     }
 
 @app.get("/api/share/{news_id}", response_class=HTMLResponse)
