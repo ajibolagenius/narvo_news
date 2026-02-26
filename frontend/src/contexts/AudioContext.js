@@ -232,6 +232,15 @@ export const AudioProvider = ({ children }) => {
     // eslint-disable-next-line
   }, []);
 
+  // Refs for queue state (used in event handlers to avoid stale closures)
+  const queueRef = useRef([]);
+  const queueIndexRef = useRef(-1);
+  const autoPlayRef = useRef(true);
+
+  useEffect(() => { queueRef.current = queue; }, [queue]);
+  useEffect(() => { queueIndexRef.current = queueIndex; }, [queueIndex]);
+  useEffect(() => { autoPlayRef.current = autoPlay; }, [autoPlay]);
+
   // Volume control
   const setVolume = useCallback((newVolume) => {
     const vol = Math.max(0, Math.min(1, newVolume));
