@@ -17,7 +17,7 @@ const getNavItems = (t) => [
   { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
 ];
 
-// Desktop-only nav includes search
+// Desktop-only nav includes search + analytics
 const getDesktopNavItems = (t) => [
   { icon: SquaresFour, label: t('nav.feed'), path: '/dashboard' },
   { icon: Compass, label: t('nav.discover'), path: '/discover' },
@@ -25,6 +25,7 @@ const getDesktopNavItems = (t) => [
   { icon: Waveform, label: t('nav.briefing'), path: '/briefing' },
   { icon: BookmarkSimple, label: t('nav.saved'), path: '/saved' },
   { icon: ClockCounterClockwise, label: 'History', path: '/history' },
+  { icon: ChartBar, label: 'Analytics', path: '/analytics' },
   { icon: WifiSlash, label: t('nav.offline'), path: '/offline' },
 ];
 
