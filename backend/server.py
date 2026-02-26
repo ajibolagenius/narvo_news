@@ -1835,6 +1835,65 @@ def is_crawler(user_agent: str) -> bool:
     ua_lower = user_agent.lower()
     return any(crawler in ua_lower for crawler in CRAWLER_USER_AGENTS)
 
+# ─── Analytics ───────────────────────────────────────
+@app.get("/api/analytics/{user_id}")
+async def get_user_analytics(user_id: str):
+    """Get listening analytics for a user"""
+    history = list(db["listening_history"].find(
+        {"user_id": user_id},
+        {"_id": 0, "category": 1, "source": 1, "played_at": 1, "duration": 1, "title": 1}
+    ).sort("played_at", -1).limit(200))
+
+    if not history:
+        return {
+            "total_listens": 0,
+            "total_duration_minutes": 0,
+            "categories": {},
+            "sources": {},
+            "daily_activity": [],
+            "streak": 0,
+            "top_categories": [],
+        }
+
+    from collections import Counter
+    from datetime import timedelta
+
+    cat_counts = Counter()
+    src_counts = Counter()
+    daily_counts = {}
+
+    for h in history:
+        cat = (h.get("category") or "general").lower()
+        cat_counts[cat] += 1
+        src = h.get("source", "unknown")
+        src_counts[src] += 1
+        day = h.get("played_at", "")[:10]
+        if day:
+            daily_counts[day] = daily_counts.get(day, 0) + 1
+
+    # Calculate streak
+    now = datetime.now(timezone.utc)
+    streak = 0
+    for i in range(30):
+        day_str = (now - timedelta(days=i)).strftime("%Y-%m-%d")
+        if day_str in daily_counts:
+            streak += 1
+        else:
+            break
+
+    total_duration = sum(h.get("duration", 0) for h in history)
+    daily_sorted = sorted(daily_counts.items(), key=lambda x: x[0], reverse=True)[:14]
+
+    return {
+        "total_listens": len(history),
+        "total_duration_minutes": round(total_duration / 60, 1) if total_duration else 0,
+        "categories": dict(cat_counts.most_common(8)),
+        "sources": dict(src_counts.most_common(10)),
+        "daily_activity": [{"date": d, "count": c} for d, c in daily_sorted],
+        "streak": streak,
+        "top_categories": [k for k, _ in cat_counts.most_common(3)],
+    }
+
 @app.get("/api/share/{news_id}", response_class=HTMLResponse)
 async def share_page(news_id: str, request: Request):
     """
