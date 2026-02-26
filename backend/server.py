@@ -120,9 +120,7 @@ supabase: Client = create_client(
     os.environ.get("SUPABASE_ANON_KEY")
 )
 
-# MongoDB for persistent storage
-mongo_client = MongoClient(os.environ.get("MONGO_URL"))
-db = mongo_client[os.environ.get("DB_NAME", "narvo")]
+# MongoDB collection references
 bookmarks_col = db["bookmarks"]
 preferences_col = db["user_preferences"]
 briefings_col = db["briefings"]
