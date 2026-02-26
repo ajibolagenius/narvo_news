@@ -194,9 +194,18 @@ export const AudioProvider = ({ children }) => {
     audio.addEventListener('loadedmetadata', () => setDuration(audio.duration));
     audio.addEventListener('ended', () => {
       setIsPlaying(false);
-      // Auto-play next with smooth transition
-      if (autoPlay) {
-        playNextSmooth();
+      // Auto-play next with smooth transition using refs for fresh state
+      if (autoPlayRef.current && queueRef.current.length > 0) {
+        const nextIdx = queueIndexRef.current + 1;
+        if (nextIdx < queueRef.current.length) {
+          const nextTrack = queueRef.current[nextIdx];
+          setQueueIndex(nextIdx);
+          queueIndexRef.current = nextIdx;
+          // Small delay for smooth transition
+          setTimeout(() => {
+            playTrack(nextTrack, true);
+          }, 300);
+        }
       }
     });
     audio.addEventListener('play', () => {
