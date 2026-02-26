@@ -9,7 +9,7 @@ import { SignOut, User, Microphone, Monitor, Wheelchair, CaretRight, ShieldCheck
 import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 import DailyDigest from '../components/features/DailyDigest';
-import { openTourGuide } from '../components/TourGuideModal';
+import { openTourGuide, resetTourGuide } from '../components/TourGuideModal';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
