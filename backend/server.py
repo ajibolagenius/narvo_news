@@ -1084,7 +1084,7 @@ async def get_voice_settings(user_id: str):
             "voice_dialect": settings["settings"].get("voice_dialect", "standard"),
             "voice_region": settings["settings"].get("voice_region", "africa"),
         }
-    return {"voice_model": "nova", "voice_dialect": "standard", "voice_region": "africa"}
+    return {"voice_model": "emma", "voice_dialect": "standard", "voice_region": "africa"}
 
 @app.post("/api/settings/{user_id}/voice")
 async def save_voice_settings(user_id: str, voice_model: str = "nova", voice_dialect: str = "standard", voice_region: str = "africa"):
