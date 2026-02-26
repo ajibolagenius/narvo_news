@@ -102,6 +102,23 @@ bookmarks_col = db["bookmarks"]
 preferences_col = db["user_preferences"]
 briefings_col = db["briefings"]
 
+# ── In-memory cache for static/semi-static data ──
+import time as _time
+
+class MemCache:
+    """Simple TTL cache for static data."""
+    def __init__(self):
+        self._store = {}
+    def get(self, key, ttl=300):
+        entry = self._store.get(key)
+        if entry and (_time.time() - entry[1]) < ttl:
+            return entry[0]
+        return None
+    def set(self, key, value):
+        self._store[key] = (value, _time.time())
+
+_cache = MemCache()
+
 # Create indexes
 bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
 preferences_col.create_index("user_id", unique=True)
