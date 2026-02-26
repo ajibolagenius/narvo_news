@@ -39,7 +39,7 @@ Narvo transforms fragmented data into a cohesive, professional **Broadcast**. We
 **The Audio Boom:**
 - 500M+ potential users in Africa transitioning to audio-first consumption.
 - Rising demand for "Hands-Free" news during commutes and multitasking.
-- High-fidelity TTS (e.g. Emergent/OpenAI path; ElevenLabs/MiniMax on roadmap) is commercially viable.
+- High-fidelity TTS (YarnGPT for Nigerian languages—Yoruba, Igbo, Hausa, Pidgin—plus Emergent/OpenAI fallback; ElevenLabs/MiniMax on roadmap) is commercially viable.
 
 ---
 
@@ -57,7 +57,7 @@ Narvo transforms fragmented data into a cohesive, professional **Broadcast**. We
 **Current State:**
 - Refined Pivot (V2) complete; Design System finalized.
 - Single repo: CRA frontend + FastAPI backend; web delivery.
-- Google Gemini / Emergent for narrative and translation; TTS via Emergent/OpenAI; Google Fact Check integrated.
+- Google Gemini / Emergent for narrative and translation; TTS via YarnGPT (Nigerian voices) and Emergent/OpenAI; Google Fact Check integrated.
 
 ---
 
