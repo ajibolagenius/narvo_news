@@ -65,8 +65,12 @@ const DashboardPage = () => {
   const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const { showAlert } = useHapticAlert();
+  const { user } = useAuth();
   const [sortOrder, setSortOrder] = useState('latest');
   const [userInterests, setUserInterests] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
+  const [recoProfile, setRecoProfile] = useState(null);
+  const [recoLoading, setRecoLoading] = useState(false);
 
   // Prefetch audio for the first 3 articles in idle time
   useAudioPrefetch(news.slice(0, 3), 'nova', 3);
