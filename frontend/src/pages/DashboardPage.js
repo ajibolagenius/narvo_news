@@ -280,7 +280,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Mobile Telemetry Drawer (hidden on xl where sidebar shows) */}
-        <div className="xl:hidden">
+        <div className="xl:hidden overflow-hidden">
           <button
             onClick={() => setShowTelemetry(v => !v)}
             className="w-full h-9 flex items-center justify-between px-4 bg-surface/20 narvo-border-b"
