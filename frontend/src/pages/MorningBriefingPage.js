@@ -22,6 +22,7 @@ const MorningBriefingPage = () => {
   const [historyLoading, setHistoryLoading] = useState(true);
   const { voiceModel, playTrack, currentTrack, isPlaying, isLoading: audioLoading, currentTime: audioCurrentTime, duration: audioDuration } = useAudio();
   const [selectedVoice] = useState(voiceModel || 'emma');
+  const [showArchive, setShowArchive] = useState(false);
   const [sfxEnabled, setSfxEnabled] = useState(true);
   const audioEndedRef = useRef(null);
   const transcriptRef = useRef(null);
