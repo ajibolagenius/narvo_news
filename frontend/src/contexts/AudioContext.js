@@ -201,14 +201,14 @@ export const AudioProvider = ({ children }) => {
     });
     audio.addEventListener('play', () => {
       setIsPlaying(true);
-      // Update Media Session playback state
+      requestWakeLock(); // Keep screen on during playback
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
     });
     audio.addEventListener('pause', () => {
       setIsPlaying(false);
-      // Update Media Session playback state
+      releaseWakeLock(); // Release screen lock
       if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'paused';
       }
