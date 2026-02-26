@@ -45,7 +45,7 @@ This document outlines the high-fidelity copy for the Narvo landing page. It is 
 
 ## 04 // MODULE: TRUTH PROTOCOL (FACT-CHECK)
 **Header:** [03. VERIFICATION // DUBAWA_API]  
-**Copy:** Truth is non-negotiable. Every piece of news is put through the Narvo Truth Protocol, backed by the Dubawa API for 100% source verification.
+**Copy:** Truth is non-negotiable. Every piece of news is put through the Narvo Truth Protocol, backed by fact-check integration (e.g. Google Fact Check; Dubawa referenced) for source verification.
 
 **Status:** `[Source Verified: 100%]`  
 **Metric:** `FACT_CHECK_LATENCY: 1.2s`

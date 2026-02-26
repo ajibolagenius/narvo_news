@@ -15,50 +15,70 @@ Narvo is a **Broadcast-Grade News Platform** that delivers AI-produced narrative
 - **The Truth Tag**: Transparency on AI synthesis, translation, and source verification.
 - **Regional Voice Studio**: Selection of high-fidelity, culturally accurate voices.
 - **Swiss Grid Feed**: A rigid, precision-engineered layout for high-density information.
-- **Predictive Station Sync**: Automated morning pre-caching of localized audio broadcasts.
+- **Predictive Station Sync**: Automated morning pre-caching of localized audio broadcasts (roadmap).
 
 ---
 
-## 🛠️ Technical Architecture
+## Technical Architecture
 
-### Infrastructure Strategy: The Monorepo
-We utilize a single repository for both Mobile (React Native) and Web (Next.js), sharing a unified AI/Logic layer and the **Swiss Grid Design System**.
+### Infrastructure: Single Repository
+The project uses a single repository with a **Create React App (CRA)** web frontend and a **FastAPI** backend. The **Swiss Grid Design System** is applied across the web app.
 
-### Core Stack
+### Core Stack (Current Implementation)
 | Layer | Technology | Rationale |
 |-------|------------|-----------|
-| **Core** | React Native + Next.js | Unified Monorepo. Maximum code reuse. |
-| **Backend** | Supabase (Postgres + Auth) | Robust relational base with real-time capabilities. |
-| **AI Layer** | Google Gemini 1.5 Pro | Advanced narrative synthesis and **multilingual translation**. |
-| **Vector DB** | pgvector (Supabase) | Historical context for RAG and news continuity. |
-| **Audio** | ElevenLabs / MiniMax | Professional-grade broadcast voice synthesis in multiple languages. |
-| **STT** | Whisper (OpenAI) | Transcription of live broadcast inputs. |
-| **Fact-Check** | Dubawa API | Real-time verification and source mapping. |
+| **Frontend** | Create React App (React) | SPA with React Router; PWA (manifest + service worker). |
+| **Backend** | FastAPI | REST API; OpenAPI docs; async-capable. |
+| **Persistence** | MongoDB | Bookmarks, user preferences, briefings, offline articles. |
+| **Auth** | Supabase (Auth only) | User authentication; no Postgres/pgvector in use. |
+| **AI / Narrative** | Emergent LLM, Google Gemini | Narrative synthesis and multilingual translation. |
+| **TTS** | Emergent LLM, YARNGPT / OpenAI path | Broadcast voice synthesis. |
+| **Fact-Check** | Google Fact Check API | Verification; mock responses when API key omitted. |
+| **News / Feeds** | RSS, MediaStack, NewsData (optional) | Aggregation and ingestion. |
 | **Icons** | Phosphoricons | Main functional icon library (1.5px stroke). |
-| **Motion** | GSAP + Motion (Framer) | Precision technical and reactive animations. |
+| **Motion** | GSAP + Framer Motion | Precision technical and reactive animations. |
 | **Smooth Scroll** | Lenis | Momentum-based scrolling experience. |
+
+### Future / Roadmap (Not Yet Implemented)
+| Layer | Technology | Note |
+|-------|------------|------|
+| **Vector DB / RAG** | pgvector or similar | Contextual RAG for historical narrative context. |
+| **Audio** | ElevenLabs / MiniMax | Premium multi-language TTS (currently Emergent/OpenAI path). |
+| **Fact-Check** | Dubawa API | Optional regional verification labels. |
+| **Predictive Sync** | 5:00 AM pre-cache | Automated morning pre-caching of audio by user locale. |
+
+---
+
+## Current Architecture
+
+### Backend (FastAPI)
+- **Entrypoint:** [backend/server.py](backend/server.py). App creation, CORS, DB/client setup, and router includes.
+- **Mounted routers:** discover (`/api`), offline (`/api/offline`), admin (`/api/admin`), user (`/api`), factcheck (`/api/factcheck`), translation (`/api/translate`). Routers live under `backend/routes/` and delegate to services in `backend/services/`.
+- **Inline in server.py:** All other API routes are defined in `server.py`, including: `/api/health`, `/api/news`, `/api/news/breaking`, `/api/news/{id}`, `/api/paraphrase`, `/api/tts/generate`, `/api/voices`, `/api/regions`, `/api/categories`, `/api/sources`, `/api/aggregators/*`, `/api/trending`, `/api/search`, `/api/admin/*` (some overlap with admin router), `/api/settings/*`, `/api/briefing/*`, `/api/notifications/*`, `/api/radio/*`, `/api/bookmarks`, `/api/preferences`, `/api/share/*`, `/api/og/*`, and others. The **news** and **briefing** route modules exist under `routes/` but are not currently mounted; their domains are served by inline handlers.
+- **Configuration:** Required and optional environment variables are listed in [backend/.env.example](backend/.env.example); see also code for vars such as `YARNGPT_API_KEY`, `MEDIASTACK_API_KEY`, `NEWSDATA_API_KEY`.
+
+### Frontend (CRA)
+- **Stack:** Create React App, React Router, Supabase client for auth. No central API client; each page/context sets `API_URL = process.env.REACT_APP_BACKEND_URL || ''` and uses `fetch` for backend calls.
+- **PWA:** [frontend/public/manifest.json](frontend/public/manifest.json) and [frontend/public/sw.js](frontend/public/sw.js); service worker registered from `index.html`. Offline and caching strategy in `sw.js`.
 
 ---
 
 ## Broadcast Production Pipeline
 
-### 1. Multi-Stream Ingestion Logic
-- **Structured Feeds**: RSS parsing with automated content cleaning.
-- **Live Broadcasts**: Real-time audio capture and transcription via Whisper.
-- **Video Intelligence**: YouTube API integration for extracting narratives.
+### 1. Multi-Stream Ingestion
+- **Structured Feeds:** RSS parsing with content cleaning; optional aggregator services (MediaStack, NewsData) when API keys are set.
+- **Live Broadcasts / Video:** Real-time audio capture and transcription (e.g. Whisper) and YouTube narrative extraction are referenced in design; implementation may vary.
 
-### 2. The Contextual RAG, Translation & Truth Tag Lifecycle
-1. **Extraction**: Automated pulling of raw facts and quotes.
-2. **Retrieval**: System fetches historical context from the Vector DB.
-3. **Synthesis & Translation**: Gemini recasts content into a **Broadcast Narrative** and simultaneously **translates** it into the target native language.
-4. **Verification**: Cross-referencing with Dubawa data to assign a **Truth Score**.
-5. **Truth Tag Generation**: Producing metadata explaining editorial and translation decisions.
+### 2. Synthesis, Translation & Truth Tag Lifecycle
+1. **Extraction:** Automated pulling of raw facts and quotes from ingested content.
+2. **Synthesis & Translation:** Emergent LLM / Gemini recast content into a **Broadcast Narrative** and translate into the target language.
+3. **Verification:** Google Fact Check API is used when configured; mock or fallback when the key is omitted. Truth Score and source attribution support the **Truth Tag**.
+4. **Truth Tag Generation:** Metadata explaining editorial and translation decisions.
 
-### 3. Predictive Pre-caching Engine (The 5:00 AM Sync)
-To ensure near-zero latency and offline reliability, the platform predicts user routines. At **5:00 AM local time**, the system:
-- Fetches top stories across user interest categories.
-- Runs the RAG synthesis and audio generation.
-- Pushes binary audio assets to edge caches and initiates background sync for mobile clients.
+*Contextual RAG (Vector DB retrieval) and Dubawa-based verification are on the roadmap and not part of the current pipeline.*
+
+### 3. Predictive Pre-caching (5:00 AM Sync) — Roadmap
+Planned for future: at **5:00 AM local time**, pre-cache top stories and generated audio for user interest categories. Not yet implemented.
 
 ---
 

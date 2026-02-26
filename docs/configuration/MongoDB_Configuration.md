@@ -35,6 +35,8 @@ DB_NAME=narvo
 
 Replace `<user>`, `<password>`, and `<cluster>` with your Atlas credentials and cluster host. Do not commit real credentials; use `.env` (gitignored) or secrets in your host.
 
+**Other backend env vars:** The backend uses additional optional variables (e.g. `YARNGPT_API_KEY`, `MEDIASTACK_API_KEY`, `NEWSDATA_API_KEY`, `GOOGLE_FACT_CHECK_API_KEY`). The canonical list is [backend/.env.example](../../backend/.env.example) and the code; this document covers only MongoDB-related configuration.
+
 ---
 
 ## 2. Database and Collections
@@ -110,4 +112,4 @@ Use `MONGO_URL=mongodb://localhost:27017` as above.
 - [ ] Backend started at least once so indexes are created (or create them manually if needed).
 - [ ] No real credentials in version control; use `.env` and `.gitignore`.
 
-For a full list of backend env vars (Supabase, Emergent, etc.), see **`backend/.env.example`** (if present) or the PRD.
+For a full list of backend env vars (Supabase, Emergent, optional aggregators and fact-check, etc.), see **[backend/.env.example](../../backend/.env.example)** and the backend code.

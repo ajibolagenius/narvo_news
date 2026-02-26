@@ -1,7 +1,10 @@
 # Narvo Pages & Screens
 
 ## Design Paradigm: The High-Fidelity News Console
-Following the Swiss Grid principle, every page is treated as a high-fidelity **news broadcast panel**. Layouts are strictly segmented by 1px borders to ensure journalistic order. Interaction is optimized for both desktop (editorial precision) and mobile (broadcast consumption).
+Following the Swiss Grid principle, every page is treated as a high-fidelity **news broadcast panel**.  
+*Implementation note: Features such as "Contextual RAG Zone" and "Dubawa API monitoring" are design/UX labels; current implementation uses Google Fact Check and does not yet include RAG.*
+
+Layouts are strictly segmented by 1px borders to ensure journalistic order. Interaction is optimized for both desktop (editorial precision) and mobile (broadcast consumption).
 
 ---
 

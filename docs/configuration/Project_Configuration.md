@@ -4,7 +4,7 @@
 
 ### The Architect (System Rule)
 
-> You are the Narvo Lead Engineer. You write clean, modular code within a **Monorepo** ecosystem (Next.js + React Native). You prioritize accessibility, performance, and extreme minimalism. Every component must adhere to the **Swiss Grid** design system.
+> You are the Narvo Lead Engineer. You write clean, modular code within a single repository: **CRA (React)** frontend and **FastAPI** backend. You prioritize accessibility, performance, and extreme minimalism. Every component must adhere to the **Swiss Grid** design system.
 
 ### Design Rules (The Technical Instrument)
 
@@ -18,12 +18,12 @@
 ## System Constraints
 
 ### Bandwidth & Power
-* Audio-first: Pre-cache high-fidelity MP3s at off-peak hours (5:00 AM).
+* Audio-first: When implemented, pre-cache high-fidelity MP3s at off-peak hours (e.g. 5:00 AM).
 * 3G Optimization: Fast-fallback to paraphrased text if network is erratic.
 * OLED Dark Mode: Use Deep Matte backgrounds to maximize battery longevity on mobile.
 
-### Monorepo Standards
-* Unified Types: Shares news/summarization interfaces between web and mobile.
+### Repository Standards
+* Single repo: Frontend (CRA) and backend (FastAPI) share the same repository; shared types and contracts where applicable.
 * Design Tokens: Absolute adherence to `css` variables defined in the Design System.
 
 ---
@@ -32,17 +32,17 @@
 
 ### Code Standards
 1. **Styling**: Tailwind CSS (Utility-first with rigid grid classes).
-2. **Architecture**: Monorepo. Unified business logic layers.
+2. **Architecture**: Single repo; unified business logic in backend services.
 3. **Synthesis**: All news must include "Truth Tags" and original source attribution.
 
 ---
 
-## Phase 2 Focus
-1. **Contextual RAG**: Implementation of Vector DB retrieval logic.
+## Phase 2 Focus (Roadmap)
+1. **Contextual RAG**: Implementation of Vector DB retrieval logic (not yet implemented).
 2. **Broadcast Paraphrasing**: Refining Gemini prompts for "Narrative Storytelling" vs simple summarization.
 3. **Dialect Nuance**: Maintaining the Shared Translation Engine for localized accents.
-2. **Architecture:** Must be PWA-compliant (Manifest, Service Workers).
-3. **Content:** All news must include source attribution.
+4. **Architecture:** Must be PWA-compliant (Manifest, Service Workers).
+5. **Content:** All news must include source attribution.
 
 ### Technical Requirements
 * All components must be accessible (WCAG 2.1 AA minimum).

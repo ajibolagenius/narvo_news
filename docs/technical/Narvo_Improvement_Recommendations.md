@@ -102,9 +102,11 @@ These endpoints **do not exist** in the backend, so push subscription will alway
 
 ## 5. Documentation vs Implementation
 
-**Issue:** `docs/technical/Narvo_Technical_Documentation.md` describes a different stack and architecture than the codebase (e.g. Next.js, React Native, Supabase Postgres, pgvector, ElevenLabs, Dubawa API, 5:00 AM sync).
+*The technical documentation has been updated to match the current stack and architecture. The following notes and recommendations remain relevant for keeping docs in sync and for future improvements (e.g. central API client, mounted news/briefing routers).*
 
-**Reality:** CRA (React), FastAPI, MongoDB, Supabase Auth only, OpenAI TTS via Emergent, Google Fact Check (with mock), no pgvector or RAG, no described sync.
+**Issue:** Previously, `docs/technical/Narvo_Technical_Documentation.md` described a different stack and architecture than the codebase (e.g. Next.js, React Native, Supabase Postgres, pgvector, ElevenLabs, Dubawa API, 5:00 AM sync).
+
+**Reality:** CRA (React), FastAPI, MongoDB, Supabase Auth only, OpenAI TTS via Emergent, Google Fact Check (with mock), no pgvector or RAG, no described sync. The main technical doc now reflects this.
 
 ### Recommendations
 

@@ -2,6 +2,8 @@
 
 This document serves as the central repository for all user-facing text for the **Narvo News Broadcast Platform**. It blends **Swiss Layout Precision** with **African Cultural Resonance**.
 
+*Implementation note: Admin/copy may show "Dubawa" or "RAG" as labels; current backend uses Google Fact Check and does not yet include RAG.*
+
 ---
 
 ## 1. Global & Brand

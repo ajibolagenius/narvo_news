@@ -4,15 +4,16 @@
 
 Narvo is a precision-engineered news broadcast platform that transforms fragmented information into high-fidelity, audio-enhanced narrative stories. Built for global audiences with a primary focus on African markets, it leverages advanced AI to deliver trustworthy broadcasts in authentic local voices.
 
-For technical details, see [Technical Documentation](../technical/Narvo_Technical_Documentation.md).
+For technical details, see [Technical Documentation](../technical/Narvo_Technical_Documentation.md).  
+*Technical note: Current implementation uses Emergent/OpenAI TTS and Google Fact Check; see Technical Documentation.*
 
 ---
 | **User challenge** | **Narvo V2 Solution (The Broadcast Paradigm)** |
 |--------------------|-----------------------------------------------|
 | **Information Distrust** | Paraphrased narrative stories with transparent attribution and fact-checking. |
 | **Visual Fatigue** | **Swiss Grid** design with "Anti-light" backgrounds and eyes-busy audio-fixed delivery. |
-| **Cultural Disconnect** | High-fidelity local accents (Pidgin, Yoruba, Hausa, Igbo) via ElevenLabs/MiniMax. |
-| **Technical Bloat** | Strict minimalism (10% color rule) and optimized Monorepo architecture. |
+| **Cultural Disconnect** | High-fidelity local accents (Pidgin, Yoruba, Hausa, Igbo) via TTS (e.g. Emergent/OpenAI). |
+| **Technical Bloat** | Strict minimalism (10% color rule) and single-repo architecture (CRA + FastAPI). |
 
 ---
 
@@ -56,14 +57,14 @@ Clean, professional, and structural interface following Swiss Design principles.
 
 ### The Pipeline
 1. **Ingest**: High-accuracy extraction from RSS, Radio streams, and YouTube.
-2. **Translate & Paraphrase**: GPT-4/Gemini recasting summaries into broadcast narratives.
-3. **Contextualize**: Vector DB integration to add historical depth (Contextual RAG).
-4. **Broadcast**: Generating audio via premium synthesis engines.
+2. **Translate & Paraphrase**: Gemini/Emergent recasting summaries into broadcast narratives.
+3. **Contextualize**: Vector DB integration to add historical depth (Contextual RAG — roadmap).
+4. **Broadcast**: Generating audio via TTS (e.g. Emergent/OpenAI synthesis).
 
 ### Source Curation
 - **Traditional & Independent**: Vanguard, Guardian, Techpoint, etc.
 - **Transcription**: Real-time STT for broadcast TV and Radio stations.
-- **Fact-Check Integration**: Real-time cross-referencing with Dubawa/verified sources.
+- **Fact-Check Integration**: Real-time cross-referencing with Google Fact Check and verified sources.
 
 ### Quality Assurance
 - Trust Score: Verification badges for sources
@@ -92,8 +93,8 @@ Clean, professional, and structural interface following Swiss Design principles.
 - **Ambassador Network:** Community leaders, local influencers
 
 ### Technology & Scale
-- **Contextual RAG**: Leveraging Vector DBs to provide deep narrative context.
-- **Monorepo Strategy**: Unified codebase for web/native to ensure speed-to-market.
+- **Contextual RAG**: Leveraging Vector DBs to provide deep narrative context (roadmap).
+- **Single-repo strategy**: CRA frontend + FastAPI backend; see Technical Documentation.
 - **Predictive Caching**: Pre-generating broadcasts for offline commute reliability.
 - **AI Improvement:** User feedback loops, federated learning for privacy
 - **Platform Expansion:** Smart speakers, feature phones (USSD/SMS), WhatsApp bots
