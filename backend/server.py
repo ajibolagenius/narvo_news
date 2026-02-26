@@ -15,6 +15,18 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
 from pymongo import MongoClient
+
+# MongoDB with connection pooling
+mongo_client = MongoClient(
+    os.environ.get("MONGO_URL"),
+    maxPoolSize=20,
+    minPoolSize=5,
+    maxIdleTimeMS=30000,
+    serverSelectionTimeoutMS=5000,
+    connectTimeoutMS=5000,
+)
+DB_NAME = os.environ.get("DB_NAME", "narvo")
+db = mongo_client[DB_NAME]
 import feedparser
 import httpx
 import re as _re
