@@ -141,7 +141,7 @@ const SettingsPage = () => {
   ];
 
   return (
-    <main className="flex-1 overflow-y-auto custom-scroll bg-background-dark" data-testid="settings-page">
+    <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll bg-background-dark" data-testid="settings-page">
       {/* Header */}
       <div className="p-6 md:p-10 narvo-border-b">
         <div className="flex items-center gap-3 mb-2">
