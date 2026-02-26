@@ -186,11 +186,11 @@ class MorningBriefing(BaseModel):
     stories: List[BriefingStory]
     script: str
     audio_url: Optional[str] = None
-    voice_id: str = "nova"
+    voice_id: str = "emma"
 
 class TTSRequest(BaseModel):
     text: str
-    voice_id: str = "onyx"
+    voice_id: str = "emma"
     stability: float = 0.5
     similarity_boost: float = 0.75
     language: str = "en"
