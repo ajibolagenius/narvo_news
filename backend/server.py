@@ -1216,23 +1216,32 @@ async def get_recommendations_endpoint(user_id: str, limit: int = Query(10, ge=1
     """Get personalized news recommendations for a user"""
     from services.recommendation_service import get_recommendations
 
-    # Fetch current news to score against
-    all_news = []
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    for items in results:
-        if isinstance(items, list):
-            all_news.extend(items)
+    # Reuse the news response cache to avoid redundant RSS fetches
+    now = datetime.now(timezone.utc)
+    if (
+        _news_response_cache["data"] is not None
+        and _news_response_cache["timestamp"]
+        and (now - _news_response_cache["timestamp"]).total_seconds() < _news_response_cache["ttl"]
+    ):
+        all_news = list(_news_response_cache["data"])
+    else:
+        all_news = []
+        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        for items in results:
+            if isinstance(items, list):
+                all_news.extend(items)
+        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+        _news_response_cache["data"] = all_news
+        _news_response_cache["timestamp"] = now
 
     # Include aggregator news
     try:
         from services.aggregator_service import get_normalized_aggregator_news
         agg_news = await get_normalized_aggregator_news()
-        all_news.extend(agg_news)
+        all_news = list(all_news) + list(agg_news)
     except Exception:
         pass
-
-    all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
 
     result = await get_recommendations(user_id, all_news, limit=limit)
 
