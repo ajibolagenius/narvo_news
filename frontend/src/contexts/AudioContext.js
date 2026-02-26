@@ -303,13 +303,23 @@ export const AudioProvider = ({ children }) => {
     }
   }, [broadcastLanguage, voiceModel]);
 
-  // Queue management (defined before playTrack so it's available)
+  // Queue management
   const addToQueue = useCallback((track) => {
     setQueue(prev => {
       if (prev.some(t => t.id === track.id)) return prev;
-      return [...prev, track];
+      const newQueue = [...prev, track];
+
+      // Auto-play first item if nothing is currently playing
+      if (prev.length === 0 && !audioRef.current?.src) {
+        setQueueIndex(0);
+        queueIndexRef.current = 0;
+        // Defer playback to next tick so state is updated
+        setTimeout(() => playTrack(track, true), 50);
+      }
+
+      return newQueue;
     });
-  }, []);
+  }, [playTrack]);
 
   const removeFromQueue = useCallback((trackId) => {
     setQueue(prev => prev.filter(t => t.id !== trackId));
