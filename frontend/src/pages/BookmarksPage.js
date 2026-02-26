@@ -30,7 +30,7 @@ const BookmarksPage = () => {
         <span className="mono-ui text-[12px] md:text-xs text-forest">{bookmarks.length} ITEMS</span>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scroll p-4 md:p-8 pb-32 md:pb-8">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scroll p-4 md:p-8 pb-32 md:pb-8">
         <div className="max-w-4xl mx-auto">
           {loading ? (
             <ListSkeleton count={3} />

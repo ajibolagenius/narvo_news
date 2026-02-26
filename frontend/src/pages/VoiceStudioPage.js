@@ -139,7 +139,7 @@ const VoiceStudioPage = () => {
   const isActive = (voice) => selectedVoice?.id === voice.id;
 
   return (
-    <main className="flex-1 flex flex-col min-h-0 bg-background-dark" data-testid="voice-studio-page">
+    <main className="flex-1 flex flex-col min-h-0 bg-background-dark overflow-hidden" data-testid="voice-studio-page">
       {/* Header */}
       <div className="p-4 md:p-8 narvo-border-b shrink-0">
         <div className="flex flex-col md:flex-row justify-between md:items-end gap-3 md:gap-4">
