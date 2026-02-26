@@ -42,6 +42,10 @@ def sanitize_ai_text(text: str) -> str:
 # Initialize FastAPI
 app = FastAPI(title="Narvo API", version="2.0")
 
+# GZip compression for smaller payloads
+from starlette.middleware.gzip import GZipMiddleware
+app.add_middleware(GZipMiddleware, minimum_size=500)
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
