@@ -11,7 +11,7 @@ load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
 from pymongo import MongoClient
