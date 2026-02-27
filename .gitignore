@@ -5,6 +5,7 @@ __pycache__/
 *.pyd
 .Python
 
-# Environment files
+# Environment files (do not commit secrets)
 *.env
 *.env.*
+!.env.example
