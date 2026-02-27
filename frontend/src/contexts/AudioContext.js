@@ -93,8 +93,8 @@ export const AudioProvider = ({ children }) => {
       artist: track.source || 'Narvo',
       album: 'Narvo Broadcast',
       artwork: [
-        { src: track.image_url || '/logo192.png', sizes: '192x192', type: 'image/png' },
-        { src: track.image_url || '/logo512.png', sizes: '512x512', type: 'image/png' }
+        { src: track.image_url || '/narvo-icon-192.png', sizes: '192x192', type: 'image/png' },
+        { src: track.image_url || '/narvo-icon-512.png', sizes: '512x512', type: 'image/png' }
       ]
     });
   }, []);

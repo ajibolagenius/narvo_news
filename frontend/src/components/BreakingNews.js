@@ -20,7 +20,7 @@ export const BreakingNewsProvider = ({ children }) => {
     if ('Notification' in window && Notification.permission === 'granted') {
       const notification = new Notification('NARVO // BREAKING', {
         body: story.title,
-        icon: '/favicon.ico',
+        icon: '/narvo-icon-192.png',
         tag: story.id,
         requireInteraction: true,
       });

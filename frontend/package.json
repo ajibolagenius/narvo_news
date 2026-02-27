@@ -25,6 +25,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:admin": "REACT_APP_APP_MODE=admin react-scripts build",
+    "generate-pwa-icons": "node scripts/generate-pwa-icons.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -46,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "autoprefixer": "^10.4.16",
     "builtin-modules": "^3.3.0",
     "postcss": "^8.4.32",

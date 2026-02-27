@@ -105,8 +105,8 @@ export function showLocalNotification(title, options = {}) {
   }
   
   return new Notification(title, {
-    icon: '/logo192.png',
-    badge: '/logo192.png',
+    icon: '/narvo-icon-192.png',
+    badge: '/narvo-icon-192.png',
     tag: 'narvo-local',
     ...options
   });

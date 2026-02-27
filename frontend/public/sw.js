@@ -4,6 +4,7 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/narvo_logo.svg',
   '/narvo-icon-192.png',
   '/narvo-icon-512.png',
 ];
