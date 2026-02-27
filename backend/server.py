@@ -400,6 +400,17 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
     return []
 
 
+# Root: avoid 404 when visiting /
+@app.get("/")
+async def root():
+    return {
+        "service": "Narvo API",
+        "version": "2.0",
+        "docs": "/docs",
+        "health": "/api/health",
+    }
+
+
 # API Endpoints
 @app.get("/api/health")
 async def health_check():

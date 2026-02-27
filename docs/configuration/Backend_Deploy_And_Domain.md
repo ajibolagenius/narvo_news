@@ -68,7 +68,7 @@ Do not commit real values; use the host’s secret/env UI.
 
 1. Deploy the service. Wait for the build/start to succeed.
 2. Note the default URL (e.g. `https://narvo-backend-xxxx.railway.app` or `https://narvo-api.onrender.com`).
-3. Open `https://<your-backend-url>/health` (or the root path if you have a simple health route). Confirm the backend responds.
+3. Open `https://<your-backend-url>/` (short info JSON) or `https://<your-backend-url>/api/health` (health check). Confirm the backend responds.
 
 ---
 
