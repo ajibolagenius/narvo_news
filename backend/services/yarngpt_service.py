@@ -5,8 +5,11 @@ Falls back to OpenAI TTS if YarnGPT fails.
 """
 import os
 import base64
+import logging
 import httpx
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 YARNGPT_API_URL = "https://yarngpt.ai/api/v1/tts"
 YARNGPT_API_KEY = os.environ.get("YARNGPT_API_KEY", "")
@@ -57,10 +60,10 @@ async def generate_yarngpt_audio(text: str, voice: str = "idera", response_forma
                 return resp.content
             else:
                 error_text = resp.text[:200]
-                print(f"[YarnGPT] Error {resp.status_code}: {error_text}")
+                logger.warning("[YarnGPT] Error %s: %s", resp.status_code, error_text)
                 return None
     except Exception as e:
-        print(f"[YarnGPT] Request failed: {e}")
+        logger.error("[YarnGPT] Request failed: %s", e)
         return None
 
 
@@ -80,7 +83,7 @@ async def generate_openai_fallback(text: str, voice_id: str = "nova") -> Optiona
         )
         return response.read()
     except Exception as e:
-        print(f"[OpenAI TTS Fallback] Error: {e}")
+        logger.error("[OpenAI TTS Fallback] Error: %s", e)
         return None
 
 
@@ -114,7 +117,7 @@ async def generate_tts(text: str, voice_id: str = "idera", language: str = "en")
         return None
 
     audio_b64 = base64.b64encode(audio_bytes).decode()
-    print(f"[TTS] Generated via {provider}, voice={yarngpt_voice}, {len(audio_bytes)} bytes")
+    logger.info("[TTS] Generated via %s, voice=%s, %s bytes", provider, yarngpt_voice, len(audio_bytes))
     return f"data:audio/mpeg;base64,{audio_b64}"
 
 

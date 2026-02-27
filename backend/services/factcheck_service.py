@@ -1,10 +1,13 @@
 # Fact-check Service - Google Fact Check API Integration
 # Note: Google Fact Check API is FREE and doesn't require billing enabled
 import os
+import logging
 import httpx
 import hashlib
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
+
+logger = logging.getLogger(__name__)
 
 # Google Fact Check API - FREE tier, no billing required
 # Get API key from: https://console.cloud.google.com/apis/credentials
@@ -88,12 +91,12 @@ async def search_fact_checks(
             
     except httpx.HTTPStatusError as e:
         if e.response.status_code == 401:
-            print("Google Fact Check API: Invalid API key")
+            logger.warning("Google Fact Check API: Invalid API key")
         elif e.response.status_code == 429:
-            print("Google Fact Check API: Rate limited")
+            logger.warning("Google Fact Check API: Rate limited")
         return await _mock_fact_check(query)
     except Exception as e:
-        print(f"Google Fact Check API error: {e}")
+        logger.error("Google Fact Check API error: %s", e)
         return await _mock_fact_check(query)
 
 

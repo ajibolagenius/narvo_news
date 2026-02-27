@@ -1,8 +1,11 @@
 # Narrative Service - AI-powered narrative generation for news content
 import json
+import logging
 from typing import Dict, List
 
 from services.llm_gemini import generate_gemini
+
+logger = logging.getLogger(__name__)
 
 
 async def generate_narrative(text: str) -> Dict:
@@ -36,7 +39,7 @@ Respond in JSON format:
         result = json.loads(cleaned)
         return result
     except Exception as e:
-        print(f"Error generating narrative: {e}")
+        logger.error("Error generating narrative: %s", e)
         return {
             "narrative": text,
             "key_takeaways": ["Story details available in full article"]

@@ -1,6 +1,9 @@
 # Radio Service - Radio station integration via Radio Browser API
+import logging
 import httpx
 from typing import List, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 RADIO_BROWSER_API = "https://de1.api.radio-browser.info"
 
@@ -98,10 +101,10 @@ async def get_stations(
             
             return stations
     except httpx.TimeoutException:
-        print("Radio API timeout - using fallback stations")
+        logger.warning("Radio API timeout - using fallback stations")
         return _filter_fallback_stations(country, limit)
     except Exception as e:
-        print(f"Radio API error: {e}")
+        logger.error("Radio API error: %s", e)
         return _filter_fallback_stations(country, limit)
 
 

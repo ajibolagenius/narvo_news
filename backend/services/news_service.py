@@ -1,10 +1,13 @@
 # News service for RSS feed fetching and processing
 import asyncio
 import hashlib
+import logging
 import aiohttp
 import feedparser
 from datetime import datetime, timezone
 from typing import List, Dict, Optional
+
+logger = logging.getLogger(__name__)
 
 # RSS Feed Sources - Populated from Narvo Content Sources Document
 RSS_FEEDS = [
@@ -209,8 +212,8 @@ async def fetch_rss_feed(feed_config: Dict, timeout: int = 10) -> List[Dict]:
                             "tags": [t.get('term', '') for t in entry.get('tags', [])][:5] if hasattr(entry, 'tags') else [],
                         })
     except Exception as e:
-        print(f"Error fetching {feed_config['source']}: {e}")
-    
+        logger.error("Error fetching %s: %s", feed_config["source"], e)
+
     return items
 
 async def fetch_all_news(

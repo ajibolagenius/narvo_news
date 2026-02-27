@@ -1,8 +1,10 @@
 # TTS Service for audio generation (OpenAI TTS, standalone)
 import os
 import base64
+import logging
 from typing import Optional
 
+logger = logging.getLogger(__name__)
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 
@@ -27,7 +29,7 @@ async def generate_tts_audio(text: str, voice_id: str = "nova", speed: float = 1
         audio_b64 = base64.b64encode(audio_bytes).decode()
         return f"data:audio/mpeg;base64,{audio_b64}"
     except Exception as e:
-        print(f"TTS generation error: {e}")
+        logger.error("TTS generation error: %s", e)
         return None
 
 

@@ -3,10 +3,12 @@
  * Single source for REACT_APP_BACKEND_URL; use api.get / api.post instead of raw fetch.
  */
 
+import logger from './logger';
+
 const API_BASE = process.env.REACT_APP_BACKEND_URL || '';
 
 if (typeof window !== 'undefined' && !API_BASE && process.env.NODE_ENV === 'development') {
-  console.warn('[api] REACT_APP_BACKEND_URL is not set; backend requests will fail or target relative URLs.');
+  logger.warn('[api] REACT_APP_BACKEND_URL is not set; backend requests will fail or target relative URLs.');
 }
 
 /**

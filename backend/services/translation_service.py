@@ -1,9 +1,12 @@
 # Translation Service - Multi-language translation using Gemini (standalone)
 import json
+import logging
 import re as _re
 from typing import Dict, Optional
 
 from services.llm_gemini import generate_gemini
+
+logger = logging.getLogger(__name__)
 
 # ── Sanitizer: strip stage directions / sound-effect text from AI output ──
 _STAGE_DIRECTION_PATTERNS = [
@@ -163,7 +166,7 @@ Write ONLY the rewritten text, no explanations.""" + _no_sfx_rule,
             "voice_id": lang_info["voice_id"]
         }
     except Exception as e:
-        print(f"Translation error: {e}")
+        logger.error("Translation error: %s", e)
         return {
             "success": False,
             "error": str(e),
@@ -253,7 +256,7 @@ Respond in JSON format:
             "voice_id": lang_info["voice_id"]
         }
     except Exception as e:
-        print(f"Translation/narration error: {e}")
+        logger.error("Translation/narration error: %s", e)
         return {
             "success": False,
             "error": str(e),

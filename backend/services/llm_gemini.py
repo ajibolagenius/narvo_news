@@ -2,7 +2,10 @@
 # Uses google-generativeai with GEMINI_API_KEY (standalone, no Emergent).
 import os
 import asyncio
+import logging
 from typing import Optional
+
+logger = logging.getLogger(__name__)
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 MODEL_NAME = "gemini-2.0-flash"
@@ -29,5 +32,5 @@ async def generate_gemini(system_instruction: str, user_content: str) -> Optiona
     try:
         return await asyncio.to_thread(_generate_content_sync, system_instruction, user_content)
     except Exception as e:
-        print(f"Gemini generate_gemini error: {e}")
+        logger.error("Gemini generate_gemini error: %s", e)
         return None

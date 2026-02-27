@@ -1,4 +1,5 @@
 # Briefing Service for Morning Briefing generation (Supabase)
+import logging
 from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
@@ -6,6 +7,8 @@ from lib.supabase_db import get_supabase_db
 from services.news_service import fetch_all_news
 from services.tts_service import generate_tts_audio
 from services.llm_gemini import generate_gemini
+
+logger = logging.getLogger(__name__)
 
 
 async def generate_briefing_script(stories: List[Dict]) -> str:
@@ -32,7 +35,7 @@ Requirements:
         if result:
             return result
     except Exception as e:
-        print(f"Error generating briefing script: {e}")
+        logger.error("Error generating briefing script: %s", e)
     script = f"Good morning, this is your Narvo Briefing for {datetime.now().strftime('%A, %B %d, %Y')}.\n\n"
     for i, story in enumerate(stories[:5], 1):
         title = (story.get("title") or "")[:100]

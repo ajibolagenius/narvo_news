@@ -1,11 +1,14 @@
 """
 Podcast service — fetches real podcast episodes from RSS feeds + provides search/detail.
 """
+import asyncio
+import logging
 import feedparser
 import hashlib
 from datetime import datetime, timezone
 from typing import List, Dict, Optional
-import asyncio
+
+logger = logging.getLogger(__name__)
 
 # Real African / global podcast RSS feeds
 PODCAST_FEEDS = [
@@ -86,7 +89,7 @@ def _parse_feed(feed_info: dict) -> List[dict]:
             episodes.append(ep)
             _podcast_cache[ep_id] = ep
     except Exception as e:
-        print(f"[Podcast] Feed parse error for {feed_info.get('url', 'unknown')}: {e}")
+        logger.error("[Podcast] Feed parse error for %s: %s", feed_info.get("url", "unknown"), e)
     return episodes
 
 
@@ -106,7 +109,7 @@ async def get_podcasts(sort: str = "latest", limit: int = 10, category: str = No
                 parsed = await loop.run_in_executor(None, _parse_feed, feed_info)
                 episodes.extend(parsed)
             except Exception as e:
-                print(f"[Podcast] Error fetching {feed_info.get('url')}: {e}")
+                logger.error("[Podcast] Error fetching %s: %s", feed_info.get("url"), e)
         _cache_time = datetime.now(timezone.utc)
     
     # Filter by category

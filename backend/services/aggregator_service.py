@@ -1,11 +1,14 @@
 # Aggregator service for Mediastack and NewsData.io
 import os
 import asyncio
+import logging
 import aiohttp
 import hashlib
 import time
 from datetime import datetime, timezone
 from typing import List, Dict
+
+logger = logging.getLogger(__name__)
 
 MEDIASTACK_KEY = os.environ.get("MEDIASTACK_API_KEY", "")
 NEWSDATA_KEY = os.environ.get("NEWSDATA_API_KEY", "")
@@ -61,9 +64,9 @@ async def fetch_mediastack(keywords: str = "Nigeria Africa", limit: int = 20) ->
                         })
                     return results
                 else:
-                    print(f"[Mediastack] Error: HTTP {resp.status}")
+                    logger.warning("[Mediastack] Error: HTTP %s", resp.status)
     except Exception as e:
-        print(f"[Mediastack] Error: {e}")
+        logger.error("[Mediastack] Error: %s", e)
     return []
 
 
@@ -104,9 +107,9 @@ async def fetch_newsdata(query: str = "Nigeria", limit: int = 10) -> List[Dict]:
                         })
                     return results
                 else:
-                    print(f"[NewsData] Error: HTTP {resp.status}")
+                    logger.warning("[NewsData] Error: HTTP %s", resp.status)
     except Exception as e:
-        print(f"[NewsData] Error: {e}")
+        logger.error("[NewsData] Error: %s", e)
     return []
 
 
@@ -124,7 +127,7 @@ async def refresh_cache() -> Dict:
         _aggregator_cache["newsdata"] = nd_results
         _aggregator_cache["last_fetched"] = datetime.now(timezone.utc).isoformat()
         _aggregator_cache["last_fetched_ts"] = time.monotonic()
-        print(f"[Aggregator] Cache refreshed: {len(ms_results)} mediastack, {len(nd_results)} newsdata")
+        logger.info("[Aggregator] Cache refreshed: %s mediastack, %s newsdata", len(ms_results), len(nd_results))
     finally:
         _refresh_lock = False
     return _aggregator_cache

@@ -5,11 +5,14 @@ AI-powered topic expansion via Gemini to produce personalized news recommendatio
 """
 
 import json
+import logging
 from datetime import datetime, timezone
 from collections import Counter
 
 from lib.supabase_db import get_supabase_db
 from services.llm_gemini import generate_gemini, GEMINI_API_KEY
+
+logger = logging.getLogger(__name__)
 
 
 def build_user_profile(user_id: str) -> dict:
@@ -116,7 +119,7 @@ No explanations, just the JSON array."""
         cleaned = cleaned.strip()
         return json.loads(cleaned)
     except Exception as e:
-        print(f"[Recommendation] AI expansion error: {e}")
+        logger.error("[Recommendation] AI expansion error: %s", e)
         return []
 
 

@@ -1,6 +1,7 @@
 # News API — single RSS source via services.news_service
-from fastapi import APIRouter, Query, HTTPException
+import logging
 from typing import Optional
+from fastapi import APIRouter, Query, HTTPException
 
 from services.news_service import (
     get_cached_all_news,
@@ -9,6 +10,7 @@ from services.news_service import (
 from services.narrative_service import generate_narrative
 from lib.text_utils import sanitize_ai_text
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["news"])
 
 
@@ -32,7 +34,7 @@ async def get_news(
             agg_news = await get_normalized_aggregator_news(sources=sources_list)
             all_news = list(all_news) + list(agg_news)
         except Exception as e:
-            print(f"[News] Aggregator fetch error: {e}")
+            logger.error("[News] Aggregator fetch error: %s", e)
 
     if region:
         all_news = [n for n in all_news if n.get("region", "").lower() == region.lower()]

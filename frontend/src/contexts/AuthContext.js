@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { API_BASE } from '../lib/api';
 
 const AuthContext = createContext();
 
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signInWithGoogle = async () => {
-    const siteUrl = process.env.REACT_APP_BACKEND_URL || window.location.origin;
+    const siteUrl = API_BASE || window.location.origin;
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {

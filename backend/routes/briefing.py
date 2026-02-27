@@ -1,4 +1,5 @@
 # Briefing routes — single module for /api/briefing/*
+import logging
 from fastapi import APIRouter, Query, HTTPException
 
 from services.briefing_service import (
@@ -7,6 +8,8 @@ from services.briefing_service import (
     get_briefing_history,
     get_briefing_by_date,
 )
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/briefing", tags=["briefing"])
 
@@ -25,7 +28,7 @@ async def generate_morning_briefing(
     except HTTPException:
         raise
     except Exception as e:
-        print(f"Briefing generation error: {e}")
+        logger.error("Briefing generation error: %s", e)
         raise HTTPException(status_code=500, detail=f"Failed to generate briefing: {str(e)}")
 
 
