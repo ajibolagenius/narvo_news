@@ -9,8 +9,7 @@ import { useHapticAlert } from '../components/HapticAlerts';
 import { ArticleSkeleton } from '../components/Skeleton';
 import TruthTag from '../components/TruthTag';
 import { TagPill } from '../components/HashtagText';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const MobileMetadata = ({ news, readTime, relatedNews, isBookmarked, toggleBookmark, addToQueue, shareStory, navigate, showAlert, t, formatPublishedDate }) => {
   const [open, setOpen] = useState(true);
@@ -135,8 +134,8 @@ const NewsDetailPage = () => {
     hasAutoPlayed.current = false;
     
     Promise.all([
-      fetch(`${API_URL}/api/news/${id}`).then(r => r.ok ? r.json() : null),
-      fetch(`${API_URL}/api/news?limit=6`).then(r => r.json()).catch(() => []),
+      api.get(`api/news/${id}`).then(r => r.ok ? r.json() : null),
+      api.get('api/news?limit=6').then(r => r.json()).catch(() => []),
     ]).then(([newsData, related]) => {
       if (!newsData) { 
         navigate('/dashboard'); 
@@ -170,11 +169,7 @@ const NewsDetailPage = () => {
     const vid = voiceModel || 'emma';
     const lang = broadcastLanguage || 'en';
     
-    fetch(`${API_URL}/api/tts/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text.slice(0, 4000), voice_id: vid, language: lang }),
-    })
+    api.post('api/tts/generate', { text: text.slice(0, 4000), voice_id: vid, language: lang })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data?.audio_url) pregenAudioUrl.current = data.audio_url;
@@ -206,7 +201,7 @@ const NewsDetailPage = () => {
 
   const shareStory = async () => {
     // Use the /api/share/ URL which has proper OG meta tags for social media
-    const shareUrl = `${API_URL}/api/share/${news.id}`;
+    const shareUrl = `${api.API_BASE}/api/share/${news.id}`;
     const shareText = `${news.title} - Listen on NARVO`;
     
     if (navigator.share) {
@@ -293,13 +288,13 @@ const NewsDetailPage = () => {
         <meta property="og:description" content={news.narrative?.slice(0, 160) || `Listen on Narvo — Audio-first news for Africa`} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={`${window.location.origin}/news/${id}`} />
-        <meta property="og:image" content={`${API_URL}/api/og/${id}`} />
+        <meta property="og:image" content={`${api.API_BASE}/api/og/${id}`} />
         <meta property="og:image:alt" content={news.title ? `${news.title} — Narvo` : 'Narvo — Audio-first news for Africa'} />
         <meta property="og:site_name" content="NARVO" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={news.title} />
         <meta name="twitter:description" content={news.narrative?.slice(0, 160) || 'Audio-first news for Africa'} />
-        <meta name="twitter:image" content={`${API_URL}/api/og/${id}`} />
+        <meta name="twitter:image" content={`${api.API_BASE}/api/og/${id}`} />
         <meta name="twitter:image:alt" content={news.title ? `${news.title} — Narvo` : 'Narvo — Audio-first news for Africa'} />
       </Helmet>
       {/* Main Article Content */}

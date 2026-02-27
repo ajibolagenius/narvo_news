@@ -3,8 +3,7 @@ import { Clock, Play, Waveform } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAudio } from '../contexts/AudioContext';
 import Skeleton from '../components/Skeleton';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const ListeningHistoryPage = () => {
   const [history, setHistory] = useState([]);
@@ -14,7 +13,7 @@ const ListeningHistoryPage = () => {
 
   useEffect(() => {
     const userId = user?.id || 'guest';
-    fetch(`${API_URL}/api/listening-history/${userId}?limit=30`)
+    api.get(`api/listening-history/${userId}?limit=30`)
       .then(r => r.json())
       .then(data => { setHistory(data); setLoading(false); })
       .catch(() => setLoading(false));

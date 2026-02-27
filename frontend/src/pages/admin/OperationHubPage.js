@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Broadcast, Pulse, WarningOctagon, Database, MagnifyingGlass, FileText, Warning, CheckCircle, XCircle, ArrowClockwise } from '@phosphor-icons/react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../../lib/api';
 
 const OperationHubPage = () => {
   const { t } = useTranslation();
@@ -15,9 +14,9 @@ const OperationHubPage = () => {
   const fetchData = async () => {
     try {
       const [metricsRes, alertsRes, streamsRes] = await Promise.all([
-        fetch(`${API_URL}/api/admin/metrics`),
-        fetch(`${API_URL}/api/admin/alerts`),
-        fetch(`${API_URL}/api/admin/streams`)
+        api.get('api/admin/metrics'),
+        api.get('api/admin/alerts'),
+        api.get('api/admin/streams')
       ]);
       
       const [metricsData, alertsData, streamsData] = await Promise.all([

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Broadcast, Funnel, PlusSquare, DotsThreeVertical, CircleNotch, ArrowClockwise } from '@phosphor-icons/react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../../lib/api';
 
 const VoiceManagementPage = () => {
   const [voices, setVoices] = useState([]);
@@ -9,7 +8,7 @@ const VoiceManagementPage = () => {
 
   const fetchData = async () => {
     try {
-      const voicesRes = await fetch(`${API_URL}/api/admin/voices`);
+      const voicesRes = await api.get('api/admin/voices');
       const voicesData = await voicesRes.json();
       setVoices(voicesData);
       setLoading(false);

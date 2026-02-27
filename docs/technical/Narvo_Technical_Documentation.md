@@ -29,8 +29,8 @@ The project uses a single repository with a **Create React App (CRA)** web front
 |-------|------------|-----------|
 | **Frontend** | Create React App (React) | SPA with React Router; PWA (manifest + service worker). |
 | **Backend** | FastAPI | REST API; OpenAPI docs; async-capable. |
-| **Persistence** | MongoDB | Bookmarks, user preferences, briefings, offline articles. |
-| **Auth** | Supabase (Auth only) | User authentication; no Postgres/pgvector in use. |
+| **Persistence** | Supabase (Postgres) | Bookmarks, user preferences, briefings, offline articles, listening history, TTS cache; schema in `backend/supabase_schema.sql`. |
+| **Auth** | Supabase (Auth) | User authentication; same Supabase project as persistence. |
 | **AI / Narrative** | Google Gemini | Narrative synthesis and multilingual translation. |
 | **TTS** | YARNGPT / OpenAI | Broadcast voice synthesis. |
 | **Fact-Check** | Google Fact Check API | Verification; mock responses when API key omitted. |
@@ -58,7 +58,7 @@ The project uses a single repository with a **Create React App (CRA)** web front
 - **Configuration:** Required and optional environment variables are listed in [backend/.env.example](backend/.env.example); see also code for vars such as `YARNGPT_API_KEY`, `MEDIASTACK_API_KEY`, `NEWSDATA_API_KEY`.
 
 ### Frontend (CRA)
-- **Stack:** Create React App, React Router, Supabase client for auth. No central API client; each page/context sets `API_URL = process.env.REACT_APP_BACKEND_URL || ''` and uses `fetch` for backend calls.
+- **Stack:** Create React App, React Router, Supabase client for auth. A central API client at [frontend/src/lib/api.js](frontend/src/lib/api.js) exposes `api.get(path)`, `api.post(path, body)`, and `api.del(path)` with `REACT_APP_BACKEND_URL` in one place. All frontend pages, hooks, and contexts use it for backend calls; share/og URLs use `API_BASE`. AuthContext still reads `REACT_APP_BACKEND_URL` for OAuth redirect (consider using `REACT_APP_PUBLIC_URL` for redirectTo in production).
 - **PWA:** [frontend/public/manifest.json](frontend/public/manifest.json) and [frontend/public/sw.js](frontend/public/sw.js); service worker registered from `index.html`. Offline and caching strategy in `sw.js`.
 
 ---

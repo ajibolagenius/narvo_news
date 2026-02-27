@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import * as api from '../lib/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const BOOKMARKS_KEY = 'narvo_bookmarks';
 
 export const useBookmarks = () => {
@@ -26,7 +26,7 @@ export const useBookmarks = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/bookmarks?user_id=${user.id}`);
+      const res = await api.get(`api/bookmarks?user_id=${user.id}`);
       if (res.ok) {
         const data = await res.json();
         setBookmarks(data);
@@ -59,11 +59,7 @@ export const useBookmarks = () => {
 
     if (user) {
       try {
-        await fetch(`${API_URL}/api/bookmarks`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: user.id, ...bookmark }),
-        });
+        await api.post('api/bookmarks', { user_id: user.id, ...bookmark });
       } catch (e) { console.error('Failed to sync bookmark:', e); }
     }
   };
@@ -75,7 +71,7 @@ export const useBookmarks = () => {
 
     if (user) {
       try {
-        await fetch(`${API_URL}/api/bookmarks/${storyId}?user_id=${user.id}`, { method: 'DELETE' });
+        await api.del(`api/bookmarks/${storyId}?user_id=${user.id}`);
       } catch (e) { console.error('Failed to remove bookmark:', e); }
     }
   };

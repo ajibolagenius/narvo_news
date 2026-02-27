@@ -4,8 +4,7 @@ import { FolderOpen, Play, Pause, Trash, WarningOctagon, ArrowCounterClockwise, 
 import { useAudio } from '../contexts/AudioContext';
 import { getAllCachedAudio, getCachedAudio, removeCachedAudio, getCacheStats, clearAllCache } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const OfflinePage = () => {
   const navigate = useNavigate();
@@ -31,7 +30,7 @@ const OfflinePage = () => {
 
   const loadOfflineStats = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/offline/stats`);
+      const res = await api.get('api/offline/stats');
       if (res.ok) {
         const data = await res.json();
         setOfflineStats(data);
@@ -43,7 +42,7 @@ const OfflinePage = () => {
   
   const loadSavedArticles = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/offline/articles`);
+      const res = await api.get('api/offline/articles');
       if (res.ok) {
         const articles = await res.json();
         setSavedArticles(articles.map(a => ({
@@ -106,7 +105,7 @@ const OfflinePage = () => {
   const handleRemove = async (id, type) => {
     if (type === 'article') {
       try {
-        await fetch(`${API_URL}/api/offline/articles/${id}`, { method: 'DELETE' });
+        await api.del(`api/offline/articles/${id}`);
         await loadSavedArticles();
         await loadOfflineStats();
       } catch (e) {
@@ -123,7 +122,7 @@ const OfflinePage = () => {
     await clearAllCache();
     // Clear saved articles from backend
     try {
-      await fetch(`${API_URL}/api/offline/articles`, { method: 'DELETE' });
+      await api.del('api/offline/articles');
     } catch (e) {
       console.error('Error clearing articles:', e);
     }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, BellSlash, Broadcast, CaretRight } from '@phosphor-icons/react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL;
+import * as api from '../../lib/api';
 
 const DailyDigest = () => {
   const [digest, setDigest] = useState(null);
@@ -9,7 +8,7 @@ const DailyDigest = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/notifications/digest`)
+    api.get('api/notifications/digest')
       .then(r => r.ok ? r.json() : null)
       .then(data => { if (data) setDigest(data); })
       .catch(() => {});
@@ -21,19 +20,11 @@ const DailyDigest = () => {
     setLoading(true);
     try {
       if (subscribed) {
-        await fetch(`${API_URL}/api/notifications/unsubscribe`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ endpoint: 'browser-push-placeholder' }),
-        });
+        await api.post('api/notifications/unsubscribe', { endpoint: 'browser-push-placeholder' });
         localStorage.setItem('narvo_push_subscribed', 'false');
         setSubscribed(false);
       } else {
-        await fetch(`${API_URL}/api/notifications/subscribe`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ endpoint: 'browser-push-placeholder', type: 'daily_digest' }),
-        });
+        await api.post('api/notifications/subscribe', { endpoint: 'browser-push-placeholder', type: 'daily_digest' });
         localStorage.setItem('narvo_push_subscribed', 'true');
         setSubscribed(true);
       }

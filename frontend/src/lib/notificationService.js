@@ -1,5 +1,5 @@
 // Push Notification Service for Breaking News
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from './api';
 
 // Request notification permission
 export async function requestNotificationPermission() {
@@ -57,11 +57,7 @@ export async function subscribeToPush() {
     });
     
     // Send subscription to backend
-    await fetch(`${API_URL}/api/notifications/subscribe`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(subscription)
-    }).catch(() => {
+    await api.post('api/notifications/subscribe', subscription).catch(() => {
       // Backend endpoint might not exist yet
       console.log('Subscription saved locally');
     });
@@ -79,14 +75,9 @@ export async function unsubscribeFromPush() {
   const subscription = await registration.pushManager.getSubscription();
   
   if (subscription) {
+    const endpoint = subscription.endpoint;
     await subscription.unsubscribe();
-    
-    // Notify backend
-    await fetch(`${API_URL}/api/notifications/unsubscribe`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ endpoint: subscription.endpoint })
-    }).catch(() => {});
+    await api.post('api/notifications/unsubscribe', { endpoint }).catch(() => {});
   }
 }
 

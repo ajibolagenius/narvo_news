@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Sun, Monitor, Bell, Pulse, Gauge, Lightning, ArrowCounterClockwise, FloppyDisk, CircleNotch, MusicNotes, SpeakerHigh } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
+import * as api from '../lib/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL;
 const LS_KEY = 'narvo_settings_cache';
 
 const cacheToLocal = (payload) => {
@@ -35,7 +35,7 @@ const SoundThemesSection = ({ settings, updateSetting }) => {
   const [previewPlaying, setPreviewPlaying] = useState(null);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/sound-themes`)
+    api.get('api/sound-themes')
       .then(r => r.json())
       .then(setThemes)
       .catch(() => {});
@@ -51,7 +51,7 @@ const SoundThemesSection = ({ settings, updateSetting }) => {
     try {
       const Tone = (await import('tone')).default || await import('tone');
       await Tone.start();
-      const res = await fetch(`${API_URL}/api/sound-themes/${themeId}`);
+      const res = await api.get(`api/sound-themes/${themeId}`);
       const themeData = await res.json();
       const intro = themeData.intro;
       if (!intro?.notes?.length) { setPreviewPlaying(null); return; }
@@ -176,7 +176,7 @@ const SystemGearSixPage = () => {
     const fetchGearSix = async () => {
       const userId = user?.id || 'guest';
       try {
-        const res = await fetch(`${API_URL}/api/settings/${userId}`);
+        const res = await api.get(`api/settings/${userId}`);
         if (res.ok) {
           const data = await res.json();
           setGearSix({
@@ -217,11 +217,7 @@ const SystemGearSixPage = () => {
     };
     cacheToLocal(payload);
     try {
-      const res = await fetch(`${API_URL}/api/settings/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await api.post(`api/settings/${userId}`, payload);
       if (res.ok) {
         return true;
       }

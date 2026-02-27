@@ -4,8 +4,7 @@ import { useAudio } from '../contexts/AudioContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 import Skeleton from '../components/Skeleton';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const LANG_META = {
   yo:  { native: 'Yoruba',        region: 'ILU_YORUBA' },
@@ -32,8 +31,8 @@ const VoiceStudioPage = () => {
       try {
         const userId = user?.id || 'guest';
         const [voicesRes, settingsRes] = await Promise.all([
-          fetch(`${API_URL}/api/voices`),
-          fetch(`${API_URL}/api/settings/${userId}`),
+          api.get('api/voices'),
+          api.get(`api/settings/${userId}`),
         ]);
         const voicesData = await voicesRes.json();
         setVoices(voicesData);
@@ -70,13 +69,9 @@ const VoiceStudioPage = () => {
     const userId = user?.id || 'guest';
     try {
       // Save both voice model AND broadcast language in one call
-      await fetch(`${API_URL}/api/settings/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          voice_model: selectedVoice.id,
-          broadcast_language: selectedVoice.language || 'en',
-        }),
+      await api.post(`api/settings/${userId}`, {
+        voice_model: selectedVoice.id,
+        broadcast_language: selectedVoice.language || 'en',
       });
       // Update AudioContext immediately
       setBroadcastLanguage(selectedVoice.language || 'en');
@@ -116,11 +111,7 @@ const VoiceStudioPage = () => {
     setPreviewPlaying(null);
     try {
       const sample = 'Welcome to Narvo. Your trusted source for African news.';
-      const res = await fetch(`${API_URL}/api/tts/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: sample, voice_id: voice.id, language: voice.language || 'en' }),
-      });
+      const res = await api.post('api/tts/generate', { text: sample, voice_id: voice.id, language: voice.language || 'en' });
       if (!res.ok) throw new Error('TTS failed');
       const data = await res.json();
       const audio = new Audio(data.audio_url);

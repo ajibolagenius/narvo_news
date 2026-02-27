@@ -7,8 +7,8 @@ import { useContentSources } from '../contexts/ContentSourcesContext';
 import { isAudioCached } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
 import EmptyState from '../components/EmptyState';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
+const { API_BASE } = api;
 
 const DiscoverPage = () => {
   const { t } = useTranslation();
@@ -50,7 +50,7 @@ const DiscoverPage = () => {
 
   useEffect(() => {
     // Fetch featured news
-    fetch(`${API_URL}/api/news?limit=1`)
+    api.get('api/news?limit=1')
       .then(res => res.json())
       .then(data => {
         if (data.length > 0) setFeaturedNews(data[0]);
@@ -59,25 +59,25 @@ const DiscoverPage = () => {
       .catch(() => setLoading(false));
       
     // Fetch radio countries
-    fetch(`${API_URL}/api/radio/countries`)
+    api.get('api/radio/countries')
       .then(res => res.json())
       .then(setCountries)
       .catch(console.error);
       
     // Fetch trending topics
-    fetch(`${API_URL}/api/discover/trending`)
+    api.get('api/discover/trending')
       .then(res => res.json())
       .then(setTrendingTopics)
       .catch(console.error);
 
     // Fetch podcast categories
-    fetch(`${API_URL}/api/podcasts/categories`)
+    api.get('api/podcasts/categories')
       .then(res => res.json())
       .then(setPodcastCategories)
       .catch(console.error);
 
     // Fetch aggregator wire
-    fetch(`${API_URL}/api/aggregators/fetch?keywords=Nigeria+Africa`)
+    api.get('api/aggregators/fetch?keywords=Nigeria+Africa')
       .then(res => res.json())
       .then(setAggregatorWire)
       .catch(console.error);
@@ -86,7 +86,7 @@ const DiscoverPage = () => {
   // Fetch podcasts when sort changes
   useEffect(() => {
     setPodcastLoading(true);
-    fetch(`${API_URL}/api/podcasts?sort=${podcastSort}&limit=8`)
+    api.get(`api/podcasts?sort=${podcastSort}&limit=8`)
       .then(res => res.json())
       .then(data => {
         setPodcasts(data);
@@ -99,7 +99,7 @@ const DiscoverPage = () => {
   // Fetch radio stations when country changes
   useEffect(() => {
     setRadioLoading(true);
-    fetch(`${API_URL}/api/radio/stations?country=${selectedCountry}&limit=10`)
+    api.get(`api/radio/stations?country=${selectedCountry}&limit=10`)
       .then(res => res.json())
       .then(data => {
         setRadioStations(data);
@@ -129,7 +129,7 @@ const DiscoverPage = () => {
     if (!q.trim()) return;
     searchTimeoutRef.current = setTimeout(() => {
       setPodcastLoading(true);
-      fetch(`${API_URL}/api/podcasts/search?q=${encodeURIComponent(q)}&limit=10`)
+      api.get(`api/podcasts/search?q=${encodeURIComponent(q)}&limit=10`)
         .then(res => res.json())
         .then(data => { setPodcasts(data); checkCachedPodcasts(data); setPodcastLoading(false); })
         .catch(() => setPodcastLoading(false));
@@ -159,7 +159,7 @@ const DiscoverPage = () => {
     }
     
     // Use the backend proxy endpoint to avoid CORS issues
-    const proxyUrl = `${API_URL}/api/podcasts/${podcast.id}/audio`;
+    const proxyUrl = `${API_BASE}/api/podcasts/${podcast.id}/audio`;
     
     addSingleToQueue({
       id: podcast.id,
@@ -178,7 +178,7 @@ const DiscoverPage = () => {
     
     const items = podcastsToDownload.map(podcast => ({
       id: podcast.id,
-      audioUrl: `${API_URL}/api/podcasts/${podcast.id}/audio`,
+      audioUrl: `${API_BASE}/api/podcasts/${podcast.id}/audio`,
       title: podcast.title,
       source: podcast.episode,
       duration: podcast.duration,

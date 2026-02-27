@@ -50,18 +50,23 @@ def sanitize_ai_text(text: str) -> str:
     return result.strip()
 
 
+# API version: single source of truth for FastAPI, root, and health responses
+API_VERSION = "2.0"
+
 # Initialize FastAPI
-app = FastAPI(title="Narvo API", version="2.0")
+app = FastAPI(title="Narvo API", version=API_VERSION)
 
 # GZip compression for smaller payloads
 from starlette.middleware.gzip import GZipMiddleware
 
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
-# CORS
+# CORS: use FRONTEND_ORIGIN in production (e.g. https://narvo.news); ["*"] when unset (dev)
+_cors_origins = os.environ.get("FRONTEND_ORIGIN", "*")
+_cors_origins_list = [o.strip() for o in _cors_origins.split(",")] if _cors_origins != "*" else ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -143,8 +148,12 @@ RSS_FEEDS = [
         "url": "https://www.vanguardngr.com/feed/",
         "region": "Nigeria",
     },
-    {"name": "Punch Nigeria", "url": "https://punchng.com/feed/", "region": "Nigeria"},
-    {"name": "Daily Trust", "url": "https://dailytrust.com/feed/", "region": "Nigeria"},
+    {"name": "Punch Nigeria",
+    "url": "https://punchng.com/feed/",
+    "region": "Nigeria"},
+    {"name": "Daily Trust",
+    "url": "https://dailytrust.com/feed/",
+    "region": "Nigeria"},
     {
         "name": "Premium Times",
         "url": "https://www.premiumtimesng.com/feed",
@@ -405,7 +414,7 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
 async def root():
     return {
         "service": "Narvo API",
-        "version": "2.0",
+        "version": API_VERSION,
         "docs": "/docs",
         "health": "/api/health",
     }
@@ -417,7 +426,7 @@ async def health_check():
     return {
         "status": "online",
         "service": "Narvo API",
-        "version": "2.0",
+        "version": API_VERSION,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 

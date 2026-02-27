@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { openTourGuide } from '../components/TourGuideModal';
 import Clock from '../components/Clock';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -34,7 +33,7 @@ const AuthPage = () => {
         // Fetch preferences from server
         if (data?.user) {
           try {
-            const res = await fetch(`${API_URL}/api/preferences?user_id=${data.user.id}`);
+            const res = await api.get(`api/preferences?user_id=${data.user.id}`);
             if (res.ok) {
               const prefs = await res.json();
               if (prefs.updated_at) {

@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { Bell, Timer, Waveform, MapPin, FileText, Broadcast, User } from '@phosphor-icons/react';
 import Skeleton from '../components/Skeleton';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const MetricCard = ({ title, icon: Icon, loading, children }) => (
   <div className="narvo-border bg-surface/5 p-5 md:p-8 flex flex-col justify-between min-h-[180px] md:min-h-[220px]">
@@ -29,8 +28,8 @@ const AccountPage = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
-      fetch(`${API_URL}/api/system-alerts`).then(r => r.json()).catch(() => []),
+      api.get('api/metrics').then(r => r.json()).catch(() => null),
+      api.get('api/system-alerts').then(r => r.json()).catch(() => []),
     ]).then(([metricsData, alertsData]) => {
       setMetrics(metricsData);
       setAlerts(alertsData);

@@ -14,24 +14,19 @@ import TruthTag from '../components/TruthTag';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { getCategoryImage, getCategoryColor } from '../lib/categoryImages';
 import { useAuth } from '../contexts/AuthContext';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 // Save article for offline
 const saveForOffline = async (item) => {
   try {
-    await fetch(`${API_URL}/api/offline/save`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        story_id: item.id,
-        title: item.title,
-        summary: item.summary || '',
-        narrative: item.narrative || '',
-        source: item.source || '',
-        category: item.category || 'General',
-        image_url: item.image_url || null
-      })
+    await api.post('api/offline/save', {
+      story_id: item.id,
+      title: item.title,
+      summary: item.summary || '',
+      narrative: item.narrative || '',
+      source: item.source || '',
+      category: item.category || 'General',
+      image_url: item.image_url || null
     });
     return true;
   } catch (e) {
@@ -77,7 +72,7 @@ const DashboardPage = () => {
   const [showTelemetry, setShowTelemetry] = useState(false);
 
   const fetchDashboardData = React.useCallback(async () => {
-    const settings = await fetch(`${API_URL}/api/settings/guest`).then(r => r.json());
+    const settings = await api.get('api/settings/guest').then(r => r.json());
     const ms = settings.aggregator_mediastack !== false;
     const nd = settings.aggregator_newsdata !== false;
     setUserAggPrefs({ mediastack: ms, newsdata: nd });
@@ -87,8 +82,8 @@ const DashboardPage = () => {
     const aggParam = enabledSources ? `&aggregator_sources=${enabledSources}` : '';
 
     const [newsData, metricsData] = await Promise.all([
-      fetch(`${API_URL}/api/news?limit=50&include_aggregators=true${aggParam}`).then(r => r.json()),
-      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
+      api.get(`api/news?limit=50&include_aggregators=true${aggParam}`).then(r => r.json()),
+      api.get('api/metrics').then(r => r.json()).catch(() => null),
     ]);
 
     const seen = new Map();
@@ -121,7 +116,7 @@ const DashboardPage = () => {
   useEffect(() => {
     const userId = user?.id || 'guest';
     setRecoLoading(true);
-    fetch(`${API_URL}/api/recommendations/${userId}?limit=6`)
+    api.get(`api/recommendations/${userId}?limit=6`)
       .then(r => r.json())
       .then(data => {
         setRecommendations(data.recommendations || []);

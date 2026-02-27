@@ -5,8 +5,8 @@ import { Helmet } from 'react-helmet-async';
 import { Lightning, ArrowRight, X } from '@phosphor-icons/react';
 import { openTourGuide } from '../components/TourGuideModal';
 import Clock from '../components/Clock';
+import * as api from '../lib/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const getPublicUrl = () => process.env.REACT_APP_PUBLIC_URL || (typeof window !== 'undefined' ? window.location.origin : '');
 
 const LandingPage = () => {
@@ -19,9 +19,9 @@ const LandingPage = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/api/news?limit=4`).then(r => r.json()),
-      fetch(`${API_URL}/api/news/breaking`).then(r => r.json()).catch(() => []),
-      fetch(`${API_URL}/api/metrics`).then(r => r.json()).catch(() => null),
+      api.get('api/news?limit=4').then(r => r.json()),
+      api.get('api/news/breaking').then(r => r.json()).catch(() => []),
+      api.get('api/metrics').then(r => r.json()).catch(() => null),
     ]).then(([newsData, breakingData, metricsData]) => {
       setNews(newsData);
       setBreaking(breakingData);

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import * as api from '../lib/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 const AudioContext = createContext({});
 
 export const useAudio = () => useContext(AudioContext);
@@ -51,7 +51,7 @@ export const AudioProvider = ({ children }) => {
         if (cached.broadcast_language) setBroadcastLanguage(cached.broadcast_language);
       } catch { /* ignore */ }
 
-      const response = await fetch(`${API_URL}/api/settings/${userId}`);
+      const response = await api.get(`api/settings/${userId}`);
       if (response.ok) {
         const data = await response.json();
         if (data.broadcast_language) {
@@ -259,14 +259,10 @@ export const AudioProvider = ({ children }) => {
     if (!textToSpeak) return null;
     
     try {
-      const response = await fetch(`${API_URL}/api/tts/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: textToSpeak.slice(0, 4000),
-          voice_id: voiceModel,
-          language: broadcastLanguage
-        })
+      const response = await api.post('api/tts/generate', {
+        text: textToSpeak.slice(0, 4000),
+        voice_id: voiceModel,
+        language: broadcastLanguage
       });
       
       if (!response.ok) throw new Error('TTS generation failed');
@@ -392,16 +388,12 @@ export const AudioProvider = ({ children }) => {
     // Record to listening history
     try {
       const userId = user?.id || 'guest';
-      fetch(`${API_URL}/api/listening-history`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: userId,
-          track_id: track.id || '',
-          title: track.title || 'Unknown',
-          source: track.source || '',
-          category: track.category || '',
-        }),
+      api.post('api/listening-history', {
+        user_id: userId,
+        track_id: track.id || '',
+        title: track.title || 'Unknown',
+        source: track.source || '',
+        category: track.category || '',
       }).catch(() => {});
     } catch { /* ignore */ }
     

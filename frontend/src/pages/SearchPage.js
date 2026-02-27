@@ -3,8 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { MagnifyingGlass, Microphone, Bookmark, Clock, Stack, X } from '@phosphor-icons/react';
 import { useBookmarks } from '../hooks/useBookmarks';
 import Skeleton from '../components/Skeleton';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const CATEGORY_COLORS = {
   finance: { text: 'text-label-finance', border: 'border-label-finance/30', bg: 'bg-label-finance/10' },
@@ -59,7 +58,7 @@ const SearchPage = () => {
 
   // Initial load: fetch default news for browse
   useEffect(() => {
-    fetch(`${API_URL}/api/news?limit=50`).then(res => res.json()).then(data => {
+    api.get('api/news?limit=50').then(res => res.json()).then(data => {
       setAllNews(data);
       setLoading(false);
     }).catch(() => setLoading(false));
@@ -76,7 +75,7 @@ const SearchPage = () => {
     try {
       const params = new URLSearchParams({ q, limit: '50' });
       if (sourceFilter !== 'ALL') params.set('source_type', sourceFilter.toLowerCase());
-      const res = await fetch(`${API_URL}/api/search?${params}`);
+      const res = await api.get(`api/search?${params}`);
       if (res.ok) {
         const data = await res.json();
         let items = data.results || [];

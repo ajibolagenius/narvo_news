@@ -10,8 +10,7 @@ import { LANGUAGES } from '../i18n';
 import { NotificationToggle } from '../components/BreakingNews';
 import DailyDigest from '../components/features/DailyDigest';
 import { openTourGuide, resetTourGuide } from '../components/TourGuideModal';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL;
+import * as api from '../lib/api';
 
 const INTEREST_CATEGORIES = [
   { id: 'politics', label: 'POLITICS', desc: 'Government, elections, policy' },
@@ -42,7 +41,7 @@ const SettingsPage = () => {
 
   React.useEffect(() => {
     const userId = user?.id || 'guest';
-    fetch(`${API_URL}/api/settings/${userId}`)
+    api.get(`api/settings/${userId}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data?.interests?.length) setInterests(data.interests);
@@ -62,11 +61,7 @@ const SettingsPage = () => {
       const existing = JSON.parse(localStorage.getItem('narvo_settings_cache') || '{}');
       localStorage.setItem('narvo_settings_cache', JSON.stringify({ ...existing, interests: next }));
     } catch { /* ignore */ }
-    fetch(`${API_URL}/api/settings/${userId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ interests: next }),
-    }).then(() => {
+    api.post(`api/settings/${userId}`, { interests: next }).then(() => {
       showAlert({ type: 'sync', title: 'INTERESTS_UPDATED', message: `${next.length} categories selected`, code: 'INT_OK', duration: 2000 });
     }).catch(() => {}).finally(() => setInterestsSaving(false));
   }, [interests, user?.id, showAlert]);

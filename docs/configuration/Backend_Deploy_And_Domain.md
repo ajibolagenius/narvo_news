@@ -59,6 +59,7 @@ In the host’s dashboard (Railway/Render **Environment** or VPS `.env`), set th
 | `YARNGPT_API_KEY`         | No       | YarnGPT TTS (Nigerian voices). Omit to use OpenAI TTS only. |
 | `GOOGLE_FACT_CHECK_API_KEY` | No     | Google Fact Check API. Omit for mock responses. |
 | `PYTHON_VERSION`            | No (Render) | **Or** add `.python-version` at repo root with `3.12.7` so Render uses Python 3.12 and avoids 3.14 dependency conflicts (grpcio, protobuf). |
+| `FRONTEND_ORIGIN`           | Yes (production) | Set to `https://narvo.news` in production to restrict CORS. Omit or use `*` for dev (allow all). Multiple origins: comma-separated (e.g. `https://narvo.news,https://admin.narvo.news`). |
 
 Do not commit real values; use the host’s secret/env UI.
 

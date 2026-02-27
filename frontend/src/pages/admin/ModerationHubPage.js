@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { SquaresFour, List, Warning, CheckCircle, Question, DotsThree, CheckSquare, Flag, ArrowClockwise } from '@phosphor-icons/react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../../lib/api';
 
 const ModerationHubPage = () => {
   const [viewMode, setViewMode] = useState('grid');
@@ -12,8 +11,8 @@ const ModerationHubPage = () => {
   const fetchData = async () => {
     try {
       const [itemsRes, statsRes] = await Promise.all([
-        fetch(`${API_URL}/api/admin/moderation`),
-        fetch(`${API_URL}/api/admin/stats`)
+        api.get('api/admin/moderation'),
+        api.get('api/admin/stats')
       ]);
       
       const [itemsData, statsData] = await Promise.all([

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const OnboardingPage = () => {
   const navigate = useNavigate();
@@ -44,11 +43,7 @@ const OnboardingPage = () => {
     localStorage.setItem('narvo_preferences', JSON.stringify(preferences));
     if (user) {
       try {
-        await fetch(`${API_URL}/api/preferences`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: user.id, ...preferences }),
-        });
+        await api.post('api/preferences', { user_id: user.id, ...preferences });
       } catch (e) { console.error('Failed to sync preferences:', e); }
     }
     navigate('/dashboard');

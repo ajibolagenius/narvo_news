@@ -4,8 +4,7 @@ import { useAudio } from '../contexts/AudioContext';
 import { Play, Pause, Calendar, ArrowClockwise, Clock, Radio, CaretRight, SpeakerHigh, TextAlignLeft, CaretDown, CaretUp } from '@phosphor-icons/react';
 import Skeleton, { ListSkeleton } from '../components/Skeleton';
 import { playBriefingIntro, playBriefingOutro, playSectionDivider } from '../lib/cinematicAudio';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 /** Split a script into sentences for follow-along */
 const splitToSentences = (text) => {
@@ -71,8 +70,8 @@ const MorningBriefingPage = () => {
 
   useEffect(() => {
     Promise.all([
-      fetch(`${API_URL}/api/briefing/latest`).then(r => r.ok ? r.json() : null).catch(() => null),
-      fetch(`${API_URL}/api/briefing/history?limit=10`).then(r => r.json()).catch(() => ({ briefings: [] })),
+      api.get('api/briefing/latest').then(r => r.ok ? r.json() : null).catch(() => null),
+      api.get('api/briefing/history?limit=10').then(r => r.json()).catch(() => ({ briefings: [] })),
     ]).then(([latestBriefing, historyData]) => {
       if (latestBriefing) setBriefing(latestBriefing);
       setHistory(historyData.briefings || []);
@@ -84,11 +83,11 @@ const MorningBriefingPage = () => {
   const generateBriefing = async () => {
     setGenerating(true);
     try {
-      const res = await fetch(`${API_URL}/api/briefing/generate?voice_id=${selectedVoice}&force_regenerate=true`);
+      const res = await api.get(`api/briefing/generate?voice_id=${selectedVoice}&force_regenerate=true`);
       if (res.ok) {
         const data = await res.json();
         setBriefing(data);
-        const histRes = await fetch(`${API_URL}/api/briefing/history?limit=10`);
+        const histRes = await api.get('api/briefing/history?limit=10');
         if (histRes.ok) {
           const histData = await histRes.json();
           setHistory(histData.briefings || []);
@@ -101,7 +100,7 @@ const MorningBriefingPage = () => {
   const loadHistoricalBriefing = async (date) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/briefing/${date}`);
+      const res = await api.get(`api/briefing/${date}`);
       if (res.ok) {
         const data = await res.json();
         setBriefing(data);

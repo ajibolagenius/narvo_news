@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChartBar, Lightning, Clock, Fire, Broadcast, TrendUp, TrendDown, ArrowRight, SunHorizon, Sun, Moon } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const CATEGORY_COLORS = {
   general: '#6B8A7A', politics: '#D4A574', technology: '#7B9BAA', business: '#A8B87A',
@@ -17,7 +16,7 @@ const AnalyticsPage = () => {
 
   useEffect(() => {
     const userId = user?.id || 'guest';
-    fetch(`${API_URL}/api/analytics/${userId}`)
+    api.get(`api/analytics/${userId}`)
       .then(r => r.json())
       .then(setAnalytics)
       .catch(() => {})

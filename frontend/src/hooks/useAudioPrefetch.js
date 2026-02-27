@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
+import * as api from '../lib/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL;
 const prefetchedIds = new Set();
 
 /**
@@ -39,12 +39,7 @@ export const useAudioPrefetch = (articles = [], voiceId = 'nova', limit = 3) => 
           const text = (article.narrative || article.summary || article.title || '').slice(0, 500);
           if (!text) continue;
 
-          await fetch(`${API_URL}/api/tts/generate`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text, voice_id: voiceId, language: 'en' }),
-            signal: controller.signal,
-          });
+          await api.post('api/tts/generate', { text, voice_id: voiceId, language: 'en' }, { signal: controller.signal });
           prefetchedIds.add(article.id);
         } catch {
           // Abort or network error — silently skip

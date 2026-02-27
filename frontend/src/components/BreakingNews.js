@@ -2,8 +2,7 @@ import React, { useState, useEffect, createContext, useContext, useCallback, use
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Bell, BellRinging, X, ArrowRight, Lightning } from '@phosphor-icons/react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL;
+import * as api from '../lib/api';
 
 const BreakingNewsContext = createContext({});
 
@@ -35,7 +34,7 @@ export const BreakingNewsProvider = ({ children }) => {
   useEffect(() => {
     const checkBreaking = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/news/breaking`);
+        const res = await api.get('api/news/breaking');
         if (res.ok) {
           const stories = await res.json();
           const newStories = stories.filter(s => !seenIdsRef.current.has(s.id));

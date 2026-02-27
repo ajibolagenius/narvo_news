@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShieldCheck, ShieldWarning, Question, CircleNotch } from '@phosphor-icons/react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const STATUS_MAP = {
   VERIFIED: { icon: ShieldCheck, color: 'text-green-400', bg: 'bg-green-400/10', border: 'border-green-400/30', label: 'VERIFIED' },
@@ -16,7 +15,7 @@ const TruthTag = ({ storyId, compact = false }) => {
 
   useEffect(() => {
     if (!storyId) { setLoading(false); return; }
-    fetch(`${API_URL}/api/factcheck/story/${storyId}`)
+    api.get(`api/factcheck/story/${storyId}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data) setResult(data);

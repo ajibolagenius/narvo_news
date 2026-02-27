@@ -4,8 +4,8 @@ import { Rows, TextT, HandPointing, Cursor, Microphone, Info, CircleNotch, Flopp
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
 import { ResponsiveTabView } from '../components/ResponsiveTabView';
+import * as api from '../lib/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL;
 const LS_KEY = 'narvo_settings_cache';
 
 const cacheToLocal = (payload) => {
@@ -50,7 +50,7 @@ const AccessibilityPage = () => {
     const fetchSettings = async () => {
       const userId = user?.id || 'guest';
       try {
-        const res = await fetch(`${API_URL}/api/settings/${userId}`);
+        const res = await api.get(`api/settings/${userId}`);
         if (res.ok) {
           const data = await res.json();
           setDisplayDensity(data.display_density || DEFAULT_SETTINGS.displayDensity);
@@ -94,11 +94,7 @@ const AccessibilityPage = () => {
     };
     cacheToLocal(payload);
     try {
-      const res = await fetch(`${API_URL}/api/settings/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await api.post(`api/settings/${userId}`, payload);
       if (res.ok) {
         setHasChanges(false);
         showAlert({ type: 'success', title: t('alerts.settings_saved'), message: t('alerts.settings_saved_msg'), code: 'SAVE_OK' });

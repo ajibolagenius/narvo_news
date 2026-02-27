@@ -1,7 +1,6 @@
 // Content Sources Context - Manages source data across the app
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+import * as api from '../lib/api';
 
 const ContentSourcesContext = createContext({});
 
@@ -17,7 +16,7 @@ export const ContentSourcesProvider = ({ children }) => {
   const fetchSources = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/sources`);
+      const response = await api.get('api/sources');
       if (response.ok) {
         const data = await response.json();
         setSources(data);
@@ -44,7 +43,7 @@ export const ContentSourcesProvider = ({ children }) => {
 
   const fetchHealth = useCallback(async () => {
     try {
-      const r = await fetch(`${API_URL}/api/sources/health`);
+      const r = await api.get('api/sources/health');
       if (r.ok) setHealth(await r.json());
     } catch (err) {
       console.error('[ContentSources] Health fetch error:', err);

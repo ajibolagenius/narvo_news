@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import * as api from '../lib/api';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL;
 const LS_KEY = 'narvo_settings_cache';
 
 const getLocalSettings = () => {
@@ -20,7 +20,7 @@ const setLocalSettings = (settings) => {
 };
 
 /**
- * useSettings — Loads from localStorage instantly, syncs with MongoDB in background.
+ * useSettings — Loads from localStorage instantly, syncs with backend in background.
  * @param {Object} defaults - Default settings shape
  * @param {Function} mapFromApi - (apiData) => localShape
  * @param {Function} mapToApi - (localShape) => apiPayload
@@ -40,10 +40,10 @@ export const useSettings = (defaults, mapFromApi, mapToApi) => {
   const [hasChanges, setHasChanges] = useState(false);
   const saveTimerRef = useRef(null);
 
-  // Fetch from MongoDB on mount
+  // Fetch from backend on mount
   useEffect(() => {
     const userId = user?.id || 'guest';
-    fetch(`${API_URL}/api/settings/${userId}`)
+    api.get(`api/settings/${userId}`)
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data) {
@@ -57,17 +57,13 @@ export const useSettings = (defaults, mapFromApi, mapToApi) => {
     // eslint-disable-next-line
   }, [user?.id]);
 
-  // Save to MongoDB (debounced)
+  // Save to backend (debounced)
   const saveToServer = useCallback(async (settingsToSave) => {
     const userId = user?.id || 'guest';
     const payload = mapToApi ? mapToApi(settingsToSave) : settingsToSave;
     setLocalSettings(payload);
     try {
-      const res = await fetch(`${API_URL}/api/settings/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await api.post(`api/settings/${userId}`, payload);
       return res.ok;
     } catch {
       return false;
