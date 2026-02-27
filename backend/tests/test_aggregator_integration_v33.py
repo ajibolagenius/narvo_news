@@ -33,7 +33,6 @@ class TestNewsWithAggregators:
         # Check if any articles have aggregator field
         aggregator_articles = [a for a in data if a.get("aggregator")]
         # There should be at least some aggregator articles (mediastack or newsdata)
-        print(f"Total articles: {len(data)}, Aggregator articles: {len(aggregator_articles)}")
         
         # Validate structure of aggregator articles if present
         for article in aggregator_articles:
@@ -125,7 +124,6 @@ class TestAggregatorsStatus:
         
         # After fetch, at least one should have cached articles
         total_cached = data["mediastack"]["cached_count"] + data["newsdata"]["cached_count"]
-        print(f"Mediastack cached: {data['mediastack']['cached_count']}, NewsData cached: {data['newsdata']['cached_count']}")
         # Note: Count may be 0 if API quotas are exhausted, but structure should be correct
         assert "cached_count" in data["mediastack"]
         assert "cached_count" in data["newsdata"]

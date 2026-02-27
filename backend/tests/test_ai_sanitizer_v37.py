@@ -51,7 +51,6 @@ class TestHealthAndBasicEndpoints:
         data = response.json()
         assert data.get("status") == "online"
         assert data.get("service") == "Narvo API"
-        print(f"✓ Health check passed: {data.get('status')}")
 
     def test_news_endpoint(self):
         """GET /api/news should return news articles"""
@@ -60,7 +59,6 @@ class TestHealthAndBasicEndpoints:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) > 0
-        print(f"✓ News endpoint returned {len(data)} articles")
 
     def test_search_endpoint(self):
         """GET /api/search?q=Nigeria should return search results"""
@@ -69,7 +67,6 @@ class TestHealthAndBasicEndpoints:
         data = response.json()
         assert "results" in data
         assert isinstance(data["results"], list)
-        print(f"✓ Search endpoint returned {data.get('total', 0)} results for 'Nigeria'")
 
 
 class TestParaphraseSanitizer:
@@ -92,12 +89,9 @@ class TestParaphraseSanitizer:
         narrative = data.get("narrative", "")
         found_patterns = check_for_stage_directions(narrative)
         
-        print(f"✓ Paraphrase returned narrative ({len(narrative)} chars)")
         if found_patterns:
-            print(f"  WARNING: Found stage direction patterns: {found_patterns}")
             # This is a soft check - the sanitizer may not catch everything from LLM
         else:
-            print(f"  ✓ No stage direction patterns found in narrative")
         
         # Narrative should have substantive content
         assert len(narrative) > 50, "Narrative should have substantial content"
@@ -117,11 +111,8 @@ class TestParaphraseSanitizer:
         
         # Look for literal brackets that describe sounds
         bracket_matches = re.findall(r'\[.*?\]', narrative)
-        print(f"✓ Paraphrase processed 'dramatic announcement' text")
         if bracket_matches:
-            print(f"  Found brackets (may be legitimate): {bracket_matches[:3]}")
         else:
-            print(f"  ✓ No bracketed text in output")
 
 
 class TestTranslationSanitizer:
@@ -144,13 +135,9 @@ class TestTranslationSanitizer:
         # Check for stage directions in translation
         found_patterns = check_for_stage_directions(translated)
         
-        print(f"✓ Translation to Pidgin successful ({len(translated)} chars)")
-        print(f"  Sample: {translated[:100]}...")
         
         if found_patterns:
-            print(f"  WARNING: Found patterns: {found_patterns}")
         else:
-            print(f"  ✓ No stage direction patterns in translation")
 
     def test_translate_to_yoruba(self):
         """POST /api/translate/text with target_language='yo' returns clean translation"""
@@ -168,9 +155,7 @@ class TestTranslationSanitizer:
         
         found_patterns = check_for_stage_directions(translated)
         
-        print(f"✓ Translation to Yoruba successful ({len(translated)} chars)")
         if not found_patterns:
-            print(f"  ✓ No stage direction patterns in Yoruba translation")
 
     def test_supported_languages_endpoint(self):
         """GET /api/translate/languages should return supported languages"""
@@ -184,7 +169,6 @@ class TestTranslationSanitizer:
         language_codes = [lang.get("code") for lang in data]
         assert "pcm" in language_codes, "Pidgin should be supported"
         assert "yo" in language_codes, "Yoruba should be supported"
-        print(f"✓ Translation languages endpoint returned {len(data)} languages: {language_codes}")
 
 
 class TestBriefingScriptSanitizer:
@@ -197,7 +181,6 @@ class TestBriefingScriptSanitizer:
         
         if response.status_code == 404:
             # Generate new briefing
-            print("No existing briefing, generating new one (may take 10-30 seconds)...")
             response = requests.get(
                 f"{BASE_URL}/api/briefing/generate?voice_id=nova&force_regenerate=true",
                 timeout=90
@@ -212,9 +195,6 @@ class TestBriefingScriptSanitizer:
         # Check script doesn't contain sound effect descriptions
         found_patterns = check_for_stage_directions(script)
         
-        print(f"✓ Briefing script retrieved ({len(script)} chars)")
-        print(f"  Title: {data.get('title', 'N/A')}")
-        print(f"  Stories count: {len(data.get('stories', []))}")
         
         # Check for specific problematic patterns
         problematic_phrases = [
@@ -231,14 +211,10 @@ class TestBriefingScriptSanitizer:
         found_problematic = [p for p in problematic_phrases if p in script_lower]
         
         if found_problematic:
-            print(f"  WARNING: Found problematic phrases: {found_problematic}")
         else:
-            print(f"  ✓ No problematic SFX phrases found in script")
         
         if found_patterns:
-            print(f"  WARNING: Found regex patterns: {found_patterns[:5]}")
         else:
-            print(f"  ✓ No stage direction regex patterns in script")
 
     def test_briefing_history(self):
         """GET /api/briefing/history should return briefing list"""
@@ -246,7 +222,6 @@ class TestBriefingScriptSanitizer:
         assert response.status_code == 200
         data = response.json()
         assert "briefings" in data
-        print(f"✓ Briefing history endpoint returned {len(data.get('briefings', []))} briefings")
 
 
 class TestSanitizerIntegration:
@@ -274,17 +249,14 @@ class TestSanitizerIntegration:
                 found = check_for_stage_directions(narrative)
                 
                 status = "✓" if not found else "⚠"
-                print(f"  {status} Test {i+1}: {len(narrative)} chars, patterns: {len(found)}")
                 
                 if found:
                     all_clean = False
             else:
-                print(f"  ✗ Test {i+1} failed with status {response.status_code}")
                 all_clean = False
             
             time.sleep(1)  # Small delay between requests
         
-        print(f"✓ Multiple paraphrase test complete. All clean: {all_clean}")
 
 
 class TestRegressionEndpoints:
@@ -297,7 +269,6 @@ class TestRegressionEndpoints:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) > 0
-        print(f"✓ Voices endpoint returned {len(data)} profiles")
 
     def test_categories_endpoint(self):
         """GET /api/categories should return news categories"""
@@ -305,7 +276,6 @@ class TestRegressionEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"✓ Categories endpoint returned {len(data)} categories")
 
     def test_regions_endpoint(self):
         """GET /api/regions should return available regions"""
@@ -313,7 +283,6 @@ class TestRegressionEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"✓ Regions endpoint returned {len(data)} regions")
 
     def test_metrics_endpoint(self):
         """GET /api/metrics should return platform metrics"""
@@ -321,7 +290,6 @@ class TestRegressionEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert "listeners_today" in data
-        print(f"✓ Metrics endpoint returned platform metrics")
 
 
 if __name__ == "__main__":

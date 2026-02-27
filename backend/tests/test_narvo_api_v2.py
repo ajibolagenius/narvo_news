@@ -23,7 +23,6 @@ class TestHealthEndpoint:
         assert data["service"] == "Narvo API"
         assert "version" in data
         assert "timestamp" in data
-        print(f"✓ Health check passed: {data['status']}")
 
 
 class TestNewsEndpoints:
@@ -46,7 +45,6 @@ class TestNewsEndpoints:
             assert "source" in news_item
             assert "region" in news_item
             assert "category" in news_item
-            print(f"✓ News list returned {len(data)} items")
     
     def test_get_news_with_region_filter(self):
         """Test /api/news with region filter"""
@@ -57,7 +55,6 @@ class TestNewsEndpoints:
         assert isinstance(data, list)
         for item in data:
             assert item["region"].lower() == "nigeria"
-        print(f"✓ Region filter returned {len(data)} Nigeria items")
     
     def test_get_news_detail(self):
         """Test /api/news/{id} returns news detail"""
@@ -74,13 +71,11 @@ class TestNewsEndpoints:
             assert data["id"] == news_id
             assert "title" in data
             assert "summary" in data
-            print(f"✓ News detail returned for ID: {news_id}")
     
     def test_get_news_detail_not_found(self):
         """Test /api/news/{id} returns 404 for invalid ID"""
         response = requests.get(f"{BASE_URL}/api/news/invalid-id-12345")
         assert response.status_code == 404
-        print("✓ News detail 404 for invalid ID")
 
 
 class TestVoicesEndpoint:
@@ -100,7 +95,6 @@ class TestVoicesEndpoint:
         assert "name" in voice
         assert "accent" in voice
         assert "description" in voice
-        print(f"✓ Voices endpoint returned {len(data)} voices")
 
 
 class TestRegionsEndpoint:
@@ -118,7 +112,6 @@ class TestRegionsEndpoint:
         region = data[0]
         assert "id" in region
         assert "name" in region
-        print(f"✓ Regions endpoint returned {len(data)} regions")
 
 
 class TestCategoriesEndpoint:
@@ -136,7 +129,6 @@ class TestCategoriesEndpoint:
         category = data[0]
         assert "id" in category
         assert "name" in category
-        print(f"✓ Categories endpoint returned {len(data)} categories")
 
 
 class TestTrendingEndpoint:
@@ -152,7 +144,6 @@ class TestTrendingEndpoint:
         assert "topics" in data
         assert isinstance(data["tags"], list)
         assert isinstance(data["topics"], list)
-        print(f"✓ Trending endpoint returned {len(data['tags'])} tags")
 
 
 class TestMetricsEndpoint:
@@ -167,7 +158,6 @@ class TestMetricsEndpoint:
         assert "listeners_today" in data
         assert "sources_online" in data
         assert "stories_processed" in data
-        print(f"✓ Metrics endpoint returned platform data")
 
 
 class TestBookmarkEndpoints:
@@ -205,7 +195,6 @@ class TestBookmarkEndpoints:
         assert "bookmark" in data
         assert data["bookmark"]["story_id"] == self.test_story_id
         assert data["bookmark"]["title"] == "Test Story Title"
-        print(f"✓ Bookmark created successfully")
     
     def test_get_bookmarks_for_user(self):
         """Test GET /api/bookmarks?user_id=X returns user's bookmarks"""
@@ -235,7 +224,6 @@ class TestBookmarkEndpoints:
         test_bookmark = next((b for b in data if b["story_id"] == self.test_story_id), None)
         assert test_bookmark is not None
         assert test_bookmark["title"] == "Test Story for GET"
-        print(f"✓ GET bookmarks returned {len(data)} bookmarks for user")
     
     def test_get_bookmarks_empty_user(self):
         """Test GET /api/bookmarks for user with no bookmarks returns empty list"""
@@ -246,7 +234,6 @@ class TestBookmarkEndpoints:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) == 0
-        print("✓ GET bookmarks for new user returns empty list")
     
     def test_delete_bookmark(self):
         """Test DELETE /api/bookmarks/{story_id}?user_id=X removes bookmark"""
@@ -280,7 +267,6 @@ class TestBookmarkEndpoints:
         verify_data = verify_response.json()
         test_bookmark = next((b for b in verify_data if b["story_id"] == self.test_story_id), None)
         assert test_bookmark is None
-        print("✓ Bookmark deleted and verified removed")
     
     def test_bookmark_replaces_existing(self):
         """Test POST /api/bookmarks replaces existing bookmark with same story_id"""
@@ -317,7 +303,6 @@ class TestBookmarkEndpoints:
         matching_bookmarks = [b for b in data if b["story_id"] == self.test_story_id]
         assert len(matching_bookmarks) == 1
         assert matching_bookmarks[0]["title"] == "Updated Title"
-        print("✓ Bookmark correctly replaces existing with same story_id")
 
 
 if __name__ == "__main__":

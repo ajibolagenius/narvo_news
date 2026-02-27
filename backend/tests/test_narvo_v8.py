@@ -21,7 +21,6 @@ class TestHealthAndCore:
         assert data["service"] == "Narvo API"
         assert data["version"] == "2.0"
         assert "timestamp" in data
-        print("✓ Health endpoint returns online status")
     
     def test_metrics_endpoint(self):
         """Test /api/metrics returns platform metrics"""
@@ -32,7 +31,6 @@ class TestHealthAndCore:
         assert "sources_online" in data
         assert "stories_processed" in data
         assert "signal_strength" in data
-        print("✓ Metrics endpoint returns platform metrics")
     
     def test_regions_endpoint(self):
         """Test /api/regions returns available regions"""
@@ -41,7 +39,6 @@ class TestHealthAndCore:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) >= 2  # Nigeria and Continental
-        print("✓ Regions endpoint returns regions")
     
     def test_categories_endpoint(self):
         """Test /api/categories returns news categories"""
@@ -50,7 +47,6 @@ class TestHealthAndCore:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) >= 5  # Multiple categories
-        print("✓ Categories endpoint returns categories")
     
     def test_trending_endpoint(self):
         """Test /api/trending returns trending topics"""
@@ -59,7 +55,6 @@ class TestHealthAndCore:
         data = response.json()
         assert "tags" in data
         assert "topics" in data
-        print("✓ Trending endpoint returns tags and topics")
     
     def test_voices_endpoint(self):
         """Test /api/voices returns voice profiles"""
@@ -71,7 +66,6 @@ class TestHealthAndCore:
         voice_ids = [v["id"] for v in data]
         assert "nova" in voice_ids
         assert "onyx" in voice_ids
-        print("✓ Voices endpoint returns 5 voice profiles")
 
 
 class TestNewsEndpoints:
@@ -91,7 +85,6 @@ class TestNewsEndpoints:
         assert "summary" in item
         assert "source" in item
         assert "category" in item
-        print(f"✓ News endpoint returns {len(data)} items")
     
     def test_news_limit_parameter(self):
         """Test /api/news respects limit parameter"""
@@ -99,7 +92,6 @@ class TestNewsEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert len(data) <= 3
-        print("✓ News endpoint respects limit parameter")
     
     def test_news_detail_valid_id(self):
         """Test /api/news/{id} returns news detail with narrative"""
@@ -117,13 +109,11 @@ class TestNewsEndpoints:
         assert "title" in data
         assert "summary" in data
         # Narrative may or may not be generated
-        print(f"✓ News detail endpoint returns item: {data['title'][:50]}...")
     
     def test_news_detail_invalid_id(self):
         """Test /api/news/{id} returns 404 for invalid ID"""
         response = requests.get(f"{BASE_URL}/api/news/invalid_id_12345")
         assert response.status_code == 404
-        print("✓ News detail returns 404 for invalid ID")
 
 
 class TestBookmarksEndpoints:
@@ -143,7 +133,6 @@ class TestBookmarksEndpoints:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) == 0
-        print("✓ Empty bookmarks returns empty list")
     
     def test_add_bookmark(self):
         """Test POST /api/bookmarks adds bookmark"""
@@ -164,7 +153,6 @@ class TestBookmarksEndpoints:
         data = response.json()
         assert data["status"] == "ok"
         assert "bookmark" in data
-        print("✓ Add bookmark succeeds")
     
     def test_get_bookmarks_after_add(self):
         """Test GET /api/bookmarks returns added bookmark"""
@@ -189,7 +177,6 @@ class TestBookmarksEndpoints:
         # Find our bookmark
         found = any(b["story_id"] == story_id for b in data)
         assert found, "Added bookmark should be in list"
-        print("✓ Get bookmarks returns added bookmark")
     
     def test_delete_bookmark(self):
         """Test DELETE /api/bookmarks/{story_id} removes bookmark"""
@@ -216,7 +203,6 @@ class TestBookmarksEndpoints:
         bookmarks = get_response.json()
         found = any(b["story_id"] == story_id for b in bookmarks)
         assert not found, "Deleted bookmark should not be in list"
-        print("✓ Delete bookmark succeeds")
 
 
 class TestPreferencesEndpoints:
@@ -238,7 +224,6 @@ class TestPreferencesEndpoints:
         assert "region" in data
         assert "voice" in data
         assert "interests" in data
-        print("✓ Default preferences returned for new user")
     
     def test_save_preferences(self):
         """Test POST /api/preferences saves preferences"""
@@ -256,7 +241,6 @@ class TestPreferencesEndpoints:
         data = response.json()
         assert data["status"] == "ok"
         assert "preferences" in data
-        print("✓ Save preferences succeeds")
     
     def test_get_saved_preferences(self):
         """Test /api/preferences returns saved preferences"""
@@ -276,7 +260,6 @@ class TestPreferencesEndpoints:
         data = response.json()
         assert data["region"] == "nairobi"
         assert data["voice"] == "echo"
-        print("✓ Get preferences returns saved data")
     
     def test_update_preferences(self):
         """Test updating preferences overwrites old values"""
@@ -306,7 +289,6 @@ class TestPreferencesEndpoints:
         assert data["region"] == "accra"
         assert data["voice"] == "onyx"
         assert "tech" in data["interests"]
-        print("✓ Update preferences overwrites correctly")
 
 
 if __name__ == "__main__":

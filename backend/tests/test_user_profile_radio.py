@@ -19,7 +19,6 @@ class TestHealthAndMetrics:
         assert data["status"] == "online"
         assert data["service"] == "Narvo API"
         assert "timestamp" in data
-        print(f"✓ Health check passed: {data['status']}")
     
     def test_metrics_endpoint(self):
         """Test /api/metrics returns platform metrics for Account page"""
@@ -32,7 +31,6 @@ class TestHealthAndMetrics:
         assert "stories_processed" in data
         assert "signal_strength" in data
         assert "network_load" in data
-        print(f"✓ Metrics: stories_processed={data['stories_processed']}, network_load={data['network_load']}")
 
 
 class TestVoiceStudioAPI:
@@ -59,7 +57,6 @@ class TestVoiceStudioAPI:
         assert "ONYX" in voice_names
         assert "ECHO" in voice_names
         assert "ALLOY" in voice_names
-        print(f"✓ Voices endpoint returned {len(data)} voice profiles: {voice_names}")
 
 
 class TestRadioIntegration:
@@ -85,7 +82,6 @@ class TestRadioIntegration:
         assert "GH" in country_codes  # Ghana
         assert "KE" in country_codes  # Kenya
         assert "ZA" in country_codes  # South Africa
-        print(f"✓ Radio countries: {country_codes}")
     
     def test_radio_stations_nigeria(self):
         """Test /api/radio/stations returns Nigerian stations"""
@@ -103,9 +99,7 @@ class TestRadioIntegration:
             assert "country" in station
             assert "countrycode" in station
         
-        print(f"✓ Nigerian radio stations: {len(data)} stations found")
         for s in data[:3]:
-            print(f"  - {s['name']} ({s.get('bitrate', 0)}kbps)")
     
     def test_radio_stations_ghana(self):
         """Test /api/radio/stations returns Ghanaian stations"""
@@ -114,7 +108,6 @@ class TestRadioIntegration:
         data = response.json()
         assert isinstance(data, list)
         # Ghana may have fewer stations, so just check structure
-        print(f"✓ Ghanaian radio stations: {len(data)} stations found")
     
     def test_radio_stations_south_africa(self):
         """Test /api/radio/stations returns South African stations"""
@@ -122,7 +115,6 @@ class TestRadioIntegration:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"✓ South African radio stations: {len(data)} stations found")
     
     def test_radio_stations_default(self):
         """Test /api/radio/stations without country filter returns African stations"""
@@ -130,7 +122,6 @@ class TestRadioIntegration:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"✓ Default radio stations (all Africa): {len(data)} stations found")
 
 
 class TestNewsAPI:
@@ -148,7 +139,6 @@ class TestNewsAPI:
             assert "title" in news
             assert "summary" in news
             assert "source" in news
-        print(f"✓ News endpoint returned {len(data)} items")
 
 
 if __name__ == "__main__":

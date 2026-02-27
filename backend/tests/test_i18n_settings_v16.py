@@ -22,7 +22,6 @@ class TestSettingsAPI:
         data = response.json()
         # Check default settings structure
         assert 'high_contrast' in data or 'voice_model' in data, "Settings should have default keys"
-        print(f"Default guest settings: {data}")
     
     def test_save_system_settings(self):
         """POST /api/settings/test_user saves system settings"""
@@ -44,7 +43,6 @@ class TestSettingsAPI:
         
         result = response.json()
         assert result.get("status") == "success", f"Save should succeed: {result}"
-        print(f"System settings save result: {result}")
         
         # Verify persistence by GET
         get_response = requests.get(f"{BASE_URL}/api/settings/{test_user}")
@@ -53,7 +51,6 @@ class TestSettingsAPI:
         saved_data = get_response.json()
         assert saved_data.get("high_contrast") == True, "high_contrast should be True"
         assert saved_data.get("alert_volume") == 75, "alert_volume should be 75"
-        print(f"Verified persisted settings: {saved_data}")
     
     def test_save_accessibility_settings(self):
         """POST /api/settings/test_user saves accessibility settings"""
@@ -77,7 +74,6 @@ class TestSettingsAPI:
         
         assert saved_data.get("display_density") == "compact", "display_density should be compact"
         assert saved_data.get("font_scale") == 125, "font_scale should be 125"
-        print(f"Accessibility settings saved and verified: {saved_data}")
     
     def test_settings_merge_behavior(self):
         """Settings should merge, not overwrite"""
@@ -103,7 +99,6 @@ class TestSettingsAPI:
         assert merged.get("alert_volume") == 80, "alert_volume should persist after merge"
         assert merged.get("display_density") == "expanded", "display_density should be set"
         assert merged.get("font_scale") == 110, "font_scale should be set"
-        print(f"Settings merge verified: {merged}")
 
 
 class TestNewsDetailAPI:
@@ -123,7 +118,6 @@ class TestNewsDetailAPI:
         assert "id" in first_item, "News item should have id"
         assert "title" in first_item, "News item should have title"
         assert "source" in first_item, "News item should have source"
-        print(f"Got {len(data)} news items, first: {first_item.get('title', '')[:50]}")
         
         return first_item["id"]  # Return for use in other tests
     
@@ -149,7 +143,6 @@ class TestNewsDetailAPI:
         assert "region" in detail, "Detail should have region"
         
         # Narrative may be generated or pending
-        print(f"News detail: title={detail.get('title', '')[:40]}, category={detail.get('category')}, region={detail.get('region')}")
     
     def test_factcheck_api_for_truthtag(self):
         """GET /api/factcheck/{story_id} returns verification status for TruthTag"""
@@ -172,7 +165,6 @@ class TestNewsDetailAPI:
         assert "source" in data, "FactCheck should have source"
         assert "explanation" in data, "FactCheck should have explanation"
         
-        print(f"FactCheck for {story_id}: status={data['status']}, confidence={data['confidence']}%")
 
 
 class TestRadioAPI:
@@ -193,7 +185,6 @@ class TestRadioAPI:
         assert "GH" in codes, "Ghana should be in the list"
         assert "KE" in codes, "Kenya should be in the list"
         
-        print(f"Got {len(countries)} radio countries: {[c['code'] for c in countries[:6]]}")
     
     def test_get_radio_stations_by_country(self):
         """GET /api/radio/stations?country=NG returns Nigerian stations"""
@@ -209,9 +200,7 @@ class TestRadioAPI:
             assert "name" in station, "Station should have name"
             assert "url" in station, "Station should have url"
             assert "country" in station, "Station should have country"
-            print(f"Got {len(stations)} Nigerian stations, first: {station.get('name', '')}")
         else:
-            print("No stations returned for NG (may be empty from external API)")
 
 
 class TestVoicesAPI:
@@ -233,7 +222,6 @@ class TestVoicesAPI:
         assert "accent" in voice, "Voice should have accent"
         assert "description" in voice, "Voice should have description"
         
-        print(f"Got {len(voices)} voices: {[v['name'] for v in voices]}")
     
     def test_save_voice_settings(self):
         """POST /api/settings/{user_id}/voice saves voice preferences"""
@@ -255,7 +243,6 @@ class TestVoicesAPI:
         
         voice_settings = get_response.json()
         assert voice_settings.get("voice_model") == "onyx", "voice_model should be onyx"
-        print(f"Voice settings saved: {voice_settings}")
 
 
 class TestHealthAPI:
@@ -268,7 +255,6 @@ class TestHealthAPI:
         
         data = response.json()
         assert data.get("status") == "online", "Service should be online"
-        print(f"Health check: {data}")
 
 
 if __name__ == "__main__":

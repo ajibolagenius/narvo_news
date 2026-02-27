@@ -15,7 +15,6 @@ class TestHealthMonitoringAPI:
         """Test GET /api/sources/health returns 200 OK"""
         response = requests.get(f"{BASE_URL}/api/sources/health", timeout=15)
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
-        print("PASS: /api/sources/health returns 200 OK")
     
     def test_sources_health_has_summary_counts(self):
         """Test /api/sources/health returns total, green, amber, red counts"""
@@ -41,8 +40,6 @@ class TestHealthMonitoringAPI:
         
         # Verify sum of status counts makes sense
         total_status = data["green"] + data["amber"] + data["red"]
-        print(f"Health counts: green={data['green']}, amber={data['amber']}, red={data['red']}, total={data['total']}")
-        print("PASS: /api/sources/health returns correct summary counts structure")
     
     def test_sources_health_has_sources_array(self):
         """Test /api/sources/health has sources array with required fields"""
@@ -66,8 +63,6 @@ class TestHealthMonitoringAPI:
         valid_statuses = ["green", "amber", "red", "unknown"]
         assert source["status"] in valid_statuses, f"Invalid status: {source['status']}"
         
-        print(f"Sample source: {source['name']} - status={source['status']}, latency={source['latency_ms']}ms")
-        print("PASS: /api/sources/health returns sources array with correct structure")
     
     def test_sources_health_refresh_endpoint(self):
         """Test POST /api/sources/health/refresh triggers health check"""
@@ -78,7 +73,6 @@ class TestHealthMonitoringAPI:
         assert "status" in data, "Missing 'status' field"
         assert data["status"] == "started", f"Expected status='started', got {data['status']}"
         
-        print("PASS: POST /api/sources/health/refresh returns status='started'")
     
     def test_sources_health_regions_covered(self):
         """Test /api/sources/health covers all 3 regions"""
@@ -100,12 +94,10 @@ class TestHealthMonitoringAPI:
             if region in region_counts:
                 region_counts[region] += 1
         
-        print(f"Region counts: local={region_counts['local']}, continental={region_counts['continental']}, international={region_counts['international']}")
         assert region_counts["local"] == 20, f"Expected 20 local sources, got {region_counts['local']}"
         assert region_counts["continental"] == 8, f"Expected 8 continental sources, got {region_counts['continental']}"
         assert region_counts["international"] == 11, f"Expected 11 international sources, got {region_counts['international']}"
         
-        print("PASS: /api/sources/health covers all 3 regions with correct counts")
     
     def test_health_refresh_then_verify_updated(self):
         """Test that refresh triggers update and data changes"""
@@ -131,7 +123,6 @@ class TestHealthMonitoringAPI:
         assert "sources" in updated_data
         assert updated_data["total"] == 39
         
-        print("PASS: Health refresh updates data correctly")
     
     def test_health_sources_latency_values(self):
         """Test that sources have reasonable latency values"""
@@ -147,8 +138,6 @@ class TestHealthMonitoringAPI:
             if latency > 0:
                 sources_with_latency += 1
         
-        print(f"Sources with positive latency: {sources_with_latency}/{len(data['sources'])}")
-        print("PASS: Health sources have valid latency values")
     
     def test_health_last_checked_format(self):
         """Test that last_checked is ISO format timestamp or None"""
@@ -165,8 +154,6 @@ class TestHealthMonitoringAPI:
                 assert "T" in last_checked or "-" in last_checked, f"Invalid timestamp format: {last_checked}"
                 checked_count += 1
         
-        print(f"Sources with last_checked timestamp: {checked_count}/{len(data['sources'])}")
-        print("PASS: Health sources have valid last_checked values")
 
 
 class TestExistingFeaturesRegression:
@@ -178,7 +165,6 @@ class TestExistingFeaturesRegression:
         assert response.status_code == 200
         data = response.json()
         assert data.get("total_sources") == 39, f"Expected 39 sources, got {data.get('total_sources')}"
-        print("PASS: /api/sources returns 39 total sources")
     
     def test_api_metrics_endpoint(self):
         """Test /api/metrics endpoint still works"""
@@ -186,7 +172,6 @@ class TestExistingFeaturesRegression:
         assert response.status_code == 200
         data = response.json()
         assert "total_sources" in data
-        print("PASS: /api/metrics endpoint works")
     
     def test_api_news_endpoint(self):
         """Test /api/news endpoint still works"""
@@ -194,7 +179,6 @@ class TestExistingFeaturesRegression:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"PASS: /api/news returns {len(data)} items")
     
     def test_api_health_endpoint(self):
         """Test /api/health endpoint still works"""
@@ -202,7 +186,6 @@ class TestExistingFeaturesRegression:
         assert response.status_code == 200
         data = response.json()
         assert data.get("status") == "online"
-        print("PASS: /api/health returns online status")
 
 
 if __name__ == "__main__":

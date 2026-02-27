@@ -4,6 +4,7 @@ import base64
 import hashlib
 import asyncio
 import logging
+import uuid
 from datetime import datetime, timezone
 from typing import List, Optional
 from dotenv import load_dotenv
@@ -30,8 +31,34 @@ app = FastAPI(title="Narvo API", version=API_VERSION)
 
 # GZip compression for smaller payloads
 from starlette.middleware.gzip import GZipMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 
 app.add_middleware(GZipMiddleware, minimum_size=500)
+
+
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    """Set X-Request-ID on response and log request with correlation ID."""
+
+    async def dispatch(self, request, call_next):
+        request_id = request.headers.get("X-Request-ID") or str(uuid.uuid4())
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = request_id
+        logger.debug("Request %s %s", request.method, request.url.path, extra={"request_id": request_id})
+        return response
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    """Add security headers: X-Content-Type-Options, X-Frame-Options; optional CSP."""
+
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        return response
+
+
+app.add_middleware(RequestIDMiddleware)
+app.add_middleware(SecurityHeadersMiddleware)
 
 # CORS: use FRONTEND_ORIGIN in production (e.g. https://narvo.news); ["*"] when unset (dev)
 _cors_origins = os.environ.get("FRONTEND_ORIGIN", "*")

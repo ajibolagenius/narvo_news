@@ -24,7 +24,6 @@ class TestHealthEndpoints:
         data = response.json()
         assert data["status"] == "online"
         assert "timestamp" in data
-        print(f"PASS: Health endpoint - status: {data['status']}")
 
     def test_news_endpoint(self):
         """Test /api/news returns news data"""
@@ -32,7 +31,6 @@ class TestHealthEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"PASS: News endpoint - returned {len(data)} items")
 
     def test_voices_endpoint(self):
         """Test /api/voices returns voice profiles"""
@@ -44,7 +42,6 @@ class TestHealthEndpoints:
         # Verify voice structure
         assert "id" in data[0]
         assert "name" in data[0]
-        print(f"PASS: Voices endpoint - returned {len(data)} voices")
 
 
 class TestBookmarksPersistence:
@@ -58,7 +55,6 @@ class TestBookmarksPersistence:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) == 0
-        print(f"PASS: Empty bookmarks for new user '{unique_user}'")
 
     def test_create_bookmark(self):
         """Test POST /api/bookmarks creates bookmark in MongoDB"""
@@ -78,7 +74,6 @@ class TestBookmarksPersistence:
         assert data["status"] == "ok"
         assert "bookmark" in data
         assert data["bookmark"]["title"] == bookmark_data["title"]
-        print(f"PASS: Created bookmark for story '{bookmark_data['story_id']}'")
         return bookmark_data
 
     def test_get_bookmarks_returns_created(self):
@@ -104,7 +99,6 @@ class TestBookmarksPersistence:
         # Verify the created bookmark exists
         story_ids = [b["story_id"] for b in bookmarks]
         assert story_id in story_ids, f"Created story_id '{story_id}' not found in retrieved bookmarks"
-        print(f"PASS: GET bookmarks returns created bookmark (found {len(bookmarks)} total)")
 
     def test_delete_bookmark(self):
         """Test DELETE /api/bookmarks removes from MongoDB"""
@@ -135,7 +129,6 @@ class TestBookmarksPersistence:
         bookmarks_after = get_after.json()
         after_ids = [b["story_id"] for b in bookmarks_after]
         assert story_id not in after_ids, "Bookmark should not exist after deletion"
-        print(f"PASS: Bookmark '{story_id}' successfully deleted")
 
     def test_bookmark_upsert_behavior(self):
         """Test that same story_id updates existing bookmark (upsert)"""
@@ -168,7 +161,6 @@ class TestBookmarksPersistence:
         matching = [b for b in bookmarks if b["story_id"] == story_id]
         assert len(matching) == 1, "Should have exactly one bookmark with this story_id"
         assert matching[0]["title"] == "Updated Title", "Title should be updated"
-        print(f"PASS: Upsert behavior correct - title updated to '{matching[0]['title']}'")
 
 
 class TestUserPreferencesPersistence:
@@ -186,7 +178,6 @@ class TestUserPreferencesPersistence:
         assert prefs["voice"] == "pidgin"
         assert "interests" in prefs
         assert isinstance(prefs["interests"], list)
-        print(f"PASS: Unknown user gets default preferences: region={prefs['region']}, voice={prefs['voice']}")
 
     def test_save_preferences(self):
         """Test POST /api/preferences saves to MongoDB"""
@@ -204,7 +195,6 @@ class TestUserPreferencesPersistence:
         assert "preferences" in data
         assert data["preferences"]["region"] == "nairobi"
         assert data["preferences"]["voice"] == "yoruba"
-        print(f"PASS: Preferences saved for user '{pref_user}'")
         return pref_user, preferences
 
     def test_get_saved_preferences(self):
@@ -230,7 +220,6 @@ class TestUserPreferencesPersistence:
         assert fetched_prefs["voice"] == "igbo"
         assert set(fetched_prefs["interests"]) == set(["politics", "culture"])
         assert "updated_at" in fetched_prefs  # Should have timestamp
-        print(f"PASS: Retrieved preferences match saved: region={fetched_prefs['region']}, voice={fetched_prefs['voice']}")
 
     def test_preferences_update(self):
         """Test that preferences can be updated"""
@@ -262,7 +251,6 @@ class TestUserPreferencesPersistence:
         assert fetched["region"] == "accra"
         assert fetched["voice"] == "yoruba"
         assert "tech" in fetched["interests"]
-        print(f"PASS: Preferences updated successfully to region={fetched['region']}, voice={fetched['voice']}")
 
 
 class TestAdditionalAPIs:
@@ -275,7 +263,6 @@ class TestAdditionalAPIs:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) > 0
-        print(f"PASS: Regions endpoint - returned {len(data)} regions")
 
     def test_categories_endpoint(self):
         """Test /api/categories returns category list"""
@@ -284,7 +271,6 @@ class TestAdditionalAPIs:
         data = response.json()
         assert isinstance(data, list)
         assert len(data) > 0
-        print(f"PASS: Categories endpoint - returned {len(data)} categories")
 
     def test_trending_endpoint(self):
         """Test /api/trending returns trending data"""
@@ -293,7 +279,6 @@ class TestAdditionalAPIs:
         data = response.json()
         assert "tags" in data
         assert "topics" in data
-        print(f"PASS: Trending endpoint - tags: {len(data['tags'])}, topics: {len(data['topics'])}")
 
     def test_metrics_endpoint(self):
         """Test /api/metrics returns metrics"""
@@ -302,7 +287,6 @@ class TestAdditionalAPIs:
         data = response.json()
         assert "listeners_today" in data
         assert "sources_online" in data
-        print(f"PASS: Metrics endpoint - listeners: {data['listeners_today']}")
 
 
 class TestNewsDetail:
@@ -312,7 +296,6 @@ class TestNewsDetail:
         """Test /api/news/{id} returns 404 for invalid ID"""
         response = requests.get(f"{BASE_URL}/api/news/invalid_id_12345")
         assert response.status_code == 404
-        print("PASS: News detail returns 404 for invalid ID")
 
     def test_news_detail_for_valid_id(self):
         """Test /api/news/{id} returns detail for valid ID"""
@@ -328,7 +311,6 @@ class TestNewsDetail:
             detail = detail_response.json()
             assert detail["id"] == valid_id
             assert "title" in detail
-            print(f"PASS: News detail returned for ID '{valid_id}'")
         else:
             pytest.skip("No news items available for detail test")
 
