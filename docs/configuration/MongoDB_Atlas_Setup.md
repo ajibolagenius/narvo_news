@@ -50,6 +50,8 @@ Atlas only accepts connections from IP addresses you allow.
 
 ## 5. Get the connection string
 
+**Which connection method?** In Atlas, when you click **Connect**, use **Drivers** (labeled “Connect your application”). Do **not** use Compass, Shell, or VS Code for the backend—those are for other tools. The Drivers flow gives you the URI that PyMongo uses.
+
 1. In the Atlas UI, open your **cluster**.
 2. Click **Connect**.
 3. Choose **Drivers** (or **Connect your application**).
@@ -123,3 +125,20 @@ For production, create a database user that can only read/write the `narvo` data
 - [ ] Backend starts and MongoDB-dependent routes work.
 
 For env vars and collection/index reference, see **[MongoDB_Configuration.md](./MongoDB_Configuration.md)**.
+
+---
+
+## Troubleshooting: SSL handshake failed (TLSV1_ALERT_INTERNAL_ERROR)
+
+If the backend logs **SSL handshake failed** or **tlsv1 alert internal error** when connecting to Atlas, it is often due to Python 3.14 (or a very new OpenSSL) and Atlas TLS negotiation.
+
+**Options:**
+
+1. **Use Python 3.11 or 3.12** for the backend (e.g. create a venv with `python3.12 -m venv .venv`). Atlas is known to work with these versions.
+2. **Dev-only workaround:** Append `&tlsAllowInvalidCertificates=true` to `MONGO_URL` in `backend/.env`. Example:
+   ```bash
+   MONGO_URL=mongodb+srv://user:pass@cluster.xxxxx.mongodb.net/narvo?retryWrites=true&w=majority&tlsAllowInvalidCertificates=true
+   ```
+   Do **not** use this in production; it disables certificate verification.
+3. Ensure **Network Access** in Atlas allows your IP (or “Allow from anywhere” for dev).
+4. Ensure the database user password in the URI is correct and URL-encoded if it contains `#`, `@`, `%`, etc.
