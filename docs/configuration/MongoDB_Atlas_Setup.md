@@ -134,8 +134,8 @@ If the backend logs **SSL handshake failed** or **tlsv1 alert internal error** w
 
 **Options:**
 
-1. **Use Python 3.11 or 3.12** for the backend (e.g. create a venv with `python3.12 -m venv .venv`). Atlas is known to work with these versions.
-2. **Dev-only workaround:** Append `&tlsAllowInvalidCertificates=true` to `MONGO_URL` in `backend/.env`. Example:
+1. **Dev-only workaround (recommended if you don’t have Python 3.11/3.12):** Append `&tlsAllowInvalidCertificates=true` to `MONGO_URL` in `backend/.env`. No reinstall or new venv needed.
+2. **Use Python 3.11, 3.12, or 3.13** for the backend if installed (e.g. `python3.13 -m venv .venv` then activate and `pip install -r requirements.txt`). Atlas is known to work with these versions. Skip if you don’t have them or hit `resolution-too-deep` on install. Example:
    ```bash
    MONGO_URL=mongodb+srv://user:pass@cluster.xxxxx.mongodb.net/narvo?retryWrites=true&w=majority&tlsAllowInvalidCertificates=true
    ```

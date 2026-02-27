@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { CaretRight, Lock, Sparkle, Sliders, ArrowCounterClockwise, Check, X } from '@phosphor-icons/react';
 
 const CurationConsolePage = () => {
-  const { t } = useTranslation();
   const [toneValue, setToneValue] = useState(65);
   const [lengthValue, setLengthValue] = useState(50);
 

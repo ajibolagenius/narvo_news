@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { SquaresFour, List, Warning, CheckCircle, Question, DotsThree, CheckSquare, Flag, ArrowClockwise } from '@phosphor-icons/react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const ModerationHubPage = () => {
-  const { t } = useTranslation();
   const [viewMode, setViewMode] = useState('grid');
   const [moderationItems, setModerationItems] = useState([]);
   const [stats, setStats] = useState(null);

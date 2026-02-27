@@ -144,32 +144,6 @@ export const AudioProvider = ({ children }) => {
     });
   }, []);
 
-  // Smooth fade out for broadcast transitions
-  const fadeOut = useCallback((callback) => {
-    const audio = audioRef.current;
-    if (!audio) return callback?.();
-    
-    setIsTransitioning(true);
-    const startVolume = audio.volume;
-    const steps = 10;
-    let step = 0;
-    
-    clearInterval(fadeIntervalRef.current);
-    fadeIntervalRef.current = setInterval(() => {
-      step++;
-      audio.volume = Math.max(0, startVolume * (1 - step / steps));
-      if (step >= steps) {
-        clearInterval(fadeIntervalRef.current);
-        callback?.();
-        // Restore volume for next track
-        setTimeout(() => {
-          audio.volume = isMuted ? 0 : volume;
-          setIsTransitioning(false);
-        }, 100);
-      }
-    }, 50);
-  }, [volume, isMuted]);
-
   useEffect(() => {
     const audio = new Audio();
     audio.volume = volume;
