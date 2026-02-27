@@ -27,6 +27,7 @@
     "build:admin": "REACT_APP_APP_MODE=admin react-scripts build",
     "generate-pwa-icons": "node scripts/generate-pwa-icons.js",
     "capture-pwa-screenshots": "node scripts/capture-pwa-screenshots.js",
+    "lint": "eslint src/",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

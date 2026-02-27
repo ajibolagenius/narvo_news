@@ -57,7 +57,7 @@ def add_bookmark(user_id: str, bookmark_data: Dict) -> Dict:
         "source_url": bookmark_data.get("source_url"),
         "saved_at": saved_at,
     }
-    db.table("bookmarks").upsert(doc, on_conflict="user_id,story_id").execute()
+    db.table("bookmarks").upsert(doc, on_conflict="user_id, story_id").execute()
     return {"status": "saved", "story_id": doc["story_id"], "saved_at": saved_at}
 
 

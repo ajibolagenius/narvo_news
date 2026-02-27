@@ -26,7 +26,7 @@ export const AudioProvider = ({ children }) => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isTransitioning] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(0.8);
@@ -145,6 +145,7 @@ export const AudioProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    const fadeIntervalId = fadeIntervalRef.current;
     const audio = new Audio();
     audio.volume = volume;
     // Enable background playback
@@ -207,7 +208,7 @@ export const AudioProvider = ({ children }) => {
     });
 
     return () => {
-      clearInterval(fadeIntervalRef.current);
+      if (fadeIntervalId) clearInterval(fadeIntervalId);
       audio.pause();
       audio.src = '';
       releaseWakeLock();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Bell, BellRinging, BellSlash, Lightning } from '@phosphor-icons/react';
+import { BellRinging, BellSlash } from '@phosphor-icons/react';
 import {
   requestNotificationPermission,
   isPushSupported,
@@ -9,8 +9,6 @@ import {
   getSubscription,
   showLocalNotification,
 } from '../lib/notificationService';
-
-const API_URL = process.env.REACT_APP_BACKEND_URL || '';
 
 const DailyDigestToggle = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
