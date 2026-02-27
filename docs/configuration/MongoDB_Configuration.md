@@ -93,6 +93,10 @@ Use `MONGO_URL=mongodb://localhost:27017` as above.
 
 ## 5. MongoDB Atlas (Cloud)
 
+For a **step-by-step Atlas setup** (account, cluster, user, network, connection string, backend `.env`), see **[MongoDB_Atlas_Setup.md](./MongoDB_Atlas_Setup.md)**.
+
+Summary:
+
 1. Create an account at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas).
 2. Create a cluster (e.g. M0 free tier).
 3. Under **Database Access**, create a user (username + password).

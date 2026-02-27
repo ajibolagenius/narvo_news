@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Clock, Play, Waveform } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useAudio } from '../contexts/AudioContext';
@@ -12,7 +11,6 @@ const ListeningHistoryPage = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { playTrack } = useAudio();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const userId = user?.id || 'guest';

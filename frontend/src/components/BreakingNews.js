@@ -16,36 +16,6 @@ export const BreakingNewsProvider = ({ children }) => {
   const lastCheckRef = useRef(null);
   const seenIdsRef = useRef(new Set());
 
-  // Check for breaking news every 30 seconds
-  useEffect(() => {
-    const checkBreaking = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/news/breaking`);
-        if (res.ok) {
-          const stories = await res.json();
-          const newStories = stories.filter(s => !seenIdsRef.current.has(s.id));
-          
-          if (newStories.length > 0 && notificationsEnabled && lastCheckRef.current) {
-            // Send browser notification for truly new stories
-            newStories.forEach(story => {
-              sendBrowserNotification(story);
-            });
-          }
-          
-          stories.forEach(s => seenIdsRef.current.add(s.id));
-          setBreakingStories(stories);
-          lastCheckRef.current = Date.now();
-        }
-      } catch (err) {
-        // Silently fail
-      }
-    };
-
-    checkBreaking();
-    const interval = setInterval(checkBreaking, 30000);
-    return () => clearInterval(interval);
-  }, [notificationsEnabled]);
-
   const sendBrowserNotification = useCallback((story) => {
     if ('Notification' in window && Notification.permission === 'granted') {
       const notification = new Notification('NARVO // BREAKING', {
@@ -60,6 +30,30 @@ export const BreakingNewsProvider = ({ children }) => {
       };
     }
   }, []);
+
+  // Check for breaking news every 30 seconds
+  useEffect(() => {
+    const checkBreaking = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/news/breaking`);
+        if (res.ok) {
+          const stories = await res.json();
+          const newStories = stories.filter(s => !seenIdsRef.current.has(s.id));
+          if (newStories.length > 0 && notificationsEnabled && lastCheckRef.current) {
+            newStories.forEach(story => sendBrowserNotification(story));
+          }
+          stories.forEach(s => seenIdsRef.current.add(s.id));
+          setBreakingStories(stories);
+          lastCheckRef.current = Date.now();
+        }
+      } catch (err) {
+        // Silently fail
+      }
+    };
+    checkBreaking();
+    const interval = setInterval(checkBreaking, 30000);
+    return () => clearInterval(interval);
+  }, [notificationsEnabled, sendBrowserNotification]);
 
   const requestPermission = useCallback(async () => {
     if ('Notification' in window) {

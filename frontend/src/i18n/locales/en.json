@@ -20,7 +20,7 @@
     "headline": "NARVO:\nTHE LOCAL PULSE, REFINED.",
     "description": "Engineered for total accessibility. Subscribed news, summarized and translated into your native tongue, delivered through an audio-first broadcast instrument.",
     "start_broadcast": "Start Broadcast",
-    "guest_play": "Oya, Play",
+    "guest_play": "Oya, Check Am Out",
     "incoming": "INCOMING_TRANSMISSIONS",
     "about": "ABOUT",
     "why_narvo": "WHY NARVO?",
@@ -39,7 +39,7 @@
     "voices_desc": "Regional accents (Yoruba, Hausa, Pidgin, Igbo, etc.) synthesized with zero fidelity loss and natural rhythmic flow.",
     "truth_title": "TRUTH TAG",
     "truth_desc": "Total transparency. Drill into any broadcast to see the original source, translation logic, and verification score.",
-    "system_core": "SYSTEM_CORE // LINGUISTIC ACCESSIBILITY",
+    "system_core": "SYSTEM_CORE",
     "join_broadcast": "Join the Broadcast Generation.",
     "start_listening": "Start Listening"
   },

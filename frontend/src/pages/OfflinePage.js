@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderOpen, Play, Pause, Trash, WarningOctagon, ArrowCounterClockwise, Funnel, Waves, Microphone, SpeakerHigh, WifiSlash, CloudArrowDown, Article, CheckCircle } from '@phosphor-icons/react';
+import { FolderOpen, Play, Pause, Trash, WarningOctagon, ArrowCounterClockwise, Funnel, Waves, Microphone, SpeakerHigh, WifiSlash, Article, CheckCircle } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { getAllCachedAudio, getCachedAudio, removeCachedAudio, getCacheStats, clearAllCache } from '../lib/audioCache';
 import Skeleton from '../components/Skeleton';
@@ -15,11 +15,12 @@ const OfflinePage = () => {
   const [filterType, setFilterType] = useState('all');
   const [cacheStats, setCacheStats] = useState({ totalSize: 0, formattedSize: '0 KB', offlineReady: 0 });
   const [currentPage, setCurrentPage] = useState(1);
-  const [offlineStats, setOfflineStats] = useState({ article_count: 0 });
+  const [, setOfflineStats] = useState({ article_count: 0 });
   const { playTrack, currentTrack, isPlaying, togglePlay } = useAudio();
 
   useEffect(() => {
     loadAllOfflineContent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
   }, []);
 
   const loadAllOfflineContent = async () => {
@@ -27,7 +28,7 @@ const OfflinePage = () => {
     await Promise.all([loadCachedItems(), loadSavedArticles(), loadOfflineStats()]);
     setLoading(false);
   };
-  
+
   const loadOfflineStats = async () => {
     try {
       const res = await fetch(`${API_URL}/api/offline/stats`);

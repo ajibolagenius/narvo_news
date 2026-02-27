@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Helmet } from 'react-helmet-async';
 import { Lightning, ArrowRight, X } from '@phosphor-icons/react';
 import { openTourGuide } from '../components/TourGuideModal';
 import Clock from '../components/Clock';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || '';
+const getPublicUrl = () => process.env.REACT_APP_PUBLIC_URL || (typeof window !== 'undefined' ? window.location.origin : '');
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -29,6 +31,18 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col border-x border-forest max-w-[1440px] mx-auto relative bg-background-dark" data-testid="landing-page">
+      <Helmet>
+        <title>Narvo | The Local Pulse, Refined</title>
+        <link rel="canonical" href={`${getPublicUrl()}/`} />
+        <meta property="og:url" content={`${getPublicUrl()}/`} />
+        <meta property="og:title" content="Narvo | The Local Pulse, Refined" />
+        <meta property="og:description" content="Broadcast-grade, audio-first news platform. Native translation, regional voices, truth protocol." />
+        <meta property="og:image" content={`${getPublicUrl()}/screenshot-wide.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Narvo | The Local Pulse, Refined" />
+        <meta name="twitter:description" content="Broadcast-grade, audio-first news platform for Africa." />
+        <meta name="twitter:image" content={`${getPublicUrl()}/screenshot-wide.png`} />
+      </Helmet>
       <header className="flex flex-col border-b border-forest">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-6">
@@ -121,7 +135,7 @@ const LandingPage = () => {
               <article key={item.id} className={`p-6 ${idx < news.length - 1 ? 'border-b border-forest' : ''} group cursor-pointer hover:bg-forest/10 transition-all flex-1 flex flex-col justify-center`} onClick={() => navigate(`/news/${item.id}`)} data-testid={`transmission-${idx}`}>
                 <div className="flex justify-between items-start mb-2">
                   <span className="mono-ui text-[11px] text-primary border border-primary px-1">{(item.category || 'GENERAL').toUpperCase()}</span>
-                  <span className="mono-ui text-[11px] text-forest">{item.source || 'RSS'} // {item.region || 'AFRICA'}</span>
+                  <span className="mono-ui text-[11px] text-forest">{item.source || 'RSS'}{' // '}{item.region || 'AFRICA'}</span>
                 </div>
                 <h3 className="font-display text-md font-bold leading-snug mb-2 group-hover:text-primary transition-colors text-content line-clamp-2">{item.title}</h3>
                 <div className="flex items-center gap-3 mt-2">
@@ -189,14 +203,39 @@ const LandingPage = () => {
         </div>
         <div className="flex flex-col">
           <div className="p-8 flex-1 border-b border-forest flex flex-col justify-center">
-            <div className="flex items-center gap-4 mb-6">
-              <svg className="w-6 h-6 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M152,96H104a8,8,0,0,0-8,8v48a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V104A8,8,0,0,0,152,96Zm-8,48H112V112h32Z"/></svg>
+            <div className="flex items-center gap-4 mb-4">
+              <svg className="w-6 h-6 text-forest shrink-0" viewBox="0 0 256 256" fill="currentColor"><path d="M152,96H104a8,8,0,0,0-8,8v48a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V104A8,8,0,0,0,152,96Zm-8,48H112V112h32Z"/></svg>
               <h4 className="mono-ui text-lg text-content">Broadcast_Control_Unit</h4>
             </div>
-            <div className="aspect-video w-full bg-forest/10 border border-forest relative overflow-hidden flex items-end p-8 gap-1">
-              {[25, 50, 75, 66, 100, 33, 50].map((h, i) => (
-                <div key={i} className={`flex-1 ${i % 2 === 1 ? 'bg-primary' : 'bg-forest/40'} ${i === 3 ? 'animate-pulse' : ''}`} style={{ height: `${h}%` }} />
-              ))}
+            {/* BCU status row */}
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="border border-forest bg-background-dark px-3 py-2">
+                <span className="mono-ui text-[10px] text-forest block">SIGNAL_STRENGTH</span>
+                <span className="mono-ui text-[13px] text-primary font-bold">{metrics?.total_sources ? Math.min(100, Math.round((metrics.total_sources / 10) * 100)) : 100}%</span>
+              </div>
+              <div className="border border-forest bg-background-dark px-3 py-2">
+                <span className="mono-ui text-[10px] text-forest block">LATENCY</span>
+                <span className="mono-ui text-[13px] text-primary font-bold">&lt;500ms</span>
+              </div>
+              <div className="border border-forest bg-background-dark px-3 py-2">
+                <span className="mono-ui text-[10px] text-forest block">SOURCES</span>
+                <span className="mono-ui text-[13px] text-primary font-bold">{metrics?.total_sources ?? 7}</span>
+              </div>
+            </div>
+            <div className="aspect-video w-full bg-forest/10 border border-forest relative overflow-hidden flex items-end p-8 gap-1" data-testid="bcu-waveform">
+              {(() => {
+                const base = [25, 50, 75, 66, 100, 33, 50];
+                const stories = metrics?.total_stories != null ? Math.min(100, Math.round((metrics.total_stories % 100) / 1.5)) : null;
+                const sources = metrics?.total_sources != null ? Math.min(100, metrics.total_sources * 12) : null;
+                const heights = base.map((b, i) => {
+                  if (i === 2 && stories != null) return Math.max(20, Math.min(100, b + stories));
+                  if (i === 4 && sources != null) return Math.max(20, Math.min(100, sources));
+                  return b;
+                });
+                return heights.map((h, i) => (
+                  <div key={i} className={`flex-1 min-w-0 ${i % 2 === 1 ? 'bg-primary' : 'bg-forest/40'} ${i === 3 ? 'animate-pulse' : ''}`} style={{ height: `${h}%` }} />
+                ));
+              })()}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <span className="mono-ui text-primary text-[12px] bg-background-dark px-4 py-2 border border-forest">SIGNAL_OPTIMIZED</span>
               </div>

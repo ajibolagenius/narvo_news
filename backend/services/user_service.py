@@ -9,9 +9,11 @@ db = mongo_client[os.environ.get("DB_NAME", "narvo")]
 bookmarks_col = db["bookmarks"]
 preferences_col = db["user_preferences"]
 
-# Create indexes
-bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
-preferences_col.create_index("user_id", unique=True)
+try:
+    bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
+    preferences_col.create_index("user_id", unique=True)
+except Exception as e:
+    print(f"[user_service] Index creation skipped (MongoDB may be down): {e}")
 
 # Default values
 DEFAULT_PREFERENCES = {

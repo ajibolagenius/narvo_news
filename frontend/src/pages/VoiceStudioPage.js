@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Waveform, Radio, Check, SpeakerHigh, Stop, CircleNotch, Translate } from '@phosphor-icons/react';
+import { Waveform, Radio, Check, SpeakerHigh, Stop, CircleNotch, Translate } from '@phosphor-icons/react';
 import { useAudio } from '../contexts/AudioContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useHapticAlert } from '../components/HapticAlerts';
@@ -23,7 +23,7 @@ const VoiceStudioPage = () => {
   const [previewPlaying, setPreviewPlaying] = useState(null);
   const [previewLoading, setPreviewLoading] = useState(null);
   const previewAudioRef = useRef(null);
-  const { playTrack, setBroadcastLanguage, setVoiceModel } = useAudio();
+  const { setBroadcastLanguage, setVoiceModel } = useAudio();
   const { user } = useAuth();
   const { showAlert } = useHapticAlert();
 

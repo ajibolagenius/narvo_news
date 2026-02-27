@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { CloudArrowDown, CheckCircle, X, CircleNotch, WarningCircle, CaretDown, CaretUp } from '@phosphor-icons/react';
+import { CloudArrowDown, CheckCircle, CircleNotch, WarningCircle, CaretDown, CaretUp } from '@phosphor-icons/react';
 import { useDownloadQueue } from '../contexts/DownloadQueueContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const DownloadQueueIndicator = () => {
   const {
     queue,
-    currentDownload,
     isProcessing,
     completedCount,
     totalCount,

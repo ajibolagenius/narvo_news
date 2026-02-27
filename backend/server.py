@@ -144,10 +144,13 @@ class MemCache:
 
 _cache = MemCache()
 
-# Create indexes
-bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
-preferences_col.create_index("user_id", unique=True)
-briefings_col.create_index("date", unique=True)
+# Create indexes (defensive: avoid startup crash if MongoDB is unavailable)
+try:
+    bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
+    preferences_col.create_index("user_id", unique=True)
+    briefings_col.create_index("date", unique=True)
+except Exception as e:
+    print(f"[server] Index creation skipped (MongoDB may be down): {e}")
 
 # African News RSS Feeds
 RSS_FEEDS = [
@@ -294,7 +297,7 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                     # Clean HTML from summary
                     import re
                     summary = re.sub(r'<[^>]+>', '', summary)
-                    
+
                     # Extract image URL from RSS entry
                     image_url = None
                     # Try media:content
@@ -322,7 +325,7 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                         img_match = re.search(r'src="(https?://[^"]+)"', content_html)
                         if img_match:
                             image_url = img_match.group(1)
-                    
+
                     category = extract_category(title, summary)
                     items.append({
                         "id": generate_news_id(title, feed_info["name"]),
@@ -384,7 +387,7 @@ async def get_news(
         all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
         _news_response_cache["data"] = all_news
         _news_response_cache["timestamp"] = now
-    
+
     # Optionally merge aggregator news
     if include_aggregators:
         try:
@@ -394,13 +397,13 @@ async def get_news(
             all_news = list(all_news) + list(agg_news)
         except Exception as e:
             print(f"[News] Aggregator fetch error: {e}")
-    
+
     # Apply filters
     if region:
         all_news = [n for n in all_news if n.get("region", "").lower() == region.lower()]
     if category:
         all_news = [n for n in all_news if n.get("category", "").lower() == category.lower()]
-    
+
     # Sort by recency and return
     all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
     return all_news[:limit]
@@ -414,20 +417,20 @@ async def get_breaking_news():
         results = await asyncio.gather(*tasks)
         for items in results:
             all_news.extend(items)
-        
+
         all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
         breaking = []
-        
+
         for story in all_news[:30]:
             title_lower = (story.get("title", "") or "").lower()
             if any(kw in title_lower for kw in ["breaking", "urgent", "flash", "just in", "developing"]):
                 breaking.append(story)
-        
+
         if not breaking and all_news:
             latest = all_news[0]
             latest["is_developing"] = True
             breaking = [latest]
-        
+
         return breaking[:3]
     except Exception:
         return []
@@ -440,16 +443,16 @@ async def get_news_detail(news_id: str):
     all_news = []
     tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
     results = await asyncio.gather(*tasks)
-    
+
     for items in results:
         all_news.extend(items)
-    
+
     # Find the news item
     news_item = next((n for n in all_news if n["id"] == news_id), None)
-    
+
     if not news_item:
         raise HTTPException(status_code=404, detail="News item not found")
-    
+
     # Generate narrative if not present
     if not news_item.get("narrative"):
         narrative_data = await generate_narrative(f"{news_item['title']}\n\n{news_item['summary']}")
@@ -457,7 +460,7 @@ async def get_news_detail(news_id: str):
         raw_takeaways = narrative_data.get("key_takeaways", [])
         news_item["narrative"] = sanitize_ai_text(raw_narrative)
         news_item["key_takeaways"] = [sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)]
-    
+
     return news_item
 
 @app.post("/api/paraphrase", response_model=ParaphraseResponse)
@@ -477,9 +480,9 @@ async def generate_tts(request: TTSRequest):
     """Generate TTS audio — YarnGPT primary, OpenAI fallback, with caching"""
     import hashlib
     from services.yarngpt_service import generate_tts as yarn_generate_tts
-    
+
     cache_key = hashlib.md5(f"{request.text[:200]}:{request.voice_id}:{request.language}".encode()).hexdigest()
-    
+
     # Check MongoDB cache first
     cached = db["tts_cache"].find_one({"cache_key": cache_key}, {"_id": 0})
     if cached and cached.get("audio_url"):
@@ -490,13 +493,13 @@ async def generate_tts(request: TTSRequest):
             voice_id=cached.get("voice_id", request.voice_id),
             language=request.language
         )
-    
+
     try:
         from services.translation_service import translate_text, SUPPORTED_LANGUAGES
-        
+
         text_to_speak = request.text
         translated_text = None
-        
+
         # Translate if language is not English
         if request.language and request.language != "en" and request.language in SUPPORTED_LANGUAGES:
             translation_result = await translate_text(
@@ -508,17 +511,17 @@ async def generate_tts(request: TTSRequest):
             if translation_result.get("success"):
                 text_to_speak = translation_result.get("translated", request.text)
                 translated_text = text_to_speak
-        
+
         # Generate TTS via YarnGPT (primary) with OpenAI fallback
         audio_url = await yarn_generate_tts(
             text=text_to_speak,
             voice_id=request.voice_id,
             language=request.language or "en"
         )
-        
+
         if not audio_url:
             raise Exception("Both YarnGPT and OpenAI TTS failed")
-        
+
         # Cache the result
         db["tts_cache"].update_one(
             {"cache_key": cache_key},
@@ -531,7 +534,7 @@ async def generate_tts(request: TTSRequest):
             }},
             upsert=True
         )
-        
+
         return TTSResponse(
             audio_url=audio_url,
             text=request.text,
@@ -654,25 +657,25 @@ async def get_trending():
         for items in results:
             if isinstance(items, list):
                 all_news.extend(items)
-        
+
         # Extract and count categories/keywords
         category_counts = {}
         keyword_counts = {}
         keywords_to_track = ["election", "economy", "trade", "climate", "technology", "health", "politics", "africa"]
-        
+
         for item in all_news:
             cat = item.get("category", "general").lower()
             category_counts[cat] = category_counts.get(cat, 0) + 1
-            
+
             title_lower = item.get("title", "").lower()
             for kw in keywords_to_track:
                 if kw in title_lower:
                     keyword_counts[kw] = keyword_counts.get(kw, 0) + 1
-        
+
         # Sort by count
         top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
         top_keywords = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[:5]
-        
+
         return {
             "tags": [f"#{cat.upper()}" for cat, _ in top_categories],
             "topics": [
@@ -870,7 +873,7 @@ async def get_admin_metrics():
     # Calculate actual metrics from system state
     bookmarks_count = bookmarks_col.count_documents({})
     preferences_count = preferences_col.count_documents({})
-    
+
     return {
         "active_streams": 1240 + (bookmarks_count % 100),
         "avg_bitrate": 4.8,
@@ -1099,10 +1102,10 @@ async def get_metrics():
     """Get platform metrics for dashboard"""
     from services.news_service import get_content_sources as get_sources
     sources_data = get_sources()
-    
+
     from services.aggregator_service import get_aggregator_status
     agg_status = get_aggregator_status()
-    
+
     # Real story count from DB
     story_count = db["news_cache"].count_documents({})
     # Real TTS cache count for broadcast hours approximation
@@ -1200,7 +1203,7 @@ async def get_system_alerts():
     from services.aggregator_service import get_aggregator_status
     agg = get_aggregator_status()
     alerts = []
-    
+
     # Check aggregator staleness
     if agg.get("cache_stale"):
         alerts.append({
@@ -1211,11 +1214,11 @@ async def get_system_alerts():
             "time": agg.get("last_fetched", ""),
             "priority": True,
         })
-    
+
     # Check source counts
     ms_count = agg.get("mediastack", {}).get("cached_count", 0)
     nd_count = agg.get("newsdata", {}).get("cached_count", 0)
-    
+
     if ms_count + nd_count > 0:
         alerts.append({
             "id": "agg-active",
@@ -1225,7 +1228,7 @@ async def get_system_alerts():
             "time": agg.get("last_fetched", ""),
             "priority": False,
         })
-    
+
     # TTS cache stats
     tts_count = db["tts_cache"].count_documents({})
     if tts_count > 0:
@@ -1237,7 +1240,7 @@ async def get_system_alerts():
             "time": datetime.now(timezone.utc).isoformat(),
             "priority": False,
         })
-    
+
     # Always show a platform status message
     alerts.append({
         "id": "platform-status",
@@ -1247,7 +1250,7 @@ async def get_system_alerts():
         "time": datetime.now(timezone.utc).isoformat(),
         "priority": False,
     })
-    
+
     return alerts
 
 
@@ -1264,46 +1267,46 @@ async def generate_morning_briefing(
 ):
     """Generate or retrieve morning briefing with audio"""
     global _briefing_cache
-    
+
     now = datetime.now(timezone.utc)
     today_date = now.strftime('%Y-%m-%d')
-    
+
     # Check if today's briefing exists in DB
     existing = briefings_col.find_one({"date": today_date}, {"_id": 0})
     if existing and not force_regenerate:
         return existing
-    
+
     # Check memory cache
     cache_valid = (
-        _briefing_cache["briefing"] is not None and 
+        _briefing_cache["briefing"] is not None and
         _briefing_cache["generated_at"] is not None and
         (now - _briefing_cache["generated_at"]).total_seconds() < 3600
     )
-    
+
     if cache_valid and not force_regenerate:
         return _briefing_cache["briefing"]
-    
+
     try:
         # Fetch top stories with timeout
         all_news = []
         tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
         results = await asyncio.gather(*tasks, return_exceptions=True)
-        
+
         for items in results:
             if isinstance(items, list):
                 all_news.extend(items)
-        
+
         all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
         top_stories = all_news[:5]
-        
+
         if not top_stories:
             raise HTTPException(status_code=404, detail="No stories available for briefing")
-        
+
         # Generate briefing script (from briefing_service, then sanitize)
         from services.briefing_service import generate_briefing_script
         raw_script = await generate_briefing_script(top_stories)
         script = sanitize_ai_text(raw_script) if raw_script else ""
-        
+
         # Generate TTS audio (YarnGPT primary, OpenAI fallback — same as /api/tts/generate)
         audio_url = None
         try:
@@ -1316,7 +1319,7 @@ async def generate_morning_briefing(
             )
         except Exception as e:
             print(f"TTS Error for briefing: {e}")
-        
+
         # Build briefing object
         briefing_data = {
             "id": f"briefing-{now.strftime('%Y%m%d-%H%M')}",
@@ -1338,17 +1341,17 @@ async def generate_morning_briefing(
             "audio_url": audio_url,
             "voice_id": voice_id
         }
-        
+
         # Store in MongoDB
         briefings_col.update_one(
             {"date": today_date},
             {"$set": briefing_data},
             upsert=True
         )
-        
+
         # Cache in memory
         _briefing_cache = {"briefing": briefing_data, "generated_at": now}
-        
+
         return briefing_data
     except HTTPException:
         raise
@@ -1478,7 +1481,7 @@ async def get_radio_stations(
                 "order": "votes",
                 "reverse": "true"
             }
-            
+
             if search:
                 # Search by name
                 url = f"{RADIO_BROWSER_API}/json/stations/byname/{search}"
@@ -1490,11 +1493,11 @@ async def get_radio_stations(
                 # We'll search for major African countries
                 url = f"{RADIO_BROWSER_API}/json/stations/search"
                 params["countrycodeList"] = "NG,GH,KE,ZA,EG,MA,TZ,UG,ET,SN,CI,CM,AO,ZW"
-            
+
             response = await client.get(url, params=params)
             response.raise_for_status()
             data = response.json()
-            
+
             stations = []
             for item in data[:limit]:
                 stations.append(RadioStation(
@@ -1512,7 +1515,7 @@ async def get_radio_stations(
                     bitrate=item.get("bitrate", 0),
                     favicon=item.get("favicon", "")
                 ))
-            
+
             return stations
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Radio API timeout")
@@ -1576,13 +1579,13 @@ async def get_trending_topics():
         for result in results:
             if isinstance(result, list):
                 all_news.extend(result)
-        
+
         # Count categories
         category_counts = {}
         for item in all_news:
             cat = item.get("category", "General")
             category_counts[cat] = category_counts.get(cat, 0) + 1
-        
+
         trending = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:8]
         return [{"topic": cat, "count": count, "trend": "up" if count > 2 else "stable"} for cat, count in trending]
     except Exception as e:
@@ -1842,7 +1845,7 @@ async def share_page(news_id: str, request: Request):
     For regular browsers, redirects to the React app.
     """
     user_agent = request.headers.get('user-agent', '')
-    
+
     # Fetch the news item
     all_news = []
     tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
@@ -1866,7 +1869,7 @@ async def share_page(news_id: str, request: Request):
     source = story.get("source", "NARVO")
     category = (story.get("category", "general") or "general").lower()
     image_url = story.get("image_url") or "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=80"
-    
+
     # Get the base URL from request
     base_url = str(request.base_url).rstrip('/')
     share_url = f"{base_url}/share/{news_id}"
@@ -1882,7 +1885,7 @@ async def share_page(news_id: str, request: Request):
     <meta charset="utf-8">
     <title>{title} — NARVO</title>
     <meta name="description" content="{description}">
-    
+
     <!-- Open Graph -->
     <meta property="og:type" content="article">
     <meta property="og:title" content="{title}">
@@ -1894,14 +1897,14 @@ async def share_page(news_id: str, request: Request):
     <meta property="og:site_name" content="NARVO">
     <meta property="article:publisher" content="Narvo">
     <meta property="article:section" content="{category}">
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{title}">
     <meta name="twitter:description" content="{description}">
     <meta name="twitter:image" content="{image_url}">
     <meta name="twitter:site" content="@narvo">
-    
+
     <!-- Telegram -->
     <meta property="telegram:channel" content="@narvo">
 </head>

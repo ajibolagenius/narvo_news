@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { MagnifyingGlass, Microphone, Bookmark, Clock, Calendar, Funnel, Stack, X } from '@phosphor-icons/react';
+import { MagnifyingGlass, Microphone, Bookmark, Clock, Stack, X } from '@phosphor-icons/react';
 import { useBookmarks } from '../hooks/useBookmarks';
 import Skeleton from '../components/Skeleton';
 

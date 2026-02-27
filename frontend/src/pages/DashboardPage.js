@@ -60,7 +60,7 @@ const DashboardPage = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [allLoaded, setAllLoaded] = useState(false);
   const [sourceFilter, setSourceFilter] = useState('all'); // 'all' | 'rss' | 'aggregators'
-  const [userAggPrefs, setUserAggPrefs] = useState(null);
+  const [, setUserAggPrefs] = useState(null);
   const { playTrack, addToQueue } = useAudio();
   const { getTotalSources, getLocalSources, getInternationalSources, getContinentalSources, getSourcesByRegion, getHealthForSource, getHealthSummary, refreshHealth } = useContentSources();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
@@ -70,7 +70,7 @@ const DashboardPage = () => {
   const [userInterests, setUserInterests] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [recoProfile, setRecoProfile] = useState(null);
-  const [recoLoading, setRecoLoading] = useState(false);
+  const [, setRecoLoading] = useState(false);
 
   // Prefetch audio for the first 3 articles in idle time
   useAudioPrefetch(news.slice(0, 3), 'nova', 3);

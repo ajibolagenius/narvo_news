@@ -8,8 +8,10 @@ mongo_client = MongoClient(os.environ.get("MONGO_URL"))
 db = mongo_client[os.environ.get("DB_NAME", "narvo")]
 offline_articles_col = db["offline_articles"]
 
-# Create index
-offline_articles_col.create_index("story_id", unique=True)
+try:
+    offline_articles_col.create_index("story_id", unique=True)
+except Exception as e:
+    print(f"[offline_service] Index creation skipped (MongoDB may be down): {e}")
 
 
 def save_article(article_data: Dict) -> Dict:
