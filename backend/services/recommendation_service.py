@@ -1,27 +1,22 @@
 """
-Recommendation Service for Narvo
+Recommendation Service for Narvo (Supabase)
 Combines collaborative filtering (listening history analysis) with
 AI-powered topic expansion via Gemini to produce personalized news recommendations.
 """
 
-import os
 import json
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from collections import Counter
-from pymongo import MongoClient
 
+from lib.supabase_db import get_supabase_db
 from services.llm_gemini import generate_gemini, GEMINI_API_KEY
-
-mongo_client = MongoClient(os.environ.get("MONGO_URL"))
-db = mongo_client[os.environ.get("DB_NAME", "narvo")]
 
 
 def build_user_profile(user_id: str) -> dict:
     """Analyze listening history to build a preference profile."""
-    history = list(db["listening_history"].find(
-        {"user_id": user_id},
-        {"_id": 0, "category": 1, "source": 1, "title": 1, "played_at": 1}
-    ).sort("played_at", -1).limit(100))
+    db = get_supabase_db()
+    r = db.table("listening_history").select("category, source, title, played_at").eq("user_id", user_id).order("played_at", desc=True).limit(100).execute()
+    history = list(r.data or [])
 
     if not history:
         return {"categories": {}, "sources": {}, "keywords": [], "history_count": 0}
@@ -33,10 +28,17 @@ def build_user_profile(user_id: str) -> dict:
     titles = []
 
     for item in history:
-        played = item.get("played_at", "")
+        played = item.get("played_at")
         try:
-            played_dt = datetime.fromisoformat(played.replace("Z", "+00:00"))
-            age_days = max(1, (now - played_dt).days)
+            if played is None:
+                age_days = 7
+            elif hasattr(played, "year"):  # datetime-like
+                age_days = max(1, (now - played).days)
+            elif isinstance(played, str):
+                played_dt = datetime.fromisoformat(played.replace("Z", "+00:00"))
+                age_days = max(1, (now - played_dt).days)
+            else:
+                age_days = 7
         except Exception:
             age_days = 7
         # Decay factor: recent items get higher weight
@@ -69,10 +71,10 @@ def build_user_profile(user_id: str) -> dict:
     keywords = [w for w, _ in word_counts.most_common(15)]
 
     # Also load user interests from settings
-    user_settings = db["user_preferences"].find_one({"user_id": user_id}, {"_id": 0})
+    prefs = db.table("user_preferences").select("settings").eq("user_id", user_id).limit(1).execute()
     interests = []
-    if user_settings and "settings" in user_settings:
-        interests = user_settings["settings"].get("interests", [])
+    if prefs.data and len(prefs.data) > 0 and prefs.data[0].get("settings"):
+        interests = prefs.data[0]["settings"].get("interests", [])
 
     return {
         "categories": categories,
@@ -181,11 +183,9 @@ async def get_recommendations(user_id: str, available_news: list, limit: int = 1
     # Get AI-expanded topics
     expanded_topics = await get_ai_topic_expansion(profile)
 
-    # Get IDs of recently listened articles to avoid re-recommending
-    recent_history = list(db["listening_history"].find(
-        {"user_id": user_id},
-        {"_id": 0, "track_id": 1}
-    ).sort("played_at", -1).limit(30))
+    db = get_supabase_db()
+    rh = db.table("listening_history").select("track_id").eq("user_id", user_id).order("played_at", desc=True).limit(30).execute()
+    recent_history = list(rh.data or [])
     listened_ids = {h.get("track_id") for h in recent_history}
 
     # Score all articles

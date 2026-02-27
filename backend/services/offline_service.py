@@ -1,21 +1,13 @@
-# Offline Service - Article caching and management
-import os
+# Offline Service - Article caching and management (Supabase)
 from datetime import datetime, timezone
-from typing import List, Dict, Optional
-from pymongo import MongoClient
+from typing import Dict, List
 
-mongo_client = MongoClient(os.environ.get("MONGO_URL"))
-db = mongo_client[os.environ.get("DB_NAME", "narvo")]
-offline_articles_col = db["offline_articles"]
-
-try:
-    offline_articles_col.create_index("story_id", unique=True)
-except Exception as e:
-    print(f"[offline_service] Index creation skipped (MongoDB may be down): {e}")
+from lib.supabase_db import get_supabase_db
 
 
 def save_article(article_data: Dict) -> Dict:
     """Save an article for offline reading"""
+    db = get_supabase_db()
     doc = {
         "story_id": article_data.get("story_id"),
         "title": article_data.get("title"),
@@ -24,39 +16,40 @@ def save_article(article_data: Dict) -> Dict:
         "source": article_data.get("source", ""),
         "category": article_data.get("category", "General"),
         "image_url": article_data.get("image_url"),
-        "saved_at": datetime.now(timezone.utc).isoformat()
+        "saved_at": datetime.now(timezone.utc).isoformat(),
     }
-    
-    offline_articles_col.update_one(
-        {"story_id": doc["story_id"]},
-        {"$set": doc},
-        upsert=True
-    )
-    
+    db.table("offline_articles").upsert(doc, on_conflict="story_id").execute()
     return {"status": "saved", "story_id": doc["story_id"]}
 
 
 def get_articles() -> List[Dict]:
     """Get all saved offline articles"""
-    return list(offline_articles_col.find({}, {"_id": 0}).sort("saved_at", -1))
+    db = get_supabase_db()
+    r = db.table("offline_articles").select("*").order("saved_at", desc=True).execute()
+    rows = r.data or []
+    return [{k: v for k, v in row.items() if k != "id"} for row in rows]
 
 
 def remove_article(story_id: str) -> bool:
     """Remove a specific article from offline storage"""
-    result = offline_articles_col.delete_one({"story_id": story_id})
-    return result.deleted_count > 0
+    db = get_supabase_db()
+    r = db.table("offline_articles").delete().eq("story_id", story_id).execute()
+    return len(r.data or []) > 0
 
 
 def clear_all_articles() -> int:
     """Clear all saved offline articles"""
-    result = offline_articles_col.delete_many({})
-    return result.deleted_count
+    db = get_supabase_db()
+    r = db.table("offline_articles").delete().neq("story_id", "").execute()
+    return len(r.data or [])
 
 
 def get_stats() -> Dict:
     """Get offline storage statistics"""
-    article_count = offline_articles_col.count_documents({})
+    db = get_supabase_db()
+    r = db.table("offline_articles").select("story_id", count="exact").execute()
+    count = r.count if getattr(r, "count", None) is not None else len(r.data or [])
     return {
-        "article_count": article_count,
-        "audio_note": "Audio caching is managed client-side via IndexedDB"
+        "article_count": count,
+        "audio_note": "Audio caching is managed client-side via IndexedDB",
     }

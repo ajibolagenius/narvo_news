@@ -14,31 +14,29 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
-from pymongo import MongoClient
-
-# MongoDB with connection pooling
-mongo_client = MongoClient(
-    os.environ.get("MONGO_URL"),
-    maxPoolSize=20,
-    minPoolSize=5,
-    maxIdleTimeMS=30000,
-    serverSelectionTimeoutMS=5000,
-    connectTimeoutMS=5000,
-)
-DB_NAME = os.environ.get("DB_NAME", "narvo")
-db = mongo_client[DB_NAME]
+from lib.supabase_db import get_supabase_db
 import feedparser
 import httpx
 import re as _re
 
 # ── Sanitizer: strip stage directions / sound-effect text from AI output ──
 _STAGE_DIRECTION_PATTERNS = [
-    _re.compile(r'\[.*?\]'),                       # [Sound of music fades]
-    _re.compile(r'\(.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\)', _re.IGNORECASE),
-    _re.compile(r'\*.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\*', _re.IGNORECASE),
-    _re.compile(r'(?i)^\s*(?:sound of|sounds? of|sfx:?).*$', _re.MULTILINE),
-    _re.compile(r'(?i)^\s*(?:\(|\*).*?(?:music|jingle|theme|fade|transition).*?(?:\)|\*)\s*$', _re.MULTILINE),
+    _re.compile(r"\[.*?\]"),  # [Sound of music fades]
+    _re.compile(
+        r"\(.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\)",
+        _re.IGNORECASE,
+    ),
+    _re.compile(
+        r"\*.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\*",
+        _re.IGNORECASE,
+    ),
+    _re.compile(r"(?i)^\s*(?:sound of|sounds? of|sfx:?).*$", _re.MULTILINE),
+    _re.compile(
+        r"(?i)^\s*(?:\(|\*).*?(?:music|jingle|theme|fade|transition).*?(?:\)|\*)\s*$",
+        _re.MULTILINE,
+    ),
 ]
+
 
 def sanitize_ai_text(text: str) -> str:
     """Remove stage directions, sound descriptions, and production cues from AI-generated text."""
@@ -46,16 +44,18 @@ def sanitize_ai_text(text: str) -> str:
         return text
     result = text
     for pattern in _STAGE_DIRECTION_PATTERNS:
-        result = pattern.sub('', result)
+        result = pattern.sub("", result)
     # Collapse multiple blank lines into one
-    result = _re.sub(r'\n{3,}', '\n\n', result)
+    result = _re.sub(r"\n{3,}", "\n\n", result)
     return result.strip()
+
 
 # Initialize FastAPI
 app = FastAPI(title="Narvo API", version="2.0")
 
 # GZip compression for smaller payloads
 from starlette.middleware.gzip import GZipMiddleware
+
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
 # CORS
@@ -84,24 +84,14 @@ app.include_router(translation_router)
 
 from services.narrative_service import generate_narrative
 
+
 # Startup: run initial feed health check and schedule periodic refresh
 @app.on_event("startup")
 async def startup_feed_health():
     from services.news_service import run_health_check
     from services.aggregator_service import refresh_cache
 
-    # Create MongoDB indexes for performance
-    try:
-        db["tts_cache"].create_index("cache_key", unique=True)
-        db["tts_cache"].create_index("created_at", expireAfterSeconds=86400 * 7)  # 7-day TTL
-        db["user_preferences"].create_index("user_id", unique=True)
-        db["bookmarks"].create_index([("user_id", 1), ("story_id", 1)])
-        db["listening_history"].create_index([("user_id", 1), ("played_at", -1)])
-        db["news_cache"].create_index([("published", -1)])
-        db["news_cache"].create_index("id", unique=True, sparse=True)
-        db["push_subscriptions"].create_index("endpoint", unique=True)
-    except Exception as e:
-        print(f"[Startup] Index creation: {e}")
+    # Supabase indexes are defined in supabase_schema.sql
 
     async def periodic_health_check():
         while True:
@@ -116,56 +106,75 @@ async def startup_feed_health():
     asyncio.create_task(periodic_health_check())
     asyncio.create_task(periodic_aggregator_refresh())
 
+
 # Initialize clients
 supabase: Client = create_client(
-    os.environ.get("SUPABASE_URL"),
-    os.environ.get("SUPABASE_ANON_KEY")
+    os.environ.get("SUPABASE_URL"), os.environ.get("SUPABASE_ANON_KEY")
 )
 
-# MongoDB collection references
-bookmarks_col = db["bookmarks"]
-preferences_col = db["user_preferences"]
-briefings_col = db["briefings"]
 
 # ── In-memory cache for static/semi-static data ──
 import time as _time
 
+
 class MemCache:
     """Simple TTL cache for static data."""
+
     def __init__(self):
         self._store = {}
+
     def get(self, key, ttl=300):
         entry = self._store.get(key)
         if entry and (_time.time() - entry[1]) < ttl:
             return entry[0]
         return None
+
     def set(self, key, value):
         self._store[key] = (value, _time.time())
 
+
 _cache = MemCache()
 
-# Create indexes (defensive: avoid startup crash if MongoDB is unavailable)
-try:
-    bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
-    preferences_col.create_index("user_id", unique=True)
-    briefings_col.create_index("date", unique=True)
-except Exception as e:
-    print(f"[server] Index creation skipped (MongoDB may be down): {e}")
 
 # African News RSS Feeds
 RSS_FEEDS = [
-    {"name": "Vanguard Nigeria", "url": "https://www.vanguardngr.com/feed/", "region": "Nigeria"},
+    {
+        "name": "Vanguard Nigeria",
+        "url": "https://www.vanguardngr.com/feed/",
+        "region": "Nigeria",
+    },
     {"name": "Punch Nigeria", "url": "https://punchng.com/feed/", "region": "Nigeria"},
     {"name": "Daily Trust", "url": "https://dailytrust.com/feed/", "region": "Nigeria"},
-    {"name": "Premium Times", "url": "https://www.premiumtimesng.com/feed", "region": "Nigeria"},
-    {"name": "The Guardian Nigeria", "url": "https://guardian.ng/feed/", "region": "Nigeria"},
-    {"name": "BBC Africa", "url": "https://feeds.bbci.co.uk/news/world/africa/rss.xml", "region": "Continental"},
-    {"name": "Al Jazeera Africa", "url": "https://www.aljazeera.com/xml/rss/all.xml", "region": "Continental"},
+    {
+        "name": "Premium Times",
+        "url": "https://www.premiumtimesng.com/feed",
+        "region": "Nigeria",
+    },
+    {
+        "name": "The Guardian Nigeria",
+        "url": "https://guardian.ng/feed/",
+        "region": "Nigeria",
+    },
+    {
+        "name": "BBC Africa",
+        "url": "https://feeds.bbci.co.uk/news/world/africa/rss.xml",
+        "region": "Continental",
+    },
+    {
+        "name": "Al Jazeera Africa",
+        "url": "https://www.aljazeera.com/xml/rss/all.xml",
+        "region": "Continental",
+    },
 ]
 
 # Voice configurations — YarnGPT voices with Nigerian accents
-from services.yarngpt_service import get_voice_profiles as _get_yarn_profiles, YARNGPT_VOICES
+from services.yarngpt_service import (
+    get_voice_profiles as _get_yarn_profiles,
+    YARNGPT_VOICES,
+)
+
 VOICE_PROFILES = _get_yarn_profiles()
+
 
 # Pydantic Models
 class NewsItem(BaseModel):
@@ -184,12 +193,14 @@ class NewsItem(BaseModel):
     tags: List[str] = []
     image_url: Optional[str] = None
 
+
 class BriefingStory(BaseModel):
     id: str
     title: str
     summary: str
     source: str
     category: str
+
 
 class MorningBriefing(BaseModel):
     id: str
@@ -201,12 +212,14 @@ class MorningBriefing(BaseModel):
     audio_url: Optional[str] = None
     voice_id: str = "emma"
 
+
 class TTSRequest(BaseModel):
     text: str
     voice_id: str = "emma"
     stability: float = 0.5
     similarity_boost: float = 0.75
     language: str = "en"
+
 
 class TTSResponse(BaseModel):
     audio_url: str
@@ -215,14 +228,17 @@ class TTSResponse(BaseModel):
     voice_id: str
     language: str = "en"
 
+
 class ParaphraseRequest(BaseModel):
     text: str
     style: str = "broadcast"
+
 
 class ParaphraseResponse(BaseModel):
     original: str
     narrative: str
     key_takeaways: List[str]
+
 
 class VoiceProfile(BaseModel):
     id: str
@@ -232,16 +248,19 @@ class VoiceProfile(BaseModel):
     gender: str
     description: str
 
+
 class UserPreferences(BaseModel):
     voice_id: str = "emma"
     region: str = "Nigeria"
     interests: List[str] = []
+
 
 class UserPreferencesRequest(BaseModel):
     user_id: str
     region: str = "lagos"
     voice: str = "pidgin"
     interests: List[str] = []
+
 
 class BookmarkRequest(BaseModel):
     user_id: str
@@ -253,26 +272,41 @@ class BookmarkRequest(BaseModel):
     source_url: str = ""
     saved_at: str = ""
 
+
 # Helper Functions
 def generate_news_id(title: str, source: str) -> str:
     """Generate unique ID for news item"""
     content = f"{title}{source}".encode()
     return hashlib.md5(content).hexdigest()[:12]
 
+
 def extract_category(title: str, summary: str) -> str:
     """Simple category extraction based on keywords"""
     text = (title + " " + summary).lower()
-    if any(word in text for word in ["election", "government", "president", "minister", "policy"]):
+    if any(
+        word in text
+        for word in ["election", "government", "president", "minister", "policy"]
+    ):
         return "Politics"
-    elif any(word in text for word in ["economy", "market", "stock", "naira", "inflation", "trade"]):
+    elif any(
+        word in text
+        for word in ["economy", "market", "stock", "naira", "inflation", "trade"]
+    ):
         return "Economy"
-    elif any(word in text for word in ["tech", "digital", "app", "startup", "innovation"]):
+    elif any(
+        word in text for word in ["tech", "digital", "app", "startup", "innovation"]
+    ):
         return "Tech"
-    elif any(word in text for word in ["sport", "football", "match", "player", "league"]):
+    elif any(
+        word in text for word in ["sport", "football", "match", "player", "league"]
+    ):
         return "Sports"
-    elif any(word in text for word in ["health", "hospital", "disease", "medical", "doctor"]):
+    elif any(
+        word in text for word in ["health", "hospital", "disease", "medical", "doctor"]
+    ):
         return "Health"
     return "General"
+
 
 def extract_tags(title: str, category: str) -> List[str]:
     """Extract hashtags from content"""
@@ -282,6 +316,7 @@ def extract_tags(title: str, category: str) -> List[str]:
     if "africa" in title.lower():
         tags.append("#AFRICA")
     return tags[:3]
+
 
 async def fetch_rss_feed(feed_info: dict) -> List[dict]:
     """Fetch and parse RSS feed"""
@@ -296,55 +331,74 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
                     summary = entry.get("summary", entry.get("description", ""))[:500]
                     # Clean HTML from summary
                     import re
-                    summary = re.sub(r'<[^>]+>', '', summary)
+
+                    summary = re.sub(r"<[^>]+>", "", summary)
 
                     # Extract image URL from RSS entry
                     image_url = None
                     # Try media:content
-                    if hasattr(entry, 'media_content') and entry.media_content:
+                    if hasattr(entry, "media_content") and entry.media_content:
                         for media in entry.media_content:
-                            if media.get('medium') == 'image' or (media.get('type', '').startswith('image')):
-                                image_url = media.get('url')
+                            if media.get("medium") == "image" or (
+                                media.get("type", "").startswith("image")
+                            ):
+                                image_url = media.get("url")
                                 break
                         if not image_url and entry.media_content:
-                            image_url = entry.media_content[0].get('url')
+                            image_url = entry.media_content[0].get("url")
                     # Try media:thumbnail
-                    if not image_url and hasattr(entry, 'media_thumbnail') and entry.media_thumbnail:
-                        image_url = entry.media_thumbnail[0].get('url')
+                    if (
+                        not image_url
+                        and hasattr(entry, "media_thumbnail")
+                        and entry.media_thumbnail
+                    ):
+                        image_url = entry.media_thumbnail[0].get("url")
                     # Try enclosure links
                     if not image_url:
-                        for link in entry.get('links', []):
-                            if link.get('type', '').startswith('image') or link.get('rel') == 'enclosure':
-                                image_url = link.get('href')
+                        for link in entry.get("links", []):
+                            if (
+                                link.get("type", "").startswith("image")
+                                or link.get("rel") == "enclosure"
+                            ):
+                                image_url = link.get("href")
                                 break
                     # Try extracting from HTML content
                     if not image_url:
-                        content_html = entry.get('summary', '') or entry.get('description', '')
-                        if hasattr(entry, 'content') and entry.content:
-                            content_html = entry.content[0].get('value', '') + content_html
+                        content_html = entry.get("summary", "") or entry.get(
+                            "description", ""
+                        )
+                        if hasattr(entry, "content") and entry.content:
+                            content_html = (
+                                entry.content[0].get("value", "") + content_html
+                            )
                         img_match = re.search(r'src="(https?://[^"]+)"', content_html)
                         if img_match:
                             image_url = img_match.group(1)
 
                     category = extract_category(title, summary)
-                    items.append({
-                        "id": generate_news_id(title, feed_info["name"]),
-                        "title": title,
-                        "summary": summary,
-                        "source": feed_info["name"],
-                        "source_url": entry.get("link", ""),
-                        "published": entry.get("published", datetime.now(timezone.utc).isoformat()),
-                        "region": feed_info["region"],
-                        "category": category,
-                        "truth_score": 100,
-                        "tags": extract_tags(title, category),
-                        "listen_count": 0,
-                        "image_url": image_url,
-                    })
+                    items.append(
+                        {
+                            "id": generate_news_id(title, feed_info["name"]),
+                            "title": title,
+                            "summary": summary,
+                            "source": feed_info["name"],
+                            "source_url": entry.get("link", ""),
+                            "published": entry.get(
+                                "published", datetime.now(timezone.utc).isoformat()
+                            ),
+                            "region": feed_info["region"],
+                            "category": category,
+                            "truth_score": 100,
+                            "tags": extract_tags(title, category),
+                            "listen_count": 0,
+                            "image_url": image_url,
+                        }
+                    )
                 return items
     except Exception as e:
         print(f"Error fetching {feed_info['name']}: {e}")
     return []
+
 
 # API Endpoints
 @app.get("/api/health")
@@ -353,11 +407,13 @@ async def health_check():
         "status": "online",
         "service": "Narvo API",
         "version": "2.0",
-        "timestamp": datetime.now(timezone.utc).isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
+
 
 # ── News response cache (reduces RSS fetching) ──
 _news_response_cache = {"data": None, "timestamp": None, "ttl": 120}
+
 
 @app.get("/api/news")
 async def get_news(
@@ -365,7 +421,9 @@ async def get_news(
     category: Optional[str] = Query(None, description="Filter by category"),
     limit: int = Query(20, le=50, description="Number of items to return"),
     include_aggregators: bool = Query(False, description="Include aggregator news"),
-    aggregator_sources: Optional[str] = Query(None, description="Comma-separated aggregator sources: mediastack,newsdata")
+    aggregator_sources: Optional[str] = Query(
+        None, description="Comma-separated aggregator sources: mediastack,newsdata"
+    ),
 ):
     """Fetch aggregated news from RSS feeds and optional aggregator APIs"""
     now = datetime.now(timezone.utc)
@@ -374,7 +432,8 @@ async def get_news(
     if (
         _news_response_cache["data"] is not None
         and _news_response_cache["timestamp"]
-        and (now - _news_response_cache["timestamp"]).total_seconds() < _news_response_cache["ttl"]
+        and (now - _news_response_cache["timestamp"]).total_seconds()
+        < _news_response_cache["ttl"]
     ):
         all_news = list(_news_response_cache["data"])
     else:
@@ -392,6 +451,7 @@ async def get_news(
     if include_aggregators:
         try:
             from services.aggregator_service import get_normalized_aggregator_news
+
             sources_list = aggregator_sources.split(",") if aggregator_sources else None
             agg_news = await get_normalized_aggregator_news(sources=sources_list)
             all_news = list(all_news) + list(agg_news)
@@ -400,13 +460,18 @@ async def get_news(
 
     # Apply filters
     if region:
-        all_news = [n for n in all_news if n.get("region", "").lower() == region.lower()]
+        all_news = [
+            n for n in all_news if n.get("region", "").lower() == region.lower()
+        ]
     if category:
-        all_news = [n for n in all_news if n.get("category", "").lower() == category.lower()]
+        all_news = [
+            n for n in all_news if n.get("category", "").lower() == category.lower()
+        ]
 
     # Sort by recency and return
     all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
     return all_news[:limit]
+
 
 @app.get("/api/news/breaking")
 async def get_breaking_news():
@@ -423,7 +488,10 @@ async def get_breaking_news():
 
         for story in all_news[:30]:
             title_lower = (story.get("title", "") or "").lower()
-            if any(kw in title_lower for kw in ["breaking", "urgent", "flash", "just in", "developing"]):
+            if any(
+                kw in title_lower
+                for kw in ["breaking", "urgent", "flash", "just in", "developing"]
+            ):
                 breaking.append(story)
 
         if not breaking and all_news:
@@ -455,13 +523,18 @@ async def get_news_detail(news_id: str):
 
     # Generate narrative if not present
     if not news_item.get("narrative"):
-        narrative_data = await generate_narrative(f"{news_item['title']}\n\n{news_item['summary']}")
+        narrative_data = await generate_narrative(
+            f"{news_item['title']}\n\n{news_item['summary']}"
+        )
         raw_narrative = narrative_data.get("narrative", news_item["summary"])
         raw_takeaways = narrative_data.get("key_takeaways", [])
         news_item["narrative"] = sanitize_ai_text(raw_narrative)
-        news_item["key_takeaways"] = [sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)]
+        news_item["key_takeaways"] = [
+            sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)
+        ]
 
     return news_item
+
 
 @app.post("/api/paraphrase", response_model=ParaphraseResponse)
 async def paraphrase_content(request: ParaphraseRequest):
@@ -472,8 +545,11 @@ async def paraphrase_content(request: ParaphraseRequest):
     return ParaphraseResponse(
         original=request.text,
         narrative=sanitize_ai_text(raw_narrative),
-        key_takeaways=[sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)]
+        key_takeaways=[
+            sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)
+        ],
     )
+
 
 @app.post("/api/tts/generate", response_model=TTSResponse)
 async def generate_tts(request: TTSRequest):
@@ -481,17 +557,20 @@ async def generate_tts(request: TTSRequest):
     import hashlib
     from services.yarngpt_service import generate_tts as yarn_generate_tts
 
-    cache_key = hashlib.md5(f"{request.text[:200]}:{request.voice_id}:{request.language}".encode()).hexdigest()
+    cache_key = hashlib.md5(
+        f"{request.text[:200]}:{request.voice_id}:{request.language}".encode()
+    ).hexdigest()
 
-    # Check MongoDB cache first
-    cached = db["tts_cache"].find_one({"cache_key": cache_key}, {"_id": 0})
+    db = get_supabase_db()
+    r = db.table("tts_cache").select("*").eq("cache_key", cache_key).limit(1).execute()
+    cached = (r.data or [None])[0]
     if cached and cached.get("audio_url"):
         return TTSResponse(
             audio_url=cached["audio_url"],
             text=request.text,
             translated_text=cached.get("translated_text"),
             voice_id=cached.get("voice_id", request.voice_id),
-            language=request.language
+            language=request.language,
         )
 
     try:
@@ -501,12 +580,16 @@ async def generate_tts(request: TTSRequest):
         translated_text = None
 
         # Translate if language is not English
-        if request.language and request.language != "en" and request.language in SUPPORTED_LANGUAGES:
+        if (
+            request.language
+            and request.language != "en"
+            and request.language in SUPPORTED_LANGUAGES
+        ):
             translation_result = await translate_text(
                 text=request.text,
                 target_language=request.language,
                 source_language="en",
-                style="broadcast"
+                style="broadcast",
             )
             if translation_result.get("success"):
                 text_to_speak = translation_result.get("translated", request.text)
@@ -516,50 +599,56 @@ async def generate_tts(request: TTSRequest):
         audio_url = await yarn_generate_tts(
             text=text_to_speak,
             voice_id=request.voice_id,
-            language=request.language or "en"
+            language=request.language or "en",
         )
 
         if not audio_url:
             raise Exception("Both YarnGPT and OpenAI TTS failed")
 
-        # Cache the result
-        db["tts_cache"].update_one(
-            {"cache_key": cache_key},
-            {"$set": {
+        db.table("tts_cache").upsert(
+            {
                 "cache_key": cache_key,
                 "audio_url": audio_url,
                 "translated_text": translated_text,
                 "voice_id": request.voice_id,
-                "created_at": datetime.now(timezone.utc)
-            }},
-            upsert=True
-        )
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            },
+            on_conflict="cache_key",
+        ).execute()
 
         return TTSResponse(
             audio_url=audio_url,
             text=request.text,
             translated_text=translated_text,
             voice_id=request.voice_id,
-            language=request.language
+            language=request.language,
         )
     except Exception as e:
         print(f"TTS Error: {e}")
         raise HTTPException(status_code=500, detail=f"TTS generation failed: {str(e)}")
 
+
 @app.get("/api/voices", response_model=List[VoiceProfile])
 async def get_voices():
     """Get available voice profiles (cached 10min)"""
     cached = _cache.get("voices", ttl=600)
-    if cached: return JSONResponse(content=cached, headers={"Cache-Control": "public, max-age=600"})
+    if cached:
+        return JSONResponse(
+            content=cached, headers={"Cache-Control": "public, max-age=600"}
+        )
     result = VOICE_PROFILES
     _cache.set("voices", [dict(v) for v in result])
     return result
+
 
 @app.get("/api/regions")
 async def get_regions():
     """Get available news regions"""
     return JSONResponse(
-        content=[{"id": "nigeria", "name": "Nigeria", "icon": "NG"}, {"id": "continental", "name": "Continental", "icon": "AF"}],
+        content=[
+            {"id": "nigeria", "name": "Nigeria", "icon": "NG"},
+            {"id": "continental", "name": "Continental", "icon": "AF"},
+        ],
         headers={"Cache-Control": "public, max-age=3600"},
     )
 
@@ -568,20 +657,28 @@ async def get_regions():
 async def list_sound_themes():
     """Get available broadcast sound themes (cached 10min)"""
     cached = _cache.get("sound_themes", ttl=600)
-    if cached: return JSONResponse(content=cached, headers={"Cache-Control": "public, max-age=600"})
+    if cached:
+        return JSONResponse(
+            content=cached, headers={"Cache-Control": "public, max-age=600"}
+        )
     from services.sound_themes_service import get_sound_themes
+
     result = get_sound_themes()
     _cache.set("sound_themes", result)
     return result
+
 
 @app.get("/api/sound-themes/{theme_id}")
 async def get_sound_theme_detail(theme_id: str):
     """Get a specific sound theme with full audio parameters"""
     from services.sound_themes_service import get_sound_theme
+
     theme = get_sound_theme(theme_id)
     if not theme:
         raise HTTPException(status_code=404, detail="Theme not found")
-    return JSONResponse(content=theme, headers={"Cache-Control": "public, max-age=3600"})
+    return JSONResponse(
+        content=theme, headers={"Cache-Control": "public, max-age=3600"}
+    )
 
 
 @app.get("/api/categories")
@@ -599,52 +696,74 @@ async def get_categories():
         headers={"Cache-Control": "public, max-age=3600"},
     )
 
+
 @app.get("/api/sources")
 async def get_content_sources():
     """Get metadata about all content sources"""
     from services.news_service import get_content_sources as get_sources
+
     return get_sources()
+
 
 @app.get("/api/sources/health")
 async def get_sources_health():
     """Get real-time health status of all RSS feeds"""
     from services.news_service import get_feed_health
+
     return get_feed_health()
+
 
 @app.post("/api/sources/health/refresh")
 async def refresh_sources_health(background_tasks: BackgroundTasks):
     """Trigger a fresh health check of all feeds"""
     from services.news_service import run_health_check
+
     background_tasks.add_task(run_health_check)
     return {"status": "started", "message": "Health check initiated"}
 
+
 # ── Aggregator Endpoints ──────────────────────────────────────────────
+
 
 @app.get("/api/aggregators/status")
 async def aggregators_status():
     """Get status of programmatic aggregator integrations"""
     from services.aggregator_service import get_aggregator_status
+
     return get_aggregator_status()
 
+
 @app.get("/api/aggregators/fetch")
-async def fetch_aggregators(keywords: str = Query("Nigeria Africa", description="Search keywords")):
+async def fetch_aggregators(
+    keywords: str = Query("Nigeria Africa", description="Search keywords"),
+):
     """Fetch news from all programmatic aggregators (Mediastack + NewsData.io)"""
     from services.aggregator_service import fetch_all_aggregators
+
     return await fetch_all_aggregators(keywords)
 
+
 @app.get("/api/aggregators/mediastack")
-async def fetch_mediastack_news(keywords: str = Query("Nigeria Africa"), limit: int = Query(20, ge=1, le=50)):
+async def fetch_mediastack_news(
+    keywords: str = Query("Nigeria Africa"), limit: int = Query(20, ge=1, le=50)
+):
     """Fetch news from Mediastack API"""
     from services.aggregator_service import fetch_mediastack
+
     articles = await fetch_mediastack(keywords, limit)
     return {"count": len(articles), "articles": articles}
 
+
 @app.get("/api/aggregators/newsdata")
-async def fetch_newsdata_news(query: str = Query("Nigeria"), limit: int = Query(20, ge=1, le=50)):
+async def fetch_newsdata_news(
+    query: str = Query("Nigeria"), limit: int = Query(20, ge=1, le=50)
+):
     """Fetch news from NewsData.io API"""
     from services.aggregator_service import fetch_newsdata
+
     articles = await fetch_newsdata(query, limit)
     return {"count": len(articles), "articles": articles}
+
 
 @app.get("/api/trending")
 async def get_trending():
@@ -661,7 +780,16 @@ async def get_trending():
         # Extract and count categories/keywords
         category_counts = {}
         keyword_counts = {}
-        keywords_to_track = ["election", "economy", "trade", "climate", "technology", "health", "politics", "africa"]
+        keywords_to_track = [
+            "election",
+            "economy",
+            "trade",
+            "climate",
+            "technology",
+            "health",
+            "politics",
+            "africa",
+        ]
 
         for item in all_news:
             cat = item.get("category", "general").lower()
@@ -673,8 +801,12 @@ async def get_trending():
                     keyword_counts[kw] = keyword_counts.get(kw, 0) + 1
 
         # Sort by count
-        top_categories = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:5]
-        top_keywords = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[:5]
+        top_categories = sorted(
+            category_counts.items(), key=lambda x: x[1], reverse=True
+        )[:5]
+        top_keywords = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[
+            :5
+        ]
 
         return {
             "tags": [f"#{cat.upper()}" for cat, _ in top_categories],
@@ -682,7 +814,7 @@ async def get_trending():
                 {"name": kw.title(), "count": f"{cnt * 100}+"}
                 for kw, cnt in top_keywords
             ][:5],
-            "updated_at": datetime.now(timezone.utc).isoformat()
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         }
     except Exception as e:
         # Fallback to static data
@@ -692,18 +824,23 @@ async def get_trending():
                 {"name": "Elections 2025", "count": "12.5k"},
                 {"name": "Naira Exchange", "count": "8.2k"},
                 {"name": "AfCFTA Trade", "count": "5.1k"},
-            ]
+            ],
         }
+
 
 @app.get("/api/search")
 async def search_news(
     q: str = Query(..., description="Search query"),
     category: str = Query(None, description="Filter by category"),
     source: str = Query(None, description="Filter by source"),
-    source_type: str = Query(None, description="Filter by source type: rss, aggregator, podcast"),
+    source_type: str = Query(
+        None, description="Filter by source type: rss, aggregator, podcast"
+    ),
     limit: int = Query(20, le=50, description="Max results"),
     skip: int = Query(0, description="Offset for pagination"),
-    include_aggregators: bool = Query(True, description="Include aggregator articles in search")
+    include_aggregators: bool = Query(
+        True, description="Include aggregator articles in search"
+    ),
 ):
     """Search news articles from RSS feeds, aggregators, and podcasts"""
     try:
@@ -721,6 +858,7 @@ async def search_news(
         if include_aggregators:
             try:
                 from services.aggregator_service import get_normalized_aggregator_news
+
                 agg_items = await get_normalized_aggregator_news()
                 all_items.extend(agg_items)
             except Exception as e:
@@ -729,21 +867,24 @@ async def search_news(
         # 3. Include podcasts
         try:
             from services.podcast_service import search_podcasts
+
             pods = await search_podcasts(q, limit=10)
             for p in pods:
-                all_items.append({
-                    "id": p.get("id", ""),
-                    "title": p.get("title", ""),
-                    "summary": p.get("description", ""),
-                    "source": p.get("podcast_name", "Podcast"),
-                    "source_url": p.get("audio_url", ""),
-                    "published": p.get("published", ""),
-                    "category": "Podcast",
-                    "region": "Africa",
-                    "tags": [],
-                    "image_url": p.get("image_url"),
-                    "aggregator": "podcast",
-                })
+                all_items.append(
+                    {
+                        "id": p.get("id", ""),
+                        "title": p.get("title", ""),
+                        "summary": p.get("description", ""),
+                        "source": p.get("podcast_name", "Podcast"),
+                        "source_url": p.get("audio_url", ""),
+                        "published": p.get("published", ""),
+                        "category": "Podcast",
+                        "region": "Africa",
+                        "tags": [],
+                        "image_url": p.get("image_url"),
+                        "aggregator": "podcast",
+                    }
+                )
         except Exception:
             pass
 
@@ -752,8 +893,13 @@ async def search_news(
         for item in all_items:
             # Source type filter
             if source_type:
-                is_agg = bool(item.get("aggregator") and item.get("aggregator") != "podcast")
-                is_podcast = item.get("aggregator") == "podcast" or item.get("category", "").lower() == "podcast"
+                is_agg = bool(
+                    item.get("aggregator") and item.get("aggregator") != "podcast"
+                )
+                is_podcast = (
+                    item.get("aggregator") == "podcast"
+                    or item.get("category", "").lower() == "podcast"
+                )
                 is_rss = not is_agg and not is_podcast
                 if source_type == "rss" and not is_rss:
                     continue
@@ -768,7 +914,10 @@ async def search_news(
             tag_match = any(query_lower in t.lower() for t in (item.get("tags") or []))
 
             if title_match or summary_match or source_match or tag_match:
-                if category and (item.get("category") or "").lower() != category.lower():
+                if (
+                    category
+                    and (item.get("category") or "").lower() != category.lower()
+                ):
                     continue
                 if source and (item.get("source") or "").lower() != source.lower():
                     continue
@@ -785,29 +934,36 @@ async def search_news(
             # Tag source type for frontend
             if item.get("aggregator") and item.get("aggregator") != "podcast":
                 item["source_type"] = "aggregator"
-            elif item.get("aggregator") == "podcast" or item.get("category", "").lower() == "podcast":
+            elif (
+                item.get("aggregator") == "podcast"
+                or item.get("category", "").lower() == "podcast"
+            ):
                 item["source_type"] = "podcast"
             else:
                 item["source_type"] = "rss"
             deduped.append(item)
 
         # 6. Sort: title matches first, then by date
-        deduped.sort(key=lambda x: (
-            query_lower not in (x.get("title") or "").lower(),
-            x.get("published") or ""
-        ), reverse=True)
+        deduped.sort(
+            key=lambda x: (
+                query_lower not in (x.get("title") or "").lower(),
+                x.get("published") or "",
+            ),
+            reverse=True,
+        )
 
         total = len(deduped)
-        paginated = deduped[skip:skip + limit]
+        paginated = deduped[skip : skip + limit]
 
         return {
             "results": paginated,
             "total": total,
             "query": q,
-            "filters": {"category": category, "source": source}
+            "filters": {"category": category, "source": source},
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
+
 
 # ===========================================
 # ADMIN DASHBOARD METRICS API
@@ -819,8 +975,9 @@ _admin_metrics = {
     "tts_requests": 0,
     "errors_count": 0,
     "cache_hits": 0,
-    "last_updated": None
+    "last_updated": None,
 }
+
 
 class AdminMetrics(BaseModel):
     active_streams: int = 1240
@@ -832,6 +989,7 @@ class AdminMetrics(BaseModel):
     uptime: str = "99.98%"
     active_traffic: str = "4.8GBPS"
 
+
 class SystemAlert(BaseModel):
     id: str
     type: str  # 'warning', 'success', 'error'
@@ -839,6 +997,7 @@ class SystemAlert(BaseModel):
     description: str
     timestamp: str
     priority: bool = False
+
 
 class StreamStatus(BaseModel):
     status: str  # 'LIVE', 'OFFLINE'
@@ -848,6 +1007,7 @@ class StreamStatus(BaseModel):
     bitrate: str
     uptime: str
 
+
 class VoiceMetrics(BaseModel):
     name: str
     id: str
@@ -855,6 +1015,7 @@ class VoiceMetrics(BaseModel):
     latency: str
     clarity: float
     status: str  # 'LIVE', 'TRAINING'
+
 
 class ModerationItem(BaseModel):
     id: str
@@ -867,12 +1028,15 @@ class ModerationItem(BaseModel):
     timestamp: str
     has_image: bool = False
 
+
 @app.get("/api/admin/metrics")
 async def get_admin_metrics():
     """Get real-time admin dashboard metrics"""
-    # Calculate actual metrics from system state
-    bookmarks_count = bookmarks_col.count_documents({})
-    preferences_count = preferences_col.count_documents({})
+    db = get_supabase_db()
+    br = db.table("bookmarks").select("id", count="exact").execute()
+    pr = db.table("user_preferences").select("id", count="exact").execute()
+    bookmarks_count = getattr(br, "count", None) or len(br.data or [])
+    preferences_count = getattr(pr, "count", None) or len(pr.data or [])
 
     return {
         "active_streams": 1240 + (bookmarks_count % 100),
@@ -887,8 +1051,9 @@ async def get_admin_metrics():
         "sources_online": 89,
         "stories_processed": 342 + bookmarks_count,
         "signal_strength": "98%",
-        "network_load": f"{40 + (preferences_count % 15)}%"
+        "network_load": f"{40 + (preferences_count % 15)}%",
     }
+
 
 @app.get("/api/admin/alerts", response_model=List[SystemAlert])
 async def get_system_alerts():
@@ -901,7 +1066,7 @@ async def get_system_alerts():
             title="LATENCY_SPIKE: EU_WEST",
             description="NODE_ID: 88219 experiencing increased response times",
             timestamp=now.strftime("%H:%M UTC"),
-            priority=True
+            priority=True,
         ),
         SystemAlert(
             id="alert-2",
@@ -909,39 +1074,114 @@ async def get_system_alerts():
             title="BACKUP_COMPLETE: LAG_S3",
             description="Daily backup verified and uploaded successfully",
             timestamp="09:00 UTC",
-            priority=False
+            priority=False,
         ),
         SystemAlert(
             id="alert-3",
             type="error",
             title="STREAM_FAIL: #1102",
             description="AUTH_ERROR: Connection handshake failed - retry scheduled",
-            timestamp=(now.replace(hour=now.hour-1) if now.hour > 0 else now).strftime("%H:%M UTC"),
-            priority=True
-        )
+            timestamp=(
+                now.replace(hour=now.hour - 1) if now.hour > 0 else now
+            ).strftime("%H:%M UTC"),
+            priority=True,
+        ),
     ]
+
 
 @app.get("/api/admin/streams", response_model=List[StreamStatus])
 async def get_stream_status():
     """Get active signal stream status"""
     return [
-        StreamStatus(status="LIVE", id="#8821-XJ", source="LAGOS_BROADCAST_1", region="NG_LAG_CENTRAL", bitrate="4,500 KBPS", uptime="02:14:00"),
-        StreamStatus(status="OFFLINE", id="#9932-BL", source="ABUJA_MAIN_HUB", region="NG_ABJ_NORTH", bitrate="--", uptime="--"),
-        StreamStatus(status="LIVE", id="#7710-AR", source="KANO_DATA_INGEST", region="NG_KAN_CORE", bitrate="3,200 KBPS", uptime="14:22:10"),
-        StreamStatus(status="LIVE", id="#5521-GH", source="ACCRA_BROADCAST_2", region="GH_ACC_SOUTH", bitrate="3,800 KBPS", uptime="08:45:32"),
-        StreamStatus(status="LIVE", id="#3314-KE", source="NAIROBI_HUB_MAIN", region="KE_NBO_CENTRAL", bitrate="4,100 KBPS", uptime="19:12:08"),
+        StreamStatus(
+            status="LIVE",
+            id="#8821-XJ",
+            source="LAGOS_BROADCAST_1",
+            region="NG_LAG_CENTRAL",
+            bitrate="4,500 KBPS",
+            uptime="02:14:00",
+        ),
+        StreamStatus(
+            status="OFFLINE",
+            id="#9932-BL",
+            source="ABUJA_MAIN_HUB",
+            region="NG_ABJ_NORTH",
+            bitrate="--",
+            uptime="--",
+        ),
+        StreamStatus(
+            status="LIVE",
+            id="#7710-AR",
+            source="KANO_DATA_INGEST",
+            region="NG_KAN_CORE",
+            bitrate="3,200 KBPS",
+            uptime="14:22:10",
+        ),
+        StreamStatus(
+            status="LIVE",
+            id="#5521-GH",
+            source="ACCRA_BROADCAST_2",
+            region="GH_ACC_SOUTH",
+            bitrate="3,800 KBPS",
+            uptime="08:45:32",
+        ),
+        StreamStatus(
+            status="LIVE",
+            id="#3314-KE",
+            source="NAIROBI_HUB_MAIN",
+            region="KE_NBO_CENTRAL",
+            bitrate="4,100 KBPS",
+            uptime="19:12:08",
+        ),
     ]
+
 
 @app.get("/api/admin/voices", response_model=List[VoiceMetrics])
 async def get_voice_metrics():
     """Get TTS voice model metrics"""
     return [
-        VoiceMetrics(name="ATLAS_NEWS_V3", id="#8821-A", language="YORUBA (NG)", latency="12MS", clarity=99.8, status="LIVE"),
-        VoiceMetrics(name="ECHO_BRIEF_XP", id="#9942-X", language="HAUSA (NG)", latency="45MS", clarity=94.2, status="TRAINING"),
-        VoiceMetrics(name="NOVA_ANCHOR", id="#1102-B", language="IGBO (NG)", latency="18MS", clarity=98.5, status="LIVE"),
-        VoiceMetrics(name="ONYX_REPORT", id="#4421-C", language="PIDGIN (NG)", latency="22MS", clarity=96.1, status="LIVE"),
-        VoiceMetrics(name="SHIMMER_CAST", id="#7788-D", language="TWI (GH)", latency="35MS", clarity=91.3, status="TRAINING"),
+        VoiceMetrics(
+            name="ATLAS_NEWS_V3",
+            id="#8821-A",
+            language="YORUBA (NG)",
+            latency="12MS",
+            clarity=99.8,
+            status="LIVE",
+        ),
+        VoiceMetrics(
+            name="ECHO_BRIEF_XP",
+            id="#9942-X",
+            language="HAUSA (NG)",
+            latency="45MS",
+            clarity=94.2,
+            status="TRAINING",
+        ),
+        VoiceMetrics(
+            name="NOVA_ANCHOR",
+            id="#1102-B",
+            language="IGBO (NG)",
+            latency="18MS",
+            clarity=98.5,
+            status="LIVE",
+        ),
+        VoiceMetrics(
+            name="ONYX_REPORT",
+            id="#4421-C",
+            language="PIDGIN (NG)",
+            latency="22MS",
+            clarity=96.1,
+            status="LIVE",
+        ),
+        VoiceMetrics(
+            name="SHIMMER_CAST",
+            id="#7788-D",
+            language="TWI (GH)",
+            latency="35MS",
+            clarity=91.3,
+            status="TRAINING",
+        ),
     ]
+
 
 @app.get("/api/admin/moderation", response_model=List[ModerationItem])
 async def get_moderation_queue():
@@ -949,39 +1189,54 @@ async def get_moderation_queue():
     now = datetime.now(timezone.utc)
     return [
         ModerationItem(
-            id="#8821X", source="TW_X", status="DISPUTED",
+            id="#8821X",
+            source="TW_X",
+            status="DISPUTED",
             title="Contested results in District 9 due to irregularities",
             description="Reports emerging from multiple accounts regarding polling station closures. Official commission silent.",
             tags=["#ELECTION2024", "#BREAKING"],
             confidence="98%",
-            timestamp=now.strftime("%H:%M UTC")
+            timestamp=now.strftime("%H:%M UTC"),
         ),
         ModerationItem(
-            id="#9942A", source="DIRECT", status="VERIFIED",
+            id="#9942A",
+            source="DIRECT",
+            status="VERIFIED",
             title="Dam levels stabilize after weekend rainfall cycle",
             description="Water authority confirms reservoir capacity returning to normal levels following seasonal precipitation.",
             tags=["#INFRASTRUCTURE"],
             confidence="99%",
-            timestamp=(now.replace(minute=now.minute-5) if now.minute >= 5 else now).strftime("%H:%M UTC"),
-            has_image=True
+            timestamp=(
+                now.replace(minute=now.minute - 5) if now.minute >= 5 else now
+            ).strftime("%H:%M UTC"),
+            has_image=True,
         ),
         ModerationItem(
-            id="#1102Z", source="FB_WATCH", status="UNVERIFIED",
+            id="#1102Z",
+            source="FB_WATCH",
+            status="UNVERIFIED",
             title="Protest footage flagged for deepfake analysis",
             description="Inconsistencies detected in background lighting and shadow vectors. Forensics team review recommended.",
             tags=["#DEEP_GEN", "#AI_SCAN"],
             confidence="67%",
-            timestamp=(now.replace(minute=now.minute-15) if now.minute >= 15 else now).strftime("%H:%M UTC")
+            timestamp=(
+                now.replace(minute=now.minute - 15) if now.minute >= 15 else now
+            ).strftime("%H:%M UTC"),
         ),
         ModerationItem(
-            id="#5543B", source="REUTERS", status="VERIFIED",
+            id="#5543B",
+            source="REUTERS",
+            status="VERIFIED",
             title="Central Bank announces new monetary policy framework",
             description="Inflation targeting measures and interest rate adjustments effective next quarter.",
             tags=["#ECONOMY", "#POLICY"],
             confidence="100%",
-            timestamp=(now.replace(minute=now.minute-30) if now.minute >= 30 else now).strftime("%H:%M UTC")
+            timestamp=(
+                now.replace(minute=now.minute - 30) if now.minute >= 30 else now
+            ).strftime("%H:%M UTC"),
         ),
     ]
+
 
 @app.get("/api/admin/stats")
 async def get_admin_stats():
@@ -992,12 +1247,14 @@ async def get_admin_stats():
         "verified": 28,
         "pending": 7,
         "dubawa_status": "CONNECTED",
-        "last_sync": "2MIN_AGO"
+        "last_sync": "2MIN_AGO",
     }
+
 
 # ===========================================
 # USER SETTINGS API
 # ===========================================
+
 
 class UserSettings(BaseModel):
     voice_model: str = "emma"
@@ -1022,58 +1279,62 @@ class UserSettings(BaseModel):
     sound_theme: str = "narvo_classic"
     interests: List[str] = []
 
+
 @app.get("/api/settings/{user_id}")
 async def get_user_settings(user_id: str):
     """Get user settings"""
-    settings = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
-    if settings:
-        return settings.get("settings", UserSettings().dict())
-    return UserSettings().dict()
+    from services.user_service import get_settings
+
+    return get_settings(user_id)
+
 
 @app.post("/api/settings/{user_id}")
 async def save_user_settings(user_id: str, settings: UserSettings):
     """Save user settings (merges with existing)"""
-    existing = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
-    existing_settings = existing.get("settings", {}) if existing else {}
-    incoming = settings.model_dump(exclude_unset=True)
-    merged = {**existing_settings, **incoming}
-    preferences_col.update_one(
-        {"user_id": user_id},
-        {"$set": {"settings": merged, "updated_at": datetime.now(timezone.utc).isoformat()}},
-        upsert=True
-    )
+    from services.user_service import update_settings
+
+    update_settings(user_id, settings.model_dump(exclude_unset=True))
     return {"status": "success", "message": "Settings saved"}
+
 
 @app.get("/api/settings/{user_id}/voice")
 async def get_voice_settings(user_id: str):
     """Get voice-specific settings"""
-    settings = preferences_col.find_one({"user_id": user_id}, {"_id": 0})
-    if settings and "settings" in settings:
-        return {
-            "voice_model": settings["settings"].get("voice_model", "emma"),
-            "voice_dialect": settings["settings"].get("voice_dialect", "standard"),
-            "voice_region": settings["settings"].get("voice_region", "africa"),
-        }
-    return {"voice_model": "emma", "voice_dialect": "standard", "voice_region": "africa"}
+    from services.user_service import get_settings
+
+    s = get_settings(user_id)
+    return {
+        "voice_model": s.get("voice_model", "emma"),
+        "voice_dialect": s.get("voice_dialect", "standard"),
+        "voice_region": s.get("voice_region", "africa"),
+    }
+
 
 @app.post("/api/settings/{user_id}/voice")
-async def save_voice_settings(user_id: str, voice_model: str = "emma", voice_dialect: str = "standard", voice_region: str = "africa"):
+async def save_voice_settings(
+    user_id: str,
+    voice_model: str = "emma",
+    voice_dialect: str = "standard",
+    voice_region: str = "africa",
+):
     """Save voice settings"""
-    preferences_col.update_one(
-        {"user_id": user_id},
-        {"$set": {
-            "settings.voice_model": voice_model,
-            "settings.voice_dialect": voice_dialect,
-            "settings.voice_region": voice_region,
-            "updated_at": datetime.now(timezone.utc).isoformat()
-        }},
-        upsert=True
+    from services.user_service import update_settings
+
+    update_settings(
+        user_id,
+        {
+            "voice_model": voice_model,
+            "voice_dialect": voice_dialect,
+            "voice_region": voice_region,
+        },
     )
     return {"status": "success", "message": "Voice settings saved"}
+
 
 # ===========================================
 # FACT-CHECKING API (Mock Dubawa Integration)
 # ===========================================
+
 
 class FactCheckResult(BaseModel):
     status: str  # 'VERIFIED', 'DISPUTED', 'UNVERIFIED', 'FALSE'
@@ -1081,6 +1342,7 @@ class FactCheckResult(BaseModel):
     source: str
     explanation: str
     checked_at: str
+
 
 # Simulated fact-check database (keywords that trigger different verdicts)
 FACT_CHECK_KEYWORDS = {
@@ -1096,23 +1358,24 @@ FACT_CHECK_KEYWORDS = {
 }
 
 
-
 @app.get("/api/metrics")
 async def get_metrics():
     """Get platform metrics for dashboard"""
     from services.news_service import get_content_sources as get_sources
+
     sources_data = get_sources()
 
     from services.aggregator_service import get_aggregator_status
+
     agg_status = get_aggregator_status()
 
-    # Real story count from DB
-    story_count = db["news_cache"].count_documents({})
-    # Real TTS cache count for broadcast hours approximation
-    tts_count = db["tts_cache"].count_documents({})
+    db = get_supabase_db()
+    story_count = 0  # news_cache deprecated; use aggregator/sources for display
+    tr = db.table("tts_cache").select("cache_key", count="exact").execute()
+    tts_count = getattr(tr, "count", None) or len(tr.data or [])
     broadcast_hours = round(tts_count * 0.04, 1)  # ~2.5 min avg per TTS
-    # Listening history count
-    listen_count = db["listening_history"].count_documents({})
+    lr = db.table("listening_history").select("id", count="exact").execute()
+    listen_count = getattr(lr, "count", None) or len(lr.data or [])
 
     return {
         "listeners_today": f"{max(1, listen_count)}",
@@ -1130,13 +1393,14 @@ async def get_metrics():
         "aggregators": agg_status,
     }
 
+
 # ─── Listening History ───────────────────────────────────────
 @app.post("/api/listening-history")
 async def add_listening_history(data: dict = Body(...)):
     """Record a played broadcast to listening history"""
-    user_id = data.get("user_id", "guest")
+    db = get_supabase_db()
     entry = {
-        "user_id": user_id,
+        "user_id": data.get("user_id", "guest"),
         "track_id": data.get("track_id", ""),
         "title": data.get("title", "Unknown"),
         "source": data.get("source", ""),
@@ -1144,21 +1408,36 @@ async def add_listening_history(data: dict = Body(...)):
         "duration": data.get("duration", 0),
         "played_at": datetime.now(timezone.utc).isoformat(),
     }
-    db["listening_history"].insert_one(entry)
+    db.table("listening_history").insert(entry).execute()
     return {"status": "ok"}
+
 
 @app.get("/api/listening-history/{user_id}")
 async def get_listening_history(user_id: str, limit: int = Query(20, ge=1, le=100)):
     """Get user's listening history, most recent first"""
-    items = list(db["listening_history"].find(
-        {"user_id": user_id},
-        {"_id": 0}
-    ).sort("played_at", -1).limit(limit))
+    db = get_supabase_db()
+    r = (
+        db.table("listening_history")
+        .select("*")
+        .eq("user_id", user_id)
+        .order("played_at", desc=True)
+        .limit(limit)
+        .execute()
+    )
+    items = []
+    for x in r.data or []:
+        row = {k: v for k, v in x.items() if k != "id"}
+        if row.get("played_at") and hasattr(row["played_at"], "isoformat"):
+            row["played_at"] = row["played_at"].isoformat()
+        items.append(row)
     return items
+
 
 # ─── Recommendations ───────────────────────────────────────
 @app.get("/api/recommendations/{user_id}")
-async def get_recommendations_endpoint(user_id: str, limit: int = Query(10, ge=1, le=30)):
+async def get_recommendations_endpoint(
+    user_id: str, limit: int = Query(10, ge=1, le=30)
+):
     """Get personalized news recommendations for a user"""
     from services.recommendation_service import get_recommendations
 
@@ -1167,7 +1446,8 @@ async def get_recommendations_endpoint(user_id: str, limit: int = Query(10, ge=1
     if (
         _news_response_cache["data"] is not None
         and _news_response_cache["timestamp"]
-        and (now - _news_response_cache["timestamp"]).total_seconds() < _news_response_cache["ttl"]
+        and (now - _news_response_cache["timestamp"]).total_seconds()
+        < _news_response_cache["ttl"]
     ):
         all_news = list(_news_response_cache["data"])
     else:
@@ -1184,6 +1464,7 @@ async def get_recommendations_endpoint(user_id: str, limit: int = Query(10, ge=1
     # Include aggregator news
     try:
         from services.aggregator_service import get_normalized_aggregator_news
+
         agg_news = await get_normalized_aggregator_news()
         all_news = list(all_news) + list(agg_news)
     except Exception:
@@ -1197,217 +1478,158 @@ async def get_recommendations_endpoint(user_id: str, limit: int = Query(10, ge=1
 
     return result
 
+
 @app.get("/api/system-alerts")
 async def get_system_alerts():
     """Get real system alerts based on actual service status"""
     from services.aggregator_service import get_aggregator_status
+
     agg = get_aggregator_status()
     alerts = []
 
     # Check aggregator staleness
     if agg.get("cache_stale"):
-        alerts.append({
-            "id": "agg-stale",
-            "type": "warning",
-            "title": "AGGREGATOR_CACHE_STALE",
-            "desc": "News aggregator cache has expired. New stories may be delayed.",
-            "time": agg.get("last_fetched", ""),
-            "priority": True,
-        })
+        alerts.append(
+            {
+                "id": "agg-stale",
+                "type": "warning",
+                "title": "AGGREGATOR_CACHE_STALE",
+                "desc": "News aggregator cache has expired. New stories may be delayed.",
+                "time": agg.get("last_fetched", ""),
+                "priority": True,
+            }
+        )
 
     # Check source counts
     ms_count = agg.get("mediastack", {}).get("cached_count", 0)
     nd_count = agg.get("newsdata", {}).get("cached_count", 0)
 
     if ms_count + nd_count > 0:
-        alerts.append({
-            "id": "agg-active",
-            "type": "info",
-            "title": "AGGREGATOR_FEEDS_ACTIVE",
-            "desc": f"Mediastack: {ms_count} stories cached. NewsData: {nd_count} stories cached.",
-            "time": agg.get("last_fetched", ""),
-            "priority": False,
-        })
+        alerts.append(
+            {
+                "id": "agg-active",
+                "type": "info",
+                "title": "AGGREGATOR_FEEDS_ACTIVE",
+                "desc": f"Mediastack: {ms_count} stories cached. NewsData: {nd_count} stories cached.",
+                "time": agg.get("last_fetched", ""),
+                "priority": False,
+            }
+        )
 
-    # TTS cache stats
-    tts_count = db["tts_cache"].count_documents({})
+    db = get_supabase_db()
+    tr = db.table("tts_cache").select("cache_key", count="exact").execute()
+    tts_count = getattr(tr, "count", None) or len(tr.data or [])
     if tts_count > 0:
-        alerts.append({
-            "id": "tts-cache",
-            "type": "info",
-            "title": "TTS_CACHE_ACTIVE",
-            "desc": f"{tts_count} audio broadcasts cached for instant playback.",
-            "time": datetime.now(timezone.utc).isoformat(),
-            "priority": False,
-        })
+        alerts.append(
+            {
+                "id": "tts-cache",
+                "type": "info",
+                "title": "TTS_CACHE_ACTIVE",
+                "desc": f"{tts_count} audio broadcasts cached for instant playback.",
+                "time": datetime.now(timezone.utc).isoformat(),
+                "priority": False,
+            }
+        )
 
     # Always show a platform status message
-    alerts.append({
-        "id": "platform-status",
-        "type": "feature",
-        "title": "PLATFORM_OPERATIONAL",
-        "desc": "All Narvo broadcast systems are online and operational.",
-        "time": datetime.now(timezone.utc).isoformat(),
-        "priority": False,
-    })
+    alerts.append(
+        {
+            "id": "platform-status",
+            "type": "feature",
+            "title": "PLATFORM_OPERATIONAL",
+            "desc": "All Narvo broadcast systems are online and operational.",
+            "time": datetime.now(timezone.utc).isoformat(),
+            "priority": False,
+        }
+    )
 
     return alerts
 
 
-# Morning Briefing Cache
-_briefing_cache = {
-    "briefing": None,
-    "generated_at": None
-}
-
 @app.get("/api/briefing/generate")
 async def generate_morning_briefing(
     voice_id: str = Query("emma", description="Voice for TTS"),
-    force_regenerate: bool = Query(False, description="Force regeneration")
+    force_regenerate: bool = Query(False, description="Force regeneration"),
 ):
     """Generate or retrieve morning briefing with audio"""
-    global _briefing_cache
-
-    now = datetime.now(timezone.utc)
-    today_date = now.strftime('%Y-%m-%d')
-
-    # Check if today's briefing exists in DB
-    existing = briefings_col.find_one({"date": today_date}, {"_id": 0})
-    if existing and not force_regenerate:
-        return existing
-
-    # Check memory cache
-    cache_valid = (
-        _briefing_cache["briefing"] is not None and
-        _briefing_cache["generated_at"] is not None and
-        (now - _briefing_cache["generated_at"]).total_seconds() < 3600
-    )
-
-    if cache_valid and not force_regenerate:
-        return _briefing_cache["briefing"]
+    from services.briefing_service import generate_briefing
 
     try:
-        # Fetch top stories with timeout
-        all_news = []
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        for items in results:
-            if isinstance(items, list):
-                all_news.extend(items)
-
-        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
-        top_stories = all_news[:5]
-
-        if not top_stories:
-            raise HTTPException(status_code=404, detail="No stories available for briefing")
-
-        # Generate briefing script (from briefing_service, then sanitize)
-        from services.briefing_service import generate_briefing_script
-        raw_script = await generate_briefing_script(top_stories)
-        script = sanitize_ai_text(raw_script) if raw_script else ""
-
-        # Generate TTS audio (YarnGPT primary, OpenAI fallback — same as /api/tts/generate)
-        audio_url = None
-        try:
-            from services.yarngpt_service import generate_tts as yarn_generate_tts
-            tts_text = script[:2500] if len(script) > 2500 else script
-            audio_url = await yarn_generate_tts(
-                text=tts_text,
-                voice_id=voice_id,
-                language="en"
-            )
-        except Exception as e:
-            print(f"TTS Error for briefing: {e}")
-
-        # Build briefing object
-        briefing_data = {
-            "id": f"briefing-{now.strftime('%Y%m%d-%H%M')}",
-            "date": today_date,
-            "title": f"Morning Briefing - {now.strftime('%B %d, %Y')}",
-            "generated_at": now.isoformat(),
-            "duration_estimate": "~3 minutes",
-            "stories": [
-                {
-                    "id": s["id"],
-                    "title": s["title"][:100],
-                    "summary": s["summary"][:150] + "..." if len(s.get("summary", "")) > 150 else s.get("summary", ""),
-                    "source": s["source"],
-                    "category": s.get("category", "General")
-                }
-                for s in top_stories
-            ],
-            "script": script,
-            "audio_url": audio_url,
-            "voice_id": voice_id
-        }
-
-        # Store in MongoDB
-        briefings_col.update_one(
-            {"date": today_date},
-            {"$set": briefing_data},
-            upsert=True
+        out = await generate_briefing(
+            voice_id=voice_id, force_regenerate=force_regenerate
         )
-
-        # Cache in memory
-        _briefing_cache = {"briefing": briefing_data, "generated_at": now}
-
-        return briefing_data
+        if out is None:
+            raise HTTPException(
+                status_code=404, detail="No stories available for briefing"
+            )
+        return out
     except HTTPException:
         raise
     except Exception as e:
         print(f"Briefing generation error: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to generate briefing: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to generate briefing: {str(e)}"
+        )
+
 
 @app.get("/api/briefing/latest")
 async def get_latest_briefing():
     """Get the most recent briefing from database"""
-    # Try to get from DB first
-    latest = briefings_col.find_one({}, {"_id": 0}, sort=[("date", -1)])
+    from services.briefing_service import get_latest_briefing as _get_latest
+
+    latest = _get_latest()
     if latest:
         return latest
-    if _briefing_cache["briefing"] is not None:
-        return _briefing_cache["briefing"]
-    raise HTTPException(status_code=404, detail="No briefing available. Generate one first.")
+    raise HTTPException(
+        status_code=404, detail="No briefing available. Generate one first."
+    )
+
 
 @app.get("/api/briefing/history")
 async def get_briefing_history(
     limit: int = Query(30, le=90, description="Number of briefings to return"),
-    skip: int = Query(0, description="Number to skip for pagination")
+    skip: int = Query(0, description="Number to skip for pagination"),
 ):
     """Get historical briefings list"""
-    briefings = list(
-        briefings_col.find({}, {"_id": 0, "script": 0, "audio_url": 0})
-        .sort("date", -1)
-        .skip(skip)
-        .limit(limit)
-    )
-    total = briefings_col.count_documents({})
-    return {"briefings": briefings, "total": total}
+    from services.briefing_service import get_briefing_history as _get_history
+
+    return _get_history(limit=limit, skip=skip)
+
 
 @app.get("/api/briefing/{briefing_date}")
 async def get_briefing_by_date(briefing_date: str):
     """Get a specific briefing by date (YYYY-MM-DD)"""
-    briefing = briefings_col.find_one({"date": briefing_date}, {"_id": 0})
+    from services.briefing_service import get_briefing_by_date as _get_by_date
+
+    briefing = _get_by_date(briefing_date)
     if not briefing:
-        raise HTTPException(status_code=404, detail=f"No briefing found for {briefing_date}")
+        raise HTTPException(
+            status_code=404, detail=f"No briefing found for {briefing_date}"
+        )
     return briefing
+
 
 @app.post("/api/briefing/audio")
 async def generate_briefing_audio(
     script: str = Query(..., description="Briefing script text"),
-    voice_id: str = Query("emma", description="Voice for TTS")
+    voice_id: str = Query("emma", description="Voice for TTS"),
 ):
     """Generate audio for a custom briefing script"""
     try:
         from services.yarngpt_service import generate_tts as yarn_generate_tts
+
         tts_text = script[:4000] if len(script) > 4000 else script
-        audio_url = await yarn_generate_tts(text=tts_text, voice_id=voice_id, language="en")
+        audio_url = await yarn_generate_tts(
+            text=tts_text, voice_id=voice_id, language="en"
+        )
         if not audio_url:
             raise Exception("TTS generation failed")
         return {"audio_url": audio_url, "voice_id": voice_id}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Audio generation failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Audio generation failed: {str(e)}"
+        )
+
 
 # ─── Push Notifications ───────────────────────────────────────
 @app.post("/api/notifications/subscribe")
@@ -1416,28 +1638,44 @@ async def subscribe_push(data: dict = Body(...)):
     endpoint = data.get("endpoint", "")
     if not endpoint:
         raise HTTPException(status_code=400, detail="Missing endpoint")
-    db["push_subscriptions"].update_one(
-        {"endpoint": endpoint},
-        {"$set": {**data, "subscribed_at": datetime.now(timezone.utc).isoformat()}},
-        upsert=True
-    )
+    db = get_supabase_db()
+    db.table("push_subscriptions").upsert(
+        {
+            "endpoint": endpoint,
+            "subscription_data": data,
+            "subscribed_at": datetime.now(timezone.utc).isoformat(),
+        },
+        on_conflict="endpoint",
+    ).execute()
     return {"status": "subscribed"}
+
 
 @app.post("/api/notifications/unsubscribe")
 async def unsubscribe_push(data: dict = Body(...)):
     """Remove push notification subscription"""
     endpoint = data.get("endpoint", "")
     if endpoint:
-        db["push_subscriptions"].delete_one({"endpoint": endpoint})
+        get_supabase_db().table("push_subscriptions").delete().eq(
+            "endpoint", endpoint
+        ).execute()
     return {"status": "unsubscribed"}
+
 
 @app.get("/api/notifications/digest")
 async def get_daily_digest():
-    """Get daily digest content for push notification"""
-    stories = list(db["news_cache"].find(
-        {},
-        {"_id": 0, "id": 1, "title": 1, "category": 1, "source": 1}
-    ).sort("published", -1).limit(5))
+    """Get daily digest content for push notification (from aggregator, not DB)."""
+    from services.news_service import fetch_all_news
+
+    all_news = await fetch_all_news(limit=5)
+    stories = [
+        {
+            "id": s.get("id"),
+            "title": s.get("title"),
+            "category": s.get("category"),
+            "source": s.get("source"),
+        }
+        for s in all_news[:5]
+    ]
     return {
         "title": "NARVO DAILY DIGEST",
         "top_stories": stories,
@@ -1445,10 +1683,12 @@ async def get_daily_digest():
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 
+
 # ===========================================
 # RADIO STATIONS API (Radio Browser)
 # ===========================================
 RADIO_BROWSER_API = "https://de1.api.radio-browser.info"
+
 
 class RadioStation(BaseModel):
     id: str
@@ -1465,11 +1705,12 @@ class RadioStation(BaseModel):
     bitrate: int = 0
     favicon: Optional[str] = None
 
+
 @app.get("/api/radio/stations", response_model=List[RadioStation])
 async def get_radio_stations(
     country: str = Query(None, description="Filter by country code (e.g., NG, GH, ZA)"),
     limit: int = Query(20, ge=1, le=100, description="Max stations to return"),
-    search: str = Query(None, description="Search by station name")
+    search: str = Query(None, description="Search by station name"),
 ):
     """Get African radio stations from Radio Browser API"""
     try:
@@ -1479,7 +1720,7 @@ async def get_radio_stations(
                 "limit": limit,
                 "hidebroken": "true",
                 "order": "votes",
-                "reverse": "true"
+                "reverse": "true",
             }
 
             if search:
@@ -1500,21 +1741,23 @@ async def get_radio_stations(
 
             stations = []
             for item in data[:limit]:
-                stations.append(RadioStation(
-                    id=item.get("stationuuid", ""),
-                    name=item.get("name", "Unknown Station"),
-                    url=item.get("url", ""),
-                    url_resolved=item.get("url_resolved", item.get("url", "")),
-                    country=item.get("country", ""),
-                    countrycode=item.get("countrycode", ""),
-                    state=item.get("state", ""),
-                    language=item.get("language", ""),
-                    tags=item.get("tags", ""),
-                    votes=item.get("votes", 0),
-                    codec=item.get("codec", ""),
-                    bitrate=item.get("bitrate", 0),
-                    favicon=item.get("favicon", "")
-                ))
+                stations.append(
+                    RadioStation(
+                        id=item.get("stationuuid", ""),
+                        name=item.get("name", "Unknown Station"),
+                        url=item.get("url", ""),
+                        url_resolved=item.get("url_resolved", item.get("url", "")),
+                        country=item.get("country", ""),
+                        countrycode=item.get("countrycode", ""),
+                        state=item.get("state", ""),
+                        language=item.get("language", ""),
+                        tags=item.get("tags", ""),
+                        votes=item.get("votes", 0),
+                        codec=item.get("codec", ""),
+                        bitrate=item.get("bitrate", 0),
+                        favicon=item.get("favicon", ""),
+                    )
+                )
 
             return stations
     except httpx.TimeoutException:
@@ -1524,18 +1767,34 @@ async def get_radio_stations(
         # Return fallback stations
         return [
             RadioStation(
-                id="fallback-1", name="Cool FM Lagos", url="https://stream.coolfm.ng/live",
-                country="Nigeria", countrycode="NG", votes=1000, bitrate=128
+                id="fallback-1",
+                name="Cool FM Lagos",
+                url="https://stream.coolfm.ng/live",
+                country="Nigeria",
+                countrycode="NG",
+                votes=1000,
+                bitrate=128,
             ),
             RadioStation(
-                id="fallback-2", name="Wazobia FM", url="https://stream.wazobiafm.com/live",
-                country="Nigeria", countrycode="NG", votes=800, bitrate=128
+                id="fallback-2",
+                name="Wazobia FM",
+                url="https://stream.wazobiafm.com/live",
+                country="Nigeria",
+                countrycode="NG",
+                votes=800,
+                bitrate=128,
             ),
             RadioStation(
-                id="fallback-3", name="Metro FM South Africa", url="https://stream.metrofm.co.za/live",
-                country="South Africa", countrycode="ZA", votes=600, bitrate=128
+                id="fallback-3",
+                name="Metro FM South Africa",
+                url="https://stream.metrofm.co.za/live",
+                country="South Africa",
+                countrycode="ZA",
+                votes=600,
+                bitrate=128,
             ),
         ]
+
 
 @app.get("/api/radio/countries")
 async def get_radio_countries():
@@ -1568,6 +1827,7 @@ class PodcastEpisode(BaseModel):
     category: str = "General"
     published: Optional[str] = None
 
+
 @app.get("/api/discover/trending")
 async def get_trending_topics():
     """Get trending topics and categories for the Discover page"""
@@ -1587,7 +1847,10 @@ async def get_trending_topics():
             category_counts[cat] = category_counts.get(cat, 0) + 1
 
         trending = sorted(category_counts.items(), key=lambda x: x[1], reverse=True)[:8]
-        return [{"topic": cat, "count": count, "trend": "up" if count > 2 else "stable"} for cat, count in trending]
+        return [
+            {"topic": cat, "count": count, "trend": "up" if count > 2 else "stable"}
+            for cat, count in trending
+        ]
     except Exception as e:
         print(f"Trending error: {e}")
         return [
@@ -1597,6 +1860,7 @@ async def get_trending_topics():
             {"topic": "Technology", "count": 5, "trend": "up"},
             {"topic": "Health", "count": 4, "trend": "stable"},
         ]
+
 
 # ===========================================
 # OFFLINE ENDPOINTS (Article caching)
@@ -1610,124 +1874,165 @@ class OfflineArticle(BaseModel):
     category: str = "General"
     image_url: Optional[str] = None
 
+
 @app.post("/api/offline/save")
 async def save_offline_article(article: OfflineArticle):
     """Save an article for offline reading"""
-    doc = article.dict()
-    doc["saved_at"] = datetime.now(timezone.utc).isoformat()
-    db.offline_articles.update_one(
-        {"story_id": article.story_id},
-        {"$set": doc},
-        upsert=True
-    )
-    return {"status": "saved", "story_id": article.story_id}
+    from services.offline_service import save_article
+
+    return save_article(article.dict())
+
 
 @app.get("/api/offline/articles")
 async def get_offline_articles():
     """Get all saved offline articles"""
-    articles = list(db.offline_articles.find({}, {"_id": 0}).sort("saved_at", -1))
-    return articles
+    from services.offline_service import get_articles
+
+    return get_articles()
+
 
 @app.delete("/api/offline/articles/{story_id}")
 async def delete_offline_article(story_id: str):
     """Remove an offline article"""
-    db.offline_articles.delete_one({"story_id": story_id})
+    from services.offline_service import remove_article
+
+    remove_article(story_id)
     return {"status": "deleted", "story_id": story_id}
+
 
 @app.delete("/api/offline/articles")
 async def clear_offline_articles():
     """Clear all offline articles"""
-    result = db.offline_articles.delete_many({})
-    return {"status": "cleared", "count": result.deleted_count}
+    from services.offline_service import clear_all_articles
+
+    count = clear_all_articles()
+    return {"status": "cleared", "count": count}
+
 
 @app.get("/api/offline/stats")
 async def get_offline_stats():
     """Get offline storage statistics"""
-    article_count = db.offline_articles.count_documents({})
-    return {
-        "article_count": article_count,
-        "audio_note": "Audio caching is managed client-side via IndexedDB",
-    }
+    from services.offline_service import get_stats
+
+    return get_stats()
 
 
 # ===========================================
-# BOOKMARK ENDPOINTS (MongoDB persistent)
+# BOOKMARK ENDPOINTS (Supabase)
 # ===========================================
 @app.post("/api/bookmarks")
 async def add_bookmark(request: BookmarkRequest):
     """Add a bookmark for a user"""
+    from services.user_service import add_bookmark as _add
+
     bookmark_data = {
-        "user_id": request.user_id,
         "story_id": request.story_id,
         "title": request.title,
         "summary": request.summary,
         "source": request.source,
         "category": request.category,
         "source_url": request.source_url,
-        "saved_at": request.saved_at or datetime.now(timezone.utc).isoformat(),
     }
-    bookmarks_col.update_one(
-        {"user_id": request.user_id, "story_id": request.story_id},
-        {"$set": bookmark_data},
-        upsert=True
-    )
-    result = {k: v for k, v in bookmark_data.items() if k != "user_id"}
-    return {"status": "ok", "bookmark": result}
+    out = _add(request.user_id, bookmark_data)
+    return {
+        "status": "ok",
+        "bookmark": {
+            **bookmark_data,
+            "saved_at": request.saved_at or datetime.now(timezone.utc).isoformat(),
+        },
+    }
+
 
 @app.get("/api/bookmarks")
 async def get_bookmarks(user_id: str = Query(..., description="User ID")):
     """Get all bookmarks for a user"""
-    docs = list(bookmarks_col.find({"user_id": user_id}, {"_id": 0, "user_id": 0}).sort("saved_at", -1))
-    return docs
+    from services.user_service import get_bookmarks as _get
+
+    return _get(user_id)
+
 
 @app.delete("/api/bookmarks/{story_id}")
-async def remove_bookmark(story_id: str, user_id: str = Query(..., description="User ID")):
+async def remove_bookmark(
+    story_id: str, user_id: str = Query(..., description="User ID")
+):
     """Remove a bookmark"""
-    bookmarks_col.delete_one({"user_id": user_id, "story_id": story_id})
+    from services.user_service import remove_bookmark as _remove
+
+    _remove(user_id, story_id)
     return {"status": "ok"}
 
+
 # ===========================================
-# USER PREFERENCES ENDPOINTS (MongoDB persistent)
+# USER PREFERENCES ENDPOINTS (Supabase)
 # ===========================================
 @app.post("/api/preferences")
 async def save_preferences(request: UserPreferencesRequest):
     """Save user preferences"""
-    prefs_data = {
-        "user_id": request.user_id,
-        "region": request.region,
-        "voice": request.voice,
-        "interests": request.interests,
-        "updated_at": datetime.now(timezone.utc).isoformat(),
-    }
-    preferences_col.update_one(
-        {"user_id": request.user_id},
-        {"$set": prefs_data},
-        upsert=True
+    from services.user_service import update_preferences
+
+    update_preferences(
+        request.user_id,
+        {
+            "region": request.region,
+            "voice": request.voice,
+            "interests": request.interests,
+        },
     )
-    result = {k: v for k, v in prefs_data.items() if k != "user_id"}
-    return {"status": "ok", "preferences": result}
+    return {
+        "status": "ok",
+        "preferences": {
+            "region": request.region,
+            "voice": request.voice,
+            "interests": request.interests,
+        },
+    }
+
 
 @app.get("/api/preferences")
 async def get_preferences(user_id: str = Query(..., description="User ID")):
     """Get user preferences"""
-    doc = preferences_col.find_one({"user_id": user_id}, {"_id": 0, "user_id": 0})
+    from services.user_service import get_preferences as _get
+
+    doc = _get(user_id)
     if doc:
         return doc
-    return {"region": "lagos", "voice": "pidgin", "interests": ["politics", "sports", "afrobeats"]}
+    return {
+        "region": "lagos",
+        "voice": "pidgin",
+        "interests": ["politics", "sports", "afrobeats"],
+    }
+
 
 # Category colors for OG image
 OG_CATEGORY_COLORS = {
-    "politics": "#dc2626", "tech": "#0891b2", "sports": "#16a34a",
-    "finance": "#d97706", "business": "#d97706", "culture": "#9333ea",
-    "health": "#0d9488", "environment": "#059669", "general": "#6b7280",
+    "politics": "#dc2626",
+    "tech": "#0891b2",
+    "sports": "#16a34a",
+    "finance": "#d97706",
+    "business": "#d97706",
+    "culture": "#9333ea",
+    "health": "#0d9488",
+    "environment": "#059669",
+    "general": "#6b7280",
 }
 
 # Common social media crawler user agents
 CRAWLER_USER_AGENTS = [
-    'facebookexternalhit', 'twitterbot', 'linkedinbot', 'pinterest',
-    'slackbot', 'telegrambot', 'whatsapp', 'discordbot', 'applebot',
-    'googlebot', 'bingbot', 'yandex', 'baiduspider'
+    "facebookexternalhit",
+    "twitterbot",
+    "linkedinbot",
+    "pinterest",
+    "slackbot",
+    "telegrambot",
+    "whatsapp",
+    "discordbot",
+    "applebot",
+    "googlebot",
+    "bingbot",
+    "yandex",
+    "baiduspider",
 ]
+
 
 def is_crawler(user_agent: str) -> bool:
     """Check if request is from a social media crawler"""
@@ -1736,21 +2041,38 @@ def is_crawler(user_agent: str) -> bool:
     ua_lower = user_agent.lower()
     return any(crawler in ua_lower for crawler in CRAWLER_USER_AGENTS)
 
+
 # ─── Analytics ───────────────────────────────────────
 @app.get("/api/analytics/{user_id}")
 async def get_user_analytics(user_id: str):
     """Get listening analytics for a user with trends and comparisons"""
-    history = list(db["listening_history"].find(
-        {"user_id": user_id},
-        {"_id": 0, "category": 1, "source": 1, "played_at": 1, "duration": 1, "title": 1}
-    ).sort("played_at", -1).limit(500))
+    db = get_supabase_db()
+    r = (
+        db.table("listening_history")
+        .select("category, source, played_at, duration, title")
+        .eq("user_id", user_id)
+        .order("played_at", desc=True)
+        .limit(500)
+        .execute()
+    )
+    history = []
+    for x in r.data or []:
+        row = {k: v for k, v in x.items()}
+        if row.get("played_at") and hasattr(row["played_at"], "isoformat"):
+            row["played_at"] = row["played_at"].isoformat()
+        history.append(row)
 
     if not history:
         return {
-            "total_listens": 0, "total_duration_minutes": 0,
-            "categories": {}, "sources": {},
-            "daily_activity": [], "streak": 0, "top_categories": [],
-            "weekly_trend": [], "period_comparison": None,
+            "total_listens": 0,
+            "total_duration_minutes": 0,
+            "categories": {},
+            "sources": {},
+            "daily_activity": [],
+            "streak": 0,
+            "top_categories": [],
+            "weekly_trend": [],
+            "period_comparison": None,
             "hourly_distribution": {},
         }
 
@@ -1805,9 +2127,12 @@ async def get_user_analytics(user_id: str):
         start = now - timedelta(days=(w + 1) * 7)
         end = now - timedelta(days=w * 7)
         label = f"W-{w}" if w > 0 else "This week"
-        count = sum(1 for h in history
-                    if h.get("played_at", "")[:10] >= start.strftime("%Y-%m-%d")
-                    and h.get("played_at", "")[:10] < end.strftime("%Y-%m-%d"))
+        count = sum(
+            1
+            for h in history
+            if h.get("played_at", "")[:10] >= start.strftime("%Y-%m-%d")
+            and h.get("played_at", "")[:10] < end.strftime("%Y-%m-%d")
+        )
         weekly_trend.append({"week": label, "count": count})
     weekly_trend.reverse()
 
@@ -1819,7 +2144,11 @@ async def get_user_analytics(user_id: str):
         "this_week": this_week,
         "last_week": last_week,
         "change_pct": change_pct,
-        "trend": "up" if this_week > last_week else "down" if this_week < last_week else "flat",
+        "trend": "up"
+        if this_week > last_week
+        else "down"
+        if this_week < last_week
+        else "flat",
     }
 
     # Hourly distribution (24h)
@@ -1827,7 +2156,9 @@ async def get_user_analytics(user_id: str):
 
     return {
         "total_listens": len(history),
-        "total_duration_minutes": round(total_duration / 60, 1) if total_duration else 0,
+        "total_duration_minutes": round(total_duration / 60, 1)
+        if total_duration
+        else 0,
         "categories": dict(cat_counts.most_common(8)),
         "sources": dict(src_counts.most_common(10)),
         "daily_activity": [{"date": d, "count": c} for d, c in daily_sorted],
@@ -1838,13 +2169,14 @@ async def get_user_analytics(user_id: str):
         "hourly_distribution": hourly_dist,
     }
 
+
 @app.get("/api/share/{news_id}", response_class=HTMLResponse)
 async def share_page(news_id: str, request: Request):
     """
     Shareable page that serves proper OG meta tags for social media crawlers.
     For regular browsers, redirects to the React app.
     """
-    user_agent = request.headers.get('user-agent', '')
+    user_agent = request.headers.get("user-agent", "")
 
     # Fetch the news item
     all_news = []
@@ -1862,16 +2194,23 @@ async def share_page(news_id: str, request: Request):
 
     if not story:
         # Redirect to homepage if story not found
-        return HTMLResponse(content=f'<html><head><meta http-equiv="refresh" content="0;url=/"></head></html>')
+        return HTMLResponse(
+            content=f'<html><head><meta http-equiv="refresh" content="0;url=/"></head></html>'
+        )
 
     title = story.get("title", "Narvo News")[:100]
-    description = (story.get("summary", "") or "Listen on Narvo — Audio-first news for Africa")[:200]
+    description = (
+        story.get("summary", "") or "Listen on Narvo — Audio-first news for Africa"
+    )[:200]
     source = story.get("source", "NARVO")
     category = (story.get("category", "general") or "general").lower()
-    image_url = story.get("image_url") or "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=80"
+    image_url = (
+        story.get("image_url")
+        or "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&w=1200&q=80"
+    )
 
     # Get the base URL from request
-    base_url = str(request.base_url).rstrip('/')
+    base_url = str(request.base_url).rstrip("/")
     share_url = f"{base_url}/share/{news_id}"
     app_url = f"{base_url}/news/{news_id}"
     og_image_url = f"{base_url}/api/og/{news_id}"
@@ -1918,7 +2257,8 @@ async def share_page(news_id: str, request: Request):
         return HTMLResponse(content=html)
     else:
         # For regular browsers, redirect to React app
-        return HTMLResponse(content=f'''<!DOCTYPE html>
+        return HTMLResponse(
+            content=f"""<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -1927,7 +2267,9 @@ async def share_page(news_id: str, request: Request):
     <script>window.location.href = "/news/{news_id}";</script>
 </head>
 <body>Redirecting...</body>
-</html>''')
+</html>"""
+        )
+
 
 @app.get("/api/og/{news_id}", response_class=HTMLResponse)
 async def og_image_html(news_id: str):
@@ -1950,7 +2292,9 @@ async def og_image_html(news_id: str):
 
     title = story.get("title", "Narvo News")[:100]
     source = story.get("source", "NARVO")
-    category = (story.get("category", "general") or "general").lower().replace("#", "").strip()
+    category = (
+        (story.get("category", "general") or "general").lower().replace("#", "").strip()
+    )
     region = story.get("region", "AFRICA")
     accent = OG_CATEGORY_COLORS.get(category, "#6b7280")
 
@@ -2004,4 +2348,5 @@ async def og_image_html(news_id: str):
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8001)

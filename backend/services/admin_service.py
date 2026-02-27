@@ -1,13 +1,8 @@
-# Admin Service - System metrics, alerts, and moderation
-import os
+# Admin Service - System metrics, alerts, and moderation (Supabase)
 from datetime import datetime, timezone
-from typing import List, Dict
-from pymongo import MongoClient
+from typing import Dict, List
 
-mongo_client = MongoClient(os.environ.get("MONGO_URL"))
-db = mongo_client[os.environ.get("DB_NAME", "narvo")]
-bookmarks_col = db["bookmarks"]
-preferences_col = db["user_preferences"]
+from lib.supabase_db import get_supabase_db
 
 # In-memory metrics tracking (in production, use Redis/MongoDB)
 _admin_metrics = {
@@ -21,8 +16,11 @@ _admin_metrics = {
 
 def get_system_metrics() -> Dict:
     """Get real-time admin dashboard metrics"""
-    bookmarks_count = bookmarks_col.count_documents({})
-    preferences_count = preferences_col.count_documents({})
+    db = get_supabase_db()
+    br = db.table("bookmarks").select("id", count="exact").execute()
+    pr = db.table("user_preferences").select("id", count="exact").execute()
+    bookmarks_count = getattr(br, "count", None) or len(br.data or [])
+    preferences_count = getattr(pr, "count", None) or len(pr.data or [])
     
     return {
         "active_streams": 1240 + (bookmarks_count % 100),
