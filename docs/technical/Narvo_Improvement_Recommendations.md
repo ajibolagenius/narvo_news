@@ -148,7 +148,7 @@ These endpoints **do not exist** in the backend, so push subscription will alway
 ### Recommendations
 
 1. Restrict CORS in production: e.g. `allow_origins=[os.environ.get("FRONTEND_ORIGIN", "https://your-app.com")]` and keep `["*"]` only for dev.
-2. Add `.env.example` (backend and frontend) listing all required variables: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `MONGO_URL`, `DB_NAME`, `GEMINI_API_KEY`, `OPENAI_API_KEY`, `REACT_APP_BACKEND_URL`, etc., with short comments. Do not commit real secrets.
+2. Add `.env.example` (backend and frontend) listing all required variables: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `GEMINI_API_KEY`, `OPENAI_API_KEY`, `REACT_APP_BACKEND_URL`, etc., with short comments. Do not commit real secrets.
 3. Ensure any key used for push (VAPID) or TTS is only in env and never logged or exposed in API responses.
 
 ---

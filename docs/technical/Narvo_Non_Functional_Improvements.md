@@ -165,7 +165,7 @@ This document lists improvements and enhancements that **do not alter** the proj
 ### 7.1 Health check depth (backend)
 
 - **Current:** `/api/health` returns static status and timestamp.
-- **Improvement:** Optionally check MongoDB and Supabase connectivity (e.g. one lightweight query or ping) and include a simple `dependencies: { mongo: "ok", supabase: "ok" }` or leave as-is if you prefer a trivial health check. Do not change response shape for “healthy” case in a breaking way.
+- **Improvement:** Optionally check Supabase connectivity (e.g. one lightweight query or ping) and include a simple `dependencies: { supabase: "ok" }` or leave as-is if you prefer a trivial health check. Do not change response shape for “healthy” case in a breaking way.
 - **Benefit:** Deployment and monitoring can detect DB/auth issues; same API contract if you keep backward compatibility.
 
 ### 7.2 Request IDs (backend)

@@ -8,7 +8,7 @@ const TOOL_CATEGORIES = [
     tools: [
       { name: 'React', desc: 'Frontend UI library', url: 'https://react.dev', tag: 'FRONTEND' },
       { name: 'FastAPI', desc: 'High-performance Python backend', url: 'https://fastapi.tiangolo.com', tag: 'BACKEND' },
-      { name: 'MongoDB', desc: 'NoSQL document database', url: 'https://www.mongodb.com', tag: 'DATABASE' },
+      { name: 'Supabase', desc: 'PostgreSQL database & auth', url: 'https://supabase.com', tag: 'DATABASE' },
       { name: 'Tailwind CSS', desc: 'Utility-first CSS framework', url: 'https://tailwindcss.com', tag: 'STYLING' },
       { name: 'Shadcn/UI', desc: 'Accessible component library', url: 'https://ui.shadcn.com', tag: 'COMPONENTS' },
     ],
