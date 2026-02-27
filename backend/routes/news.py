@@ -1,79 +1,75 @@
-# News routes
+# News API — single RSS source via services.news_service
 from fastapi import APIRouter, Query, HTTPException
 from typing import Optional
 
 from services.news_service import (
-    fetch_all_news, search_news, get_breaking_news, get_trending_topics, RSS_FEEDS
+    get_cached_all_news,
+    get_breaking_news_list,
 )
-from services.tts_service import generate_tts_audio
+from services.narrative_service import generate_narrative
+from lib.text_utils import sanitize_ai_text
 
 router = APIRouter(prefix="/api", tags=["news"])
 
+
 @router.get("/news")
 async def get_news(
-    limit: int = Query(20, le=50),
-    category: Optional[str] = None
+    region: Optional[str] = Query(None, description="Filter by region"),
+    category: Optional[str] = Query(None, description="Filter by category"),
+    limit: int = Query(20, le=50, description="Number of items to return"),
+    include_aggregators: bool = Query(False, description="Include aggregator news"),
+    aggregator_sources: Optional[str] = Query(
+        None, description="Comma-separated aggregator sources: mediastack,newsdata"
+    ),
 ):
-    """Get latest news from RSS feeds"""
-    news = await fetch_all_news(limit=limit, category=category)
-    return news
+    """Fetch aggregated news from RSS (single source) and optional aggregator APIs."""
+    all_news = await get_cached_all_news()
+
+    if include_aggregators:
+        try:
+            from services.aggregator_service import get_normalized_aggregator_news
+            sources_list = aggregator_sources.split(",") if aggregator_sources else None
+            agg_news = await get_normalized_aggregator_news(sources=sources_list)
+            all_news = list(all_news) + list(agg_news)
+        except Exception as e:
+            print(f"[News] Aggregator fetch error: {e}")
+
+    if region:
+        all_news = [n for n in all_news if n.get("region", "").lower() == region.lower()]
+    if category:
+        all_news = [n for n in all_news if n.get("category", "").lower() == category.lower()]
+
+    all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
+    return all_news[:limit]
+
 
 @router.get("/news/breaking")
 async def get_breaking():
-    """Get breaking/developing news"""
-    breaking = await get_breaking_news()
-    if not breaking:
-        raise HTTPException(status_code=404, detail="No breaking news available")
-    return breaking
+    """Get breaking/urgent news stories."""
+    try:
+        return await get_breaking_news_list(max_items=3)
+    except Exception:
+        return []
+
 
 @router.get("/news/{news_id}")
-async def get_news_item(news_id: str):
-    """Get a specific news item by ID"""
-    all_news = await fetch_all_news(limit=100)
-    for item in all_news:
-        if item["id"] == news_id:
-            return item
-    raise HTTPException(status_code=404, detail="News item not found")
+async def get_news_detail(news_id: str):
+    """Get detailed news item with narrative."""
+    all_news = await get_cached_all_news()
+    news_item = next((n for n in all_news if n.get("id") == news_id), None)
 
-@router.get("/search")
-async def search(
-    q: str = Query(..., description="Search query"),
-    category: Optional[str] = None,
-    limit: int = Query(20, le=50)
-):
-    """Search news articles"""
-    return await search_news(q, category, limit)
+    if not news_item:
+        raise HTTPException(status_code=404, detail="News item not found")
 
-@router.get("/trending")
-async def get_trending():
-    """Get trending topics"""
-    return await get_trending_topics()
+    if not news_item.get("narrative"):
+        narrative_data = await generate_narrative(
+            f"{news_item.get('title', '')}\n\n{news_item.get('summary', '')}"
+        )
+        raw_narrative = narrative_data.get("narrative", news_item.get("summary", ""))
+        raw_takeaways = narrative_data.get("key_takeaways", [])
+        news_item["narrative"] = sanitize_ai_text(raw_narrative)
+        news_item["key_takeaways"] = [
+            sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)
+        ]
 
-@router.get("/categories")
-def get_categories():
-    """Get available news categories"""
-    return [
-        {"id": "politics", "name": "Politics", "icon": "vote"},
-        {"id": "business", "name": "Business", "icon": "briefcase"},
-        {"id": "tech", "name": "Technology", "icon": "cpu"},
-        {"id": "sports", "name": "Sports", "icon": "trophy"},
-        {"id": "entertainment", "name": "Entertainment", "icon": "film"},
-        {"id": "health", "name": "Health", "icon": "heart"},
-        {"id": "general", "name": "General", "icon": "newspaper"},
-    ]
-
-@router.get("/sources")
-def get_sources():
-    """Get available news sources"""
-    return [{"name": feed["source"], "category": feed["category"]} for feed in RSS_FEEDS]
-
-@router.post("/tts/generate")
-async def generate_tts(
-    text: str = Query(..., description="Text to convert to speech"),
-    voice_id: str = Query("nova", description="Voice ID")
-):
-    """Generate TTS audio"""
-    audio_url = await generate_tts_audio(text, voice_id)
-    if not audio_url:
-        raise HTTPException(status_code=500, detail="TTS generation failed")
-    return {"audio_url": audio_url, "voice_id": voice_id}
+    return news_item

@@ -15,40 +15,9 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
 from lib.supabase_db import get_supabase_db
-import feedparser
+from lib.text_utils import sanitize_ai_text
 import httpx
 import re as _re
-
-# ── Sanitizer: strip stage directions / sound-effect text from AI output ──
-_STAGE_DIRECTION_PATTERNS = [
-    _re.compile(r"\[.*?\]"),  # [Sound of music fades]
-    _re.compile(
-        r"\(.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\)",
-        _re.IGNORECASE,
-    ),
-    _re.compile(
-        r"\*.*?(music|sound|pause|sigh|jingle|transition|SFX|fade|clears?).*?\*",
-        _re.IGNORECASE,
-    ),
-    _re.compile(r"(?i)^\s*(?:sound of|sounds? of|sfx:?).*$", _re.MULTILINE),
-    _re.compile(
-        r"(?i)^\s*(?:\(|\*).*?(?:music|jingle|theme|fade|transition).*?(?:\)|\*)\s*$",
-        _re.MULTILINE,
-    ),
-]
-
-
-def sanitize_ai_text(text: str) -> str:
-    """Remove stage directions, sound descriptions, and production cues from AI-generated text."""
-    if not text:
-        return text
-    result = text
-    for pattern in _STAGE_DIRECTION_PATTERNS:
-        result = pattern.sub("", result)
-    # Collapse multiple blank lines into one
-    result = _re.sub(r"\n{3,}", "\n\n", result)
-    return result.strip()
-
 
 # API version: single source of truth for FastAPI, root, and health responses
 API_VERSION = "2.0"
@@ -79,6 +48,8 @@ from routes.admin import router as admin_router
 from routes.user import router as user_router
 from routes.factcheck import router as factcheck_router
 from routes.translation import router as translation_router
+from routes.news import router as news_router
+from routes.briefing import router as briefing_router
 
 app.include_router(discover_router)
 app.include_router(offline_router)
@@ -86,6 +57,8 @@ app.include_router(admin_router)
 app.include_router(user_router)
 app.include_router(factcheck_router)
 app.include_router(translation_router)
+app.include_router(news_router)
+app.include_router(briefing_router)
 
 from services.narrative_service import generate_narrative
 
@@ -140,41 +113,6 @@ class MemCache:
 
 _cache = MemCache()
 
-
-# African News RSS Feeds
-RSS_FEEDS = [
-    {
-        "name": "Vanguard Nigeria",
-        "url": "https://www.vanguardngr.com/feed/",
-        "region": "Nigeria",
-    },
-    {"name": "Punch Nigeria",
-    "url": "https://punchng.com/feed/",
-    "region": "Nigeria"},
-    {"name": "Daily Trust",
-    "url": "https://dailytrust.com/feed/",
-    "region": "Nigeria"},
-    {
-        "name": "Premium Times",
-        "url": "https://www.premiumtimesng.com/feed",
-        "region": "Nigeria",
-    },
-    {
-        "name": "The Guardian Nigeria",
-        "url": "https://guardian.ng/feed/",
-        "region": "Nigeria",
-    },
-    {
-        "name": "BBC Africa",
-        "url": "https://feeds.bbci.co.uk/news/world/africa/rss.xml",
-        "region": "Continental",
-    },
-    {
-        "name": "Al Jazeera Africa",
-        "url": "https://www.aljazeera.com/xml/rss/all.xml",
-        "region": "Continental",
-    },
-]
 
 # Voice configurations — YarnGPT voices with Nigerian accents
 from services.yarngpt_service import (
@@ -282,133 +220,6 @@ class BookmarkRequest(BaseModel):
     saved_at: str = ""
 
 
-# Helper Functions
-def generate_news_id(title: str, source: str) -> str:
-    """Generate unique ID for news item"""
-    content = f"{title}{source}".encode()
-    return hashlib.md5(content).hexdigest()[:12]
-
-
-def extract_category(title: str, summary: str) -> str:
-    """Simple category extraction based on keywords"""
-    text = (title + " " + summary).lower()
-    if any(
-        word in text
-        for word in ["election", "government", "president", "minister", "policy"]
-    ):
-        return "Politics"
-    elif any(
-        word in text
-        for word in ["economy", "market", "stock", "naira", "inflation", "trade"]
-    ):
-        return "Economy"
-    elif any(
-        word in text for word in ["tech", "digital", "app", "startup", "innovation"]
-    ):
-        return "Tech"
-    elif any(
-        word in text for word in ["sport", "football", "match", "player", "league"]
-    ):
-        return "Sports"
-    elif any(
-        word in text for word in ["health", "hospital", "disease", "medical", "doctor"]
-    ):
-        return "Health"
-    return "General"
-
-
-def extract_tags(title: str, category: str) -> List[str]:
-    """Extract hashtags from content"""
-    tags = [f"#{category.upper()}"]
-    if "nigeria" in title.lower():
-        tags.append("#NIGERIA")
-    if "africa" in title.lower():
-        tags.append("#AFRICA")
-    return tags[:3]
-
-
-async def fetch_rss_feed(feed_info: dict) -> List[dict]:
-    """Fetch and parse RSS feed"""
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            response = await client.get(feed_info["url"])
-            if response.status_code == 200:
-                feed = feedparser.parse(response.text)
-                items = []
-                for entry in feed.entries[:5]:  # Limit to 5 per source
-                    title = entry.get("title", "")
-                    summary = entry.get("summary", entry.get("description", ""))[:500]
-                    # Clean HTML from summary
-                    import re
-
-                    summary = re.sub(r"<[^>]+>", "", summary)
-
-                    # Extract image URL from RSS entry
-                    image_url = None
-                    # Try media:content
-                    if hasattr(entry, "media_content") and entry.media_content:
-                        for media in entry.media_content:
-                            if media.get("medium") == "image" or (
-                                media.get("type", "").startswith("image")
-                            ):
-                                image_url = media.get("url")
-                                break
-                        if not image_url and entry.media_content:
-                            image_url = entry.media_content[0].get("url")
-                    # Try media:thumbnail
-                    if (
-                        not image_url
-                        and hasattr(entry, "media_thumbnail")
-                        and entry.media_thumbnail
-                    ):
-                        image_url = entry.media_thumbnail[0].get("url")
-                    # Try enclosure links
-                    if not image_url:
-                        for link in entry.get("links", []):
-                            if (
-                                link.get("type", "").startswith("image")
-                                or link.get("rel") == "enclosure"
-                            ):
-                                image_url = link.get("href")
-                                break
-                    # Try extracting from HTML content
-                    if not image_url:
-                        content_html = entry.get("summary", "") or entry.get(
-                            "description", ""
-                        )
-                        if hasattr(entry, "content") and entry.content:
-                            content_html = (
-                                entry.content[0].get("value", "") + content_html
-                            )
-                        img_match = re.search(r'src="(https?://[^"]+)"', content_html)
-                        if img_match:
-                            image_url = img_match.group(1)
-
-                    category = extract_category(title, summary)
-                    items.append(
-                        {
-                            "id": generate_news_id(title, feed_info["name"]),
-                            "title": title,
-                            "summary": summary,
-                            "source": feed_info["name"],
-                            "source_url": entry.get("link", ""),
-                            "published": entry.get(
-                                "published", datetime.now(timezone.utc).isoformat()
-                            ),
-                            "region": feed_info["region"],
-                            "category": category,
-                            "truth_score": 100,
-                            "tags": extract_tags(title, category),
-                            "listen_count": 0,
-                            "image_url": image_url,
-                        }
-                    )
-                return items
-    except Exception as e:
-        print(f"Error fetching {feed_info['name']}: {e}")
-    return []
-
-
 # Root: avoid 404 when visiting /
 @app.get("/")
 async def root():
@@ -429,131 +240,6 @@ async def health_check():
         "version": API_VERSION,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
-
-
-# ── News response cache (reduces RSS fetching) ──
-_news_response_cache = {"data": None, "timestamp": None, "ttl": 120}
-
-
-@app.get("/api/news")
-async def get_news(
-    region: Optional[str] = Query(None, description="Filter by region"),
-    category: Optional[str] = Query(None, description="Filter by category"),
-    limit: int = Query(20, le=50, description="Number of items to return"),
-    include_aggregators: bool = Query(False, description="Include aggregator news"),
-    aggregator_sources: Optional[str] = Query(
-        None, description="Comma-separated aggregator sources: mediastack,newsdata"
-    ),
-):
-    """Fetch aggregated news from RSS feeds and optional aggregator APIs"""
-    now = datetime.now(timezone.utc)
-
-    # Use cached base news if fresh (120s TTL)
-    if (
-        _news_response_cache["data"] is not None
-        and _news_response_cache["timestamp"]
-        and (now - _news_response_cache["timestamp"]).total_seconds()
-        < _news_response_cache["ttl"]
-    ):
-        all_news = list(_news_response_cache["data"])
-    else:
-        all_news = []
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for items in results:
-            if isinstance(items, list):
-                all_news.extend(items)
-        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
-        _news_response_cache["data"] = all_news
-        _news_response_cache["timestamp"] = now
-
-    # Optionally merge aggregator news
-    if include_aggregators:
-        try:
-            from services.aggregator_service import get_normalized_aggregator_news
-
-            sources_list = aggregator_sources.split(",") if aggregator_sources else None
-            agg_news = await get_normalized_aggregator_news(sources=sources_list)
-            all_news = list(all_news) + list(agg_news)
-        except Exception as e:
-            print(f"[News] Aggregator fetch error: {e}")
-
-    # Apply filters
-    if region:
-        all_news = [
-            n for n in all_news if n.get("region", "").lower() == region.lower()
-        ]
-    if category:
-        all_news = [
-            n for n in all_news if n.get("category", "").lower() == category.lower()
-        ]
-
-    # Sort by recency and return
-    all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
-    return all_news[:limit]
-
-
-@app.get("/api/news/breaking")
-async def get_breaking_news():
-    """Get breaking/urgent news stories from RSS feeds."""
-    try:
-        all_news = []
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-        results = await asyncio.gather(*tasks)
-        for items in results:
-            all_news.extend(items)
-
-        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
-        breaking = []
-
-        for story in all_news[:30]:
-            title_lower = (story.get("title", "") or "").lower()
-            if any(
-                kw in title_lower
-                for kw in ["breaking", "urgent", "flash", "just in", "developing"]
-            ):
-                breaking.append(story)
-
-        if not breaking and all_news:
-            latest = all_news[0]
-            latest["is_developing"] = True
-            breaking = [latest]
-
-        return breaking[:3]
-    except Exception:
-        return []
-
-
-@app.get("/api/news/{news_id}")
-async def get_news_detail(news_id: str):
-    """Get detailed news item with narrative"""
-    # Fetch fresh news to find the item
-    all_news = []
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-    results = await asyncio.gather(*tasks)
-
-    for items in results:
-        all_news.extend(items)
-
-    # Find the news item
-    news_item = next((n for n in all_news if n["id"] == news_id), None)
-
-    if not news_item:
-        raise HTTPException(status_code=404, detail="News item not found")
-
-    # Generate narrative if not present
-    if not news_item.get("narrative"):
-        narrative_data = await generate_narrative(
-            f"{news_item['title']}\n\n{news_item['summary']}"
-        )
-        raw_narrative = narrative_data.get("narrative", news_item["summary"])
-        raw_takeaways = narrative_data.get("key_takeaways", [])
-        news_item["narrative"] = sanitize_ai_text(raw_narrative)
-        news_item["key_takeaways"] = [
-            sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)
-        ]
-
-    return news_item
 
 
 @app.post("/api/paraphrase", response_model=ParaphraseResponse)
@@ -787,57 +473,11 @@ async def fetch_newsdata_news(
 
 @app.get("/api/trending")
 async def get_trending():
-    """Get trending tags and topics based on recent news"""
+    """Get trending tags and topics based on recent news (uses news_service)."""
     try:
-        # Fetch recent news to analyze trends
-        all_news = []
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for items in results:
-            if isinstance(items, list):
-                all_news.extend(items)
-
-        # Extract and count categories/keywords
-        category_counts = {}
-        keyword_counts = {}
-        keywords_to_track = [
-            "election",
-            "economy",
-            "trade",
-            "climate",
-            "technology",
-            "health",
-            "politics",
-            "africa",
-        ]
-
-        for item in all_news:
-            cat = item.get("category", "general").lower()
-            category_counts[cat] = category_counts.get(cat, 0) + 1
-
-            title_lower = item.get("title", "").lower()
-            for kw in keywords_to_track:
-                if kw in title_lower:
-                    keyword_counts[kw] = keyword_counts.get(kw, 0) + 1
-
-        # Sort by count
-        top_categories = sorted(
-            category_counts.items(), key=lambda x: x[1], reverse=True
-        )[:5]
-        top_keywords = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[
-            :5
-        ]
-
-        return {
-            "tags": [f"#{cat.upper()}" for cat, _ in top_categories],
-            "topics": [
-                {"name": kw.title(), "count": f"{cnt * 100}+"}
-                for kw, cnt in top_keywords
-            ][:5],
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-        }
-    except Exception as e:
-        # Fallback to static data
+        from services.news_service import get_trending_topics
+        return await get_trending_topics()
+    except Exception:
         return {
             "tags": ["#POLITICS", "#ECONOMY", "#NIGERIA", "#AFRICA", "#TECH"],
             "topics": [
@@ -845,6 +485,7 @@ async def get_trending():
                 {"name": "Naira Exchange", "count": "8.2k"},
                 {"name": "AfCFTA Trade", "count": "5.1k"},
             ],
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         }
 
 
@@ -864,15 +505,13 @@ async def search_news(
 ):
     """Search news articles from RSS feeds, aggregators, and podcasts"""
     try:
+        from services.news_service import get_cached_all_news
+
         query_lower = q.lower()
         all_items = []
 
-        # 1. Fetch RSS news
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for items in results:
-            if isinstance(items, list):
-                all_items.extend(items)
+        # 1. Fetch RSS news (single source)
+        all_items = await get_cached_all_news()
 
         # 2. Include cached aggregator articles
         if include_aggregators:
@@ -983,292 +622,6 @@ async def search_news(
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Search failed: {str(e)}")
-
-
-# ===========================================
-# ADMIN DASHBOARD METRICS API
-# ===========================================
-
-# In-memory metrics tracking (in production, use Redis/MongoDB)
-_admin_metrics = {
-    "api_requests": 0,
-    "tts_requests": 0,
-    "errors_count": 0,
-    "cache_hits": 0,
-    "last_updated": None,
-}
-
-
-class AdminMetrics(BaseModel):
-    active_streams: int = 1240
-    avg_bitrate: float = 4.8
-    error_rate: float = 0.02
-    storage_used: int = 84
-    node_load: str = "42%"
-    api_latency: str = "12ms"
-    uptime: str = "99.98%"
-    active_traffic: str = "4.8GBPS"
-
-
-class SystemAlert(BaseModel):
-    id: str
-    type: str  # 'warning', 'success', 'error'
-    title: str
-    description: str
-    timestamp: str
-    priority: bool = False
-
-
-class StreamStatus(BaseModel):
-    status: str  # 'LIVE', 'OFFLINE'
-    id: str
-    source: str
-    region: str
-    bitrate: str
-    uptime: str
-
-
-class VoiceMetrics(BaseModel):
-    name: str
-    id: str
-    language: str
-    latency: str
-    clarity: float
-    status: str  # 'LIVE', 'TRAINING'
-
-
-class ModerationItem(BaseModel):
-    id: str
-    source: str
-    status: str  # 'DISPUTED', 'VERIFIED', 'UNVERIFIED'
-    title: str
-    description: str
-    tags: List[str]
-    confidence: str
-    timestamp: str
-    has_image: bool = False
-
-
-@app.get("/api/admin/metrics")
-async def get_admin_metrics():
-    """Get real-time admin dashboard metrics"""
-    db = get_supabase_db()
-    br = db.table("bookmarks").select("id", count="exact").execute()
-    pr = db.table("user_preferences").select("id", count="exact").execute()
-    bookmarks_count = br.count if getattr(br, "count", None) is not None else len(br.data or [])
-    preferences_count = pr.count if getattr(pr, "count", None) is not None else len(pr.data or [])
-
-    return {
-        "active_streams": 1240 + (bookmarks_count % 100),
-        "avg_bitrate": 4.8,
-        "error_rate": max(0.01, 0.02 - (_admin_metrics["errors_count"] * 0.001)),
-        "storage_used": min(95, 80 + (preferences_count % 15)),
-        "node_load": f"{40 + (bookmarks_count % 20)}%",
-        "api_latency": f"{10 + (_admin_metrics['api_requests'] % 5)}ms",
-        "uptime": "99.98%",
-        "active_traffic": f"{4.5 + (bookmarks_count * 0.01):.1f}GBPS",
-        "listeners_today": f"{14.2 + (bookmarks_count * 0.1):.1f}k",
-        "sources_online": 89,
-        "stories_processed": 342 + bookmarks_count,
-        "signal_strength": "98%",
-        "network_load": f"{40 + (preferences_count % 15)}%",
-    }
-
-
-@app.get("/api/admin/alerts", response_model=List[SystemAlert])
-async def get_system_alerts():
-    """Get current system alerts"""
-    now = datetime.now(timezone.utc)
-    return [
-        SystemAlert(
-            id="alert-1",
-            type="warning",
-            title="LATENCY_SPIKE: EU_WEST",
-            description="NODE_ID: 88219 experiencing increased response times",
-            timestamp=now.strftime("%H:%M UTC"),
-            priority=True,
-        ),
-        SystemAlert(
-            id="alert-2",
-            type="success",
-            title="BACKUP_COMPLETE: LAG_S3",
-            description="Daily backup verified and uploaded successfully",
-            timestamp="09:00 UTC",
-            priority=False,
-        ),
-        SystemAlert(
-            id="alert-3",
-            type="error",
-            title="STREAM_FAIL: #1102",
-            description="AUTH_ERROR: Connection handshake failed - retry scheduled",
-            timestamp=(
-                now.replace(hour=now.hour - 1) if now.hour > 0 else now
-            ).strftime("%H:%M UTC"),
-            priority=True,
-        ),
-    ]
-
-
-@app.get("/api/admin/streams", response_model=List[StreamStatus])
-async def get_stream_status():
-    """Get active signal stream status"""
-    return [
-        StreamStatus(
-            status="LIVE",
-            id="#8821-XJ",
-            source="LAGOS_BROADCAST_1",
-            region="NG_LAG_CENTRAL",
-            bitrate="4,500 KBPS",
-            uptime="02:14:00",
-        ),
-        StreamStatus(
-            status="OFFLINE",
-            id="#9932-BL",
-            source="ABUJA_MAIN_HUB",
-            region="NG_ABJ_NORTH",
-            bitrate="--",
-            uptime="--",
-        ),
-        StreamStatus(
-            status="LIVE",
-            id="#7710-AR",
-            source="KANO_DATA_INGEST",
-            region="NG_KAN_CORE",
-            bitrate="3,200 KBPS",
-            uptime="14:22:10",
-        ),
-        StreamStatus(
-            status="LIVE",
-            id="#5521-GH",
-            source="ACCRA_BROADCAST_2",
-            region="GH_ACC_SOUTH",
-            bitrate="3,800 KBPS",
-            uptime="08:45:32",
-        ),
-        StreamStatus(
-            status="LIVE",
-            id="#3314-KE",
-            source="NAIROBI_HUB_MAIN",
-            region="KE_NBO_CENTRAL",
-            bitrate="4,100 KBPS",
-            uptime="19:12:08",
-        ),
-    ]
-
-
-@app.get("/api/admin/voices", response_model=List[VoiceMetrics])
-async def get_voice_metrics():
-    """Get TTS voice model metrics"""
-    return [
-        VoiceMetrics(
-            name="ATLAS_NEWS_V3",
-            id="#8821-A",
-            language="YORUBA (NG)",
-            latency="12MS",
-            clarity=99.8,
-            status="LIVE",
-        ),
-        VoiceMetrics(
-            name="ECHO_BRIEF_XP",
-            id="#9942-X",
-            language="HAUSA (NG)",
-            latency="45MS",
-            clarity=94.2,
-            status="TRAINING",
-        ),
-        VoiceMetrics(
-            name="NOVA_ANCHOR",
-            id="#1102-B",
-            language="IGBO (NG)",
-            latency="18MS",
-            clarity=98.5,
-            status="LIVE",
-        ),
-        VoiceMetrics(
-            name="ONYX_REPORT",
-            id="#4421-C",
-            language="PIDGIN (NG)",
-            latency="22MS",
-            clarity=96.1,
-            status="LIVE",
-        ),
-        VoiceMetrics(
-            name="SHIMMER_CAST",
-            id="#7788-D",
-            language="TWI (GH)",
-            latency="35MS",
-            clarity=91.3,
-            status="TRAINING",
-        ),
-    ]
-
-
-@app.get("/api/admin/moderation", response_model=List[ModerationItem])
-async def get_moderation_queue():
-    """Get moderation queue items"""
-    now = datetime.now(timezone.utc)
-    return [
-        ModerationItem(
-            id="#8821X",
-            source="TW_X",
-            status="DISPUTED",
-            title="Contested results in District 9 due to irregularities",
-            description="Reports emerging from multiple accounts regarding polling station closures. Official commission silent.",
-            tags=["#ELECTION2024", "#BREAKING"],
-            confidence="98%",
-            timestamp=now.strftime("%H:%M UTC"),
-        ),
-        ModerationItem(
-            id="#9942A",
-            source="DIRECT",
-            status="VERIFIED",
-            title="Dam levels stabilize after weekend rainfall cycle",
-            description="Water authority confirms reservoir capacity returning to normal levels following seasonal precipitation.",
-            tags=["#INFRASTRUCTURE"],
-            confidence="99%",
-            timestamp=(
-                now.replace(minute=now.minute - 5) if now.minute >= 5 else now
-            ).strftime("%H:%M UTC"),
-            has_image=True,
-        ),
-        ModerationItem(
-            id="#1102Z",
-            source="FB_WATCH",
-            status="UNVERIFIED",
-            title="Protest footage flagged for deepfake analysis",
-            description="Inconsistencies detected in background lighting and shadow vectors. Forensics team review recommended.",
-            tags=["#DEEP_GEN", "#AI_SCAN"],
-            confidence="67%",
-            timestamp=(
-                now.replace(minute=now.minute - 15) if now.minute >= 15 else now
-            ).strftime("%H:%M UTC"),
-        ),
-        ModerationItem(
-            id="#5543B",
-            source="REUTERS",
-            status="VERIFIED",
-            title="Central Bank announces new monetary policy framework",
-            description="Inflation targeting measures and interest rate adjustments effective next quarter.",
-            tags=["#ECONOMY", "#POLICY"],
-            confidence="100%",
-            timestamp=(
-                now.replace(minute=now.minute - 30) if now.minute >= 30 else now
-            ).strftime("%H:%M UTC"),
-        ),
-    ]
-
-
-@app.get("/api/admin/stats")
-async def get_admin_stats():
-    """Get moderation queue statistics"""
-    return {
-        "queue_total": 47,
-        "disputed": 12,
-        "verified": 28,
-        "pending": 7,
-        "dubawa_status": "CONNECTED",
-        "last_sync": "2MIN_AGO",
-    }
 
 
 # ===========================================
@@ -1460,31 +813,11 @@ async def get_recommendations_endpoint(
 ):
     """Get personalized news recommendations for a user"""
     from services.recommendation_service import get_recommendations
+    from services.news_service import get_cached_all_news
 
-    # Reuse the news response cache to avoid redundant RSS fetches
-    now = datetime.now(timezone.utc)
-    if (
-        _news_response_cache["data"] is not None
-        and _news_response_cache["timestamp"]
-        and (now - _news_response_cache["timestamp"]).total_seconds()
-        < _news_response_cache["ttl"]
-    ):
-        all_news = list(_news_response_cache["data"])
-    else:
-        all_news = []
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for items in results:
-            if isinstance(items, list):
-                all_news.extend(items)
-        all_news.sort(key=lambda x: x.get("published", ""), reverse=True)
-        _news_response_cache["data"] = all_news
-        _news_response_cache["timestamp"] = now
-
-    # Include aggregator news
+    all_news = await get_cached_all_news()
     try:
         from services.aggregator_service import get_normalized_aggregator_news
-
         agg_news = await get_normalized_aggregator_news()
         all_news = list(all_news) + list(agg_news)
     except Exception:
@@ -1564,91 +897,6 @@ async def get_system_alerts():
     )
 
     return alerts
-
-
-@app.get("/api/briefing/generate")
-async def generate_morning_briefing(
-    voice_id: str = Query("emma", description="Voice for TTS"),
-    force_regenerate: bool = Query(False, description="Force regeneration"),
-):
-    """Generate or retrieve morning briefing with audio"""
-    from services.briefing_service import generate_briefing
-
-    try:
-        out = await generate_briefing(
-            voice_id=voice_id, force_regenerate=force_regenerate
-        )
-        if out is None:
-            raise HTTPException(
-                status_code=404, detail="No stories available for briefing"
-            )
-        return out
-    except HTTPException:
-        raise
-    except Exception as e:
-        print(f"Briefing generation error: {e}")
-        raise HTTPException(
-            status_code=500, detail=f"Failed to generate briefing: {str(e)}"
-        )
-
-
-@app.get("/api/briefing/latest")
-async def get_latest_briefing():
-    """Get the most recent briefing from database"""
-    from services.briefing_service import get_latest_briefing as _get_latest
-
-    latest = _get_latest()
-    if latest:
-        return latest
-    raise HTTPException(
-        status_code=404, detail="No briefing available. Generate one first."
-    )
-
-
-@app.get("/api/briefing/history")
-async def get_briefing_history(
-    limit: int = Query(30, le=90, description="Number of briefings to return"),
-    skip: int = Query(0, description="Number to skip for pagination"),
-):
-    """Get historical briefings list"""
-    from services.briefing_service import get_briefing_history as _get_history
-
-    return _get_history(limit=limit, skip=skip)
-
-
-@app.get("/api/briefing/{briefing_date}")
-async def get_briefing_by_date(briefing_date: str):
-    """Get a specific briefing by date (YYYY-MM-DD)"""
-    from services.briefing_service import get_briefing_by_date as _get_by_date
-
-    briefing = _get_by_date(briefing_date)
-    if not briefing:
-        raise HTTPException(
-            status_code=404, detail=f"No briefing found for {briefing_date}"
-        )
-    return briefing
-
-
-@app.post("/api/briefing/audio")
-async def generate_briefing_audio(
-    script: str = Query(..., description="Briefing script text"),
-    voice_id: str = Query("emma", description="Voice for TTS"),
-):
-    """Generate audio for a custom briefing script"""
-    try:
-        from services.yarngpt_service import generate_tts as yarn_generate_tts
-
-        tts_text = script[:4000] if len(script) > 4000 else script
-        audio_url = await yarn_generate_tts(
-            text=tts_text, voice_id=voice_id, language="en"
-        )
-        if not audio_url:
-            raise Exception("TTS generation failed")
-        return {"audio_url": audio_url, "voice_id": voice_id}
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Audio generation failed: {str(e)}"
-        )
 
 
 # ─── Push Notifications ───────────────────────────────────────
@@ -1852,13 +1100,9 @@ class PodcastEpisode(BaseModel):
 async def get_trending_topics():
     """Get trending topics and categories for the Discover page"""
     try:
-        # Aggregate trending categories from recent news
-        all_news = []
-        tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:3]]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        for result in results:
-            if isinstance(result, list):
-                all_news.extend(result)
+        from services.news_service import get_cached_all_news
+        all_news = await get_cached_all_news()
+        all_news = all_news[:80]  # enough for category counts
 
         # Count categories
         category_counts = {}
@@ -2205,19 +1449,9 @@ async def share_page(news_id: str, request: Request):
     """
     user_agent = request.headers.get("user-agent", "")
 
-    # Fetch the news item
-    all_news = []
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    for items in results:
-        if isinstance(items, list):
-            all_news.extend(items)
-
-    story = None
-    for item in all_news:
-        if item.get("id") == news_id:
-            story = item
-            break
+    from services.news_service import get_cached_all_news
+    all_news = await get_cached_all_news()
+    story = next((item for item in all_news if item.get("id") == news_id), None)
 
     if not story:
         # Redirect to homepage if story not found
@@ -2301,18 +1535,9 @@ async def share_page(news_id: str, request: Request):
 @app.get("/api/og/{news_id}", response_class=HTMLResponse)
 async def og_image_html(news_id: str):
     """Generate an HTML page that serves as OG image preview for social sharing"""
-    all_news = []
-    tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS[:4]]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    for items in results:
-        if isinstance(items, list):
-            all_news.extend(items)
-
-    story = None
-    for item in all_news:
-        if item.get("id") == news_id:
-            story = item
-            break
+    from services.news_service import get_cached_all_news
+    all_news = await get_cached_all_news()
+    story = next((item for item in all_news if item.get("id") == news_id), None)
 
     if not story:
         raise HTTPException(status_code=404, detail="Story not found")

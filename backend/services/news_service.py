@@ -58,6 +58,26 @@ RSS_FEEDS = [
     {"url": "https://www.skysports.com/rss/12040", "source": "Sky Sports Football", "category": "Sports", "region": "international"},
 ]
 
+# ── Response cache (120s TTL) for list endpoints ───────────────────────
+_news_cache: Dict = {"data": None, "timestamp": None, "ttl": 120}
+
+
+async def get_cached_all_news() -> List[Dict]:
+    """Return full news list, using cache if fresh (120s TTL). Single source for RSS list."""
+    now = datetime.now(timezone.utc)
+    if (
+        _news_cache["data"] is not None
+        and _news_cache["timestamp"]
+        and (now - _news_cache["timestamp"]).total_seconds() < _news_cache["ttl"]
+    ):
+        return list(_news_cache["data"])
+    all_news = await fetch_all_news(limit=500, category=None)
+    all_news.sort(key=lambda x: x.get("published") or "", reverse=True)
+    _news_cache["data"] = all_news
+    _news_cache["timestamp"] = now
+    return all_news
+
+
 # ── Feed Health Monitoring ────────────────────────────────────────────
 
 import time
@@ -183,7 +203,9 @@ async def fetch_rss_feed(feed_config: Dict, timeout: int = 10) -> List[Dict]:
                             "image_url": image_url,
                             "published": published,
                             "category": feed_config.get("category", "General"),
-                            "region": "Africa",
+                            "region": feed_config.get("region", "Africa"),
+                            "truth_score": 100,
+                            "listen_count": 0,
                             "tags": [t.get('term', '') for t in entry.get('tags', [])][:5] if hasattr(entry, 'tags') else [],
                         })
     except Exception as e:
@@ -191,19 +213,24 @@ async def fetch_rss_feed(feed_config: Dict, timeout: int = 10) -> List[Dict]:
     
     return items
 
-async def fetch_all_news(limit: int = 50, category: Optional[str] = None) -> List[Dict]:
-    """Fetch news from all RSS feeds"""
+async def fetch_all_news(
+    limit: int = 50,
+    category: Optional[str] = None,
+    region: Optional[str] = None,
+) -> List[Dict]:
+    """Fetch news from all RSS feeds (single source of truth for RSS)."""
     all_news = []
     tasks = [fetch_rss_feed(feed) for feed in RSS_FEEDS]
     results = await asyncio.gather(*tasks, return_exceptions=True)
-    
+
     for items in results:
         if isinstance(items, list):
             all_news.extend(items)
-    
-    # Filter by category if specified
+
     if category:
         all_news = [item for item in all_news if item.get("category", "").lower() == category.lower()]
+    if region:
+        all_news = [item for item in all_news if item.get("region", "").lower() == region.lower()]
     
     # Sort by published date (newest first) and remove duplicates
     seen_titles = set()
@@ -245,21 +272,33 @@ async def search_news(query: str, category: Optional[str] = None, limit: int = 2
     }
 
 async def get_breaking_news() -> Optional[Dict]:
-    """Get breaking/developing news"""
+    """Get breaking/developing news (single item)."""
     all_news = await fetch_all_news(limit=30)
-    
     breaking_keywords = ['breaking', 'urgent', 'flash', 'just in', 'developing', 'live']
-    
     for item in all_news:
         title_lower = item.get("title", "").lower()
         if any(kw in title_lower for kw in breaking_keywords):
             return {**item, "is_breaking": True}
-    
-    # Return latest as developing
     if all_news:
         return {**all_news[0], "is_developing": True}
-    
     return None
+
+
+async def get_breaking_news_list(max_items: int = 3) -> List[Dict]:
+    """Get breaking/urgent news as a list (for API compatibility)."""
+    all_news = await get_cached_all_news()
+    all_news = (all_news or [])[:30]
+    breaking_keywords = ["breaking", "urgent", "flash", "just in", "developing"]
+    breaking = []
+    for story in all_news:
+        title_lower = (story.get("title") or "").lower()
+        if any(kw in title_lower for kw in breaking_keywords):
+            breaking.append(story)
+    if not breaking and all_news:
+        latest = dict(all_news[0])
+        latest["is_developing"] = True
+        breaking = [latest]
+    return breaking[:max_items]
 
 async def get_trending_topics() -> Dict:
     """Get trending topics from recent news"""
