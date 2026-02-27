@@ -24,10 +24,13 @@ Requirements:
         for s in stories[:5]
     ])
     user = f"Create a brief morning news script:\n\n{stories_text}"
+    result = None
     try:
         response = await generate_gemini(system, user)
-        if response:
-            return response.strip()
+        if response and isinstance(response, str):
+            result = response.strip()
+        if result:
+            return result
     except Exception as e:
         print(f"Error generating briefing script: {e}")
     script = f"Good morning, this is your Narvo Briefing for {datetime.now().strftime('%A, %B %d, %Y')}.\n\n"

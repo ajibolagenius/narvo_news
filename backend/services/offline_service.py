@@ -38,12 +38,12 @@ def remove_article(story_id: str) -> bool:
 
 
 def clear_all_articles() -> int:
-    """Clear all saved offline articles"""
+    """Clear all saved offline articles. story_id is NOT NULL so neq('') matches all rows."""
     db = get_supabase_db()
-    # Supabase delete requires a filter; delete non-empty then empty story_id to clear all
-    r1 = db.table("offline_articles").delete().neq("story_id", "").execute()
-    r2 = db.table("offline_articles").delete().eq("story_id", "").execute()
-    return len(r1.data or []) + len(r2.data or [])
+    count_r = db.table("offline_articles").select("story_id", count="exact").execute()
+    n = count_r.count if getattr(count_r, "count", None) is not None else len(count_r.data or [])
+    db.table("offline_articles").delete().neq("story_id", "").execute()
+    return n
 
 
 def get_stats() -> Dict:

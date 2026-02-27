@@ -2058,8 +2058,15 @@ async def get_user_analytics(user_id: str):
     history = []
     for x in r.data or []:
         row = {k: v for k, v in x.items()}
-        if row.get("played_at") and hasattr(row["played_at"], "isoformat"):
-            row["played_at"] = row["played_at"].isoformat()
+        played_at = row.get("played_at")
+        if played_at is not None:
+            row["played_at"] = (
+                played_at.isoformat()
+                if hasattr(played_at, "isoformat")
+                else str(played_at)
+            )
+        else:
+            row["played_at"] = ""
         history.append(row)
 
     if not history:
