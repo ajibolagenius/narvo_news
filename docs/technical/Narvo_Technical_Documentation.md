@@ -31,8 +31,8 @@ The project uses a single repository with a **Create React App (CRA)** web front
 | **Backend** | FastAPI | REST API; OpenAPI docs; async-capable. |
 | **Persistence** | MongoDB | Bookmarks, user preferences, briefings, offline articles. |
 | **Auth** | Supabase (Auth only) | User authentication; no Postgres/pgvector in use. |
-| **AI / Narrative** | Emergent LLM, Google Gemini | Narrative synthesis and multilingual translation. |
-| **TTS** | Emergent LLM, YARNGPT / OpenAI path | Broadcast voice synthesis. |
+| **AI / Narrative** | Google Gemini | Narrative synthesis and multilingual translation. |
+| **TTS** | YARNGPT / OpenAI | Broadcast voice synthesis. |
 | **Fact-Check** | Google Fact Check API | Verification; mock responses when API key omitted. |
 | **News / Feeds** | RSS, MediaStack, NewsData (optional) | Aggregation and ingestion. |
 | **Icons** | Phosphoricons | Main functional icon library (1.5px stroke). |
@@ -43,7 +43,7 @@ The project uses a single repository with a **Create React App (CRA)** web front
 | Layer | Technology | Note |
 |-------|------------|------|
 | **Vector DB / RAG** | pgvector or similar | Contextual RAG for historical narrative context. |
-| **Audio** | ElevenLabs / MiniMax | Premium multi-language TTS (currently Emergent/OpenAI path). |
+| **Audio** | ElevenLabs / MiniMax | Premium multi-language TTS (currently OpenAI). |
 | **Fact-Check** | Dubawa API | Optional regional verification labels. |
 | **Predictive Sync** | 5:00 AM pre-cache | Automated morning pre-caching of audio by user locale. |
 
@@ -71,7 +71,7 @@ The project uses a single repository with a **Create React App (CRA)** web front
 
 ### 2. Synthesis, Translation & Truth Tag Lifecycle
 1. **Extraction:** Automated pulling of raw facts and quotes from ingested content.
-2. **Synthesis & Translation:** Emergent LLM / Gemini recast content into a **Broadcast Narrative** and translate into the target language.
+2. **Synthesis & Translation:** Gemini recasts content into a **Broadcast Narrative** and translates into the target language.
 3. **Verification:** Google Fact Check API is used when configured; mock or fallback when the key is omitted. Truth Score and source attribution support the **Truth Tag**.
 4. **Truth Tag Generation:** Metadata explaining editorial and translation decisions.
 

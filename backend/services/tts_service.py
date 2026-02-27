@@ -1,35 +1,35 @@
-# TTS Service for audio generation
+# TTS Service for audio generation (OpenAI TTS, standalone)
 import os
 import base64
 from typing import Optional
 
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
 
 async def generate_tts_audio(text: str, voice_id: str = "nova", speed: float = 1.0) -> Optional[str]:
-    """Generate TTS audio using OpenAI TTS"""
-    if not text or not EMERGENT_LLM_KEY:
+    """Generate TTS audio using OpenAI TTS."""
+    if not text or not OPENAI_API_KEY:
         return None
-    
+
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
-        
-        # Truncate text if too long
+        from openai import AsyncOpenAI
+
         tts_text = text[:4000] if len(text) > 4000 else text
-        
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        audio_bytes = await tts.generate_speech(
-            text=tts_text,
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        response = await client.audio.speech.create(
             model="tts-1",
             voice=voice_id,
+            input=tts_text,
             response_format="mp3",
-            speed=speed
+            speed=speed,
         )
-        
+        audio_bytes = response.read()
         audio_b64 = base64.b64encode(audio_bytes).decode()
         return f"data:audio/mpeg;base64,{audio_b64}"
     except Exception as e:
         print(f"TTS generation error: {e}")
         return None
+
 
 def get_available_voices():
     """Get list of available TTS voices"""

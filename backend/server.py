@@ -82,6 +82,8 @@ app.include_router(user_router)
 app.include_router(factcheck_router)
 app.include_router(translation_router)
 
+from services.narrative_service import generate_narrative
+
 # Startup: run initial feed health check and schedule periodic refresh
 @app.on_event("startup")
 async def startup_feed_health():
@@ -146,8 +148,6 @@ _cache = MemCache()
 bookmarks_col.create_index([("user_id", 1), ("story_id", 1)], unique=True)
 preferences_col.create_index("user_id", unique=True)
 briefings_col.create_index("date", unique=True)
-
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
 # African News RSS Feeds
 RSS_FEEDS = [
@@ -343,66 +343,6 @@ async def fetch_rss_feed(feed_info: dict) -> List[dict]:
         print(f"Error fetching {feed_info['name']}: {e}")
     return []
 
-async def generate_narrative(text: str) -> dict:
-    """Generate broadcast narrative using Gemini via emergentintegrations"""
-    try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
-        
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"narvo-{datetime.now().timestamp()}",
-            system_message="""You are a professional broadcast journalist for Narvo, an African news platform. 
-Your task is to transform news summaries into engaging broadcast narratives.
-
-Style Guidelines:
-- Write in a clear, authoritative broadcast tone
-- Keep narratives concise but informative (2-3 paragraphs max)
-- Include context that helps listeners understand the significance
-- Extract 2-3 key takeaways as bullet points
-- Maintain journalistic objectivity
-
-CRITICAL RULES — NEVER include any of the following:
-- Sound effect descriptions (e.g. "Sound of music fades", "upbeat jingle plays")
-- Stage directions or production cues (e.g. "[pause]", "(dramatic music)", "*sigh*")
-- Meta-commentary about the broadcast itself (e.g. "And now for the next story")
-- Filler phrases like "Stay tuned" or "More on this after the break"
-- Any text inside brackets, parentheses, or asterisks that describes sounds, music, or actions
-Write ONLY the actual spoken news content — every word must be substantive reporting.
-
-Respond in JSON format:
-{
-  "narrative": "The broadcast narrative text...",
-  "key_takeaways": ["Point 1", "Point 2", "Point 3"]
-}"""
-        ).with_model("gemini", "gemini-2.0-flash")
-        
-        user_message = UserMessage(text=f"Transform this news into a broadcast narrative:\n\n{text}")
-        response = await chat.send_message(user_message)
-        
-        # Parse JSON response
-        import json
-        # Clean response if it has markdown code blocks
-        cleaned = response.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("```")[1]
-            if cleaned.startswith("json"):
-                cleaned = cleaned[4:]
-        cleaned = cleaned.strip()
-        
-        result = json.loads(cleaned)
-        # Sanitize AI output — remove any stage directions / sound cues
-        if "narrative" in result:
-            result["narrative"] = sanitize_ai_text(result["narrative"])
-        if "key_takeaways" in result:
-            result["key_takeaways"] = [sanitize_ai_text(kt) for kt in result["key_takeaways"] if sanitize_ai_text(kt)]
-        return result
-    except Exception as e:
-        print(f"Error generating narrative: {e}")
-        return {
-            "narrative": text,
-            "key_takeaways": ["Story details available in full article"]
-        }
-
 # API Endpoints
 @app.get("/api/health")
 async def health_check():
@@ -513,8 +453,10 @@ async def get_news_detail(news_id: str):
     # Generate narrative if not present
     if not news_item.get("narrative"):
         narrative_data = await generate_narrative(f"{news_item['title']}\n\n{news_item['summary']}")
-        news_item["narrative"] = narrative_data.get("narrative", news_item["summary"])
-        news_item["key_takeaways"] = narrative_data.get("key_takeaways", [])
+        raw_narrative = narrative_data.get("narrative", news_item["summary"])
+        raw_takeaways = narrative_data.get("key_takeaways", [])
+        news_item["narrative"] = sanitize_ai_text(raw_narrative)
+        news_item["key_takeaways"] = [sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)]
     
     return news_item
 
@@ -522,11 +464,12 @@ async def get_news_detail(news_id: str):
 async def paraphrase_content(request: ParaphraseRequest):
     """Generate broadcast narrative from text"""
     narrative_data = await generate_narrative(request.text)
-    
+    raw_narrative = narrative_data.get("narrative", request.text)
+    raw_takeaways = narrative_data.get("key_takeaways", [])
     return ParaphraseResponse(
         original=request.text,
-        narrative=narrative_data.get("narrative", request.text),
-        key_takeaways=narrative_data.get("key_takeaways", [])
+        narrative=sanitize_ai_text(raw_narrative),
+        key_takeaways=[sanitize_ai_text(kt) for kt in raw_takeaways if sanitize_ai_text(kt)]
     )
 
 @app.post("/api/tts/generate", response_model=TTSResponse)
@@ -1314,53 +1257,6 @@ _briefing_cache = {
     "generated_at": None
 }
 
-async def generate_briefing_script(stories: List[dict]) -> str:
-    """Generate a broadcast script from top stories using Gemini"""
-    try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
-        
-        # Limit story summaries to reduce processing load
-        stories_text = "\n\n".join([
-            f"**{s['title'][:100]}** ({s['source']})\n{s['summary'][:200]}"
-            for s in stories[:5]
-        ])
-        
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"briefing-{datetime.now().timestamp()}",
-            system_message="""You are a professional broadcast journalist for Narvo. Create a concise 3-minute radio-style briefing script.
-
-Requirements:
-- Open with a brief greeting
-- Cover each story in 2-3 sentences
-- Use smooth transitions between stories
-- End with a short sign-off
-- Keep it under 500 words
-- Plain text only, no markdown
-
-CRITICAL RULES — NEVER include any of the following:
-- Sound effect descriptions (e.g. "Sound of music fades", "upbeat jingle", "theme music plays")
-- Stage directions or production cues (e.g. "[pause]", "(transition music)", "[SFX]")
-- Descriptions of non-verbal actions (e.g. "*shuffles papers*", "(clears throat)")
-- Text inside brackets, parentheses, or asterisks that describes sounds, moods, or actions
-- Filler like "Stay tuned", "After these messages", "More after the break"
-Write ONLY spoken words. Every sentence must deliver news content. The audio production is handled separately."""
-        ).with_model("gemini", "gemini-2.0-flash")
-        
-        user_message = UserMessage(
-            text=f"Create a brief morning news script:\n\n{stories_text}"
-        )
-        response = await chat.send_message(user_message)
-        return sanitize_ai_text(response.strip())
-    except Exception as e:
-        print(f"Error generating briefing script: {e}")
-        # Fallback to simple concatenation
-        script = f"Good morning, this is your Narvo Morning Briefing for {datetime.now().strftime('%A, %B %d, %Y')}.\n\n"
-        for i, story in enumerate(stories[:5], 1):
-            script += f"Story {i}: {story['title'][:100]}. {story['summary'][:150]}.\n\n"
-        script += "That's all for this morning's briefing. Stay informed with Narvo."
-        return script
-
 @app.get("/api/briefing/generate")
 async def generate_morning_briefing(
     voice_id: str = Query("emma", description="Voice for TTS"),
@@ -1403,8 +1299,10 @@ async def generate_morning_briefing(
         if not top_stories:
             raise HTTPException(status_code=404, detail="No stories available for briefing")
         
-        # Generate briefing script
-        script = await generate_briefing_script(top_stories)
+        # Generate briefing script (from briefing_service, then sanitize)
+        from services.briefing_service import generate_briefing_script
+        raw_script = await generate_briefing_script(top_stories)
+        script = sanitize_ai_text(raw_script) if raw_script else ""
         
         # Generate TTS audio (YarnGPT primary, OpenAI fallback — same as /api/tts/generate)
         audio_url = None

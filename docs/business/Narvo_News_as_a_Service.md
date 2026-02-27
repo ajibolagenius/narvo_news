@@ -40,7 +40,7 @@ The NaaS layer is built on four pillars: **Ingestion**, **Enrichment**, **Delive
 |------------|-------------|--------|
 | **Broadcast narrative** | AI (Gemini) turns summary into a short broadcast-style narrative + key takeaways. | **Current** |
 | **Translation** | Translate and/or narrate into 5 languages (EN, Pidgin, Yoruba, Hausa, Igbo) with locale-appropriate voices. | **Current** |
-| **Text-to-speech (TTS)** | OpenAI TTS via Emergent; voice profiles per language; optional translation before speech. | **Current** |
+| **Text-to-speech (TTS)** | OpenAI TTS (and YarnGPT for Nigerian voices); voice profiles per language; optional translation before speech. | **Current** |
 | **Fact-check / Truth Tag** | Google Fact Check API (with mock fallback); verdict and confidence for claims or story keywords. | **Current** |
 | **Morning briefing** | Curated top stories + single script + optional full briefing audio (TTS). | **Current** |
 

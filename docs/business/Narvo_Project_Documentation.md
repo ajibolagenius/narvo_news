@@ -5,14 +5,14 @@
 Narvo is a precision-engineered news broadcast platform that transforms fragmented information into high-fidelity, audio-enhanced narrative stories. Built for global audiences with a primary focus on African markets, it leverages advanced AI to deliver trustworthy broadcasts in authentic local voices.
 
 For technical details, see [Technical Documentation](../technical/Narvo_Technical_Documentation.md).  
-*Technical note: Current implementation uses Emergent/OpenAI TTS and Google Fact Check; see Technical Documentation.*
+*Technical note: Current implementation uses OpenAI TTS (and YarnGPT) and Google Fact Check; see Technical Documentation.*
 
 ---
 | **User challenge** | **Narvo V2 Solution (The Broadcast Paradigm)** |
 |--------------------|-----------------------------------------------|
 | **Information Distrust** | Paraphrased narrative stories with transparent attribution and fact-checking. |
 | **Visual Fatigue** | **Swiss Grid** design with "Anti-light" backgrounds and eyes-busy audio-fixed delivery. |
-| **Cultural Disconnect** | High-fidelity local accents (Pidgin, Yoruba, Hausa, Igbo) via TTS (e.g. Emergent/OpenAI). |
+| **Cultural Disconnect** | High-fidelity local accents (Pidgin, Yoruba, Hausa, Igbo) via TTS (e.g. YarnGPT/OpenAI). |
 | **Technical Bloat** | Strict minimalism (10% color rule) and single-repo architecture (CRA + FastAPI). |
 
 ---
@@ -57,9 +57,9 @@ Clean, professional, and structural interface following Swiss Design principles.
 
 ### The Pipeline
 1. **Ingest**: High-accuracy extraction from RSS, Radio streams, and YouTube.
-2. **Translate & Paraphrase**: Gemini/Emergent recasting summaries into broadcast narratives.
+2. **Translate & Paraphrase**: Gemini recasting summaries into broadcast narratives.
 3. **Contextualize**: Vector DB integration to add historical depth (Contextual RAG — roadmap).
-4. **Broadcast**: Generating audio via TTS (e.g. Emergent/OpenAI synthesis).
+4. **Broadcast**: Generating audio via TTS (e.g. OpenAI/YarnGPT synthesis).
 
 ### Source Curation
 - **Traditional & Independent**: Vanguard, Guardian, Techpoint, etc.

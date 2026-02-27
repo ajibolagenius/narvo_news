@@ -55,7 +55,7 @@ const TOOL_CATEGORIES = [
   {
     title: 'INFRASTRUCTURE',
     tools: [
-      { name: 'Emergent Platform', desc: 'Deployment & hosting', url: 'https://emergentagent.com', tag: 'DEPLOY' },
+      { name: 'Vercel', desc: 'Deployment & hosting', url: 'https://vercel.com', tag: 'DEPLOY' },
       { name: 'httpx', desc: 'Async HTTP client for backend services', url: 'https://www.python-httpx.org', tag: 'HTTP' },
       { name: 'Framer Motion', desc: 'Animation library', url: 'https://www.framer.com/motion/', tag: 'UI' },
       { name: 'Phosphor Icons', desc: 'Icon system', url: 'https://phosphoricons.com', tag: 'ICONS' },

@@ -1,6 +1,6 @@
 # Narvo Content Strategy
 
-*Implementation note: Current integration uses Google Fact Check and TTS via Emergent/OpenAI path; Dubawa and ElevenLabs are referenced as partners or future.*
+*Implementation note: Current integration uses Google Fact Check and TTS via OpenAI (and YarnGPT); Dubawa and ElevenLabs are referenced as partners or future.*
 
 ## 1. Ingestion Pipeline
 Narvo utilizes a multi-provider ingestion logic:
@@ -8,7 +8,7 @@ Narvo utilizes a multi-provider ingestion logic:
 2. **Transcribe**: Real-time transcription of TV and Radio feeds via OpenAI Whisper.
 3. **Analyze**: Categorization and duplicate detection using semantic similarity.
 4. **Paraphrase**: Recasting into narrative "Broadcast Stories" via Google Gemini.
-5. **Synthesize**: Generate high-fidelity audio (e.g. Emergent/OpenAI; ElevenLabs/MiniMax on roadmap).
+5. **Synthesize**: Generate high-fidelity audio (e.g. OpenAI/YarnGPT; ElevenLabs/MiniMax on roadmap).
 
 ## 2. Source Hierarchy
 - **Primary**: Verified local media (Newspapers, Broadcast Stations).

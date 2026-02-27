@@ -7,7 +7,7 @@ import os
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-API_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://narvo-broadcast-pwa.preview.emergentagent.com")
+API_URL = os.environ.get("REACT_APP_BACKEND_URL", "http://localhost:8000")
 
 import requests
 

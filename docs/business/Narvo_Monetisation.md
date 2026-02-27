@@ -125,7 +125,7 @@ Rough cost drivers per active user (for sizing only; actuals depend on usage and
 
 | Cost                        | Driver                          | Notes                                             |
 | --------------------------- | ------------------------------- | ------------------------------------------------- |
-| **TTS**                     | Characters or minutes generated | OpenAI TTS via Emergent; cost per request.        |
+| **TTS**                     | Characters or minutes generated | OpenAI TTS; cost per request.        |
 | **Translation / narrative** | API calls (Gemini)              | Per story or per request.                         |
 | **Fact-check**              | API calls                       | Google Fact Check API; mock has no marginal cost. |
 | **Hosting & data**          | Monthly active users            | Backend, DB, CDN, bandwidth.                      |

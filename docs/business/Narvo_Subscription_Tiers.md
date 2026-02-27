@@ -42,7 +42,7 @@ This document defines **Free**, **Pro**, and **Enterprise** subscription tiers a
 
 | Feature | Status | Notes |
 |---------|--------|--------|
-| On-demand TTS (single story) | **Current** | OpenAI TTS via Emergent; optional translation. |
+| On-demand TTS (single story) | **Current** | OpenAI TTS; optional translation. |
 | Audio player with queue & Media Session API | **Current** | Lock screen controls, background playback. |
 | 5 broadcast languages (EN, Pidgin, Yoruba, Hausa, Igbo) | **Current** | Voice profiles with native names. |
 | Daily TTS / translation usage | **Current** | No enforced limit. **Recommended**: add a daily cap (e.g. N stories or M minutes) for Free. |

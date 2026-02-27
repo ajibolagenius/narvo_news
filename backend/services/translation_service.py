@@ -1,10 +1,9 @@
-# Translation Service - Multi-language translation using Gemini
-import os
+# Translation Service - Multi-language translation using Gemini (standalone)
+import json
 import re as _re
 from typing import Dict, Optional
-from datetime import datetime
 
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+from services.llm_gemini import generate_gemini
 
 # ── Sanitizer: strip stage directions / sound-effect text from AI output ──
 _STAGE_DIRECTION_PATTERNS = [
@@ -118,57 +117,43 @@ async def translate_text(
         }
     
     lang_info = SUPPORTED_LANGUAGES[target_language]
-    
-    try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
-        
-        # Build system prompt based on target language
-        _no_sfx_rule = """
+
+    _no_sfx_rule = """
 CRITICAL: NEVER include sound descriptions, stage directions, or production cues.
 No text like "[music fades]", "(pause)", "*sigh*", "Sound of..." etc.
 Write ONLY the actual spoken news content."""
 
-        system_prompts = {
-            "pcm": """You are a professional Nigerian broadcast journalist fluent in Nigerian Pidgin (Naija).
+    system_prompts = {
+        "pcm": """You are a professional Nigerian broadcast journalist fluent in Nigerian Pidgin (Naija).
 Translate the news into natural, authentic Nigerian Pidgin while maintaining journalistic accuracy.
 Use common Pidgin expressions and idioms. Keep the broadcast tone professional but relatable.
 Example style: "Di goment don tok say..." instead of "The government has announced..."
 Write ONLY the translated text, no explanations.""" + _no_sfx_rule,
-            
-            "yo": """You are a professional Yoruba broadcast journalist.
+        "yo": """You are a professional Yoruba broadcast journalist.
 Translate the news into fluent, natural Yoruba (Èdè Yorùbá) while maintaining journalistic accuracy.
 Use proper Yoruba grammar, tones, and expressions. Keep the broadcast tone dignified and clear.
 Write ONLY the translated text in Yoruba, no explanations or English.""" + _no_sfx_rule,
-            
-            "ha": """You are a professional Hausa broadcast journalist.
+        "ha": """You are a professional Hausa broadcast journalist.
 Translate the news into fluent, natural Hausa (Harshen Hausa) while maintaining journalistic accuracy.
 Use proper Hausa grammar and expressions common in Northern Nigeria. Keep the broadcast tone professional.
 Write ONLY the translated text in Hausa, no explanations or English.""" + _no_sfx_rule,
-            
-            "ig": """You are a professional Igbo broadcast journalist.
+        "ig": """You are a professional Igbo broadcast journalist.
 Translate the news into fluent, natural Igbo (Asụsụ Igbo) while maintaining journalistic accuracy.
 Use proper Igbo grammar, dialect (Central Igbo preferred), and expressions. Keep the broadcast tone clear and authoritative.
 Write ONLY the translated text in Igbo, no explanations or English.""" + _no_sfx_rule,
-            
-            "en": """You are a professional broadcast journalist.
+        "en": """You are a professional broadcast journalist.
 Rewrite this news in clear, engaging broadcast English.
 Use an authoritative but accessible tone suitable for radio/audio news.
-Write ONLY the rewritten text, no explanations.""" + _no_sfx_rule
-        }
-        
-        system_message = system_prompts.get(target_language, system_prompts["en"])
-        
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"translate-{datetime.now().timestamp()}",
-            system_message=system_message
-        ).with_model("gemini", "gemini-2.0-flash")
-        
-        user_message = UserMessage(text=f"Translate this news:\n\n{text}")
-        response = await chat.send_message(user_message)
-        
+Write ONLY the rewritten text, no explanations.""" + _no_sfx_rule,
+    }
+    system_message = system_prompts.get(target_language, system_prompts["en"])
+    user_content = f"Translate this news:\n\n{text}"
+
+    try:
+        response = await generate_gemini(system_message, user_content)
+        if not response:
+            return {"success": False, "error": "No Gemini response", "original": text, "translated": text, "language": target_language}
         translated_text = _sanitize(response.strip())
-        
         return {
             "success": True,
             "original": text,
@@ -177,7 +162,6 @@ Write ONLY the rewritten text, no explanations.""" + _no_sfx_rule
             "language_name": lang_info["name"],
             "voice_id": lang_info["voice_id"]
         }
-        
     except Exception as e:
         print(f"Translation error: {e}")
         return {
@@ -214,23 +198,17 @@ async def translate_and_narrate(
         }
     
     lang_info = SUPPORTED_LANGUAGES[target_language]
-    
-    try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
-        import json
-        
-        # Language-specific instructions
-        lang_instructions = {
-            "pcm": "Write in Nigerian Pidgin (Naija). Make am sound natural like how person wey dey do radio go yarn am.",
-            "yo": "Kọ ní èdè Yorùbá. Jẹ́ kí ó dún bíi ìròyìn rédíò.",
-            "ha": "Rubuta a Hausa. Ka yi shi kamar labarin rediyo.",
-            "ig": "Dee n'asụsụ Igbo. Mee ka ọ dị ka akụkọ redio.",
-            "en": "Write in clear broadcast English suitable for radio."
-        }
-        
-        instruction = lang_instructions.get(target_language, lang_instructions["en"])
-        
-        system_message = f"""You are a professional broadcast journalist for Narvo, an African news platform.
+
+    lang_instructions = {
+        "pcm": "Write in Nigerian Pidgin (Naija). Make am sound natural like how person wey dey do radio go yarn am.",
+        "yo": "Kọ ní èdè Yorùbá. Jẹ́ kí ó dún bíi ìròyìn rédíò.",
+        "ha": "Rubuta a Hausa. Ka yi shi kamar labarin rediyo.",
+        "ig": "Dee n'asụsụ Igbo. Mee ka ọ dị ka akụkọ redio.",
+        "en": "Write in clear broadcast English suitable for radio."
+    }
+    instruction = lang_instructions.get(target_language, lang_instructions["en"])
+
+    system_message = f"""You are a professional broadcast journalist for Narvo, an African news platform.
 Transform news into engaging broadcast narratives in the specified language.
 
 Language: {lang_info['name']} ({lang_info['native_name']})
@@ -251,30 +229,21 @@ Respond in JSON format:
   "narrative": "The broadcast narrative in {lang_info['name']}...",
   "key_takeaways": ["Point 1 in {lang_info['name']}", "Point 2", "Point 3"]
 }}"""
-        
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"narrate-{datetime.now().timestamp()}",
-            system_message=system_message
-        ).with_model("gemini", "gemini-2.0-flash")
-        
-        user_message = UserMessage(text=f"Transform this news:\n\nTitle: {title}\n\nContent: {summary}")
-        response = await chat.send_message(user_message)
-        
-        # Parse JSON response
+    user_content = f"Transform this news:\n\nTitle: {title}\n\nContent: {summary}"
+
+    try:
+        response = await generate_gemini(system_message, user_content)
+        if not response:
+            return {"success": False, "error": "No Gemini response", "narrative": summary, "key_takeaways": [], "language": target_language}
         cleaned = response.strip()
         if cleaned.startswith("```"):
             cleaned = cleaned.split("```")[1]
             if cleaned.startswith("json"):
                 cleaned = cleaned[4:]
         cleaned = cleaned.strip()
-        
         result = json.loads(cleaned)
-        
-        # Sanitize AI output
         narrative = _sanitize(result.get("narrative", summary))
         takeaways = [_sanitize(kt) for kt in result.get("key_takeaways", []) if _sanitize(kt)]
-        
         return {
             "success": True,
             "narrative": narrative,
@@ -283,7 +252,6 @@ Respond in JSON format:
             "language_name": lang_info["name"],
             "voice_id": lang_info["voice_id"]
         }
-        
     except Exception as e:
         print(f"Translation/narration error: {e}")
         return {

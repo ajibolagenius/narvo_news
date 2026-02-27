@@ -14,7 +14,7 @@ import httpx
 import os
 import time
 
-API_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://narvo-broadcast-pwa.preview.emergentagent.com")
+API_URL = os.environ.get("REACT_APP_BACKEND_URL", "http://localhost:8000")
 
 
 @pytest.fixture

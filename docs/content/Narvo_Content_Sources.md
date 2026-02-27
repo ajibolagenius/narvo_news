@@ -2,7 +2,7 @@
 
 A detailed breakdown of content sources for the Narvo platform, categorized by their role in the narrative-building engine.
 
-*Implementation note: Fact-check integration currently uses Google Fact Check API; TTS uses Emergent/OpenAI path. Dubawa and ElevenLabs are referenced as partners or future integrations.*
+*Implementation note: Fact-check integration currently uses Google Fact Check API; TTS uses OpenAI (and YarnGPT). Dubawa and ElevenLabs are referenced as partners or future integrations.*
 
 ## 1. Primary Media Sources (Direct Scraping)
 These sources provide the raw visual and textual content for Narvo's broadcasts.

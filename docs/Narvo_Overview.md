@@ -18,4 +18,4 @@ Narvo bridges the gap between the vibrancy of local African news and the technic
 ## Shift from Version 1
 - **Design**: Transitioned from "Bento" to a rigid, technical Swiss Matrix.
 - **Content**: Moved from simple summarization to narrative "Broadcast Stories."
-- **Technology**: Single repo with CRA frontend and FastAPI backend; Google Gemini / Emergent for narrative and translation; TTS via Emergent/OpenAI path; Google Fact Check. RAG and premium TTS (e.g. ElevenLabs) are on the roadmap.
+- **Technology**: Single repo with CRA frontend and FastAPI backend; Google Gemini for narrative and translation; TTS via OpenAI (and YarnGPT for Nigerian voices); Google Fact Check. RAG and premium TTS (e.g. ElevenLabs) are on the roadmap.

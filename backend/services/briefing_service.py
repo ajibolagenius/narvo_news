@@ -1,32 +1,20 @@
 # Briefing Service for Morning Briefing generation
 import os
-import asyncio
 from datetime import datetime, timezone
 from typing import List, Dict, Optional
 from pymongo import MongoClient
 
 from services.news_service import fetch_all_news
 from services.tts_service import generate_tts_audio
+from services.llm_gemini import generate_gemini
 
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 mongo_client = MongoClient(os.environ.get("MONGO_URL"))
 db = mongo_client[os.environ.get("DB_NAME", "narvo")]
 briefings_col = db["briefings"]
 
 async def generate_briefing_script(stories: List[Dict]) -> str:
-    """Generate a broadcast script from top stories using Gemini"""
-    try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
-        
-        stories_text = "\n\n".join([
-            f"**{s['title'][:100]}** ({s['source']})\n{s['summary'][:200]}"
-            for s in stories[:5]
-        ])
-        
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"briefing-{datetime.now().timestamp()}",
-            system_message="""You are a professional broadcast journalist for Narvo. Create a concise 3-minute radio-style briefing script.
+    """Generate a broadcast script from top stories using Gemini (standalone)."""
+    system = """You are a professional broadcast journalist for Narvo. Create a concise 3-minute radio-style briefing script.
 
 Requirements:
 - Open with a brief greeting
@@ -35,11 +23,15 @@ Requirements:
 - End with a short sign-off
 - Keep it under 500 words
 - Plain text only, no markdown"""
-        ).with_model("gemini", "gemini-2.0-flash")
-        
-        user_message = UserMessage(text=f"Create a brief morning news script:\n\n{stories_text}")
-        response = await chat.send_message(user_message)
-        return response.strip()
+    stories_text = "\n\n".join([
+        f"**{s['title'][:100]}** ({s['source']})\n{s['summary'][:200]}"
+        for s in stories[:5]
+    ])
+    user = f"Create a brief morning news script:\n\n{stories_text}"
+    try:
+        response = await generate_gemini(system, user)
+        if response:
+            return response.strip()
     except Exception as e:
         print(f"Error generating briefing script: {e}")
         # Fallback to simple concatenation

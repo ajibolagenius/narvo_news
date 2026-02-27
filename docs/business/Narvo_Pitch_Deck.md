@@ -1,6 +1,6 @@
 # Narvo Pitch Deck
 
-*Technical implementation: CRA + FastAPI, MongoDB, Supabase Auth, Emergent/Gemini, Google Fact Check. See [Technical Documentation](../technical/Narvo_Technical_Documentation.md).*
+*Technical implementation: CRA + FastAPI, MongoDB, Supabase Auth, Gemini, OpenAI TTS, Google Fact Check. See [Technical Documentation](../technical/Narvo_Technical_Documentation.md).*
 
 ## Slide 1: Title Slide
 
@@ -39,7 +39,7 @@ Narvo transforms fragmented data into a cohesive, professional **Broadcast**. We
 **The Audio Boom:**
 - 500M+ potential users in Africa transitioning to audio-first consumption.
 - Rising demand for "Hands-Free" news during commutes and multitasking.
-- High-fidelity TTS (YarnGPT for Nigerian languages—Yoruba, Igbo, Hausa, Pidgin—plus Emergent/OpenAI fallback; ElevenLabs/MiniMax on roadmap) is commercially viable.
+- High-fidelity TTS (YarnGPT for Nigerian languages—Yoruba, Igbo, Hausa, Pidgin—plus OpenAI fallback; ElevenLabs/MiniMax on roadmap) is commercially viable.
 
 ---
 
@@ -57,7 +57,7 @@ Narvo transforms fragmented data into a cohesive, professional **Broadcast**. We
 **Current State:**
 - Refined Pivot (V2) complete; Design System finalized.
 - Single repo: CRA frontend + FastAPI backend; web delivery.
-- Google Gemini / Emergent for narrative and translation; TTS via YarnGPT (Nigerian voices) and Emergent/OpenAI; Google Fact Check integrated.
+- Google Gemini for narrative and translation; TTS via YarnGPT (Nigerian voices) and OpenAI; Google Fact Check integrated.
 
 ---
 
@@ -86,7 +86,7 @@ Narvo transforms fragmented data into a cohesive, professional **Broadcast**. We
 Narvo is a precision-engineered news platform that transforms fragmented info into high-fidelity AI broadcasts. Using a strict Swiss Grid design and advanced paraphrasing, we deliver trustworthy "Stories" in authentic local voices—designed for the modern, multitasking African audience.
 
 ### The Pivot
-We've evolved from a standard summarizer to a **Broadcast Entity**. Our AI (Gemini/Emergent) recasts news into authoritative narrative bulletins; RAG is on the roadmap.
+We've evolved from a standard summarizer to a **Broadcast Entity**. Our AI (Gemini) recasts news into authoritative narrative bulletins; RAG is on the roadmap.
 
 ### Why Narvo?
 - **Extreme Minimalism**: Low bandwidth, low cognitive load, premium feel.

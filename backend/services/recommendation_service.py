@@ -6,12 +6,11 @@ AI-powered topic expansion via Gemini to produce personalized news recommendatio
 
 import os
 import json
-import hashlib
 from datetime import datetime, timezone, timedelta
 from collections import Counter
 from pymongo import MongoClient
 
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
+from services.llm_gemini import generate_gemini, GEMINI_API_KEY
 
 mongo_client = MongoClient(os.environ.get("MONGO_URL"))
 db = mongo_client[os.environ.get("DB_NAME", "narvo")]
@@ -86,17 +85,15 @@ def build_user_profile(user_id: str) -> dict:
 
 async def get_ai_topic_expansion(profile: dict) -> list:
     """Use Gemini to expand user interests into related topics for discovery."""
-    if not EMERGENT_LLM_KEY or profile["history_count"] < 3:
+    if not GEMINI_API_KEY or profile["history_count"] < 3:
         return []
 
-    try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
+    top_categories = list(profile["categories"].keys())[:5]
+    top_keywords = profile["keywords"][:10]
+    interests = profile.get("interests", [])
 
-        top_categories = list(profile["categories"].keys())[:5]
-        top_keywords = profile["keywords"][:10]
-        interests = profile.get("interests", [])
-
-        prompt = f"""Based on a user's news listening profile, suggest 5 additional related news topics they might enjoy.
+    system = "You are a news recommendation AI. Return only valid JSON arrays."
+    user = f"""Based on a user's news listening profile, suggest 5 additional related news topics they might enjoy.
 
 User's top categories: {', '.join(top_categories)}
 Frequent keywords in listened articles: {', '.join(top_keywords)}
@@ -105,13 +102,10 @@ Declared interests: {', '.join(interests) if interests else 'none'}
 Return ONLY a JSON array of 5 topic strings, each 1-3 words. Example: ["Climate Policy", "Startup Funding", "Trade Agreements", "Digital Currency", "Healthcare Reform"]
 No explanations, just the JSON array."""
 
-        chat = LlmChat(
-            api_key=EMERGENT_LLM_KEY,
-            session_id=f"reco-{datetime.now().timestamp()}",
-            system_message="You are a news recommendation AI. Return only valid JSON arrays."
-        ).with_model("gemini", "gemini-2.0-flash")
-
-        response = await chat.send_message(UserMessage(text=prompt))
+    try:
+        response = await generate_gemini(system, user)
+        if not response:
+            return []
         cleaned = response.strip()
         if cleaned.startswith("```"):
             cleaned = cleaned.split("```")[1]

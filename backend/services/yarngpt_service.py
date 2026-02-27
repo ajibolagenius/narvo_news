@@ -1,7 +1,7 @@
 """
 YarnGPT TTS Service — Primary TTS provider for Narvo.
 Uses YarnGPT API (https://yarngpt.ai) for Nigerian-accented voices.
-Falls back to OpenAI TTS via Emergent if YarnGPT fails.
+Falls back to OpenAI TTS if YarnGPT fails.
 """
 import os
 import base64
@@ -10,7 +10,7 @@ from typing import Optional
 
 YARNGPT_API_URL = "https://yarngpt.ai/api/v1/tts"
 YARNGPT_API_KEY = os.environ.get("YARNGPT_API_KEY", "")
-EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY", "")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
 
 # YarnGPT voices mapped to languages
 YARNGPT_VOICES = {
@@ -65,20 +65,20 @@ async def generate_yarngpt_audio(text: str, voice: str = "idera", response_forma
 
 
 async def generate_openai_fallback(text: str, voice_id: str = "nova") -> Optional[bytes]:
-    """Fallback: Generate TTS using OpenAI via Emergent."""
-    if not EMERGENT_LLM_KEY:
+    """Fallback: Generate TTS using OpenAI (standalone)."""
+    if not OPENAI_API_KEY:
         return None
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
-        tts = OpenAITextToSpeech(api_key=EMERGENT_LLM_KEY)
-        audio_bytes = await tts.generate_speech(
-            text=text[:4096],
+        from openai import AsyncOpenAI
+        client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        response = await client.audio.speech.create(
             model="tts-1",
             voice=voice_id,
+            input=text[:4096],
             response_format="mp3",
             speed=1.0,
         )
-        return audio_bytes
+        return response.read()
     except Exception as e:
         print(f"[OpenAI TTS Fallback] Error: {e}")
         return None

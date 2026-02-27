@@ -112,4 +112,4 @@ Use `MONGO_URL=mongodb://localhost:27017` as above.
 - [ ] Backend started at least once so indexes are created (or create them manually if needed).
 - [ ] No real credentials in version control; use `.env` and `.gitignore`.
 
-For a full list of backend env vars (Supabase, Emergent, optional aggregators and fact-check, etc.), see **[backend/.env.example](../../backend/.env.example)** and the backend code.
+For a full list of backend env vars (Supabase, Gemini, OpenAI, optional aggregators and fact-check, etc.), see **[backend/.env.example](../../backend/.env.example)** and the backend code.

@@ -157,8 +157,8 @@
 - Code: `signInWithGoogle()` in `AuthContext.js` uses `REACT_APP_BACKEND_URL` for redirect
 
 ### URL Configuration: CONFIGURED
-- **Site URL**: `https://narvo-broadcast-pwa.preview.emergentagent.com`
-- **Redirect URLs**: `https://narvo-broadcast-pwa.preview.emergentagent.com/**`
+- **Site URL**: Set to your frontend URL (e.g. `http://localhost:3000` or your production URL)
+- **Redirect URLs**: Add your frontend origin and `/**` (e.g. `http://localhost:3000/**`)
 
 ### General Auth Settings:
 - Email confirmations: Enabled
