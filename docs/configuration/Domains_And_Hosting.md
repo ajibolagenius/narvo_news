@@ -88,7 +88,7 @@ To **stop** the redirect later (when narvo.live should serve its own live experi
 
 ## Step 6 — Backend and admin (optional)
 
-- **Backend (FastAPI):** Deploy to your chosen host (e.g. Railway, Render, or a VPS). Set its URL in `REACT_APP_BACKEND_URL` in Vercel. No change to domain/hosting steps above.
+- **Backend (FastAPI):** Deploy to your chosen host (e.g. Railway, Render, or a VPS), optionally use **api.narvo.news** as the API domain, and set `REACT_APP_BACKEND_URL` in Vercel. Full steps: [Backend_Deploy_And_Domain.md](Backend_Deploy_And_Domain.md).
 - **Admin app:** To run the admin UI on e.g. `admin.narvo.news`, create a second Vercel project from the same repo with **Root Directory** `frontend`, **Build Command** `npm run build:admin`, and add the domain `admin.narvo.news`. See [Admin_Standalone_Deploy.md](../technical/Admin_Standalone_Deploy.md).
 
 ---
@@ -102,3 +102,4 @@ To **stop** the redirect later (when narvo.live should serve its own live experi
 - [ ] Vercel shows both domains as **Valid**
 - [ ] `REACT_APP_PUBLIC_URL`, `REACT_APP_BACKEND_URL`, and Supabase vars set in Vercel
 - [ ] Visit https://narvo.news and https://narvo.live and confirm narvo.live redirects to narvo.news
+- [ ] (Optional) Backend deployed and `REACT_APP_BACKEND_URL` points to it — see [Backend_Deploy_And_Domain.md](Backend_Deploy_And_Domain.md)
