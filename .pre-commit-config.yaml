@@ -1,0 +1,16 @@
+# Pre-commit: run format/lint before commit. Install: pip install pre-commit && pre-commit install
+repos:
+  - repo: local
+    hooks:
+      - id: frontend-lint
+        name: Frontend ESLint
+        entry: bash -c 'cd frontend && npm run lint'
+        language: system
+      - id: backend-black
+        name: Backend Black
+        entry: black backend/
+        language: system
+      - id: backend-flake8
+        name: Backend Flake8
+        entry: bash -c 'cd backend && flake8 . --max-line-length=120 --extend-ignore=E203,W503'
+        language: system

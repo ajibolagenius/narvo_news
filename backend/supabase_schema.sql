@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   UNIQUE(user_id, story_id)
 );
 CREATE INDEX IF NOT EXISTS idx_bookmarks_user_id ON bookmarks(user_id);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_user_saved_at ON bookmarks(user_id, saved_at DESC);
 
 -- user_preferences: one row per user
 CREATE TABLE IF NOT EXISTS user_preferences (

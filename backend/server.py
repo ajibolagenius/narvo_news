@@ -27,7 +27,17 @@ import re as _re
 API_VERSION = "2.0"
 
 # Initialize FastAPI
-app = FastAPI(title="Narvo API", version=API_VERSION)
+app = FastAPI(
+    title="Narvo API",
+    version=API_VERSION,
+    description="Broadcast-grade news API: narratives, TTS, translation, fact-check, briefings.",
+    openapi_tags=[
+        {"name": "core", "description": "Health and root"},
+        {"name": "news", "description": "News, search, trending"},
+        {"name": "tts", "description": "Text-to-speech generation"},
+        {"name": "user", "description": "Bookmarks, preferences, settings"},
+    ],
+)
 
 # GZip compression for smaller payloads
 from starlette.middleware.gzip import GZipMiddleware
@@ -57,8 +67,51 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         return response
 
 
+# Rate limit: expensive/sensitive routes (TTS, fact-check, notifications). Generous limits per IP.
+_RATE_LIMIT_WINDOW = 60  # seconds
+_RATE_LIMIT_MAX = 120  # requests per window per IP for protected paths
+_rate_limit_store: dict = {}  # ip -> [timestamps]
+
+
+def _rate_limit_key(request) -> str:
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def _is_rate_limited_path(path: str) -> bool:
+    return (
+        path.startswith("/api/tts/")
+        or path.startswith("/api/factcheck/")
+        or path.startswith("/api/notifications/")
+    )
+
+
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    """Apply rate limit to TTS, fact-check, and notification routes by IP."""
+
+    async def dispatch(self, request, call_next):
+        if not _is_rate_limited_path(request.url.path):
+            return await call_next(request)
+        now = asyncio.get_event_loop().time()
+        key = _rate_limit_key(request)
+        if key not in _rate_limit_store:
+            _rate_limit_store[key] = []
+        times = _rate_limit_store[key]
+        times[:] = [t for t in times if now - t < _RATE_LIMIT_WINDOW]
+        if len(times) >= _RATE_LIMIT_MAX:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Too many requests. Please try again later."},
+            )
+        times.append(now)
+        return await call_next(request)
+
+
 app.add_middleware(RequestIDMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 # CORS: use FRONTEND_ORIGIN in production (e.g. https://narvo.news); ["*"] when unset (dev)
 _cors_origins = os.environ.get("FRONTEND_ORIGIN", "*")
@@ -251,7 +304,7 @@ class BookmarkRequest(BaseModel):
 
 
 # Root: avoid 404 when visiting /
-@app.get("/")
+@app.get("/", tags=["core"], summary="API info")
 async def root():
     return {
         "service": "Narvo API",
@@ -262,19 +315,28 @@ async def root():
 
 
 # API Endpoints
-@app.get("/api/health")
+@app.get("/api/health", tags=["core"], summary="Health check", description="Returns API status and optional dependency checks.")
 async def health_check():
+    """Health check for deployment and monitoring. Optionally verifies Supabase connectivity."""
+    dependencies = {}
+    try:
+        db = get_supabase_db()
+        db.table("user_preferences").select("user_id").limit(1).execute()
+        dependencies["supabase"] = "ok"
+    except Exception:
+        dependencies["supabase"] = "error"
     return {
         "status": "online",
         "service": "Narvo API",
         "version": API_VERSION,
         "timestamp": datetime.now(timezone.utc).isoformat(),
+        "dependencies": dependencies,
     }
 
 
-@app.post("/api/paraphrase", response_model=ParaphraseResponse)
+@app.post("/api/paraphrase", response_model=ParaphraseResponse, tags=["news"], summary="Paraphrase text to broadcast narrative")
 async def paraphrase_content(request: ParaphraseRequest):
-    """Generate broadcast narrative from text"""
+    """Generate broadcast narrative from text using Gemini."""
     narrative_data = await generate_narrative(request.text)
     raw_narrative = narrative_data.get("narrative", request.text)
     raw_takeaways = narrative_data.get("key_takeaways", [])
@@ -287,9 +349,9 @@ async def paraphrase_content(request: ParaphraseRequest):
     )
 
 
-@app.post("/api/tts/generate", response_model=TTSResponse)
+@app.post("/api/tts/generate", response_model=TTSResponse, tags=["tts"], summary="Generate TTS audio")
 async def generate_tts(request: TTSRequest):
-    """Generate TTS audio — YarnGPT primary, OpenAI fallback, with caching"""
+    """Generate TTS audio — YarnGPT primary, OpenAI fallback, with caching. Rate-limited by IP."""
     import hashlib
     from services.yarngpt_service import generate_tts as yarn_generate_tts
 
@@ -364,9 +426,9 @@ async def generate_tts(request: TTSRequest):
         raise HTTPException(status_code=500, detail=f"TTS generation failed: {str(e)}")
 
 
-@app.get("/api/voices", response_model=List[VoiceProfile])
+@app.get("/api/voices", response_model=List[VoiceProfile], tags=["tts"], summary="List voice profiles")
 async def get_voices():
-    """Get available voice profiles (cached 10min)"""
+    """Get available voice profiles (cached 10min)."""
     cached = _cache.get("voices", ttl=600)
     if cached:
         return JSONResponse(

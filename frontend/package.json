@@ -23,8 +23,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build:admin": "REACT_APP_APP_MODE=admin react-scripts build",
+    "build": "node scripts/set-sw-cache-version.js && react-scripts build",
+    "build:admin": "node scripts/set-sw-cache-version.js && REACT_APP_APP_MODE=admin react-scripts build",
     "generate-pwa-icons": "node scripts/generate-pwa-icons.js",
     "capture-pwa-screenshots": "node scripts/capture-pwa-screenshots.js",
     "lint": "eslint src/",

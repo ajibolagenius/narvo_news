@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { X, ArrowRight, ArrowLeft, Broadcast, GearSix, Headphones, Waveform, PlayCircle, BookmarkSimple, ClockCounterClockwise, Lightning } from '@phosphor-icons/react';
 
@@ -76,10 +76,14 @@ export function resetTourGuide() {
   localStorage.removeItem(STORAGE_SKIPPED_KEY);
 }
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export const TourGuideModal = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(0);
   const location = useLocation();
+  const modalRef = useRef(null);
+  const previousActiveRef = useRef(null);
 
   const isDashboardArea = ['/dashboard', '/discover', '/search', '/briefing', '/saved', '/offline', '/settings', '/system'].some(p => location.pathname.startsWith(p));
 
@@ -119,6 +123,41 @@ export const TourGuideModal = () => {
 
   const prev = () => { if (step > 0) setStep(s => s - 1); };
 
+  // Focus trap and return focus on close
+  useEffect(() => {
+    if (!isOpen) return;
+    previousActiveRef.current = document.activeElement;
+    const el = modalRef.current;
+    if (el) {
+      const focusable = el.querySelectorAll(FOCUSABLE);
+      if (focusable.length) focusable[0].focus();
+    }
+    const onKeyDown = (e) => {
+      if (e.key !== 'Tab' || !modalRef.current) return;
+      const focusable = [...modalRef.current.querySelectorAll(FOCUSABLE)];
+      if (!focusable.length) return;
+      const i = focusable.indexOf(document.activeElement);
+      if (e.shiftKey) {
+        if (i <= 0) {
+          e.preventDefault();
+          focusable[focusable.length - 1].focus();
+        }
+      } else {
+        if (i === -1 || i >= focusable.length - 1) {
+          e.preventDefault();
+          focusable[0].focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      if (previousActiveRef.current && typeof previousActiveRef.current.focus === 'function') {
+        previousActiveRef.current.focus();
+      }
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const current = TOUR_STEPS[step];
@@ -126,12 +165,19 @@ export const TourGuideModal = () => {
   const progress = ((step + 1) / TOUR_STEPS.length) * 100;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" data-testid="tour-guide-modal">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" data-testid="tour-guide-modal" aria-hidden="false">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-background-dark/80 backdrop-blur-sm" onClick={skip} />
+      <div className="absolute inset-0 bg-background-dark/80 backdrop-blur-sm" onClick={skip} aria-hidden />
 
       {/* Modal */}
-      <div className="relative w-full max-w-sm narvo-border bg-background-dark overflow-hidden animate-in fade-in zoom-in duration-300">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tour-title"
+        aria-describedby="tour-body"
+        className="relative w-full max-w-sm narvo-border bg-background-dark overflow-hidden animate-in fade-in zoom-in duration-300"
+      >
         {/* Progress bar */}
         <div className="h-1 bg-forest/20">
           <div className="h-full bg-primary transition-all duration-500 ease-out" style={{ width: `${progress}%` }} />
@@ -145,7 +191,7 @@ export const TourGuideModal = () => {
           </div>
           <div className="flex items-center gap-3">
             <span className="mono-ui text-[11px] text-forest/50">{step + 1}/{TOUR_STEPS.length}</span>
-            <button onClick={skip} className="text-forest hover:text-content transition-colors" data-testid="tour-close">
+            <button type="button" onClick={skip} aria-label="Close tour" className="text-forest hover:text-content transition-colors" data-testid="tour-close">
               <X weight="bold" className="w-4 h-4" />
             </button>
           </div>
@@ -157,8 +203,8 @@ export const TourGuideModal = () => {
             <Icon weight="bold" className="w-6 h-6 text-primary" />
           </div>
           <div>
-            <h3 className="font-display text-xl font-bold text-content uppercase tracking-tight">{current.title}</h3>
-            <p className="mt-2 mono-ui text-[12px] text-forest leading-relaxed">{current.body}</p>
+            <h3 id="tour-title" className="font-display text-xl font-bold text-content uppercase tracking-tight">{current.title}</h3>
+            <p id="tour-body" className="mt-2 mono-ui text-[12px] text-forest leading-relaxed">{current.body}</p>
             {current.tip && (
               <div className="mt-3 p-2.5 bg-primary/5 border border-primary/20">
                 <p className="mono-ui text-[11px] text-primary leading-relaxed">TIP: {current.tip}</p>
@@ -168,20 +214,26 @@ export const TourGuideModal = () => {
         </div>
 
         {/* Step dots */}
-        <div className="flex items-center justify-center gap-1.5 pb-3">
+        <ul className="flex items-center justify-center gap-1.5 pb-3 list-none" role="tablist" aria-label="Tour steps">
           {TOUR_STEPS.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setStep(i)}
-              className={`w-1.5 h-1.5 transition-all ${i === step ? 'bg-primary w-4' : i < step ? 'bg-primary/40' : 'bg-forest/30'}`}
-              data-testid={`tour-dot-${i}`}
-            />
+            <li key={i} role="presentation">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={i === step}
+                aria-label={`Step ${i + 1} of ${TOUR_STEPS.length}`}
+                onClick={() => setStep(i)}
+                className={`w-1.5 h-1.5 transition-all ${i === step ? 'bg-primary w-4' : i < step ? 'bg-primary/40' : 'bg-forest/30'}`}
+                data-testid={`tour-dot-${i}`}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* Footer */}
         <div className="flex items-center justify-between p-4 border-t border-forest/20">
           <button
+            type="button"
             onClick={skip}
             className="mono-ui text-[11px] text-forest/50 hover:text-forest transition-colors"
             data-testid="tour-skip"
@@ -191,7 +243,9 @@ export const TourGuideModal = () => {
           <div className="flex items-center gap-2">
             {step > 0 && (
               <button
+                type="button"
                 onClick={prev}
+                aria-label="Previous step"
                 className="w-8 h-8 narvo-border flex items-center justify-center text-forest hover:text-content hover:border-forest transition-all"
                 data-testid="tour-prev"
               >
@@ -199,7 +253,9 @@ export const TourGuideModal = () => {
               </button>
             )}
             <button
+              type="button"
               onClick={next}
+              aria-label={step === TOUR_STEPS.length - 1 ? 'Start listening' : 'Next step'}
               className="px-4 h-8 bg-primary text-background-dark mono-ui text-[11px] font-bold flex items-center gap-1.5 hover:bg-primary/90 transition-colors"
               data-testid="tour-next"
             >
