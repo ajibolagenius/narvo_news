@@ -38,18 +38,18 @@ const LandingPage = () => {
         <meta property="og:title" content="Narvo | The Local Pulse, Refined" />
         <meta property="og:description" content="Broadcast-grade, audio-first news platform. Native translation, regional voices, truth protocol." />
         <meta property="og:image" content={`${getPublicUrl()}/screenshot-wide.png`} />
+        <meta property="og:image:alt" content="Narvo — Broadcast-grade, audio-first news platform for Africa" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Narvo | The Local Pulse, Refined" />
         <meta name="twitter:description" content="Broadcast-grade, audio-first news platform for Africa." />
         <meta name="twitter:image" content={`${getPublicUrl()}/screenshot-wide.png`} />
+        <meta name="twitter:image:alt" content="Narvo — Broadcast-grade, audio-first news platform for Africa" />
       </Helmet>
       <header className="flex flex-col border-b border-forest">
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
-              <svg className="w-8 h-8 text-forest" viewBox="0 0 256 256" fill="currentColor">
-                <path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM168,128a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V88a8,8,0,0,1,16,0v32h24A8,8,0,0,1,168,128Z"/>
-              </svg>
+              <img src="/narvo_logo.svg" alt="Narvo" className="w-8 h-8 shrink-0" />
               <h1 className="font-display text-2xl font-bold tracking-tighter text-content">NARVO</h1>
             </div>
             <div className="hidden md:flex items-center gap-4 border-l border-forest pl-6 h-10">
@@ -256,7 +256,7 @@ const LandingPage = () => {
       <footer className="mt-auto grid grid-cols-1 md:grid-cols-4 border-t border-forest bg-background-dark">
         <div className="p-6 border-r border-forest flex flex-col justify-between">
           <div className="flex items-center gap-2 mb-8 text-content">
-            <svg className="w-6 h-6 text-forest" viewBox="0 0 256 256" fill="currentColor"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Z"/></svg>
+            <img src="/narvo_logo.svg" alt="Narvo" className="w-6 h-6 shrink-0" />
             <span className="font-display font-bold text-content tracking-tighter">NARVO</span>
           </div>
           <p className="mono-ui text-[11px] text-forest">V.2.5.0_STABLE_BUILD<br />2026 NARVO</p>

@@ -2325,7 +2325,7 @@ async def og_image_html(news_id: str):
   .meta span {{ color:#6b7280; font-size:13px; font-weight:600; letter-spacing:2px; text-transform:uppercase; }}
   .meta .src {{ color:{accent}; }}
   .right {{ width:200px; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end; }}
-  .logo {{ color:{accent}; font-size:28px; font-weight:900; letter-spacing:6px; }}
+  .logo {{ width:80px; height:80px; }}
   .tag {{ color:#374151; font-size:11px; font-weight:600; letter-spacing:3px; text-align:right; }}
   .bar {{ height:4px; background:linear-gradient(90deg,{accent},transparent); }}
 </style></head>
@@ -2344,7 +2344,7 @@ async def og_image_html(news_id: str):
       </div>
     </div>
     <div class="right">
-      <div class="logo">N</div>
+      <div class="logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 421 421" width="80" height="80"><g transform="matrix(1,0,0,1,-409.98,-663.92)"><g transform="matrix(1.26,0,0,1.26,161.58,-953.31)"><rect x="197.085" y="1283.168" width="333.402" height="333.402" fill="#1B211A"/></g><g transform="matrix(0.41,0,0,0.41,409.97,644.21)"><path fill="#EBD5AB" d="M731.43,512H800L736,736H288L224,512H292.57L256,384H372.57L336,256H688L651.43,384H768L731.43,512Z"/><path fill="#EBD5AB" fill-rule="nonzero" d="M352,768H672L640,864H384L352,768Z"/></g></g></svg></div>
       <div class="tag">NARVO.NEWS<br/>VOICE-FIRST<br/>PLATFORM</div>
     </div>
   </div>

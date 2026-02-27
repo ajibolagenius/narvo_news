@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import AdminSidebar from './AdminSidebar';
-import { Clock, WifiHigh, Shield } from '@phosphor-icons/react';
+import { WifiHigh, Shield } from '@phosphor-icons/react';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const AdminLayout = () => {
             onClick={() => navigate('/dashboard')}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
-            <Clock className="w-6 h-6 text-primary" />
+            <img src="/narvo_logo.svg" alt="Narvo" className="w-6 h-6 shrink-0" />
             <span className="font-display text-xl font-bold text-content tracking-tight">NARVO</span>
           </button>
           <div className="h-6 w-px bg-forest/30" />

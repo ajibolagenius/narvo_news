@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { MagnifyingGlass, User, Broadcast, WifiHigh, WifiMedium, WifiLow, WifiSlash, DownloadSimple } from '@phosphor-icons/react';
+import { MagnifyingGlass, User, WifiHigh, WifiMedium, WifiLow, WifiSlash, DownloadSimple } from '@phosphor-icons/react';
 import { useAuth } from '../contexts/AuthContext';
 import ThemeToggle from './ThemeToggle';
 import { useNetworkInfo, useInstallPrompt } from '../hooks/usePwaApis';
@@ -26,7 +26,7 @@ const DashboardHeader = ({ onToggleSidebar, sidebarOpen }) => {
     <header className="h-14 md:h-16 flex items-center gap-4 px-4 md:px-6 border-b border-[rgb(var(--color-border))] bg-[rgb(var(--color-bg))] z-20 shrink-0" data-testid="dashboard-header">
       {/* Logo */}
       <div className="flex items-center gap-2 shrink-0 cursor-pointer" onClick={() => navigate('/dashboard')}>
-        <Broadcast weight="fill" className="w-5 h-5 md:w-6 md:h-6 text-[rgb(var(--color-primary))]" />
+        <img src="/narvo_logo.svg" alt="Narvo" className="w-5 h-5 md:w-6 md:h-6 shrink-0" />
         <h1 className="font-display text-base md:text-lg tracking-tight font-bold text-[rgb(var(--color-text-primary))] uppercase">
           NARVO
         </h1>

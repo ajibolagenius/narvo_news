@@ -294,11 +294,13 @@ const NewsDetailPage = () => {
         <meta property="og:type" content="article" />
         <meta property="og:url" content={`${window.location.origin}/news/${id}`} />
         <meta property="og:image" content={`${API_URL}/api/og/${id}`} />
+        <meta property="og:image:alt" content={news.title ? `${news.title} — Narvo` : 'Narvo — Audio-first news for Africa'} />
         <meta property="og:site_name" content="NARVO" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={news.title} />
         <meta name="twitter:description" content={news.narrative?.slice(0, 160) || 'Audio-first news for Africa'} />
         <meta name="twitter:image" content={`${API_URL}/api/og/${id}`} />
+        <meta name="twitter:image:alt" content={news.title ? `${news.title} — Narvo` : 'Narvo — Audio-first news for Africa'} />
       </Helmet>
       {/* Main Article Content */}
       <section className="flex-1 overflow-y-auto overflow-x-hidden relative bg-background-dark custom-scroll" data-testid="news-detail-page">
