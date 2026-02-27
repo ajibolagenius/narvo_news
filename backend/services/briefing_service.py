@@ -20,7 +20,7 @@ Requirements:
 - Keep it under 500 words
 - Plain text only, no markdown"""
     stories_text = "\n\n".join([
-        f"**{s['title'][:100]}** ({s['source']})\n{s['summary'][:200]}"
+        f"**{(s.get('title') or '')[:100]}** ({(s.get('source') or '')})\n{(s.get('summary') or '')[:200]}"
         for s in stories[:5]
     ])
     user = f"Create a brief morning news script:\n\n{stories_text}"
@@ -32,7 +32,9 @@ Requirements:
         print(f"Error generating briefing script: {e}")
     script = f"Good morning, this is your Narvo Briefing for {datetime.now().strftime('%A, %B %d, %Y')}.\n\n"
     for i, story in enumerate(stories[:5], 1):
-        script += f"Story {i}: {story['title'][:100]}. {story['summary'][:150]}.\n\n"
+        title = (story.get("title") or "")[:100]
+        summary = (story.get("summary") or "")[:150]
+        script += f"Story {i}: {title}. {summary}.\n\n"
     script += "That's all for this briefing. Stay informed with Narvo."
     return script
 
@@ -103,7 +105,7 @@ def get_briefing_history(limit: int = 30, skip: int = 0) -> Dict:
     db = get_supabase_db()
     r = db.table("briefings").select("id, date, title, generated_at, duration_estimate, stories, voice_id").order("date", desc=True).range(skip, skip + limit - 1).execute()
     total_r = db.table("briefings").select("id", count="exact").execute()
-    total = getattr(total_r, "count", None) or len(total_r.data or [])
+    total = total_r.count if getattr(total_r, "count", None) is not None else len(total_r.data or [])
     briefings = [_briefing_row_to_dict(x) for x in (r.data or [])]
     return {"briefings": briefings, "total": total}
 

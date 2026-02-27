@@ -44,8 +44,9 @@ def get_bookmarks(user_id: str) -> List[Dict]:
 
 
 def add_bookmark(user_id: str, bookmark_data: Dict) -> Dict:
-    """Save/bookmark an article"""
+    """Save/bookmark an article. Returns status, story_id, and saved_at (from DB)."""
     db = get_supabase_db()
+    saved_at = datetime.now(timezone.utc).isoformat()
     doc = {
         "user_id": user_id,
         "story_id": bookmark_data.get("story_id"),
@@ -54,10 +55,10 @@ def add_bookmark(user_id: str, bookmark_data: Dict) -> Dict:
         "source": bookmark_data.get("source", ""),
         "category": bookmark_data.get("category"),
         "source_url": bookmark_data.get("source_url"),
-        "saved_at": datetime.now(timezone.utc).isoformat(),
+        "saved_at": saved_at,
     }
     db.table("bookmarks").upsert(doc, on_conflict="user_id,story_id").execute()
-    return {"status": "saved", "story_id": doc["story_id"]}
+    return {"status": "saved", "story_id": doc["story_id"], "saved_at": saved_at}
 
 
 def remove_bookmark(user_id: str, story_id: str) -> bool:

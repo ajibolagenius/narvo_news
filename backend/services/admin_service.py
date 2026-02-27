@@ -19,8 +19,8 @@ def get_system_metrics() -> Dict:
     db = get_supabase_db()
     br = db.table("bookmarks").select("id", count="exact").execute()
     pr = db.table("user_preferences").select("id", count="exact").execute()
-    bookmarks_count = getattr(br, "count", None) or len(br.data or [])
-    preferences_count = getattr(pr, "count", None) or len(pr.data or [])
+    bookmarks_count = br.count if getattr(br, "count", None) is not None else len(br.data or [])
+    preferences_count = pr.count if getattr(pr, "count", None) is not None else len(pr.data or [])
     
     return {
         "active_streams": 1240 + (bookmarks_count % 100),

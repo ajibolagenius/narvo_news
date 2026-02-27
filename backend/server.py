@@ -1035,8 +1035,8 @@ async def get_admin_metrics():
     db = get_supabase_db()
     br = db.table("bookmarks").select("id", count="exact").execute()
     pr = db.table("user_preferences").select("id", count="exact").execute()
-    bookmarks_count = getattr(br, "count", None) or len(br.data or [])
-    preferences_count = getattr(pr, "count", None) or len(pr.data or [])
+    bookmarks_count = br.count if getattr(br, "count", None) is not None else len(br.data or [])
+    preferences_count = pr.count if getattr(pr, "count", None) is not None else len(pr.data or [])
 
     return {
         "active_streams": 1240 + (bookmarks_count % 100),
@@ -1372,10 +1372,10 @@ async def get_metrics():
     db = get_supabase_db()
     story_count = 0  # news_cache deprecated; use aggregator/sources for display
     tr = db.table("tts_cache").select("cache_key", count="exact").execute()
-    tts_count = getattr(tr, "count", None) or len(tr.data or [])
+    tts_count = tr.count if getattr(tr, "count", None) is not None else len(tr.data or [])
     broadcast_hours = round(tts_count * 0.04, 1)  # ~2.5 min avg per TTS
     lr = db.table("listening_history").select("id", count="exact").execute()
-    listen_count = getattr(lr, "count", None) or len(lr.data or [])
+    listen_count = lr.count if getattr(lr, "count", None) is not None else len(lr.data or [])
 
     return {
         "listeners_today": f"{max(1, listen_count)}",
@@ -1518,7 +1518,7 @@ async def get_system_alerts():
 
     db = get_supabase_db()
     tr = db.table("tts_cache").select("cache_key", count="exact").execute()
-    tts_count = getattr(tr, "count", None) or len(tr.data or [])
+    tts_count = tr.count if getattr(tr, "count", None) is not None else len(tr.data or [])
     if tts_count > 0:
         alerts.append(
             {
@@ -1938,7 +1938,7 @@ async def add_bookmark(request: BookmarkRequest):
         "status": "ok",
         "bookmark": {
             **bookmark_data,
-            "saved_at": request.saved_at or datetime.now(timezone.utc).isoformat(),
+            "saved_at": out.get("saved_at", datetime.now(timezone.utc).isoformat()),
         },
     }
 
