@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Code, Database, CloudArrowUp, Broadcast, Waveform, Globe, ShieldCheck, Lightning } from '@phosphor-icons/react';
+import { ArrowLeft, Code, Database, CloudArrowUp, Broadcast, Waveform, Globe, ShieldCheck, Lightning, Newspaper } from '@phosphor-icons/react';
 
 const TOOL_CATEGORIES = [
   {
@@ -32,6 +32,16 @@ const TOOL_CATEGORIES = [
       { name: 'RSS Feeds', desc: '39+ curated African news sources', url: '#', tag: 'FEEDS' },
       { name: 'feedparser', desc: 'Universal RSS/Atom feed parser', url: 'https://feedparser.readthedocs.io', tag: 'PARSER' },
     ],
+    icon: Newspaper,
+  },
+  {
+    title: 'DOMAINS_AND_HOSTING',
+    tools: [
+      { name: 'narvo.news', desc: 'Main site — homepage, product, signup', url: 'https://narvo.news', tag: 'MAIN' },
+      { name: 'narvo.live', desc: 'Live broadcast hub & stream', url: 'https://narvo.live', tag: 'LIVE' },
+      { name: 'Vercel', desc: 'Deployment & hosting', url: 'https://vercel.com', tag: 'HOST' },
+      { name: 'Unstoppable Domains', desc: 'Domain registration (narvo.news, narvo.live)', url: 'https://unstoppabledomains.com', tag: 'REGISTRAR' },
+    ],
     icon: Globe,
   },
   {
@@ -55,7 +65,6 @@ const TOOL_CATEGORIES = [
   {
     title: 'INFRASTRUCTURE',
     tools: [
-      { name: 'Vercel', desc: 'Deployment & hosting', url: 'https://vercel.com', tag: 'DEPLOY' },
       { name: 'httpx', desc: 'Async HTTP client for backend services', url: 'https://www.python-httpx.org', tag: 'HTTP' },
       { name: 'Framer Motion', desc: 'Animation library', url: 'https://www.framer.com/motion/', tag: 'UI' },
       { name: 'Phosphor Icons', desc: 'Icon system', url: 'https://phosphoricons.com', tag: 'ICONS' },
