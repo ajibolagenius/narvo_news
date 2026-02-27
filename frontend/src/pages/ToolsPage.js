@@ -39,7 +39,9 @@ const TOOL_CATEGORIES = [
     tools: [
       { name: 'narvo.news', desc: 'Main site — homepage, product, signup', url: 'https://narvo.news', tag: 'MAIN' },
       { name: 'narvo.live', desc: 'Live broadcast hub & stream', url: 'https://narvo.live', tag: 'LIVE' },
-      { name: 'Vercel', desc: 'Deployment & hosting', url: 'https://vercel.com', tag: 'HOST' },
+      { name: 'api.narvo.news', desc: 'FastAPI backend API', url: 'https://api.narvo.news', tag: 'API' },
+      { name: 'Vercel', desc: 'Frontend deployment & hosting', url: 'https://vercel.com', tag: 'HOST' },
+      { name: 'Render', desc: 'Backend (FastAPI) hosting', url: 'https://render.com', tag: 'HOST' },
       { name: 'Unstoppable Domains', desc: 'Domain registration (narvo.news, narvo.live)', url: 'https://unstoppabledomains.com', tag: 'REGISTRAR' },
     ],
     icon: Globe,
@@ -65,6 +67,7 @@ const TOOL_CATEGORIES = [
   {
     title: 'INFRASTRUCTURE',
     tools: [
+      { name: 'uvicorn', desc: 'ASGI server for FastAPI backend', url: 'https://www.uvicorn.org', tag: 'SERVER' },
       { name: 'httpx', desc: 'Async HTTP client for backend services', url: 'https://www.python-httpx.org', tag: 'HTTP' },
       { name: 'Framer Motion', desc: 'Animation library', url: 'https://www.framer.com/motion/', tag: 'UI' },
       { name: 'Phosphor Icons', desc: 'Icon system', url: 'https://phosphoricons.com', tag: 'ICONS' },

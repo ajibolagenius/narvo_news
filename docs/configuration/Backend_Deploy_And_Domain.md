@@ -58,6 +58,7 @@ In the host’s dashboard (Railway/Render **Environment** or VPS `.env`), set th
 | `OPENAI_API_KEY`          | Yes      | OpenAI TTS fallback. |
 | `YARNGPT_API_KEY`         | No       | YarnGPT TTS (Nigerian voices). Omit to use OpenAI TTS only. |
 | `GOOGLE_FACT_CHECK_API_KEY` | No     | Google Fact Check API. Omit for mock responses. |
+| `PYTHON_VERSION`            | No (Render) | Set to `3.12.7` on Render to avoid Python 3.14 dependency conflicts (grpcio-status, protobuf). |
 
 Do not commit real values; use the host’s secret/env UI.
 
