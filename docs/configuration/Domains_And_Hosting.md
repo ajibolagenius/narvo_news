@@ -35,7 +35,8 @@
    - If prompted, choose **narvo.news** as the primary domain (not www).
 3. Add the redirect domain:
    - Enter `narvo.live` and click **Add**.
-   - Both domains will point to the same project; `narvo.live` will redirect to `narvo.news` via `vercel.json`.
+   - In the domain row for **narvo.live**, set **Redirect to Another Domain** to **`narvo.news`** (not www.narvo.live). Save.
+   - If you have **www.narvo.live**, set its **Redirect to Another Domain** to **`narvo.news`** as well. Otherwise traffic will stop at www.narvo.live and never reach narvo.news.
 4. (Optional) Add `www.narvo.news` and set it to **Redirect to narvo.news** in the domain’s dropdown.
 5. Vercel will show **DNS records** to add (e.g. A record or CNAME). Keep this tab open for Step 3.
 
@@ -72,12 +73,16 @@
 
 ## Step 5 — Confirm narvo.live → narvo.news redirect
 
-The repo is already set up to redirect **narvo.live** to **narvo.news**:
+**In Vercel (recommended):** Use the domain-level redirect so it works regardless of deployment:
 
-- In `frontend/vercel.json`, a **redirect** rule sends all requests whose host is `narvo.live` to `https://narvo.news` with the same path.
-- After deploying, open `https://narvo.live` (and e.g. `https://narvo.live/tools`) and confirm you end up on `https://narvo.news` (and `https://narvo.news/tools`).
+- For **narvo.live**: set **Redirect to Another Domain** to **`narvo.news`** (Settings → Domains → narvo.live → Save).
+- For **www.narvo.live**: set **Redirect to Another Domain** to **`narvo.news`**. If narvo.live redirects to www.narvo.live, traffic would otherwise stop at www.narvo.live; both must point to narvo.news.
 
-To **stop** the redirect later (when narvo.live should serve its own live experience), remove the `redirects` entry from `frontend/vercel.json` and redeploy.
+**Fallback:** `frontend/vercel.json` also has a redirect rule for host `narvo.live` → `narvo.news`. It only applies when a domain has no redirect set in the dashboard; dashboard redirects take precedence.
+
+After configuring, open https://narvo.live and https://www.narvo.live and confirm both redirect to https://narvo.news.
+
+To **stop** the redirect later (when narvo.live should serve its own live experience), remove the redirect in Vercel Domains and, if desired, the `redirects` entry from `frontend/vercel.json`.
 
 ---
 
