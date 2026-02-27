@@ -28,18 +28,20 @@ Pick one:
   (or leave blank if the host only runs a start command and you use a Dockerfile/runtime that installs deps.)
 
 - **Start command (required):**  
-  Use the platform’s `PORT` so the app listens on the right port. From the repo root, with **working directory** `backend`:
+  Use **uvicorn** (not gunicorn). The app must listen on the platform’s `PORT`. With **Root Directory** = `backend`:
 
   ```bash
-  uvicorn server:app --host 0.0.0.0 --port ${PORT:-8000}
+  uvicorn server:app --host 0.0.0.0 --port $PORT
   ```
 
-  On **Render**, set **Start Command** to e.g.:  
+  **Render:** Set **Start Command** to exactly:  
   `uvicorn server:app --host 0.0.0.0 --port $PORT`
 
-  On **Railway**, set the start command in the service settings; Railway provides `PORT` automatically.
+  **Render — Health Check Path (Advanced):** Set to `/api/health` so Render can verify the service is up.
 
-  On a **VPS**, you can run the same command (with a fixed port if you prefer, e.g. `8000`) behind a reverse proxy (nginx/Caddy) that handles TLS and forwards to `localhost:8000`.
+  **Railway:** Set the start command in the service settings; Railway provides `PORT` automatically.
+
+  **VPS:** Run the same command (e.g. port `8000`) behind a reverse proxy (nginx/Caddy) for TLS.
 
 ---
 
