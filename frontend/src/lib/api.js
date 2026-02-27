@@ -5,6 +5,10 @@
 
 const API_BASE = process.env.REACT_APP_BACKEND_URL || '';
 
+if (typeof window !== 'undefined' && !API_BASE && process.env.NODE_ENV === 'development') {
+  console.warn('[api] REACT_APP_BACKEND_URL is not set; backend requests will fail or target relative URLs.');
+}
+
 /**
  * GET request to the backend. Returns the fetch Response (caller should check res.ok and res.json()).
  * @param {string} path - Path without leading slash, e.g. 'api/health' or 'api/settings/123'

@@ -53,8 +53,8 @@ The project uses a single repository with a **Create React App (CRA)** web front
 
 ### Backend (FastAPI)
 - **Entrypoint:** [backend/server.py](backend/server.py). App creation, CORS, DB/client setup, and router includes.
-- **Mounted routers:** discover (`/api`), offline (`/api/offline`), admin (`/api/admin`), user (`/api`), factcheck (`/api/factcheck`), translation (`/api/translate`). Routers live under `backend/routes/` and delegate to services in `backend/services/`.
-- **Inline in server.py:** All other API routes are defined in `server.py`, including: `/api/health`, `/api/news`, `/api/news/breaking`, `/api/news/{id}`, `/api/paraphrase`, `/api/tts/generate`, `/api/voices`, `/api/regions`, `/api/categories`, `/api/sources`, `/api/aggregators/*`, `/api/trending`, `/api/search`, `/api/admin/*` (some overlap with admin router), `/api/settings/*`, `/api/briefing/*`, `/api/notifications/*`, `/api/radio/*`, `/api/bookmarks`, `/api/preferences`, `/api/share/*`, `/api/og/*`, and others. The **news** and **briefing** route modules exist under `routes/` but are not currently mounted; their domains are served by inline handlers.
+- **Mounted routers:** discover, offline, admin, user, factcheck, translation, **news** (`/api/news`, `/api/news/breaking`, `/api/news/{id}`), **briefing** (`/api/briefing/*`). Routers live under `backend/routes/` and delegate to services in `backend/services/`. News uses a single RSS source (`news_service`); admin has no duplicate definitions in `server.py`.
+- **Inline in server.py:** Remaining routes include `/api/health`, `/api/paraphrase`, `/api/tts/generate`, `/api/voices`, `/api/regions`, `/api/categories`, `/api/sources`, `/api/aggregators/*`, `/api/trending`, `/api/search`, `/api/settings/*`, `/api/notifications/*`, `/api/radio/*`, `/api/bookmarks`, `/api/preferences`, `/api/share/*`, `/api/og/*`, and others.
 - **Configuration:** Required and optional environment variables are listed in [backend/.env.example](backend/.env.example); see also code for vars such as `YARNGPT_API_KEY`, `MEDIASTACK_API_KEY`, `NEWSDATA_API_KEY`.
 
 ### Frontend (CRA)

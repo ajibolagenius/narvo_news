@@ -3,11 +3,14 @@ import io
 import base64
 import hashlib
 import asyncio
+import logging
 from datetime import datetime, timezone
 from typing import List, Optional
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logger = logging.getLogger("narvo.api")
 
 from fastapi import FastAPI, HTTPException, Query, BackgroundTasks, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
@@ -330,7 +333,7 @@ async def generate_tts(request: TTSRequest):
             language=request.language,
         )
     except Exception as e:
-        print(f"TTS Error: {e}")
+        logger.warning("TTS error: %s", e)
         raise HTTPException(status_code=500, detail=f"TTS generation failed: {str(e)}")
 
 
@@ -521,7 +524,7 @@ async def search_news(
                 agg_items = await get_normalized_aggregator_news()
                 all_items.extend(agg_items)
             except Exception as e:
-                print(f"[Search] Aggregator error: {e}")
+                logger.warning("[Search] Aggregator error: %s", e)
 
         # 3. Include podcasts
         try:
@@ -1031,7 +1034,7 @@ async def get_radio_stations(
     except httpx.TimeoutException:
         raise HTTPException(status_code=504, detail="Radio API timeout")
     except Exception as e:
-        print(f"Radio API error: {e}")
+        logger.warning("Radio API error: %s", e)
         # Return fallback stations
         return [
             RadioStation(
@@ -1116,7 +1119,7 @@ async def get_trending_topics():
             for cat, count in trending
         ]
     except Exception as e:
-        print(f"Trending error: {e}")
+        logger.warning("Trending error: %s", e)
         return [
             {"topic": "Politics", "count": 12, "trend": "up"},
             {"topic": "Economy", "count": 8, "trend": "up"},
