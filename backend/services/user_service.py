@@ -70,13 +70,13 @@ def remove_bookmark(user_id: str, story_id: str) -> bool:
 
 # Preferences functions
 def get_preferences(user_id: str) -> Dict:
-    """Get user preferences"""
+    """Get user preferences. Merges with DEFAULT_PREFERENCES so all expected keys are present."""
     db = get_supabase_db()
     r = db.table("user_preferences").select("*").eq("user_id", user_id).limit(1).execute()
     row = (r.data or [None])[0]
     if not row:
         return DEFAULT_PREFERENCES.copy()
-    return _row_to_prefs(row) or DEFAULT_PREFERENCES.copy()
+    return {**DEFAULT_PREFERENCES, **_row_to_prefs(row)}
 
 
 def update_preferences(user_id: str, preferences: Dict) -> Dict:
