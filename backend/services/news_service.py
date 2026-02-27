@@ -75,7 +75,7 @@ async def get_cached_all_news() -> List[Dict]:
     all_news.sort(key=lambda x: x.get("published") or "", reverse=True)
     _news_cache["data"] = all_news
     _news_cache["timestamp"] = now
-    return all_news
+    return list(all_news)
 
 
 # ── Feed Health Monitoring ────────────────────────────────────────────
