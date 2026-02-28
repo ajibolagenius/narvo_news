@@ -277,14 +277,14 @@ const MobilePlayer = () => {
     setPlaybackRate(SPEED_OPTIONS[(idx + 1) % SPEED_OPTIONS.length]);
   }, [playbackRate, setPlaybackRate]);
 
-  if (!currentTrack) return null;
-
   const handleSeekMobile = useCallback((e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     seek(((e.clientX - rect.left) / rect.width) * duration);
   }, [duration, seek]);
 
   const progressStyleMobile = useMemo(() => ({ width: `${progress}%` }), [progress]);
+
+  if (!currentTrack) return null;
 
   return (
     <>
