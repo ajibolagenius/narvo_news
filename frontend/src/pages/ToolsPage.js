@@ -67,6 +67,7 @@ const TOOL_CATEGORIES = [
   {
     title: 'OBSERVABILITY',
     tools: [
+      { name: 'Narvo Status', desc: 'Uptime & incident status (Backend API, Web App)', url: 'https://narvo.statuspage.io/', tag: 'UPTIME' },
       { name: 'Sentry', desc: 'Error tracking & performance (backend + frontend)', url: 'https://sentry.io', tag: 'MONITOR' },
     ],
     icon: ChartLine,

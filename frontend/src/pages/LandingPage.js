@@ -268,6 +268,7 @@ const LandingPage = () => {
             <li><a className="mono-ui text-[13px] text-slate-400 hover:text-primary transition-colors" href="#tech">CORE_RAG_PROTOCOLS</a></li>
             <li><a className="mono-ui text-[13px] text-slate-400 hover:text-primary transition-colors" href="#why">VOICE_MATRIX</a></li>
             <li><a className="mono-ui text-[13px] text-slate-400 hover:text-primary transition-colors" href="/tools">TOOLS_AND_STACK</a></li>
+            <li><a className="mono-ui text-[13px] text-slate-400 hover:text-primary transition-colors" href="https://narvo.statuspage.io/" target="_blank" rel="noopener noreferrer">SYSTEM_STATUS</a></li>
           </ul>
         </div>
         <div className="p-6 border-r border-forest">

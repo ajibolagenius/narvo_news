@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { 
   SquaresFour, Waveform, BookmarkSimple, MagnifyingGlass, Compass, WifiSlash,
-  GearSix, List, ClockCounterClockwise, ChartBar, ShieldCheck
+  GearSix, List, ClockCounterClockwise, ChartBar, ShieldCheck, Activity
 } from '@phosphor-icons/react';
 import ThemeToggle from './ThemeToggle';
 
@@ -157,6 +157,16 @@ const DashboardSidebar = ({ open, onClose, onToggle, mobile }) => {
             <GearSix weight={isSettingsActive ? 'fill' : 'regular'} className="w-5 h-5 shrink-0" />
             {open && <span className="font-mono text-[13px] font-bold uppercase tracking-wider">{t('nav.settings')}</span>}
           </button>
+          <a
+            href="https://narvo.statuspage.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex items-center gap-3 transition-all h-11 w-full ${open ? 'px-4' : 'px-4 justify-start'} text-[rgb(var(--color-text-secondary))] hover:text-[rgb(var(--color-primary))] hover:bg-[rgb(var(--color-surface))]/20`}
+            title="System status"
+          >
+            <Activity weight="regular" className="w-5 h-5 shrink-0" />
+            {open && <span className="font-mono text-[13px] font-bold uppercase tracking-wider">{t('nav.status')}</span>}
+          </a>
         </div>
       </motion.aside>
     </>

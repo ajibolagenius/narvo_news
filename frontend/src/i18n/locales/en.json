@@ -7,6 +7,7 @@
     "discover": "DISCOVER",
     "offline": "OFFLINE",
     "settings": "SETTINGS",
+    "status": "SYSTEM_STATUS",
     "admin": "ADMIN"
   },
   "header": {
