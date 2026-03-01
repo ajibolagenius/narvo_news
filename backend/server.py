@@ -313,6 +313,14 @@ class BookmarkRequest(BaseModel):
     saved_at: str = ""
 
 
+# Lightweight ping for external keep-alive (e.g. cron-job.org). Use this to prevent Render free-tier sleep.
+# Exposed at both /ping and /api/ping so it works with or without an /api prefix in front of the app.
+@app.get("/ping", tags=["core"], summary="Keep-alive ping")
+@app.get("/api/ping", tags=["core"], summary="Keep-alive ping")
+async def ping():
+    return {"ok": True}
+
+
 # Root: avoid 404 when visiting /
 @app.get("/", tags=["core"], summary="API info")
 async def root():
@@ -321,6 +329,7 @@ async def root():
         "version": API_VERSION,
         "docs": "/docs",
         "health": "/api/health",
+        "ping": "/ping or /api/ping",
     }
 
 

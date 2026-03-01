@@ -36,6 +36,7 @@ npm start
 
 - [Technical overview & architecture](docs/technical/Narvo_Technical_Documentation.md)
 - [Backend deploy & domain](docs/configuration/Backend_Deploy_And_Domain.md)
+- [Render keep-alive (free tier)](docs/configuration/Render_Keep_Alive.md) — cron ping so backend doesn’t sleep
 - [API & PWA versioning](docs/technical/API_And_PWA_Versioning.md)
 
 ## Stack
