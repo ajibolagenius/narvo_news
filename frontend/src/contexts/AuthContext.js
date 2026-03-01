@@ -42,11 +42,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signInWithGoogle = async () => {
-    const siteUrl = process.env.REACT_APP_PUBLIC_URL || window.location.origin;
+    const baseUrl = (process.env.REACT_APP_PUBLIC_URL || window.location.origin).replace(/\/$/, '');
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${siteUrl}/dashboard`,
+        redirectTo: `${baseUrl}/dashboard`,
       }
     });
     if (error) throw error;
