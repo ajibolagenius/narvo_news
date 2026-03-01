@@ -50,15 +50,15 @@ function ErrorFallback({ error, resetError }) {
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const app = (
-  <React.StrictMode>
-    {sentryDsn ? (
-      <Sentry.ErrorBoundary fallback={({ resetError }) => <ErrorFallback resetError={resetError} />}>
-        <App />
-      </Sentry.ErrorBoundary>
-    ) : (
+const app = sentryDsn ? (
+  <Sentry.ErrorBoundary fallback={({ resetError }) => <ErrorFallback resetError={resetError} />}>
+    <React.StrictMode>
       <App />
-    )}
+    </React.StrictMode>
+  </Sentry.ErrorBoundary>
+) : (
+  <React.StrictMode>
+    <App />
   </React.StrictMode>
 );
 root.render(app);
