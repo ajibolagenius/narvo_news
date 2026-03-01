@@ -29,14 +29,15 @@ npm start
 
 ### Environment
 
-- **Backend:** See `backend/.env.example` (Supabase, GEMINI_API_KEY, OPENAI_API_KEY, optional YARNGPT, FRONTEND_ORIGIN for CORS).
-- **Frontend:** See `frontend/.env.example` (REACT_APP_BACKEND_URL, REACT_APP_PUBLIC_URL, Supabase auth).
+- **Backend:** See `backend/.env.example` (Supabase, GEMINI_API_KEY, OPENAI_API_KEY, optional YARNGPT, FRONTEND_ORIGIN for CORS, optional SENTRY_DSN).
+- **Frontend:** See `frontend/.env.example` (REACT_APP_BACKEND_URL, REACT_APP_PUBLIC_URL, Supabase auth, optional REACT_APP_SENTRY_DSN for error tracking).
 
 ## Docs
 
 - [Technical overview & architecture](docs/technical/Narvo_Technical_Documentation.md)
 - [Backend deploy & domain](docs/configuration/Backend_Deploy_And_Domain.md)
 - [Render keep-alive (free tier)](docs/configuration/Render_Keep_Alive.md) — cron ping so backend doesn’t sleep
+- [Observability and service limits](docs/configuration/Observability_And_Services.md) — Sentry error tracking, Supabase inactivity pause
 - [API & PWA versioning](docs/technical/API_And_PWA_Versioning.md)
 
 ## Stack
