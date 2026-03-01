@@ -9,6 +9,7 @@ import { DownloadQueueProvider } from './contexts/DownloadQueueContext';
 import { ContentSourcesProvider } from './contexts/ContentSourcesContext';
 import { HapticAlertProvider } from './components/HapticAlerts';
 import { BreakingNewsProvider } from './components/BreakingNews';
+import { Analytics } from '@vercel/analytics/react';
 import DownloadQueueIndicator from './components/DownloadQueueIndicator';
 import { TourGuideModal } from './components/TourGuideModal';
 import LoadingScreen from './components/LoadingScreen';
@@ -68,6 +69,7 @@ function App() {
       <ContentSourcesProvider>
       <BreakingNewsProvider>
         <HapticAlertProvider>
+          <Analytics />
           <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <a href="#main-content" className="skip-link">Skip to main content</a>
             <DownloadQueueIndicator />
