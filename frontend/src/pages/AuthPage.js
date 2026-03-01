@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { openTourGuide } from '../components/TourGuideModal';
@@ -14,22 +14,25 @@ const AuthPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState('');
+  const didNavigateInSubmitRef = useRef(false);
 
   useEffect(() => {
-    if (user) navigate('/dashboard', { replace: true });
-  }, [user, navigate]);
+    if (user && !loading && !didNavigateInSubmitRef.current) navigate('/dashboard', { replace: true });
+  }, [user, loading, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setConfirmMessage('');
     setLoading(true);
+    didNavigateInSubmitRef.current = false;
     try {
       if (isSignUp) {
         const data = await signUp(email, password);
         if (data?.user && !data.session) {
           setConfirmMessage('Check your email to confirm your account, then sign in.');
         } else {
+          didNavigateInSubmitRef.current = true;
           navigate('/onboarding');
         }
       } else {
@@ -42,6 +45,7 @@ const AuthPage = () => {
               const prefs = await res.json();
               if (prefs.updated_at) {
                 localStorage.setItem('narvo_preferences', JSON.stringify(prefs));
+                didNavigateInSubmitRef.current = true;
                 navigate('/dashboard');
                 setTimeout(openTourGuide, 2500);
                 return;
@@ -50,13 +54,15 @@ const AuthPage = () => {
           } catch {}
         }
         const prefs = localStorage.getItem('narvo_preferences');
+        didNavigateInSubmitRef.current = true;
         navigate(prefs ? '/dashboard' : '/onboarding');
         setTimeout(openTourGuide, 2500);
       }
     } catch (err) {
       setError(err.message || 'Authentication failed');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
