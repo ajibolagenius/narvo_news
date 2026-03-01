@@ -113,9 +113,19 @@ app.add_middleware(RequestIDMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
-# CORS: use FRONTEND_ORIGIN in production (e.g. https://narvo.news); ["*"] when unset (dev)
+# CORS: use FRONTEND_ORIGIN in production (e.g. https://narvo.news or https://www.narvo.news); ["*"] when unset (dev)
 _cors_origins = os.environ.get("FRONTEND_ORIGIN", "*")
-_cors_origins_list = [o.strip() for o in _cors_origins.split(",")] if _cors_origins != "*" else ["*"]
+if _cors_origins.strip() == "*":
+    _cors_origins_list = ["*"]
+else:
+    _cors_origins_list = [o.strip() for o in _cors_origins.split(",") if o.strip()]
+    # Allow both www and non-www for narvo.news so one env value works for both
+    _narvo = "https://narvo.news"
+    _narvo_www = "https://www.narvo.news"
+    if _narvo in _cors_origins_list and _narvo_www not in _cors_origins_list:
+        _cors_origins_list.append(_narvo_www)
+    elif _narvo_www in _cors_origins_list and _narvo not in _cors_origins_list:
+        _cors_origins_list.append(_narvo)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=_cors_origins_list,
